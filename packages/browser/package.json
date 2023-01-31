@@ -1,0 +1,28 @@
+{
+  "name": "stanza-browser",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/stanza-browser.umd.cjs",
+  "module": "./dist/stanza-browser.js",
+  "types": "./dist/browser/src/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/stanza-browser.js",
+      "require": "./dist/stanza-browser.umd.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "author": "Stanza",
+  "license": "MIT",
+  "dependencies": {
+    "stanza-core": "^0.0.0"
+  }
+}

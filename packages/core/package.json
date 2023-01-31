@@ -1,0 +1,37 @@
+{
+  "name": "stanza-core",
+  "private": true,
+  "version": "0.0.0",
+  "type":"module",
+  "files": ["dist"],
+  "main": "./dist/stanza-core.umd.cjs",
+  "module": "./dist/stanza-core.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/stanza-core.js",
+      "require": "./dist/stanza-core.umd.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.49.0",
+    "eslint": "^8.32.0",
+    "eslint-config-standard-with-typescript": "^33.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.32.1",
+    "typescript": "^4.9.4",
+    "vite": "^4.0.0",
+    "vite-plugin-eslint": "^1.8.1",
+    "vitest": "^0.28.3"
+  },
+  "description": "stanza core JS features",
+  "author": "Stanza",
+  "license": "MIT"
+}

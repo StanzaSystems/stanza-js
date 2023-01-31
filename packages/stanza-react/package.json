@@ -1,0 +1,21 @@
+{
+  "name": "stanza-react",
+  "version": "1.0.0",
+  "description": "stanza react components",
+  "main": "src/StanzaProvider.tsx",
+  "author": "Stanza",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "stanza-browser": "^1.0.0",
+    "stanza-core": "^0.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.27"
+  }
+}
