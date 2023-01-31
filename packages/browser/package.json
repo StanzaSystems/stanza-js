@@ -8,7 +8,7 @@
   ],
   "main": "./dist/stanza-browser.umd.cjs",
   "module": "./dist/stanza-browser.js",
-  "types": "./dist/browser/src/index.d.ts",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/stanza-browser.js",
