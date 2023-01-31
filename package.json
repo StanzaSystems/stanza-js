@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
     "build": "tsc && npm run build:packages && vite build",
     "preview": "vite preview",
     "build:packages": "npm run build --workspaces --if-present"
@@ -26,6 +25,7 @@
   "workspaces": [
     "packages/core",
     "packages/stanza-react",
-    "packages/browser"
+    "packages/browser",
+    "samples/browser-simple"
   ]
 }

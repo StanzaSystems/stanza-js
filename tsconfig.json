@@ -16,5 +16,5 @@
     "noImplicitReturns": true,
     "skipLibCheck": true
   },
-  "include": ["sample", "packages"]
+  "include": ["samples", "packages"]
 }
