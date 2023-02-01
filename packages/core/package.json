@@ -16,6 +16,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:packages": "tsc && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {

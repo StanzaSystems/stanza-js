@@ -14,3 +14,16 @@ npm run build
 
 ## Toolchain
 Stanza uses Vite to build, eslint, and typescript.
+
+## Workspaces and packages
+Add new workspaces using 
+```
+npm init -w ./packages/{your package name} //packages
+npm init -w ./samples/{your sample name} //samples
+```
+
+as far as I can tell, the best way to install dependencies is from the root of the project, with workspace specificed. For example
+```
+npm install react -w packages/stanza-react
+```
+will install react into just the stanza-react package

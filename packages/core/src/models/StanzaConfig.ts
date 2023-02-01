@@ -1,4 +1,4 @@
-import { type Feature, FeatureStatus } from './Feature'
+import { type Feature } from './Feature'
 
 interface StanzaConfig {
   Environment: string
@@ -11,4 +11,3 @@ interface StanzaConfig {
 }
 
 export type { StanzaConfig }
-export { FeatureStatus }

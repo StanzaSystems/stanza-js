@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/main.ts",
-  "devDependencies": {},
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build"
@@ -17,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/StanzaSystems/stanza-js/issues"
   },
-  "homepage": "https://github.com/StanzaSystems/stanza-js#readme"
+  "homepage": "https://github.com/StanzaSystems/stanza-js#readme",
+  "dependencies": {
+    "stanza-browser": "^1.0.0",
+    "stanza-core": "^0.0.0"
+  }
 }

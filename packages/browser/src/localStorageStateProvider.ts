@@ -1,4 +1,4 @@
-import { type Metadata, type StanzaState, type LocalStateProvider } from 'stanza-core'
+import { type Metadata, type StanzaState, type LocalStateProvider, metadataFromJSONString } from 'stanza-core'
 
 function setState (state: StanzaState, tag?: string): void {
   tag = tag ?? ''
@@ -16,17 +16,20 @@ function getState (tag?: string): StanzaState {
   if (state === null) {
     throw new Error(`stanza state for ${tag ?? 'default'} not found`)
   }
-  return JSON.parse(state)
+  return JSON.parse(state) as StanzaState
 }
 
 function setMetadata (metadata: Metadata): void {
-  console.log('set metadata')
   window.localStorage.setItem('stanza_metadata', JSON.stringify(metadata))
 }
 
 function getMetadata (): Metadata | undefined {
   const meta = window.localStorage.getItem('stanza_metadata')
-  return (meta !== null) ? JSON.parse(meta) : undefined
+  if (meta === null) {
+    return undefined
+  }
+
+  return metadataFromJSONString(meta)
 }
 
 const provider: LocalStateProvider = {

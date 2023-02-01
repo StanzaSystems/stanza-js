@@ -1,16 +1,13 @@
 import type { LocalStateProvider } from './models/LocalStateProvider'
-import type { Metadata } from './models/Metadata'
+import { type Metadata, metadataFromJSONString } from './models/Metadata'
 import type { StanzaConfig } from './models/StanzaConfig'
 import type { StanzaState } from './models/StanzaState'
+import { FeatureStatus } from './models/Feature'
 import InMemoryLocalStateProvider from './utils/InMemoryLocalStateProvider'
 
 let stateProvider: LocalStateProvider
 
 const init = (config: StanzaConfig, provider?: LocalStateProvider): void => {
-//   if (config.LocalMode && !((config.TestFeatures != null) || (config?.TestGlobalMessage))) {
-//     throw new Error('You must configure test features or error to work in local mode')
-//   }
-
   stateProvider = (provider != null) ? provider : InMemoryLocalStateProvider
 
   // set initial state metadata if there is none
@@ -41,5 +38,5 @@ async function refreshState (): Promise<void> {
   throw new Error('need to implement state fetch')
 }
 
-export { init, stateProvider, refreshState }
+export { init, stateProvider, refreshState, FeatureStatus, metadataFromJSONString }
 export type { Metadata, StanzaState, StanzaConfig, LocalStateProvider }
