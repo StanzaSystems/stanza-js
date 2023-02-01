@@ -1,12 +1,15 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="../index.d.ts"/>
 import { init, type StanzaConfig, type StanzaState } from 'stanza-core'
 import localState from './localStorageStateProvider'
-import { onmessage } from './stanzaWorker'
-import { createWorker } from './utils/workerUtils'
+import StanzaWorker from './stanzaWorker?worker&inline'
+
+// import { createWorker } from './utils/workerUtils'
 
 let stanzaUpdater: Worker
 let state: StanzaState | undefined
 if (typeof window !== 'undefined') {
-  stanzaUpdater = createWorker(onmessage)
+  stanzaUpdater = new StanzaWorker()
 }
 const initBrowser = (initialConfig: StanzaConfig, worker?: Worker | undefined): StanzaState | undefined => {
   init(initialConfig, localState)

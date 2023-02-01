@@ -1,17 +1,21 @@
-// import state from './localStorageStateProvider'
-// export default function stanzaWorker (): void {
-//   self.postMessage('stanza_initialized')
-
-//   self.onmessage = (ev) => {
-//     console.log(ev)
-//   }
-// }
-
-// self.postMessage('stanza_initialized')
-import provider from './localStorageStateProvider'
-
-export const onmessage = (ev: Event): void => {
+self.onmessage = (ev: Event): void => {
   console.log(ev)
-  const metadata = provider.GetMetadata()
-  console.log(metadata)
+  poll('local')
 }
+
+function poll (url: string, time?: number): void {
+  if (url === 'local') {
+    console.log('stanza is running in local mode for features')
+    return
+  }
+  setTimeout(() => {
+    void getFeatures(url)
+  }, time ?? 30)
+}
+
+async function getFeatures (url: string): Promise<void> {
+  const features = await fetch(url)
+  self.postMessage(features)
+}
+
+export {}
