@@ -3,7 +3,12 @@ interface StanzaConfig {
   StanzaCustomerId: string
   Url: string
   RefreshSeconds?: number
-  PageFeatures: Map<string, string[]>
+  PageConfigs: PageConfig[]
+}
+
+interface PageConfig {
+  Name: string
+  Features: string[]
 }
 
 export const configFromJSONString = (jsonString: string): StanzaConfig => {
@@ -13,7 +18,7 @@ export const configFromJSONString = (jsonString: string): StanzaConfig => {
     Environment: config.Environment,
     StanzaCustomerId: config.StanzaCustomerId,
     Url: config.Url,
-    PageFeatures: new Map<string, string[]>(Object.entries(config.PageFeatures ?? {}))
+    PageConfigs: config.PageConfigs
   }
   return m
 }
