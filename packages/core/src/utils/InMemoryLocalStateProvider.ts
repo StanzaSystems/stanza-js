@@ -1,31 +1,18 @@
 import { type LocalStateProvider } from '../models/LocalStateProvider'
-import { type Metadata } from '../models/Metadata'
 import { type StanzaState } from '../models/StanzaState'
 
 const localState = new Map<string, StanzaState>()
-let localMetadata: Metadata
 
-function setState (state: StanzaState, tag?: string): void {
-  tag = tag ?? ''
-  localState.set(tag, state)
-  localMetadata.Tags.set(tag, new Date().toISOString())
+function setState (state: StanzaState, page?: string): void {
+  page = page ?? ''
+  localState.set(page, state)
 }
 
-function getState (tag?: string): StanzaState | undefined {
-  return localState.get(tag ?? '')
-}
-
-function setMetadata (metadata: Metadata): void {
-  localMetadata = metadata
-}
-
-function getMetadata (): Metadata {
-  return localMetadata
+function getState (page?: string): StanzaState | undefined {
+  return localState.get(page ?? '')
 }
 
 const provider: LocalStateProvider = {
-  GetMetadata: getMetadata,
-  SetMetadata: setMetadata,
   GetState: getState,
   SetState: setState
 }

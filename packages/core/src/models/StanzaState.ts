@@ -2,18 +2,17 @@ import { type Feature, validateFeature } from './Feature'
 
 interface StanzaState {
   Features: Feature[]
-  GlobalMessage: string | undefined
-  Tag?: string | undefined
+  Version?: string
+  Page: string
 }
 
-export const createStanzaState = (features: Feature[], message: string, tag: string | undefined): StanzaState => {
+export const createStanzaState = (features: Feature[], page: string | undefined): StanzaState => {
   // validate that features passed are properly formed
   features.forEach(validateFeature)
 
   const state: StanzaState = {
     Features: features,
-    GlobalMessage: message,
-    Tag: tag
+    Page: page ?? ''
   }
 
   return state

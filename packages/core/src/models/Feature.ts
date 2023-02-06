@@ -6,10 +6,10 @@ interface Feature {
 }
 
 enum FeatureStatus {
-  DEGRADED = 'DEGRADED',
-  FAIL_NO_SEND = 'FAIL_NO_SEND',
-  FAIL_SEND = 'FAIL_SEND',
-  FAIL_REMOVE = 'FAIL_REMOVE'
+  DEGRADED_NO_ERROR = 'DEGRADED_NO_ERROR',
+  DEGRADED_ERROR = 'DEGRADED_ERROR',
+  OUTAGE_ERROR = 'OUTAGE_ERROR',
+  OUTAGE_REMOVE = 'OUTAGE_REMOVE'
 }
 
 function validateFeature (f: Feature): void {

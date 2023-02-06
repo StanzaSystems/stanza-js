@@ -2,8 +2,10 @@
   "name": "stanza-core",
   "private": true,
   "version": "0.0.0",
-  "type":"module",
-  "files": ["dist"],
+  "type": "module",
+  "files": [
+    "dist"
+  ],
   "main": "./dist/stanza-core.umd.cjs",
   "module": "./dist/stanza-core.js",
   "types": "./dist/index.d.ts",
@@ -17,7 +19,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "build:packages": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.49.0",
