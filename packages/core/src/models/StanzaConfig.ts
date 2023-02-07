@@ -3,10 +3,10 @@ interface StanzaConfig {
   StanzaCustomerId: string
   Url: string
   RefreshSeconds?: number
-  PageConfigs: PageConfig[]
+  FeatureGroups: FeatureGroup[]
 }
 
-interface PageConfig {
+interface FeatureGroup {
   Name: string
   Features: string[]
 }
@@ -18,7 +18,7 @@ export const configFromJSONString = (jsonString: string): StanzaConfig => {
     Environment: config.Environment,
     StanzaCustomerId: config.StanzaCustomerId,
     Url: config.Url,
-    PageConfigs: config.PageConfigs
+    FeatureGroups: config.FeatureGroups
   }
   return m
 }

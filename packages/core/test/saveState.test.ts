@@ -8,7 +8,7 @@ describe('saveState', () => {
       Url: 'http://localhost:3004',
       Environment: 'local',
       StanzaCustomerId: '12345667',
-      PageConfigs: [
+      FeatureGroups: [
         {
           Name: 'main',
           Features: ['featured', 'search', 'checkout']
@@ -25,15 +25,15 @@ describe('saveState', () => {
 
   it('saves a stanza state', () => {
     const state: Stanza.StanzaState = {
-      Page: 'main',
+      Group: 'main',
       Features: []
     }
-    expect(() => { Stanza.savePageState(state) }).to.not.throw()
-    assert.deepEqual(Stanza.getPageState(state.Page), state, 'returned state is saved state')
+    expect(() => { Stanza.saveGroupState(state) }).to.not.throw()
+    assert.deepEqual(Stanza.getGroupState(state.Group), state, 'returned state is saved state')
   })
 
-  it('errors when page is not found', () => {
-    expect(() => { Stanza.getPageState('fake') }).to.throw()
+  it('errors when group is not found', () => {
+    expect(() => { Stanza.getGroupState('fake') }).to.throw()
   })
 
   it('fetches correct feature list', async () => {
@@ -41,7 +41,7 @@ describe('saveState', () => {
       Url: 'http://localhost:3004',
       Environment: 'local',
       StanzaCustomerId: '12345667',
-      PageConfigs: [
+      FeatureGroups: [
         {
           Name: 'main',
           Features: ['featured', 'search', 'checkout']
@@ -52,9 +52,9 @@ describe('saveState', () => {
         }
       ]
     }
-    const state = await Stanza.getRefreshStateForPageFeatures('details', config)
+    const state = await Stanza.getRefreshStateForFeatures('details', config)
 
-    assert.equal(state.Page, 'details')
+    assert.equal(state.Group, 'details')
 
     // based on msw handler.ts, the features back should be 'productSummary', 'shipping'
     // if handler.ts is changed, this test will fail

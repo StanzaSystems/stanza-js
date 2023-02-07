@@ -8,7 +8,7 @@ describe('init stanza', () => {
       Url: 'asdfasdf',
       Environment: 'local',
       StanzaCustomerId: '12345667',
-      PageConfigs: [
+      FeatureGroups: [
         {
           Name: 'main',
           Features: ['featured', 'search', 'checkout']
@@ -27,7 +27,7 @@ describe('init stanza', () => {
       Url: 'http://localhost:3004',
       Environment: 'local',
       StanzaCustomerId: '12345667',
-      PageConfigs: [
+      FeatureGroups: [
         {
           Name: 'main',
           Features: ['featured', 'search', 'checkout']
@@ -47,7 +47,7 @@ describe('init stanza', () => {
       Url: 'http://localhost:3004',
       Environment: 'local',
       StanzaCustomerId: '12345667',
-      PageConfigs: [
+      FeatureGroups: [
         {
           Name: 'main',
           Features: ['featured', 'search', 'checkout']

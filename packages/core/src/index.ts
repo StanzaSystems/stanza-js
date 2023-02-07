@@ -3,7 +3,7 @@ import type { StanzaConfig } from './models/StanzaConfig'
 import { type StanzaState } from './models/StanzaState'
 import { FeatureStatus } from './models/Feature'
 import InMemoryLocalStateProvider from './utils/InMemoryLocalStateProvider'
-import { getRefreshStateForPageFeatures } from './utils/StanzaService'
+import { getRefreshStateForFeatures } from './utils/StanzaService'
 
 let stateProvider: LocalStateProvider
 let stanzaConfig: StanzaConfig
@@ -22,21 +22,21 @@ const init = (config: StanzaConfig, provider?: LocalStateProvider): void => {
   stanzaConfig = config
 }
 
-function savePageState (pageState: StanzaState): void {
-  const pageConfig = stanzaConfig.PageConfigs.find((e) => { return e.Name === pageState.Page })
-  if (pageConfig === null || pageConfig === undefined) {
-    throw new Error(`configuration for page ${pageState.Page} not found`)
+function saveGroupState (groupState: StanzaState): void {
+  const FeatureGroup = stanzaConfig.FeatureGroups.find((e) => { return e.Name === groupState.Group })
+  if (FeatureGroup === null || FeatureGroup === undefined) {
+    throw new Error(`configuration for group ${groupState.Group} not found`)
   }
-  stateProvider.SetState(pageState, pageState.Page)
+  stateProvider.SetState(groupState, groupState.Group)
 }
 
-function getPageState (page: string): StanzaState {
-  const state = stateProvider.GetState(page)
+function getGroupState (group: string): StanzaState {
+  const state = stateProvider.GetState(group)
   if (state === undefined) {
-    throw new Error(`State for page ${page} is not found. Is it configured?`)
+    throw new Error(`State for group ${group} is not found. Is it configured?`)
   }
   return state
 }
 
-export { init, savePageState, getPageState, getRefreshStateForPageFeatures, FeatureStatus }
+export { init, saveGroupState, getGroupState, getRefreshStateForFeatures, FeatureStatus }
 export type { StanzaState, StanzaConfig, LocalStateProvider }
