@@ -5,7 +5,7 @@ const featuresForResponses = {
     {
       Name: 'search',
       Status: 'DEGRADED_ERROR',
-      ErrorMessage: 'We are having trouble with search - please retry your request!!!!!!'
+      ErrorMessage: 'We are having trouble with search - please retry your request.'
     },
     {
       Name: 'featured',
@@ -14,7 +14,7 @@ const featuresForResponses = {
     {
       Name: 'shipping',
       Status: 'OUTAGE_ERROR',
-      ErrorMessage: 'We are having trouble loading the graph UI right now - please retry your request!!!!!!'
+      ErrorMessage: 'We are unable to pre-load shipping costs right now, but if you continue your order will still process'
     },
     {
       Name: 'productSummary',
@@ -24,8 +24,9 @@ const featuresForResponses = {
 }
 
 export const handlers = [
-  rest.get('*/featureStatus', (req, res, ctx) => {
+  rest.get('http://localhost:3004/featureStatus', (req, res, ctx) => {
     const features = req.url.searchParams.getAll('feature')
+    console.log(`returning features ${JSON.stringify(features)}`)
     const response = featuresForResponses.Features.filter(f => { return features.includes(f.Name) })
     return res(
       ctx.status(200),

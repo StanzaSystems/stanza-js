@@ -6,6 +6,7 @@ export async function getRefreshStateForFeatures (group: string, stanzaConfig: S
   interface JSONResponse {
     Features?: Feature[]
   }
+  console.log(`refresh ${group}`)
   const params = new URLSearchParams()
   const FeatureGroup = stanzaConfig.FeatureGroups.find((e) => { return e.Name === group })
   FeatureGroup?.Features?.forEach(s => { params.append('feature', s) })
@@ -13,8 +14,8 @@ export async function getRefreshStateForFeatures (group: string, stanzaConfig: S
     headers: {
       'x-stanza-customer-id': stanzaConfig.StanzaCustomerId
     }
-  })
-  const data: JSONResponse = await response.json()
+  }).catch((e) => { console.log(e) })
+  const data: JSONResponse = await response?.json()
   console.log(data)
   return createStanzaState(data?.Features ?? [], group)
 }

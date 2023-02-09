@@ -16,7 +16,7 @@
     }
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "tsc && vite",
     "build": "tsc && vite build",
     "build:packages": "tsc && vite build",
     "preview": "vite preview",

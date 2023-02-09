@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import Stanza from '../src/index'
-import type { StanzaConfig } from '../src/index'
+import Stanza, { type StanzaConfig } from 'stanza-core'
 
 describe('init stanza', () => {
   it('validates URL', () => {

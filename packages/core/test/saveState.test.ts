@@ -1,6 +1,6 @@
 import { assert, describe, expect, it } from 'vitest'
-import * as Stanza from '../src/index'
-import type { StanzaConfig } from '../src/index'
+import Stanza from '../src/index'
+import type { StanzaConfig, StanzaState } from '../src/index'
 
 describe('saveState', () => {
   it('configures a stanza instance', () => {
@@ -24,7 +24,7 @@ describe('saveState', () => {
   })
 
   it('saves a stanza state', () => {
-    const state: Stanza.StanzaState = {
+    const state: StanzaState = {
       Group: 'main',
       Features: []
     }

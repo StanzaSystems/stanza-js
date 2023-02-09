@@ -22,6 +22,12 @@ const init = (config: StanzaConfig, provider?: LocalStateProvider): void => {
   stanzaConfig = config
 }
 
+async function getGroupStateHot (group: string): Promise<StanzaState> {
+  const newState = await getRefreshStateForFeatures(group, stanzaConfig)
+  saveGroupState(newState)
+  return newState
+}
+
 function saveGroupState (groupState: StanzaState): void {
   const FeatureGroup = stanzaConfig.FeatureGroups.find((e) => { return e.Name === groupState.Group })
   if (FeatureGroup === null || FeatureGroup === undefined) {
@@ -38,5 +44,5 @@ function getGroupState (group: string): StanzaState {
   return state
 }
 
-export { init, saveGroupState, getGroupState, getRefreshStateForFeatures, FeatureStatus }
+export default { init, getGroupStateHot, getGroupState, FeatureStatus, saveGroupState, getRefreshStateForFeatures }
 export type { StanzaState, StanzaConfig, LocalStateProvider }
