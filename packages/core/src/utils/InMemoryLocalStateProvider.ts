@@ -1,20 +1,20 @@
 import { type LocalStateProvider } from '../models/LocalStateProvider'
-import { type StanzaState } from '../models/StanzaState'
+import { type Context } from '../models/Context'
 
-const localState = new Map<string, StanzaState>()
+const localState = new Map<string, Context>()
 
-function setState (state: StanzaState, group?: string): void {
-  group = group ?? ''
-  localState.set(group, state)
+function setContext (context: Context, name?: string): void {
+  name = name ?? ''
+  localState.set(name, context)
 }
 
-function getState (group?: string): StanzaState | undefined {
-  return localState.get(group ?? '')
+function getContext (name?: string): Context | undefined {
+  return localState.get(name ?? '')
 }
 
 const provider: LocalStateProvider = {
-  GetState: getState,
-  SetState: setState
+  getContext,
+  setContext
 }
 
 export default provider

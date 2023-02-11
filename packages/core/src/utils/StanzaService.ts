@@ -1,21 +1,20 @@
 import { type Feature } from '../models/Feature'
-import { type StanzaConfig } from '../models/StanzaConfig'
-import { createStanzaState, type StanzaState } from '../models/StanzaState'
+import globals from '../globals'
 
-export async function getRefreshStateForFeatures (group: string, stanzaConfig: StanzaConfig): Promise<StanzaState> {
+export async function getRefreshedFeatures (contextName: string): Promise<Feature[]> {
   interface JSONResponse {
     Features?: Feature[]
   }
-  console.log(`refresh ${group}`)
+  console.log(`refresh ${contextName}`)
   const params = new URLSearchParams()
-  const FeatureGroup = stanzaConfig.FeatureGroups.find((e) => { return e.Name === group })
-  FeatureGroup?.Features?.forEach(s => { params.append('feature', s) })
-  const response = await fetch(`${stanzaConfig.Url}/featureStatus?${params.toString()}`, {
+  const featureGroup = globals.getConfig().contextConfigs.find((e) => { return e.name === contextName })
+  featureGroup?.features?.forEach(s => { params.append('feature', s) })
+  const response = await fetch(`${globals.getConfig().url}/featureStatus?${params.toString()}`, {
     headers: {
-      'x-stanza-customer-id': stanzaConfig.StanzaCustomerId
+      'x-stanza-customer-id': globals.getConfig().stanzaCustomerId
     }
   }).catch((e) => { console.log(e) })
   const data: JSONResponse = await response?.json()
   console.log(data)
-  return createStanzaState(data?.Features ?? [], group)
+  return data?.Features ?? []
 }

@@ -1,6 +1,6 @@
-import { type StanzaState } from './StanzaState'
+import { type Context } from './Context'
 
 export interface LocalStateProvider {
-  SetState: (state: StanzaState, group?: string) => void
-  GetState: (group?: string) => StanzaState | undefined
+  setContext: (context: Context, name?: string) => void
+  getContext: (name?: string) => Context | undefined
 }

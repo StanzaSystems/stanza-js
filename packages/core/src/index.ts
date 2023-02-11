@@ -1,48 +1,54 @@
 import type { LocalStateProvider } from './models/LocalStateProvider'
 import type { StanzaConfig } from './models/StanzaConfig'
-import { type StanzaState } from './models/StanzaState'
-import { FeatureStatus } from './models/Feature'
+import { createContext, type Context } from './models/Context'
+import { FeatureStatusCode } from './models/Feature'
 import InMemoryLocalStateProvider from './utils/InMemoryLocalStateProvider'
-import { getRefreshStateForFeatures } from './utils/StanzaService'
-
-let stateProvider: LocalStateProvider
-let stanzaConfig: StanzaConfig
+import { getRefreshedFeatures } from './utils/StanzaService'
+import globals from './globals'
 
 const init = (config: StanzaConfig, provider?: LocalStateProvider): void => {
-  if (stanzaConfig !== undefined || stateProvider !== undefined) {
-    throw new Error('Stanza already initialized')
-  }
   try {
     // eslint-disable-next-line no-new
-    new URL(config.Url)
+    new URL(config.url)
   } catch {
-    throw new Error(`${config.Url} is not a valid url`)
+    throw new Error(`${config.url} is not a valid url`)
   }
-  stateProvider = (provider != null) ? provider : InMemoryLocalStateProvider
-  stanzaConfig = config
+  globals.init(config, (provider != null) ? provider : InMemoryLocalStateProvider)
 }
 
-async function getGroupStateHot (group: string): Promise<StanzaState> {
-  const newState = await getRefreshStateForFeatures(group, stanzaConfig)
-  saveGroupState(newState)
-  return newState
-}
+async function getContextHot (name: string): Promise<Context> {
+  const newFeatures = await getRefreshedFeatures(name)
+  const context = globals.getStateProvider().getContext(name)
 
-function saveGroupState (groupState: StanzaState): void {
-  const FeatureGroup = stanzaConfig.FeatureGroups.find((e) => { return e.Name === groupState.Group })
-  if (FeatureGroup === null || FeatureGroup === undefined) {
-    throw new Error(`configuration for group ${groupState.Group} not found`)
+  if (context !== undefined) {
+    context.refresh(newFeatures)
+    return context
   }
-  stateProvider.SetState(groupState, groupState.Group)
+  return createContext(name, newFeatures, true)
 }
 
-function getGroupState (group: string): StanzaState {
-  const state = stateProvider.GetState(group)
-  if (state === undefined) {
-    throw new Error(`State for group ${group} is not found. Is it configured?`)
+function getContextLazy (name: string): Context {
+  if (globals.getConfig().contextConfigs.find(c => { return c.name === name }) === undefined) {
+    throw new Error(`Configuration for context ${name} is not found.`)
   }
-  return state
+  const context = globals.getStateProvider().getContext(name) ?? createContext(name, [])
+  return context
 }
 
-export default { init, getGroupStateHot, getGroupState, FeatureStatus, saveGroupState, getRefreshStateForFeatures }
-export type { StanzaState, StanzaConfig, LocalStateProvider }
+function saveContextIfChanged (context: Context): boolean {
+  const Context = globals.getConfig().contextConfigs.find((e) => { return e.name === context.name })
+  if (Context === undefined) {
+    throw new Error(`configuration for context ${context.name} not found`)
+  }
+
+  // this should only save to local storage if the context has changed. if context hasn't changed, return false for no change
+  if (globals.getStateProvider().getContext(context.name)?.equals(context.features) === true) {
+    return false
+  }
+
+  globals.getStateProvider().setContext(context, context.name)
+  return true
+}
+
+export default { init, getContextHot, getContextLazy, FeatureStatusCode, saveContextIfChanged, getRefreshedFeatures }
+export type { Context, StanzaConfig, LocalStateProvider }

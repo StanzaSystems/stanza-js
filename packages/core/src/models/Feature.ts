@@ -1,11 +1,12 @@
 
 interface Feature {
-  Name: string
-  Status: FeatureStatus
-  ErrorMessage?: string | undefined
+  name: string
+  code: FeatureStatusCode
+  message?: string | undefined
 }
 
-enum FeatureStatus {
+enum FeatureStatusCode {
+  HEALTHY = 'HEALTHY',
   DEGRADED_NO_ERROR = 'DEGRADED_NO_ERROR',
   DEGRADED_ERROR = 'DEGRADED_ERROR',
   OUTAGE_ERROR = 'OUTAGE_ERROR',
@@ -13,10 +14,10 @@ enum FeatureStatus {
 }
 
 function validateFeature (f: Feature): void {
-  if (!Object.values(FeatureStatus).includes(f.Status)) {
-    throw new Error(`Error: invalid status for feature ${f.Name}`)
+  if (!Object.values(FeatureStatusCode).includes(f.code)) {
+    throw new Error(`Error: invalid status for feature ${f.name}`)
   }
 }
 
 export type { Feature }
-export { FeatureStatus, validateFeature }
+export { FeatureStatusCode, validateFeature }

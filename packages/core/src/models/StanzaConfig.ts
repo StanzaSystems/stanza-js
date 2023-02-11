@@ -1,24 +1,24 @@
 interface StanzaConfig {
-  Environment: string
-  StanzaCustomerId: string
-  Url: string
-  RefreshSeconds?: number
-  FeatureGroups: FeatureGroup[]
+  environment: string
+  stanzaCustomerId: string
+  url: string
+  refreshSeconds?: number
+  contextConfigs: ContextConfig[]
 }
 
-interface FeatureGroup {
-  Name: string
-  Features: string[]
+interface ContextConfig {
+  name: string
+  features: string[]
 }
 
 export const configFromJSONString = (jsonString: string): StanzaConfig => {
   const config = JSON.parse(jsonString)
 
   const m: StanzaConfig = {
-    Environment: config.Environment,
-    StanzaCustomerId: config.StanzaCustomerId,
-    Url: config.Url,
-    FeatureGroups: config.FeatureGroups
+    environment: config.environment,
+    stanzaCustomerId: config.stanzaCustomerId,
+    url: config.url,
+    contextConfigs: config.contextConfigs
   }
   return m
 }
