@@ -9,7 +9,7 @@ interface Context {
   refresh: (features: Feature[]) => void
 }
 
-export const createContext = (name: string | undefined, features: Feature[], ready = false): Context => {
+export const createContext = (name: string | undefined, features: Feature[], ready = false, lastRefreshTime = undefined): Context => {
   // validate that features passed are properly formed
   features.forEach(validateFeature)
 
@@ -17,12 +17,23 @@ export const createContext = (name: string | undefined, features: Feature[], rea
     name: name ?? '',
     features,
     ready,
-    lastRefreshTime: new Date().toISOString(),
+    lastRefreshTime: lastRefreshTime ?? new Date().toISOString(),
     equals,
     refresh
   }
 
   return context
+}
+
+export const createContextFromCacheObject = (cached: any): Context => {
+  if (cached.name === undefined || typeof cached.name !== 'string') {
+    throw new Error('Invalid stanza context name in cache')
+  }
+  if (cached.features !== undefined && !Array.isArray(cached.features)) {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    throw new Error(`Invalid feature object for cached context ${cached.name}`)
+  }
+  return createContext(cached.name, cached.features ?? [], false, cached.lastRefreshTime)
 }
 
 function equals (this: Context, features: Feature[]): boolean {

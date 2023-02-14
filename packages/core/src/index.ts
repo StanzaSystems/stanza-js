@@ -1,6 +1,6 @@
 import type { LocalStateProvider } from './models/LocalStateProvider'
 import type { StanzaConfig } from './models/StanzaConfig'
-import { createContext, type Context } from './models/Context'
+import { createContext, createContextFromCacheObject, type Context } from './models/Context'
 import { FeatureStatusCode } from './models/Feature'
 import InMemoryLocalStateProvider from './utils/InMemoryLocalStateProvider'
 import { getRefreshedFeatures } from './utils/StanzaService'
@@ -50,5 +50,16 @@ function saveContextIfChanged (context: Context): boolean {
   return true
 }
 
-export default { init, getContextHot, getContextLazy, FeatureStatusCode, saveContextIfChanged, getRefreshedFeatures }
+export const utils = {
+  saveContextIfChanged,
+  getRefreshedFeatures,
+  createContextFromCacheObject
+}
+
+export const Stanza = {
+  init, getContextHot, getContextLazy
+}
+
+export { FeatureStatusCode }
+
 export type { Context, StanzaConfig, LocalStateProvider }

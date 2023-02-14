@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import Stanza from '../src/index'
+import { Stanza } from '../src/index'
 import type { StanzaConfig } from '../src/index'
 
 describe('init stanza', () => {

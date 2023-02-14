@@ -1,5 +1,5 @@
 import { assert, describe, expect, it } from 'vitest'
-import Stanza from '../src/index'
+import { Stanza, utils } from '../src/index'
 import { createContext } from '../src/models/Context'
 import type { StanzaConfig, Context } from '../src/index'
 import { type Feature, FeatureStatusCode } from '../src/models/Feature'
@@ -28,22 +28,22 @@ describe('saveState', () => {
   it('saves a stanza context if changed', () => {
     let context: Context = createContext('asdf', [])
     /// attempts to save context from an unconfigured name should throw
-    expect(() => { Stanza.saveContextIfChanged(context) }).to.throw()
+    expect(() => { utils.saveContextIfChanged(context) }).to.throw()
 
     context = createContext('main', []) // this name is configured
     let result
     // configured name should not throw
-    expect(() => { result = Stanza.saveContextIfChanged(context) }).to.not.throw()
+    expect(() => { result = utils.saveContextIfChanged(context) }).to.not.throw()
     assert.equal(result, true, 'save context returns true because this is the first time this name has been saved')
     assert.deepEqual(Stanza.getContextLazy(context.name), context, 'returned context is saved context')
-    result = Stanza.saveContextIfChanged(context)
+    result = utils.saveContextIfChanged(context)
     assert.equal(result, false, 'save context returns false because save has been called with an unchanged name')
 
     const feature: Feature = { name: 'coolFeature', code: FeatureStatusCode.OUTAGE_REMOVE }
 
     context = createContext('main', [feature])
     console.log(context)
-    result = Stanza.saveContextIfChanged(context)
+    result = utils.saveContextIfChanged(context)
     assert.equal(result, true, 'save context returns true because a feature has been added to the saved context')
   })
 
@@ -52,7 +52,7 @@ describe('saveState', () => {
   })
 
   it('fetches correct feature list', async () => {
-    const features = await Stanza.getRefreshedFeatures('details')
+    const features = await utils.getRefreshedFeatures('details')
 
     // based on msw handler.ts, the features back should be 'productSummary', 'shipping'
     // if handler.ts is changed, this test will fail
