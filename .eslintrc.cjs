@@ -18,7 +18,8 @@ module.exports = {
     'react'
   ],
   rules: {
-    'comma-dangle': ['error', 'only-multiline']
+    'comma-dangle': ['error', 'only-multiline'],
+    "@typescript-eslint/restrict-template-expressions": ['error', { allowNullish: true, allowNumber: true }]
   },
   ignorePatterns: ['dist/*']
 }

@@ -1,9 +1,9 @@
 import type { LocalStateProvider } from './models/LocalStateProvider'
 import type { StanzaConfig } from './models/StanzaConfig'
-import { createContext, createContextFromCacheObject, type Context } from './models/Context'
-import { FeatureStatusCode } from './models/Feature'
+import { createContext, createContextFromBrowserResponse, createContextFromCacheObject, type Context } from './models/Context'
+import { ActionCode } from './models/Feature'
 import InMemoryLocalStateProvider from './utils/InMemoryLocalStateProvider'
-import { getRefreshedFeatures } from './utils/StanzaService'
+import { getBrowserFeatures, createContextFeaturesFromResponse } from './utils/StanzaService'
 import globals from './globals'
 
 const init = (config: StanzaConfig, provider?: LocalStateProvider): void => {
@@ -13,26 +13,34 @@ const init = (config: StanzaConfig, provider?: LocalStateProvider): void => {
   } catch {
     throw new Error(`${config.url} is not a valid url`)
   }
-  globals.init(config, (provider != null) ? provider : InMemoryLocalStateProvider)
+  globals.init(config, (provider !== undefined) ? provider : InMemoryLocalStateProvider)
 }
 
 async function getContextHot (name: string): Promise<Context> {
-  const newFeatures = await getRefreshedFeatures(name)
+  const newFeatures = await getBrowserFeatures(name)
   const context = globals.getStateProvider().getContext(name)
 
   if (context !== undefined) {
-    context.refresh(newFeatures)
+    context.refresh(createContextFeaturesFromResponse(newFeatures, context.enablementNumber))
     return context
   }
-  return createContext(name, newFeatures, true)
+  return createContextFromBrowserResponse(name, newFeatures)
 }
 
-function getContextLazy (name: string): Context {
+function getContextStale (name: string): Context {
   if (globals.getConfig().contextConfigs.find(c => { return c.name === name }) === undefined) {
     throw new Error(`Configuration for context ${name} is not found.`)
   }
-  const context = globals.getStateProvider().getContext(name) ?? createContext(name, [])
+  const context = globals.getStateProvider().getContext(name) ?? createContext(name, [], globals.getEnablementNumber())
   return context
+}
+
+async function getContext (name: string): Promise<Context> {
+  const context = globals.getStateProvider().getContext(name)
+  if (context?.isFresh() === true) {
+    return context
+  }
+  return await getContextHot(name)
 }
 
 function saveContextIfChanged (context: Context): boolean {
@@ -42,7 +50,7 @@ function saveContextIfChanged (context: Context): boolean {
   }
 
   // this should only save to local storage if the context has changed. if context hasn't changed, return false for no change
-  if (globals.getStateProvider().getContext(context.name)?.equals(context.features) === true) {
+  if (globals.getStateProvider().getContext(context.name)?.equals(context) === true) {
     return false
   }
 
@@ -52,14 +60,14 @@ function saveContextIfChanged (context: Context): boolean {
 
 export const utils = {
   saveContextIfChanged,
-  getRefreshedFeatures,
+  getBrowserFeatures,
   createContextFromCacheObject
 }
 
 export const Stanza = {
-  init, getContextHot, getContextLazy
+  init, getContextHot, getContextStale, getContext
 }
 
-export { FeatureStatusCode }
+export { ActionCode }
 
 export type { Context, StanzaConfig, LocalStateProvider }
