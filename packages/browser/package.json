@@ -16,10 +16,8 @@
     }
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "build:packages": "tsc && vite build",
-    "preview": "vite preview",
+    "build": "npm run build:packages",
+    "build:packages": "tsc && vitest run && vite build",
     "test": "vitest"
   },
   "author": "Stanza",
@@ -39,6 +37,7 @@
     "typescript": "^4.9.4",
     "vite": "^4.0.0",
     "vite-plugin-eslint": "^1.8.1",
-    "vitest": "^0.28.3"
+    "vitest": "^0.28.3",
+    "vitest-localstorage-mock": "^0.0.1"
   }
 }

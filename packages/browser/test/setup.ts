@@ -4,6 +4,7 @@ import {
   beforeAll
 } from 'vitest'
 import { fetch } from 'cross-fetch'
+import 'vitest-localstorage-mock'
 
 import { server } from '../../../mocks/server'
 

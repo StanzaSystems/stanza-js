@@ -3,7 +3,7 @@ import type { StanzaConfig } from './models/StanzaConfig'
 import { createContext, createContextFromBrowserResponse, createContextFromCacheObject, type Context } from './models/Context'
 import { ActionCode } from './models/Feature'
 import InMemoryLocalStateProvider from './utils/InMemoryLocalStateProvider'
-import { getBrowserFeatures, createContextFeaturesFromResponse } from './utils/StanzaService'
+import { getBrowserFeatures, createContextFeaturesFromResponse, type BrowserFeature } from './utils/StanzaService'
 import globals from './globals'
 
 const init = (config: StanzaConfig, provider?: LocalStateProvider): void => {
@@ -18,13 +18,16 @@ const init = (config: StanzaConfig, provider?: LocalStateProvider): void => {
 
 async function getContextHot (name: string): Promise<Context> {
   const newFeatures = await getBrowserFeatures(name)
-  const context = globals.getStateProvider().getContext(name)
+  let context = globals.getStateProvider().getContext(name)
 
   if (context !== undefined) {
     context.refresh(createContextFeaturesFromResponse(newFeatures, context.enablementNumber))
-    return context
+  } else {
+    context = createContextFromBrowserResponse(name, newFeatures)
   }
-  return createContextFromBrowserResponse(name, newFeatures)
+  globals.getStateProvider().setContext(context, context.name)
+
+  return context
 }
 
 function getContextStale (name: string): Context {
@@ -61,7 +64,8 @@ function saveContextIfChanged (context: Context): boolean {
 export const utils = {
   saveContextIfChanged,
   getBrowserFeatures,
-  createContextFromCacheObject
+  createContextFromCacheObject,
+  globals
 }
 
 export const Stanza = {
@@ -70,4 +74,4 @@ export const Stanza = {
 
 export { ActionCode }
 
-export type { Context, StanzaConfig, LocalStateProvider }
+export type { Context, StanzaConfig, LocalStateProvider, BrowserFeature }

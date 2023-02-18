@@ -27,6 +27,8 @@ export default defineConfig({
     }
   },
   test: {
-    setupFiles: ['./test/setup.ts']
+    globals: true,
+    setupFiles: ['./test/setup.ts'],
+    mockReset: false
   }
 })

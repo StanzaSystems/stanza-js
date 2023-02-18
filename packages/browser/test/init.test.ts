@@ -1,20 +1,20 @@
 import { describe, expect, it } from 'vitest'
-import Stanza, { type StanzaConfig } from 'stanza-core'
+import Stanza, { type StanzaConfig } from '../src/index'
 
 describe('init stanza', () => {
   it('validates URL', () => {
     const config: StanzaConfig = {
-      Url: 'asdfasdf',
-      Environment: 'local',
-      StanzaCustomerId: '12345667',
-      FeatureGroups: [
+      url: 'asdfasdf',
+      environment: 'local',
+      stanzaCustomerId: '12345667',
+      contextConfigs: [
         {
-          Name: 'main',
-          Features: ['featured', 'search', 'checkout']
+          name: 'main',
+          features: ['featured', 'search', 'checkout']
         },
         {
-          Name: 'details',
-          Features: ['productSummary', 'pricing', 'shipping', 'checkout']
+          name: 'details',
+          features: ['productSummary', 'pricing', 'shipping', 'checkout']
         }
       ]
     }
@@ -23,17 +23,17 @@ describe('init stanza', () => {
   })
   it('configures a stanza instance', () => {
     const config: StanzaConfig = {
-      Url: 'http://localhost:3004',
-      Environment: 'local',
-      StanzaCustomerId: '12345667',
-      FeatureGroups: [
+      url: 'http://localhost:3004',
+      environment: 'local',
+      stanzaCustomerId: '12345667',
+      contextConfigs: [
         {
-          Name: 'main',
-          Features: ['featured', 'search', 'checkout']
+          name: 'main',
+          features: ['featured', 'search', 'checkout']
         },
         {
-          Name: 'details',
-          Features: ['productSummary', 'pricing', 'shipping', 'checkout']
+          name: 'details',
+          features: ['productSummary', 'pricing', 'shipping', 'checkout']
         }
       ]
     }
@@ -43,17 +43,17 @@ describe('init stanza', () => {
 
   it('configures only one stanza', () => {
     const config: StanzaConfig = {
-      Url: 'http://localhost:3004',
-      Environment: 'local',
-      StanzaCustomerId: '12345667',
-      FeatureGroups: [
+      url: 'asdfasdf',
+      environment: 'local',
+      stanzaCustomerId: '12345667',
+      contextConfigs: [
         {
-          Name: 'main',
-          Features: ['featured', 'search', 'checkout']
+          name: 'main',
+          features: ['featured', 'search', 'checkout']
         },
         {
-          Name: 'details',
-          Features: ['productSummary', 'pricing', 'shipping', 'checkout']
+          name: 'details',
+          features: ['productSummary', 'pricing', 'shipping', 'checkout']
         }
       ]
     }

@@ -1,8 +1,8 @@
 import React, { createContext } from 'react'
-import type { StanzaState, StanzaConfig } from 'stanza-core'
-import { init, state } from 'stanza-browser'
+import type { Context, StanzaConfig } from 'stanza-core'
+import { init, context } from 'stanza-browser'
 
-const StanzaContext = createContext<StanzaState | undefined>(undefined)
+const StanzaContext = createContext<Context | undefined>(undefined)
 
 export interface StanzaProviderProps {
   children?: React.ReactNode
@@ -12,7 +12,7 @@ export interface StanzaProviderProps {
 const StanzaProvider: React.FunctionComponent<StanzaProviderProps> = (props: StanzaProviderProps) => {
   const { children, config } = props
   init(config)
-  return (<StanzaContext.Provider value={state}>{children}</StanzaContext.Provider>)
+  return (<StanzaContext.Provider value={context}>{children}</StanzaContext.Provider>)
 }
 
 export { StanzaContext, StanzaProvider }

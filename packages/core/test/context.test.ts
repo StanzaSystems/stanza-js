@@ -47,6 +47,13 @@ describe('saveState', () => {
     assert.equal(result, true, 'save context returns true because a feature has been added to the saved context')
   })
 
+  it('gets a hot context', async () => {
+    const context = await Stanza.getContextHot('main')
+    const cachedContext = utils.globals.getStateProvider().getContext('main')
+
+    assert.deepEqual(cachedContext, context, 'cached context equals result of get context hot')
+  })
+
   it('errors when name is not found', () => {
     expect(() => { Stanza.getContextStale('fake') }).to.throw()
   })
