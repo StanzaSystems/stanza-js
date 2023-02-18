@@ -1,12 +1,15 @@
 import { type Context, Stanza, utils } from 'stanza-core'
 
 export default async function startBackgroundContextUpdates (): Promise<void> {
-  for await (const context of refreshAllContexts()) {
-    const changed = utils.saveContextIfChanged(context)
-    if (changed) {
+  const contexts = utils.globals.getStateProvider().getAllContexts()
+  for await (const context of refreshAllContexts(contexts)) {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    const oldContext = contexts.find(c => c.name === context.name)
+    if (oldContext !== undefined && !context.equals(oldContext)) {
+      console.log('stuff changed')
       self.postMessage({
         type: 'contextUpdated',
-        context
+        features: context.features
       })
     }
   }
@@ -14,8 +17,7 @@ export default async function startBackgroundContextUpdates (): Promise<void> {
   void startBackgroundContextUpdates()
 }
 
-async function * refreshAllContexts (): AsyncGenerator<Context> {
-  const contexts = utils.globals.getStateProvider().getAllContexts()
+async function * refreshAllContexts (contexts: Context[]): AsyncGenerator<Context> {
   for (let i = 0; i < contexts.length; i++) {
     yield await Stanza.getContextHot(contexts[i].name)
   }

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import './style.css'
-import { initState } from './stanzaState'
+import { initState, updateState } from './stanzaState'
 import { worker } from '../../../mocks/browser'
 
 let loadPromise: Promise<any>
@@ -18,4 +18,14 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   </div>
 `
 
-loadPromise.then(() => { initState(document.querySelector<HTMLDivElement>('#stanzaState')!) }).catch(() => { console.log('mock service worker failed to load') })
+loadPromise.then(() => { void initState(document.querySelector<HTMLDivElement>('#stanzaState')!) }).catch(() => { console.log('mock service worker failed to load') })
+await Notification.requestPermission().then((result) => {
+  console.log(result)
+})
+
+self.onmessage = async function (m) {
+  const text = m.data.features[0].message
+  await updateState(document.querySelector<HTMLDivElement>('#stanzaState')!, text)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const notification = new Notification('Status Notifications', { body: text })
+}

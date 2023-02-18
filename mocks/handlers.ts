@@ -8,7 +8,7 @@ const featuresForResponses = {
       messageEnabled: 'We are having trouble with search - please retry your request.',
       actionCodeDisabled: 2,
       messageDisabled: 'Search is unavailable right now',
-      enabledPercent: 20
+      enabledPercent: 80
     },
     {
       featureName: 'featured',
@@ -29,9 +29,14 @@ const featuresForResponses = {
     }
   ]
 }
-
+let count = 0
 export const handlers = [
   rest.get('http://localhost:3004/v1/config/browser', (req, res, ctx) => {
+    count++
+    if (count === 3) {
+      featuresForResponses.Features[0].messageDisabled = 'Search is totally messed up RUNNNNN!!!!!!'
+      featuresForResponses.Features[0].enabledPercent = 0
+    }
     const features = req.url.searchParams.getAll('feature')
     console.log(`returning features ${JSON.stringify(features)}`)
     const response = featuresForResponses.Features.filter(f => { return features.includes(f.featureName) })
