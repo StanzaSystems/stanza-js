@@ -1,17 +1,17 @@
 import type { StanzaConfig } from 'stanza-core'
 
 const config: StanzaConfig = {
-  Environment: 'local',
-  StanzaCustomerId: '215a500a-96f9-11ed-99db-00155dd65014',
-  Url: 'http://localhost:3004',
-  Contexts: [
+  url: 'http://localhost:3004',
+  environment: 'local',
+  stanzaCustomerId: '12345667',
+  contextConfigs: [
     {
-      Name: 'main',
-      Features: ['featured', 'search', 'checkout']
+      name: 'main',
+      features: ['featured', 'search', 'checkout']
     },
     {
-      Name: 'details',
-      Features: ['productSummary', 'pricing', 'shipping', 'checkout']
+      name: 'details',
+      features: ['productSummary', 'pricing', 'shipping', 'checkout']
     }
   ]
 }
