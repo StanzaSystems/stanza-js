@@ -8,8 +8,7 @@ import globals from './globals'
 
 const init = (config: StanzaConfig, provider?: LocalStateProvider): void => {
   try {
-    // eslint-disable-next-line no-new
-    new URL(config.url)
+    void new URL(config.url)
   } catch {
     throw new Error(`${config.url} is not a valid url`)
   }
@@ -34,8 +33,7 @@ function getContextStale (name: string): Context {
   if (globals.getConfig().contextConfigs.find(c => { return c.name === name }) === undefined) {
     throw new Error(`Configuration for context ${name} is not found.`)
   }
-  const context = globals.getStateProvider().getContext(name) ?? createContext(name, [], globals.getEnablementNumber())
-  return context
+  return globals.getStateProvider().getContext(name) ?? createContext(name, [], globals.getEnablementNumber())
 }
 
 async function getContext (name: string): Promise<Context> {

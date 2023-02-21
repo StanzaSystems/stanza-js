@@ -17,6 +17,7 @@
   },
   "scripts": {
     "build": "npm run build:packages",
+    "build:watch": "tsc && vite build --watch",
     "build:packages": "tsc && vitest run && vite build",
     "test": "vitest",
     "test:run": "vitest run",
