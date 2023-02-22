@@ -26,7 +26,5 @@ void Notification.requestPermission().then((result) => {
 self.onmessage = async function (m) {
   const text = m.data.features[0].message
   await updateState(document.querySelector<HTMLDivElement>('#stanzaState')!, text)
-  // @ts-expect-error: unused variable
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const notification = new Notification('Status Notifications', { body: text })
+  void new Notification('Status Notifications', { body: text })
 }
