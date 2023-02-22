@@ -17,8 +17,10 @@
   },
   "scripts": {
     "build": "npm run build:packages",
-    "build:packages": "tsc && vitest run && vite build",
-    "test": "vitest"
+    "build:packages": "tsc && vite build",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.49.0",

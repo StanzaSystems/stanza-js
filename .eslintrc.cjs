@@ -8,6 +8,12 @@ module.exports = {
     'standard-with-typescript'
   ],
   overrides: [
+    {
+      files: ["**/*.ts"],
+      rules: {
+        "@typescript-eslint/restrict-template-expressions": ['error', { allowNullish: true, allowNumber: true }]
+      }
+    }
   ],
   parserOptions: {
     ecmaVersion: 'latest',
@@ -19,7 +25,6 @@ module.exports = {
   ],
   rules: {
     'comma-dangle': ['error', 'only-multiline'],
-    "@typescript-eslint/restrict-template-expressions": ['error', { allowNullish: true, allowNumber: true }]
   },
-  ignorePatterns: ['dist/*']
+  ignorePatterns: ['dist/*', "vite.config.ts"]
 }

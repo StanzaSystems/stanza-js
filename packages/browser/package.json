@@ -18,7 +18,9 @@
   "scripts": {
     "build": "npm run build:packages",
     "build:packages": "tsc && vitest run && vite build",
-    "test": "vitest"
+    "test": "vitest",
+    "test:run": "vitest run",
+    "lint": "eslint ."
   },
   "author": "Stanza",
   "license": "MIT",
