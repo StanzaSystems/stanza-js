@@ -1,17 +1,39 @@
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference path="../index.d.ts"/>
-import { Stanza, type StanzaConfig } from 'stanza-core'
-import startBackgroundContextUpdates from './ContextManager'
+import { Stanza, type StanzaCoreConfig, utils } from 'stanza-core'
+import { type Context, createContext } from './context'
 import localState from './localStorageStateProvider'
 
-export const init = (initialConfig: StanzaConfig): void => {
+export type { Context }
+
+const { getConfig } = utils.globals
+
+export const init = (initialConfig: StanzaCoreConfig): void => {
   Stanza.init(initialConfig, localState)
-  void startBackgroundContextUpdates()
 }
 
-export const getContextHot = Stanza.getContextHot
-export const getContextStale = Stanza.getContextStale
-export const getContext = Stanza.getContext
+export async function getContextHot (name: string): Promise<Context> {
+  const features = getContextFeatures(name)
+  const newFeatures = await Stanza.getFeatureStatesHot(features)
+  return createContext(name, newFeatures, true)
+}
 
+export function getContextStale (name: string): Context {
+  const features = getContextFeatures(name)
+  const featureStates = Stanza.getFeatureStatesStale(features)
+  return createContext(name, featureStates, true)
+}
+
+export async function getContext (name: string): Promise<Context> {
+  const features = getContextFeatures(name)
+  const featureStates = await Stanza.getFeatureStates(features)
+  return createContext(name, featureStates, true)
+}
+
+function getContextFeatures (name: string): string[] {
+  const contextConfig = getConfig().contextConfigs[name]
+  if (contextConfig === undefined) {
+    throw new Error(`Configuration for context ${name} is not found.`)
+  }
+  return contextConfig.features
+}
 export default { init, getContextHot, getContextStale, getContext }
-export type { StanzaConfig }
+export type { StanzaCoreConfig }

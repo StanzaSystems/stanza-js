@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import Stanza, { type StanzaConfig } from '../src/index'
+import Stanza, { type StanzaCoreConfig } from '../src/index'
 
 describe('init stanza', () => {
   it('validates URL', () => {
-    const config: StanzaConfig = {
+    const config: StanzaCoreConfig = {
       url: 'asdfasdf',
       environment: 'local',
       stanzaCustomerId: '12345667',
@@ -22,7 +22,7 @@ describe('init stanza', () => {
     expect(() => { Stanza.init(config) }).to.throw()
   })
   it('configures a stanza instance', () => {
-    const config: StanzaConfig = {
+    const config: StanzaCoreConfig = {
       url: 'http://localhost:3004',
       environment: 'local',
       stanzaCustomerId: '12345667',
@@ -42,7 +42,7 @@ describe('init stanza', () => {
   })
 
   it('configures only one stanza', () => {
-    const config: StanzaConfig = {
+    const config: StanzaCoreConfig = {
       url: 'asdfasdf',
       environment: 'local',
       stanzaCustomerId: '12345667',

@@ -1,25 +1,25 @@
-import { type LocalStateProvider } from '../models/LocalStateProvider'
-import { type Context } from '../models/Context'
+import { type FeatureState } from '../models/featureState'
+import { type LocalStateProvider } from '../models/localStateProvider'
 
-const localState = new Map<string, Context>()
+const localState = new Map<string, FeatureState>()
 
-function setContext (context: Context, name?: string): void {
+function setFeatureState (context: FeatureState, name?: string): void {
   name = name ?? ''
   localState.set(name, context)
 }
 
-function getContext (name?: string): Context | undefined {
+function getFeatureState (name?: string): FeatureState | undefined {
   return localState.get(name ?? '')
 }
 
-function getAllContexts (): Context[] {
+function getAllFeatureStates (): FeatureState[] {
   return Array.from(localState.values())
 }
 
 const provider: LocalStateProvider = {
-  getContext,
-  setContext,
-  getAllContexts
+  getFeatureState,
+  setFeatureState,
+  getAllFeatureStates
 }
 
 export default provider
