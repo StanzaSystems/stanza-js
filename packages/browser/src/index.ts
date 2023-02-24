@@ -4,14 +4,14 @@ import { Stanza, type StanzaConfig } from 'stanza-core'
 import startBackgroundContextUpdates from './ContextManager'
 import localState from './localStorageStateProvider'
 
-const init = (initialConfig: StanzaConfig): void => {
+export const init = (initialConfig: StanzaConfig): void => {
   Stanza.init(initialConfig, localState)
   void startBackgroundContextUpdates()
 }
 
-const getContextHot = Stanza.getContextHot
-const getContextStale = Stanza.getContextStale
-const getContext = Stanza.getContext
+export const getContextHot = Stanza.getContextHot
+export const getContextStale = Stanza.getContextStale
+export const getContext = Stanza.getContext
 
 export default { init, getContextHot, getContextStale, getContext }
 export type { StanzaConfig }

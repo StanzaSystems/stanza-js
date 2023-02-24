@@ -19,13 +19,12 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 `
 
 loadPromise.then(() => { void initState(document.querySelector<HTMLDivElement>('#stanzaState')!) }).catch(() => { console.log('mock service worker failed to load') })
-await Notification.requestPermission().then((result) => {
+void Notification.requestPermission().then((result) => {
   console.log(result)
 })
 
 self.onmessage = async function (m) {
   const text = m.data.features[0].message
   await updateState(document.querySelector<HTMLDivElement>('#stanzaState')!, text)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const notification = new Notification('Status Notifications', { body: text })
+  void new Notification('Status Notifications', { body: text })
 }
