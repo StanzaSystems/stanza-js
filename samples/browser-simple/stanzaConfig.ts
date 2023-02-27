@@ -1,6 +1,6 @@
-import type { StanzaConfig } from 'stanza-core'
+import type { StanzaCoreConfig } from 'stanza-core'
 
-const config: StanzaConfig = {
+const config: StanzaCoreConfig = {
   url: 'http://localhost:3004',
   environment: 'local',
   stanzaCustomerId: '12345667',
