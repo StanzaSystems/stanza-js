@@ -26,7 +26,7 @@ describe('init stanza', () => {
       ]
     }
 
-    expect(() => { Stanza.init(config) }).to.throw('is not a valid url')
+    expect(() => { Stanza.init(config) }).toThrow('is not a valid url')
   })
 
   it('configures a stanza instance', () => {
@@ -48,7 +48,7 @@ describe('init stanza', () => {
 
     expect(() => {
       Stanza.init(config)
-    }).to.not.throw()
+    }).not.toThrow()
   })
 
   it('configures only one stanza', () => {
@@ -67,7 +67,7 @@ describe('init stanza', () => {
         }
       ]
     }
-    expect(() => { Stanza.init(config) }).not.to.throw()
-    expect(() => { Stanza.init(config) }).to.throw()
+    expect(() => { Stanza.init(config) }).not.toThrow()
+    expect(() => { Stanza.init(config) }).toThrow()
   })
 })

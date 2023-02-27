@@ -20,7 +20,7 @@ describe('saveState', () => {
       ]
     }
 
-    expect(() => { Stanza.init(config) }).to.not.throw()
+    expect(() => { Stanza.init(config) }).not.toThrow()
   })
 
   // it('fetches correct feature list', async () => {

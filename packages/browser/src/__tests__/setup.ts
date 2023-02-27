@@ -6,7 +6,7 @@ import {
 import { fetch } from 'cross-fetch'
 import 'vitest-localstorage-mock'
 
-import { server } from '../../../mocks/server'
+import { server } from '../../../../mocks/server'
 
 // Add `fetch` polyfill.
 global.fetch = fetch

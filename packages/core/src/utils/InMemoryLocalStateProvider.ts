@@ -3,9 +3,9 @@ import { type LocalStateProvider } from '../models/localStateProvider'
 
 const localState = new Map<string, FeatureState>()
 
-function setFeatureState (context: FeatureState, name?: string): void {
-  name = name ?? ''
-  localState.set(name, context)
+function setFeatureState (featureState: FeatureState): void {
+  const { featureName } = featureState
+  localState.set(featureName, featureState)
 }
 
 function getFeatureState (name?: string): FeatureState | undefined {
