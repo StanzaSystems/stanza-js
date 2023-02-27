@@ -5,6 +5,7 @@
   "main": "src/main.ts",
   "scripts": {
     "dev": "vite",
+    "lint": "eslint .",
     "build": "tsc && vite build"
   },
   "repository": {

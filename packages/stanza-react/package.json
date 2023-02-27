@@ -9,7 +9,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "build:packages": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint ."
   },
   "dependencies": {
     "react": "^18.2.0",

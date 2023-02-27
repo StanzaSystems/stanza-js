@@ -6,7 +6,9 @@
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "preview": "vite preview",
-    "build:packages": "npm run build:packages --workspaces --if-present"
+    "build:packages": "npm run build:packages --workspaces --if-present",
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test:run --workspaces --if-present"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.49.0",
@@ -25,8 +27,8 @@
   },
   "workspaces": [
     "packages/core",
-    "packages/stanza-react",
     "packages/browser",
+    "packages/stanza-react",
     "samples/browser-simple"
   ]
 }
