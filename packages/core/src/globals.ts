@@ -1,3 +1,4 @@
+import { StanzaChangeTarget } from './eventEmitter'
 import { type LocalStateProvider } from './models/localStateProvider'
 import { type StanzaCoreConfig } from './models/StanzaCoreConfig'
 
@@ -13,6 +14,8 @@ interface StanzaInternalConfig {
 let stanzaConfig: StanzaInternalConfig
 let localStateProvider: LocalStateProvider
 let enablementNumberGenerator: () => number
+
+export const changes = new StanzaChangeTarget()
 
 export function init (config: StanzaCoreConfig, provider: LocalStateProvider): void {
   if (stanzaConfig !== undefined || localStateProvider !== undefined) {

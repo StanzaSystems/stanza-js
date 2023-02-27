@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import './style.css'
-import Stanza from 'stanza-browser'
+import StanzaBrowser from 'stanza-browser'
 import { initState, updateState } from './stanzaState'
 import { worker } from '../../../mocks/browser'
 
@@ -24,9 +24,9 @@ void Notification.requestPermission().then((result) => {
   console.log(result)
 })
 
-globalThis.onmessage = async function () {
-  const context = await Stanza.getContext('main')
+StanzaBrowser.changes.addChangeListener(async function () {
+  const context = await StanzaBrowser.getContext('main')
   const text = context.features.search.message ?? ''
   await updateState(document.querySelector<HTMLDivElement>('#stanzaState')!, text)
   void new Notification('Status Notifications', { body: text })
-}
+})

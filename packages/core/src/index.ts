@@ -14,7 +14,7 @@ export const utils = {
 }
 
 export const Stanza = {
-  init, getFeatureStatesHot, getFeatureStatesStale, getFeatureStates
+  init, getFeatureStatesHot, getFeatureStatesStale, getFeatureStates, changes: globals.changes
 }
 
 export default Stanza

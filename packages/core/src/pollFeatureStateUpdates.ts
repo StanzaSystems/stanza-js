@@ -6,8 +6,7 @@ export async function pollFeatureStateUpdates (): Promise<void> {
   console.log('polling features', features)
   const newFeaturesStates = await Stanza.getFeatureStatesHot(features)
   // TODO: check if changed
-  typeof globalThis?.postMessage === 'function' && globalThis.postMessage({
-    type: 'featureStatesUpdated',
+  Stanza.changes.dispatchChange({
     featureStates: newFeaturesStates
   })
   await poll()

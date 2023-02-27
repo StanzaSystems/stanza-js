@@ -11,7 +11,8 @@ module.exports = {
     {
       files: ["**/*.ts"],
       rules: {
-        "@typescript-eslint/restrict-template-expressions": ['error', { allowNullish: true, allowNumber: true }]
+        "@typescript-eslint/restrict-template-expressions": ['error', { allowNullish: true, allowNumber: true }],
+        '@typescript-eslint/return-await': ['error', 'in-try-catch'],
       }
     }
   ],

@@ -8,5 +8,5 @@ export async function getFeatureStates (features: string[]): Promise<FeatureStat
   if (featureStates.every(isFeatureStateFresh)) {
     return featureStates
   }
-  return await getFeatureStatesHot(features)
+  return getFeatureStatesHot(features)
 }

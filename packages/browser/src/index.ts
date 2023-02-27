@@ -35,6 +35,6 @@ function getContextFeatures (name: string): string[] {
   }
   return contextConfig.features
 }
-export const StanzaBrowser = { init, getContextHot, getContextStale, getContext }
+export const StanzaBrowser = { init, getContextHot, getContextStale, getContext, changes: Stanza.changes }
 export default StanzaBrowser
 export type { StanzaCoreConfig }

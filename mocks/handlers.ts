@@ -45,7 +45,9 @@ const featuresStatic = [
 ]
 let count = 0
 export const handlers = [
-  rest.get('http://localhost:3004/v1/config/browser', (req, res, ctx) => {
+  rest.get('http://localhost:3004/v1/config/browser', async (req, res, ctx) => {
+    // adding artificial delay to respond
+    await new Promise(resolve => setTimeout(resolve, 500))
     count++
     const features = req.url.searchParams.getAll('feature')
     console.log(`returning features ${JSON.stringify(features)}`)
@@ -54,7 +56,9 @@ export const handlers = [
         ctx.status(200),
         ctx.set('ETag', 'eTag1'),
         ctx.json({
-          Features: [searchFeatureAvailable, ...featuresStatic].filter(f => { return features.includes(f.featureName) })
+          Features: [searchFeatureAvailable, ...featuresStatic].filter(f => {
+            return features.includes(f.featureName)
+          })
         })
       )
     }
@@ -69,7 +73,9 @@ export const handlers = [
         ctx.status(200),
         ctx.set('ETag', 'eTag2'),
         ctx.json({
-          Features: [searchFeaturePartiallyAvailable, ...featuresStatic].filter(f => { return features.includes(f.featureName) })
+          Features: [searchFeaturePartiallyAvailable, ...featuresStatic].filter(f => {
+            return features.includes(f.featureName)
+          })
         })
       )
     }
@@ -84,7 +90,7 @@ export const handlers = [
         ctx.status(200),
         ctx.set('ETag', 'eTag3'),
         ctx.json({
-          Features: [searchFeatureUnavailable, ...featuresStatic].filter(f => { return features.includes(f.featureName) })
+          Features: [searchFeatureUnavailable, ...featuresStatic].filter(f => features.includes(f.featureName))
         })
       )
     }
