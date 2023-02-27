@@ -27,8 +27,8 @@
   },
   "workspaces": [
     "packages/core",
-    "packages/stanza-react",
     "packages/browser",
+    "packages/stanza-react",
     "samples/browser-simple"
   ]
 }
