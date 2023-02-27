@@ -1,4 +1,4 @@
-import { type FeatureState } from 'stanza-core'
+import { type FeatureState } from './featureState'
 
 export function featureStatesEqual (o: FeatureState, f: FeatureState): boolean {
   return o.featureName === f.featureName &&
