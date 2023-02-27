@@ -24,7 +24,7 @@ void Notification.requestPermission().then((result) => {
   console.log(result)
 })
 
-self.onmessage = async function () {
+globalThis.onmessage = async function () {
   const context = await Stanza.getContext('main')
   const text = context.features.search.message ?? ''
   await updateState(document.querySelector<HTMLDivElement>('#stanzaState')!, text)

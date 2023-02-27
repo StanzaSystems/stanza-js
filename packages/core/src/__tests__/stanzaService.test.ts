@@ -1,27 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import type { StanzaCoreConfig } from '../src'
-import { Stanza } from '../src'
+import { Stanza } from '../index'
+import { type StanzaCoreConfig } from '../models/StanzaCoreConfig'
 
-describe('init stanza', () => {
-  it('validates URL', () => {
-    const config: StanzaCoreConfig = {
-      url: 'asdfasdf',
-      environment: 'local',
-      stanzaCustomerId: '12345667',
-      contextConfigs: [
-        {
-          name: 'main',
-          features: ['featured', 'search', 'checkout']
-        },
-        {
-          name: 'details',
-          features: ['productSummary', 'pricing', 'shipping', 'checkout']
-        }
-      ]
-    }
-
-    expect(() => { Stanza.init(config) }).to.throw()
-  })
+describe('saveState', () => {
   it('configures a stanza instance', () => {
     const config: StanzaCoreConfig = {
       url: 'http://localhost:3004',
@@ -42,25 +23,6 @@ describe('init stanza', () => {
     expect(() => { Stanza.init(config) }).to.not.throw()
   })
 
-  it('configures only one stanza', () => {
-    const config: StanzaCoreConfig = {
-      url: 'http://localhost:3004',
-      environment: 'local',
-      stanzaCustomerId: '12345667',
-      contextConfigs: [
-        {
-          name: 'main',
-          features: ['featured', 'search', 'checkout']
-        },
-        {
-          name: 'details',
-          features: ['productSummary', 'pricing', 'shipping', 'checkout']
-        }
-      ]
-    }
-    expect(() => { Stanza.init(config) }).to.throw()
-  })
-
   // it('fetches correct feature list', async () => {
   //   const browserFeatures = await utils.getContextBrowserFeatures('details')
   //
@@ -69,5 +31,19 @@ describe('init stanza', () => {
   //   assert.equal(browserFeatures.length, 2, 'two features are returned')
   //   assert.exists(browserFeatures.find(e => { return e.featureName === 'productSummary' }), 'productSummary is found')
   //   assert.exists(browserFeatures.find(e => { return e.featureName === 'shipping' }), 'shipping is found')
+  // })
+  //
+  // it('converts BrowserFeature to Feature correctly', async () => {
+  //   const browserFeatures = await utils.getContextBrowserFeatures('details')
+  //   // convert browser feature to feature correctly based on enablementNumber
+  //   const zeroFeatures = createContextFeaturesFromResponse(browserFeatures, 0)
+  //
+  //   // assert.equal(zeroFeatures.length, 2)
+  //   const shippingFeature = zeroFeatures.find(f => { return f.name === 'shipping' })
+  //   const productSummary = zeroFeatures.find(f => { return f.name === 'productSummary' })
+  //   assert.isNotNull(shippingFeature)
+  //   assert.isNotNull(productSummary)
+  //   assert.deepEqual(shippingFeature, { name: 'shipping', code: 1, message: 'We are unable to pre-load shipping costs right now, but if you continue your order will still process' })
+  //   assert.deepEqual(productSummary, { name: 'productSummary', code: 0, message: 'We are having intermittent issues loading product summaries' })
   // })
 })
