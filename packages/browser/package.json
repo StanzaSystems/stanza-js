@@ -17,6 +17,7 @@
   },
   "scripts": {
     "build": "npm run build:packages",
+    "dev": "vite build --mode development --watch",
     "build:packages": "tsc && vitest run && vite build",
     "test": "vitest",
     "test:run": "vitest run",

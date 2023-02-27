@@ -13,7 +13,8 @@ const config: StanzaConfig = {
       name: 'details',
       features: ['productSummary', 'pricing', 'shipping', 'checkout']
     }
-  ]
+  ],
+  refreshSeconds: 5
 }
 
 export { config }

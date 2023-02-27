@@ -1,4 +1,4 @@
-import globals from '../globals'
+import { getConfig, getEnablementNumber } from '../globals'
 import { createContextFeaturesFromResponse, type BrowserFeature } from '../utils/StanzaService'
 import { type Feature, validateFeature } from './Feature'
 
@@ -22,7 +22,7 @@ export const createContext = (name: string | undefined, features: Feature[], ena
     throw new Error(`invalid enablement number ${enablementNumber} for context ${name}. Must be between 0 and 99`)
   }
 
-  const context: Context = {
+  return {
     name: name ?? '',
     features,
     ready,
@@ -32,8 +32,6 @@ export const createContext = (name: string | undefined, features: Feature[], ena
     refresh,
     isFresh
   }
-
-  return context
 }
 
 export const createContextFromCacheObject = (cached: any): Context => {
@@ -48,7 +46,7 @@ export const createContextFromCacheObject = (cached: any): Context => {
 }
 
 export const createContextFromBrowserResponse = (name: string | undefined, response: BrowserFeature[]): Context => {
-  const enablementNumber = globals.getEnablementNumber()
+  const enablementNumber = getEnablementNumber()
   return createContext(name, createContextFeaturesFromResponse(response, enablementNumber), enablementNumber, true)
 }
 
@@ -80,7 +78,7 @@ function refresh (this: Context, features: Feature[]): void {
 }
 
 function isFresh (this: Context): boolean {
-  if (this?.lastRefreshTime !== undefined && Date.now() - this?.lastRefreshTime < (globals.getConfig().refreshSeconds ?? 30) * 1000) {
+  if (this?.lastRefreshTime !== undefined && Date.now() - this?.lastRefreshTime < (getConfig().refreshSeconds ?? 30) * 1000) {
     return true
   }
   return false

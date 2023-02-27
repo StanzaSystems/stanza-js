@@ -5,7 +5,7 @@ let stanzaConfig: StanzaConfig
 let localStateProvider: LocalStateProvider
 let enablementNumberGenerator: () => number
 
-function init (config: StanzaConfig, provider: LocalStateProvider): void {
+export function init (config: StanzaConfig, provider: LocalStateProvider): void {
   if (stanzaConfig !== undefined || localStateProvider !== undefined) {
     throw new Error('Stanza is already initialized')
   }
@@ -16,21 +16,21 @@ function init (config: StanzaConfig, provider: LocalStateProvider): void {
   localStateProvider = provider
 }
 
-function getConfig (): StanzaConfig {
+export function getConfig (): StanzaConfig {
   if (stanzaConfig === undefined) {
     throw new Error('Stanza is not initialized')
   }
   return stanzaConfig
 }
 
-function getStateProvider (): LocalStateProvider {
+export function getStateProvider (): LocalStateProvider {
   if (localStateProvider === undefined) {
     throw new Error('Stanza is not initialized')
   }
   return localStateProvider
 }
 
-function getEnablementNumber (): number {
+export function getEnablementNumber (): number {
   return enablementNumberGenerator()
 }
 
