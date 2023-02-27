@@ -28,8 +28,7 @@ describe('refresh contexts', () => {
     const mainContext = StanzaBrowser.getContextStale('main')
     expect(mainContext?.name).toEqual('main')
 
-    // const contexts = utils.globals.getStateProvider().getAllContexts()
-    //
-    // assert.equal(contexts.length, 2)
+    const detailContext = StanzaBrowser.getContextStale('details')
+    expect(detailContext?.name).toEqual('details')
   })
 })
