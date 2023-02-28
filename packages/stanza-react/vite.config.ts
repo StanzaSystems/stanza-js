@@ -13,10 +13,11 @@ export default defineConfig({
       // the proper extensions will be added
       fileName: 'stanza-react'
     },
+    sourcemap: true,
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ['react', 'stanza-browser', 'stanza-core'],
+      external: ['react', 'stanza-core', 'stanza-browser'],
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps

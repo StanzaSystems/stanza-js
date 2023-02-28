@@ -1,19 +1,22 @@
-import React, { createContext } from 'react'
-import type { StanzaCoreConfig } from 'stanza-core'
-import { init, type Context } from 'stanza-browser'
-
-const StanzaContext = createContext<Context | undefined>(undefined)
+import React, { useEffect, useState } from 'react'
+import { StanzaBrowser } from 'stanza-browser'
+import { StanzaContext } from './StanzaContext'
 
 export interface StanzaProviderProps {
   children?: React.ReactNode
-  config: StanzaCoreConfig
+  contextName: string
 }
 
-const StanzaProvider: React.FunctionComponent<StanzaProviderProps> = (props: StanzaProviderProps) => {
-  const { children, config } = props
-  init(config)
-  // TODO: we need to provide a real context value here when we decide on the API
-  return (<StanzaContext.Provider value={undefined}>{children}</StanzaContext.Provider>)
-}
+export const StanzaProvider: React.FunctionComponent<StanzaProviderProps> = (props) => {
+  const { children, contextName } = props
 
-export { StanzaContext, StanzaProvider }
+  const [context, setContextState] = useState(StanzaBrowser.getContextStale(contextName))
+
+  useEffect(() => {
+    return StanzaBrowser.changes.addChangeListener(async (): Promise<void> => {
+      const browserContext = await StanzaBrowser.getContext(contextName)
+      setContextState(browserContext)
+    })
+  })
+  return (<StanzaContext.Provider value={context}>{children}</StanzaContext.Provider>)
+}

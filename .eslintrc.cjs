@@ -9,10 +9,11 @@ module.exports = {
   ],
   overrides: [
     {
-      files: ["**/*.ts"],
+      files: ["**/*.ts", "**/*.tsx"],
       rules: {
         "@typescript-eslint/restrict-template-expressions": ['error', { allowNullish: true, allowNumber: true }],
         '@typescript-eslint/return-await': ['error', 'in-try-catch'],
+        "@typescript-eslint/explicit-function-return-type": 0
       }
     }
   ],

@@ -1,5 +1,5 @@
-import { ActionCode, type FeatureState, utils } from 'stanza-core'
-import { type Feature } from './feature'
+import { type FeatureState, utils } from 'stanza-core'
+import { ActionCode, type Feature } from './feature'
 
 const { getEnablementNumber } = utils.globals
 
@@ -51,8 +51,16 @@ export function createFeaturesFromFeatureState (featureResponse: FeatureState[],
     messageDisabled,
     lastRefreshTime
   }) => {
-    /// if the enabled percent is less than this context's enablement number, this feature is enabled
-    if (enabledPercent > enablementNumber) {
+    if (enabledPercent >= 100) {
+      response.push({
+        code: ActionCode.ENABLED,
+        name: featureName,
+        lastRefreshTime
+      })
+    } else if (
+      // if the enabled percent is less than this context's enablement number, this feature is enabled
+      enabledPercent > enablementNumber
+    ) {
       if (actionCodeEnabled === undefined || ActionCode[actionCodeEnabled] === undefined) {
         console.log(`feature ${featureName} has an unknown or invalid enabled action code ${actionCodeEnabled}. Stanza fails open.`)
       } else {

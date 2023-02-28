@@ -70,10 +70,21 @@ export function createContextFeaturesFromResponse (featureResponse: BrowserFeatu
 export async function getFeatureStates (features: string[]): Promise<FeatureState[]> {
   const apiFeatureStates = await getApiFeaturesStates(features)
   const refreshTime = Date.now()
-  return apiFeatureStates.map((apiFeatureState): FeatureState => ({
+  const groupedFeatures = apiFeatureStates.map((apiFeatureState): FeatureState => ({
     ...apiFeatureState,
     lastRefreshTime: refreshTime
-  }))
+  })).reduce<Record<string, FeatureState>>((res, featureState) => {
+    return {
+      ...res,
+      [featureState.featureName]: featureState
+    }
+  }, {})
+
+  return features.map((featureName): FeatureState => groupedFeatures[featureName] ?? {
+    featureName,
+    enabledPercent: 100,
+    lastRefreshTime: refreshTime
+  })
 }
 
 async function getApiFeaturesStates (features: string[]): Promise<ApiFeatureState[]> {
