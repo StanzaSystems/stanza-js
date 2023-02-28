@@ -4,9 +4,11 @@ interface StanzaState {
   featureStates: FeatureState[]
 }
 
-class StanzaChangeEvent extends CustomEvent<StanzaState> {
+class StanzaChangeEvent extends Event {
+  public readonly detail: StanzaState
   constructor (state: StanzaState) {
-    super('stanzaStateChanged', { detail: state })
+    super('stanzaStateChanged')
+    this.detail = state
   }
 }
 
