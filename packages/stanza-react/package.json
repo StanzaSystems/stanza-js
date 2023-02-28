@@ -12,7 +12,6 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "react": "^18.2.0",
     "stanza-browser": "*",
     "stanza-core": "*"
   },
