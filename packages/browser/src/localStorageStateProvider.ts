@@ -1,28 +1,62 @@
-import { type Context, type LocalStateProvider, utils } from 'stanza-core'
+import { type FeatureState, type LocalStateProvider } from 'stanza-core'
 
-function setContext (context: Context): void {
-  const name = context.name ?? ''
+const stanzaFeaturePrefix = 'stanza_feature_' as const
+type StanzaFeaturePrefix = typeof stanzaFeaturePrefix
+type StanzaFeatureKey = `${StanzaFeaturePrefix}${string}`
+
+function setFeatureState (feature: FeatureState): void {
+  const name = feature.featureName ?? ''
   console.log(`storing ${name}`)
-  localStorage.setItem(`stanza_${name}`, JSON.stringify(context))
+  localStorage.setItem(createStanzaFeatureKey(name), JSON.stringify(feature))
 }
 
-function getContext (name?: string): Context | undefined {
-  const context = localStorage.getItem(`stanza_${name ?? ''}`)
-  if (context === null) {
+function getFeatureState (name?: string): FeatureState | undefined {
+  const featureSerialized = localStorage.getItem(createStanzaFeatureKey(name ?? ''))
+  if (featureSerialized === null) {
     return undefined
   }
-  return utils.createContextFromCacheObject(JSON.parse(context))
+  return parseFeature(featureSerialized)
 }
 
-function getAllContexts (): Context[] {
-  return Object.keys(localStorage).filter(x =>
-    x.startsWith('stanza_')).map(c => { return utils.createContextFromCacheObject(JSON.parse(localStorage[c])) })
+function getAllFeatureStates (): FeatureState[] {
+  return Object.keys(localStorage)
+    .filter(isStanzaFeatureKey)
+    .map(key => localStorage.getItem(key) as string)
+    .map(parseFeature)
 }
 
-const provider: LocalStateProvider = {
-  getContext,
-  setContext,
-  getAllContexts
+function parseFeature (featureSerialized: string): FeatureState {
+  return createFeatureFromCacheObject(JSON.parse(featureSerialized))
 }
 
-export default provider
+function createStanzaFeatureKey (name: string): StanzaFeatureKey {
+  return `${stanzaFeaturePrefix}${name}`
+}
+
+function isStanzaFeatureKey (key: string): key is StanzaFeatureKey {
+  return key.startsWith(stanzaFeaturePrefix)
+}
+
+function createFeatureFromCacheObject (cached: any): FeatureState {
+  if (cached === null || typeof cached !== 'object') {
+    throw new Error('Invalid stanza feature value in cache')
+  }
+  if (!('featureName' in cached) || typeof cached.featureName !== 'string') {
+    throw new Error('Invalid stanza context name in cache')
+  }
+  return {
+    featureName: cached.featureName,
+    enabledPercent: cached.enablementNumber,
+    actionCodeEnabled: cached.actionCodeEnabled,
+    messageEnabled: cached.messageEnabled,
+    actionCodeDisabled: cached.actionCodeDisabled,
+    messageDisabled: cached.messageDisabled,
+    lastRefreshTime: cached.lastRefreshTime
+  }
+}
+
+export default {
+  getFeatureState,
+  setFeatureState,
+  getAllFeatureStates
+} satisfies LocalStateProvider

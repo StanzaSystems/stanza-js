@@ -1,9 +1,8 @@
+import { type ApiFeatureState } from '../api/featureState'
+import { type ApiFeaturesResponse } from '../api/featureStateResponse'
 import { getConfig } from '../globals'
 import { ActionCode, type Feature } from '../models/Feature'
-
-interface JSONResponse {
-  Features?: BrowserFeature[]
-}
+import { type FeatureState } from '../models/featureState'
 
 export interface BrowserFeature {
   featureName: string
@@ -14,48 +13,20 @@ export interface BrowserFeature {
   messageDisabled?: string
 }
 
-interface BrowserFeaturesCache {
-  get: (key: string) => BrowserFeature[] | undefined
-  set: (key: string, value: BrowserFeature[]) => void
+interface ApiFeatureStateCache {
+  get: (key: string) => ApiFeatureState[] | undefined
+  set: (key: string, value: ApiFeatureState[]) => void
   has: (key: string) => void
 }
 
-const browserFeaturesCache: BrowserFeaturesCache = new Map()
+const browserFeaturesCache: ApiFeatureStateCache = new Map()
 
-export async function getBrowserFeatures (contextName: string): Promise<BrowserFeature[]> {
+export async function getContextBrowserFeatures (contextName: string): Promise<FeatureState[]> {
   console.log(`refresh ${contextName}`)
-  const params = new URLSearchParams()
-  const { contextConfigs, url, stanzaCustomerId } = getConfig()
-  const featureGroup = contextConfigs.find((e) => {
-    return e.name === contextName
-  })
-  featureGroup?.features?.forEach(s => {
-    params.append('feature', s)
-  })
-  const browserFeaturesUrl = `${url}/v1/config/browser?${params.toString()}`
-  const response = await fetch(browserFeaturesUrl, {
-    headers: {
-      'x-stanza-customer-id': stanzaCustomerId
-    }
-  }).catch((e) => {
-    console.log(e)
-  })
-  if (response == null) {
-    // we logged the error already in the catch
-    return []
-  }
-  if (response.status === 304) {
-    return browserFeaturesCache.get(browserFeaturesUrl) ?? []
-  }
-  if (response.status === 200) {
-    const data: JSONResponse = await response?.json()
-    console.log(data)
-    const browserFeatures = data?.Features ?? []
-    browserFeaturesCache.set(browserFeaturesUrl, browserFeatures)
-    return browserFeatures
-  }
-  // TODO: should we throw we receive unexpected status code?
-  return []
+  const { contextConfigs } = getConfig()
+  const featureGroup = contextConfigs[contextName]
+  const features = featureGroup?.features ?? []
+  return await getFeatureStates(features)
 }
 
 export function createContextFeaturesFromResponse (featureResponse: BrowserFeature[], enablementNumber: number): Feature[] {
@@ -94,4 +65,49 @@ export function createContextFeaturesFromResponse (featureResponse: BrowserFeatu
     }
   })
   return response
+}
+
+export async function getFeatureStates (features: string[]): Promise<FeatureState[]> {
+  const apiFeatureStates = await getApiFeaturesStates(features)
+  const refreshTime = Date.now()
+  return apiFeatureStates.map((apiFeatureState): FeatureState => ({
+    ...apiFeatureState,
+    lastRefreshTime: refreshTime
+  }))
+}
+
+async function getApiFeaturesStates (features: string[]): Promise<ApiFeatureState[]> {
+  const { stanzaCustomerId } = getConfig()
+  const browserFeaturesUrl = getBrowserFeaturesUrl(features)
+  const response = await fetch(browserFeaturesUrl, {
+    headers: {
+      'x-stanza-customer-id': stanzaCustomerId
+    }
+  }).catch((e) => {
+    console.log(e)
+  })
+  if (response == null) {
+    // we logged the error already in the catch
+    return []
+  }
+  if (response.status === 304) {
+    return browserFeaturesCache.get(browserFeaturesUrl) ?? []
+  }
+  if (response.status === 200) {
+    const data: ApiFeaturesResponse = await response?.json()
+    const featureStates = (data?.Features ?? [])
+    browserFeaturesCache.set(browserFeaturesUrl, featureStates)
+    return featureStates
+  }
+  // TODO: should we throw we receive unexpected status code?
+  return []
+}
+
+function getBrowserFeaturesUrl (features: string[]): string {
+  const { url } = getConfig()
+  const params = new URLSearchParams()
+  features.forEach(s => {
+    params.append('feature', s)
+  })
+  return `${url}/v1/config/browser?${params.toString()}`
 }

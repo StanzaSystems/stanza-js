@@ -1,22 +1,41 @@
-import { type LocalStateProvider } from './models/LocalStateProvider'
-import { type StanzaConfig } from './models/StanzaConfig'
+import { type LocalStateProvider } from './models/localStateProvider'
+import { type StanzaCoreConfig } from './models/StanzaCoreConfig'
 
-let stanzaConfig: StanzaConfig
+interface StanzaInternalConfig {
+  environment: string
+  stanzaCustomerId: string
+  url: string
+  refreshSeconds?: number
+  enablementNumberGenerator?: () => number
+  contextConfigs: Record<string, { features: string[] }>
+}
+
+let stanzaConfig: StanzaInternalConfig
 let localStateProvider: LocalStateProvider
 let enablementNumberGenerator: () => number
 
-export function init (config: StanzaConfig, provider: LocalStateProvider): void {
+export function init (config: StanzaCoreConfig, provider: LocalStateProvider): void {
   if (stanzaConfig !== undefined || localStateProvider !== undefined) {
     throw new Error('Stanza is already initialized')
   }
   if (config.enablementNumberGenerator === undefined) {
     enablementNumberGenerator = getEnablementNumberSimple
   }
-  stanzaConfig = config
+  stanzaConfig = {
+    ...config,
+    contextConfigs: config.contextConfigs.reduce<StanzaInternalConfig['contextConfigs']>((res, config) => {
+      return {
+        ...res,
+        [config.name]: {
+          features: config.features
+        }
+      }
+    }, {})
+  }
   localStateProvider = provider
 }
 
-export function getConfig (): StanzaConfig {
+export function getConfig (): StanzaInternalConfig {
   if (stanzaConfig === undefined) {
     throw new Error('Stanza is not initialized')
   }
@@ -37,5 +56,3 @@ export function getEnablementNumber (): number {
 function getEnablementNumberSimple (): number {
   return Math.floor(Math.random() * 99)
 }
-
-export default { init, getConfig, getStateProvider, getEnablementNumber }

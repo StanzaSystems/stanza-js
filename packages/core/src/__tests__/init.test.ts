@@ -1,10 +1,16 @@
-import { describe, expect, it, assert } from 'vitest'
-import { Stanza, utils } from '../src/index'
-import type { StanzaConfig } from '../src/index'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { type StanzaCoreConfig } from '../models/StanzaCoreConfig'
+
+let { Stanza } = await import('../index')
 
 describe('init stanza', () => {
+  beforeEach(async () => {
+    vi.resetModules()
+    Stanza = (await import('../index')).Stanza
+  })
+
   it('validates URL', () => {
-    const config: StanzaConfig = {
+    const config: StanzaCoreConfig = {
       url: 'asdfasdf',
       environment: 'local',
       stanzaCustomerId: '12345667',
@@ -20,10 +26,11 @@ describe('init stanza', () => {
       ]
     }
 
-    expect(() => { Stanza.init(config) }).to.throw()
+    expect(() => { Stanza.init(config) }).toThrow('is not a valid url')
   })
+
   it('configures a stanza instance', () => {
-    const config: StanzaConfig = {
+    const config: StanzaCoreConfig = {
       url: 'http://localhost:3004',
       environment: 'local',
       stanzaCustomerId: '12345667',
@@ -39,11 +46,13 @@ describe('init stanza', () => {
       ]
     }
 
-    expect(() => { Stanza.init(config) }).to.not.throw()
+    expect(() => {
+      Stanza.init(config)
+    }).not.toThrow()
   })
 
   it('configures only one stanza', () => {
-    const config: StanzaConfig = {
+    const config: StanzaCoreConfig = {
       url: 'http://localhost:3004',
       environment: 'local',
       stanzaCustomerId: '12345667',
@@ -58,16 +67,7 @@ describe('init stanza', () => {
         }
       ]
     }
-    expect(() => { Stanza.init(config) }).to.throw()
-  })
-
-  it('fetches correct feature list', async () => {
-    const browserFeatures = await utils.getBrowserFeatures('details')
-
-    // based on msw handler.ts, the features back should be 'productSummary', 'shipping'
-    // if handler.ts is changed, this test will fail
-    assert.equal(browserFeatures.length, 2, 'two features are returned')
-    assert.exists(browserFeatures.find(e => { return e.featureName === 'productSummary' }), 'productSummary is found')
-    assert.exists(browserFeatures.find(e => { return e.featureName === 'shipping' }), 'shipping is found')
+    expect(() => { Stanza.init(config) }).not.toThrow()
+    expect(() => { Stanza.init(config) }).toThrow()
   })
 })

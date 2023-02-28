@@ -1,4 +1,4 @@
-interface StanzaConfig {
+export interface StanzaCoreConfig {
   environment: string
   stanzaCustomerId: string
   url: string
@@ -11,5 +11,3 @@ interface ContextConfig {
   name: string
   features: string[]
 }
-
-export type { StanzaConfig }
