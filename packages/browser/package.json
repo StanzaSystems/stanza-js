@@ -16,17 +16,16 @@
     }
   },
   "scripts": {
-    "build": "npm run build:packages",
+    "build": "tsc && vite build",
     "dev": "vite build --mode development --watch",
-    "build:packages": "tsc && vitest run && vite build",
-    "test": "vitest",
-    "test:run": "vitest run",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "eslint ."
   },
   "author": "Stanza",
   "license": "MIT",
   "dependencies": {
-    "stanza-core": "^0.0.0"
+    "stanza-core": "*"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.49.0",

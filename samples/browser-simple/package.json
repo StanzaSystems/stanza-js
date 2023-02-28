@@ -21,8 +21,8 @@
   "dependencies": {
     "json-server": "^0.17.1",
     "msw": "^1.0.0",
-    "stanza-browser": "^1.0.0",
-    "stanza-core": "^0.0.0"
+    "stanza-browser": "*",
+    "stanza-core": "*"
   },
   "msw": {
     "workerDirectory": "public"

@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
 
 
-  "include": ["src/**/*", "test/**/*"],
+  "include": ["src/**/*", "index.ts"],
 
   "compilerOptions": {
     // package-specific options
