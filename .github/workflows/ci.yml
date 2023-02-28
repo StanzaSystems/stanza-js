@@ -14,34 +14,43 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+      - uses: nrwl/nx-set-shas@v3
       - run: npm ci
-      - run: npx nx affected:build
+      - run: npx nx affected --target=build --parallel=3
 
   lint:
     runs-on: 'ubuntu-latest'
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+      - uses: nrwl/nx-set-shas@v3
       - run: npm ci
-      - run: npx nx affected:lint
+      - run: npx nx affected --target=lint --parallel=3
 
   test:
     runs-on: 'ubuntu-latest'
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+      - uses: nrwl/nx-set-shas@v3
       - run: npm ci
-      - run: npx nx affected:test
+      - run: npx nx affected --target=test --parallel=3
 
