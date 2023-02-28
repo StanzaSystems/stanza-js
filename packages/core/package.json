@@ -16,11 +16,10 @@
     }
   },
   "scripts": {
-    "build": "npm run build:packages",
+    "build": "tsc && vite build",
     "dev": "vite build --mode development --watch",
-    "build:packages": "tsc && vite build",
-    "test": "vitest",
-    "test:run": "vitest run",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "eslint ."
   },
   "devDependencies": {

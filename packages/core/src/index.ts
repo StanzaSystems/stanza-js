@@ -16,3 +16,5 @@ export const utils = {
 export const Stanza = {
   init, getFeatureStatesHot, getFeatureStatesStale, getFeatureStates
 }
+
+export default Stanza
