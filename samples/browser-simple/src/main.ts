@@ -24,7 +24,7 @@ void Notification.requestPermission().then((result) => {
   console.log(result)
 })
 
-StanzaBrowser.changes.addChangeListener(async function () {
+StanzaBrowser.contextChanges.addChangeListener(async function () {
   const context = await StanzaBrowser.getContext('main')
   const text = context.features.search.message ?? ''
   await updateState(document.querySelector<HTMLDivElement>('#stanzaState')!, text)
