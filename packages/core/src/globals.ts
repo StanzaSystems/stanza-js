@@ -1,4 +1,6 @@
 import { StanzaChangeTarget } from './eventEmitter'
+import { groupBy } from './index'
+import { type FeatureState } from './models/featureState'
 import { type LocalStateProvider } from './models/localStateProvider'
 import { type StanzaCoreConfig } from './models/StanzaCoreConfig'
 
@@ -15,7 +17,7 @@ let stanzaConfig: StanzaInternalConfig
 let localStateProvider: LocalStateProvider
 let enablementNumberGenerator: () => number
 
-export const changes = new StanzaChangeTarget()
+export const changes = new StanzaChangeTarget<FeatureState>()
 
 export function init (config: StanzaCoreConfig, provider: LocalStateProvider): void {
   if (stanzaConfig !== undefined || localStateProvider !== undefined) {
@@ -26,14 +28,8 @@ export function init (config: StanzaCoreConfig, provider: LocalStateProvider): v
   }
   stanzaConfig = {
     ...config,
-    contextConfigs: config.contextConfigs.reduce<StanzaInternalConfig['contextConfigs']>((res, config) => {
-      return {
-        ...res,
-        [config.name]: {
-          features: config.features
-        }
-      }
-    }, {})
+    contextConfigs: config.contextConfigs
+      .reduce(groupBy('name', ({ features }) => ({ features })), {})
   }
   localStateProvider = provider
 }

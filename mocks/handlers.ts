@@ -50,7 +50,6 @@ export const handlers = [
     await new Promise(resolve => setTimeout(resolve, 500))
     count++
     const features = req.url.searchParams.getAll('feature')
-    console.log(`returning features ${JSON.stringify(features)}`)
     if (count <= 2) {
       return res(
         ctx.status(200),

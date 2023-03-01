@@ -1,4 +1,4 @@
-export interface Feature {
+export interface StanzaFeature {
   name: string
   code: ActionCode
   message?: string | undefined
@@ -12,7 +12,7 @@ export enum ActionCode {
   REMOVE = 2
 }
 
-export function validateFeature (f: Feature): void {
+export function validateFeature (f: StanzaFeature): void {
   if (f.code !== undefined && !(f.code in ActionCode)) {
     throw new Error(`Error: unknown enabled action for feature ${f.name}`)
   }
