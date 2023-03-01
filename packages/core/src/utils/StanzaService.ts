@@ -26,7 +26,7 @@ export async function getContextBrowserFeatures (contextName: string): Promise<F
   const { contextConfigs } = getConfig()
   const featureGroup = contextConfigs[contextName]
   const features = featureGroup?.features ?? []
-  return await getFeatureStates(features)
+  return getFeatureStates(features)
 }
 
 export function createContextFeaturesFromResponse (featureResponse: BrowserFeature[], enablementNumber: number): Feature[] {

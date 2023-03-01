@@ -14,7 +14,7 @@ const config: StanzaCoreConfig = {
       features: ['productSummary', 'pricing', 'shipping', 'checkout']
     }
   ],
-  refreshSeconds: 5
+  refreshSeconds: 3
 }
 
 export { config }
