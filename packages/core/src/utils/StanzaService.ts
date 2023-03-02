@@ -2,6 +2,7 @@ import { type ApiFeatureState } from '../api/featureState'
 import { type ApiFeaturesResponse } from '../api/featureStateResponse'
 import { getConfig } from '../globals'
 import { groupBy, identity } from '../index'
+import { createFeatureState } from '../models/createFeatureState'
 import { ActionCode, type Feature } from '../models/Feature'
 import { type FeatureState } from '../models/featureState'
 
@@ -75,11 +76,7 @@ export async function getFeatureStates (features: string[]): Promise<FeatureStat
     lastRefreshTime: refreshTime
   })).reduce(groupBy('featureName', identity), {})
 
-  return features.map((featureName): FeatureState => groupedFeatures[featureName] ?? {
-    featureName,
-    enabledPercent: 100,
-    lastRefreshTime: refreshTime
-  })
+  return features.map((featureName): FeatureState => groupedFeatures[featureName] ?? createFeatureState(featureName, refreshTime))
 }
 
 async function getApiFeaturesStates (features: string[]): Promise<ApiFeatureState[]> {
