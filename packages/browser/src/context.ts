@@ -1,20 +1,17 @@
-import { ActionCode, type FeatureState, utils } from 'stanza-core'
-import { type Feature } from './feature'
+import { type FeatureState, groupBy, identity, utils } from 'stanza-core'
+import { ActionCode, type StanzaFeature } from './feature'
 
 const { getEnablementNumber } = utils.globals
 
-export interface Context {
+export interface StanzaContext {
   readonly name: string
   featuresNames: string[]
-  features: Record<string, Feature>
+  features: Record<string, StanzaFeature>
   ready: boolean
 }
 
-export const createContext = (name: string, featureStates: FeatureState[], ready = false): Context => {
-  const features = createFeaturesFromFeatureState(featureStates, getEnablementNumber()).reduce<Record<string, Feature>>((result, feature) => {
-    result[feature.name] = feature
-    return result
-  }, {})
+export const createContext = (name: string, featureStates: FeatureState[], ready = false): StanzaContext => {
+  const features = createFeaturesFromFeatureState(featureStates, getEnablementNumber()).reduce(groupBy('name', identity), {})
 
   return {
     name,
@@ -24,7 +21,7 @@ export const createContext = (name: string, featureStates: FeatureState[], ready
   }
 }
 
-export function equals (context: Context, other: Context): boolean {
+export function equals (context: StanzaContext, other: StanzaContext): boolean {
   // if the feature lengths are not the same obviously context not the same
   if (context.features.length !== other.features.length) {
     return false
@@ -39,8 +36,8 @@ export function equals (context: Context, other: Context): boolean {
   return true
 }
 
-export function createFeaturesFromFeatureState (featureResponse: FeatureState[], enablementNumber: number): Feature[] {
-  const response: Feature[] = []
+export function createFeaturesFromFeatureState (featureResponse: FeatureState[], enablementNumber: number): StanzaFeature[] {
+  const response: StanzaFeature[] = []
 
   featureResponse.forEach(({
     actionCodeEnabled,
@@ -51,8 +48,16 @@ export function createFeaturesFromFeatureState (featureResponse: FeatureState[],
     messageDisabled,
     lastRefreshTime
   }) => {
-    /// if the enabled percent is less than this context's enablement number, this feature is enabled
-    if (enabledPercent > enablementNumber) {
+    if (enabledPercent >= 100) {
+      response.push({
+        code: ActionCode.ENABLED,
+        name: featureName,
+        lastRefreshTime
+      })
+    } else if (
+      // if the enabled percent is less than this context's enablement number, this feature is enabled
+      enabledPercent > enablementNumber
+    ) {
       if (actionCodeEnabled === undefined || ActionCode[actionCodeEnabled] === undefined) {
         console.log(`feature ${featureName} has an unknown or invalid enabled action code ${actionCodeEnabled}. Stanza fails open.`)
       } else {

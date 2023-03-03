@@ -1,35 +1,30 @@
-import { type FeatureState } from './models/featureState'
+class StanzaChangeEvent<StanzaEvent> extends Event {
+  public readonly detail: StanzaEvent
 
-interface StanzaState {
-  featureStates: FeatureState[]
-}
-
-class StanzaChangeEvent extends Event {
-  public readonly detail: StanzaState
-  constructor (state: StanzaState) {
+  constructor (state: StanzaEvent) {
     super('stanzaStateChanged')
     this.detail = state
   }
 }
 
-type StanzaChangeListener = (state: StanzaState) => unknown
+type StanzaListener<StanzaEvent, ListenerReturnValue = unknown> = (event: StanzaEvent) => ListenerReturnValue
 
-export interface StanzaChangeEmitter {
-  addChangeListener: (callback: StanzaChangeListener) => () => void
-  removeChangeListener: (callback: StanzaChangeListener) => void
-  dispatchChange: (state: StanzaState) => void
+export interface StanzaChangeEmitter<StanzaEvent> {
+  addChangeListener: (callback: StanzaListener<StanzaEvent>) => () => void
+  removeChangeListener: (callback: StanzaListener<StanzaEvent>) => void
+  dispatchChange: (state: StanzaEvent) => void
 }
 
-export class StanzaChangeTarget implements StanzaChangeEmitter {
+export class StanzaChangeTarget<StanzaEvent> implements StanzaChangeEmitter<StanzaEvent> {
   private readonly eventTarget = new EventTarget()
-  private readonly unsubscribeMap = new Map<StanzaChangeListener, () => void>()
+  private readonly unsubscribeMap = new Map<StanzaListener<StanzaEvent>, () => void>()
 
-  addChangeListener (callback: StanzaChangeListener): () => void {
-    const eventListener = (evt: unknown): void => {
-      if (!(evt instanceof StanzaChangeEvent)) {
+  addChangeListener (callback: StanzaListener<StanzaEvent>): () => void {
+    const eventListener = (event: unknown): void => {
+      if (!(event instanceof StanzaChangeEvent)) {
         return
       }
-      callback(evt.detail)
+      callback(event.detail)
     }
 
     const unsubscribe = (): void => {
@@ -43,7 +38,7 @@ export class StanzaChangeTarget implements StanzaChangeEmitter {
     return unsubscribe
   }
 
-  removeChangeListener (callback: StanzaChangeListener): void {
+  removeChangeListener (callback: StanzaListener<StanzaEvent>): void {
     const unsubscribe = this.unsubscribeMap.get(callback)
 
     if (typeof unsubscribe === 'function') {
@@ -51,7 +46,7 @@ export class StanzaChangeTarget implements StanzaChangeEmitter {
     }
   }
 
-  dispatchChange (state: StanzaState): void {
+  dispatchChange (state: StanzaEvent): void {
     this.eventTarget.dispatchEvent(new StanzaChangeEvent(state))
   }
 }

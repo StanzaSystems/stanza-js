@@ -6,7 +6,6 @@ type StanzaFeatureKey = `${StanzaFeaturePrefix}${string}`
 
 function setFeatureState (feature: FeatureState): void {
   const name = feature.featureName ?? ''
-  console.log(`storing ${name}`)
   localStorage.setItem(createStanzaFeatureKey(name), JSON.stringify(feature))
 }
 
@@ -46,7 +45,7 @@ function createFeatureFromCacheObject (cached: any): FeatureState {
   }
   return {
     featureName: cached.featureName,
-    enabledPercent: cached.enablementNumber,
+    enabledPercent: cached.enabledPercent,
     actionCodeEnabled: cached.actionCodeEnabled,
     messageEnabled: cached.messageEnabled,
     actionCodeDisabled: cached.actionCodeDisabled,

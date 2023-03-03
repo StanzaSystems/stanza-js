@@ -6,13 +6,12 @@
   "author": "Stanza",
   "license": "MIT",
   "scripts": {
-    "dev": "vite",
     "build": "tsc && vite build",
+    "dev": "vite build --mode development --watch",
     "preview": "vite preview",
     "lint": "eslint ."
   },
   "dependencies": {
-    "react": "^18.2.0",
     "stanza-browser": "*",
     "stanza-core": "*"
   },

@@ -12,7 +12,8 @@ export default defineConfig({
       name: 'stanza-core',
       // the proper extensions will be added
       fileName: 'stanza-core'
-    }
+    },
+    sourcemap: true
   },
   test: {
     setupFiles: ['./src/__tests__/setup.ts']

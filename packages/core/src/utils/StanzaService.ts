@@ -1,6 +1,8 @@
 import { type ApiFeatureState } from '../api/featureState'
 import { type ApiFeaturesResponse } from '../api/featureStateResponse'
 import { getConfig } from '../globals'
+import { groupBy, identity } from '../index'
+import { createFeatureState } from '../models/createFeatureState'
 import { ActionCode, type Feature } from '../models/Feature'
 import { type FeatureState } from '../models/featureState'
 
@@ -22,7 +24,6 @@ interface ApiFeatureStateCache {
 const browserFeaturesCache: ApiFeatureStateCache = new Map()
 
 export async function getContextBrowserFeatures (contextName: string): Promise<FeatureState[]> {
-  console.log(`refresh ${contextName}`)
   const { contextConfigs } = getConfig()
   const featureGroup = contextConfigs[contextName]
   const features = featureGroup?.features ?? []
@@ -70,10 +71,12 @@ export function createContextFeaturesFromResponse (featureResponse: BrowserFeatu
 export async function getFeatureStates (features: string[]): Promise<FeatureState[]> {
   const apiFeatureStates = await getApiFeaturesStates(features)
   const refreshTime = Date.now()
-  return apiFeatureStates.map((apiFeatureState): FeatureState => ({
+  const groupedFeatures = apiFeatureStates.map((apiFeatureState): FeatureState => ({
     ...apiFeatureState,
     lastRefreshTime: refreshTime
-  }))
+  })).reduce(groupBy('featureName', identity), {})
+
+  return features.map((featureName): FeatureState => groupedFeatures[featureName] ?? createFeatureState(featureName, refreshTime))
 }
 
 async function getApiFeaturesStates (features: string[]): Promise<ApiFeatureState[]> {

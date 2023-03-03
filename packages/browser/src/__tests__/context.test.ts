@@ -1,6 +1,6 @@
 import { type StanzaCoreConfig } from 'stanza-core'
 import { describe, expect, it } from 'vitest'
-import Stanza, { StanzaBrowser } from '../index'
+import { StanzaBrowser } from '../index'
 
 describe('refresh contexts', () => {
   it('finds all used contexts', async () => {
@@ -20,7 +20,7 @@ describe('refresh contexts', () => {
       ]
     }
 
-    expect(() => { Stanza.init(config) }).not.toThrow()
+    expect(() => { StanzaBrowser.init(config) }).not.toThrow()
 
     await StanzaBrowser.getContextHot('main')
     await StanzaBrowser.getContextHot('details')

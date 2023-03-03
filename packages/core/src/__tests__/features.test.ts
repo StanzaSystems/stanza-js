@@ -1,5 +1,6 @@
 import { assert, beforeEach, describe, expect, it, vi } from 'vitest'
 import { type StanzaCoreConfig } from '../index'
+
 let { Stanza, utils } = await import('../index')
 
 describe('features', () => {
@@ -36,9 +37,13 @@ describe('features', () => {
     assert.deepEqual(cachedFeatures, hotFeatureStates, 'cached context equals result of get context hot')
   })
 
-  it('returns empty array when features not found', () => {
+  it('returns an enabled feature when features not found', () => {
     const featureStatesStale = Stanza.getFeatureStatesStale(['fake'])
-    expect(featureStatesStale).toEqual([])
+    expect(featureStatesStale).toEqual([{
+      featureName: 'fake',
+      enabledPercent: 100,
+      lastRefreshTime: 0
+    }])
   })
 
   it('fetches correct feature list', async () => {
@@ -46,8 +51,26 @@ describe('features', () => {
 
     // based on msw handler.ts, the features back should be 'productSummary', 'shipping'
     // if handler.ts is changed, this test will fail
-    assert.equal(browserFeatures.length, 2, 'two features are returned')
-    assert.exists(browserFeatures.find(e => { return e.featureName === 'productSummary' }), 'productSummary is found')
-    assert.exists(browserFeatures.find(e => { return e.featureName === 'shipping' }), 'shipping is found')
+    expect(browserFeatures).toHaveLength(4)
+    expect(browserFeatures).toContainEqual({
+      featureName: 'pricing',
+      enabledPercent: 100,
+      lastRefreshTime: expect.anything()
+    })
+    expect(browserFeatures).toContainEqual({
+      featureName: 'checkout',
+      enabledPercent: 100,
+      lastRefreshTime: expect.anything()
+    })
+    expect(browserFeatures).toContainEqual(expect.objectContaining({
+      featureName: 'productSummary',
+      enabledPercent: 100,
+      actionCodeEnabled: 0
+    }))
+    expect(browserFeatures).toContainEqual(expect.objectContaining({
+      featureName: 'shipping',
+      enabledPercent: 0,
+      actionCodeDisabled: 1
+    }))
   })
 })
