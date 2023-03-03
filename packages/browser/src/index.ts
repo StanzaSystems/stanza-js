@@ -1,4 +1,4 @@
-import { Stanza, StanzaChangeTarget, type StanzaCoreConfig, utils } from 'stanza-core'
+import { Stanza, StanzaChangeTarget, type StanzaCoreConfig, utils } from '@getstanza/core'
 import { createContext, type StanzaContext } from './context'
 import localState from './localStorageStateProvider'
 

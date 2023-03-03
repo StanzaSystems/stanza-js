@@ -1,18 +1,18 @@
 {
-  "name": "stanza-browser",
+  "name": "@getstanza/browser",
   "version": "1.0.0",
   "description": "",
   "type": "module",
   "files": [
     "dist"
   ],
-  "main": "./dist/stanza-browser.umd.cjs",
-  "module": "./dist/stanza-browser.js",
+  "main": "./dist/getstanza-browser.umd.cjs",
+  "module": "./dist/getstanza-browser.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/stanza-browser.js",
-      "require": "./dist/stanza-browser.umd.cjs"
+      "import": "./dist/getstanza-browser.js",
+      "require": "./dist/getstanza-browser.umd.cjs"
     }
   },
   "scripts": {
@@ -25,7 +25,7 @@
   "author": "Stanza",
   "license": "MIT",
   "dependencies": {
-    "stanza-core": "*"
+    "@getstanza/core": "*"
   },
   "devDependencies": {
     "cross-fetch": "^3.1.5",

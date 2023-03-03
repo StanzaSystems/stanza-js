@@ -1,18 +1,18 @@
 {
-  "name": "stanza-core",
+  "name": "@getstanza/core",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "files": [
     "dist"
   ],
-  "main": "./dist/stanza-core.umd.cjs",
-  "module": "./dist/stanza-core.js",
+  "main": "./dist/getstanza-core.umd.cjs",
+  "module": "./dist/getstanza-core.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/stanza-core.js",
-      "require": "./dist/stanza-core.umd.cjs"
+      "import": "./dist/getstanza-core.js",
+      "require": "./dist/getstanza-core.umd.cjs"
     }
   },
   "scripts": {

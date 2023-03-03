@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { getContextStale, type StanzaContext } from 'stanza-browser'
+import { getContextStale, type StanzaContext } from '@getstanza/browser'
 import { StanzaReactContext } from './context/StanzaContext'
 
 export * from './context/StanzaContext'

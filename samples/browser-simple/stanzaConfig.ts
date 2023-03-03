@@ -1,4 +1,4 @@
-import type { StanzaCoreConfig } from 'stanza-core'
+import type { StanzaCoreConfig } from '@getstanza/core'
 
 const config: StanzaCoreConfig = {
   url: 'http://localhost:3004',

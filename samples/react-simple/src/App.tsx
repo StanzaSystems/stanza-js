@@ -1,4 +1,4 @@
-import { useStanzaContext } from 'stanza-react'
+import { useStanzaContext } from '@getstanza/react'
 import './App.css'
 
 let renderCount = 0

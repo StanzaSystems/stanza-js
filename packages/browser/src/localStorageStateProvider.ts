@@ -1,4 +1,4 @@
-import { type FeatureState, type LocalStateProvider } from 'stanza-core'
+import { type FeatureState, type LocalStateProvider } from '@getstanza/core'
 
 const stanzaFeaturePrefix = 'stanza_feature_' as const
 type StanzaFeaturePrefix = typeof stanzaFeaturePrefix

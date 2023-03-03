@@ -20,8 +20,8 @@
   "homepage": "https://github.com/StanzaSystems/stanza-js#readme",
   "dependencies": {
     "json-server": "^0.17.1",
-    "stanza-browser": "*",
-    "stanza-core": "*"
+    "@getstanza/browser": "*",
+    "@getstanza/core": "*"
   },
   "msw": {
     "workerDirectory": "public"

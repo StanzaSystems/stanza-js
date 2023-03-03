@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { createStanzaInstance, StanzaProvider } from 'stanza-react'
+import { createStanzaInstance, StanzaProvider } from '@getstanza/react'
 import { worker } from '../../../mocks/browser'
 import App from './App'
 import './index.css'

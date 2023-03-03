@@ -1,4 +1,4 @@
-import { type FeatureState, groupBy, identity, utils } from 'stanza-core'
+import { type FeatureState, groupBy, identity, utils } from '@getstanza/core'
 import { ActionCode, type StanzaFeature } from './feature'
 
 const { getEnablementNumber } = utils.globals
