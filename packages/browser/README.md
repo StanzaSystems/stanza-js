@@ -5,13 +5,13 @@ Stanza browser is a package for using Stanza in the browser with vanilla JS.
 
 Install the Stanza browser package
 ```
-npm install stanza-browser
+npm install @getstanza/browser
 ```
 
 Initialize Stanza Browser in an early point of your app
 
 ```
-import { init } from 'stanza-browser'
+import { init } from '@getstanza/browser'
 
 
 ```

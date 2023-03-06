@@ -9,15 +9,15 @@ export default defineConfig({
     lib: {
       // Could also be a dictionary or array of multiple entry points
       entry: resolve(__dirname, 'index.ts'),
-      name: 'stanza-react',
+      name: '@getstanza/react',
       // the proper extensions will be added
-      fileName: 'stanza-react'
+      fileName: 'getstanza-react'
     },
     sourcemap: true,
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ['react', 'stanza-core', 'stanza-browser'],
+      external: ['react', '@getstanza/core', '@getstanza/browser'],
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps

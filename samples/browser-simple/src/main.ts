@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import './style.css'
-import StanzaBrowser from 'stanza-browser'
+import StanzaBrowser from '@getstanza/browser'
 import { initState, updateState } from './stanzaState'
 import { worker } from '../../../mocks/browser'
 

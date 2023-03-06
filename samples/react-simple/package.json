@@ -9,9 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "stanza-browser": "*",
-    "stanza-core": "*",
-    "stanza-react": "*"
+    "@getstanza/browser": "*",
+    "@getstanza/core": "*",
+    "@getstanza/react": "*"
   },
   "devDependencies": {
     "@types/react": "^18.0.27",

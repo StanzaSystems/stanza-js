@@ -1,4 +1,4 @@
-import Stanza from 'stanza-browser'
+import Stanza from '@getstanza/browser'
 import { config } from '../stanzaConfig'
 
 export async function initState (element: HTMLDivElement): Promise<void> {
