@@ -1,7 +1,5 @@
-import { type FeatureState, groupBy, identity, utils } from '@getstanza/core'
+import { type FeatureState, groupBy, identity } from '@getstanza/core'
 import { ActionCode, type StanzaFeature } from './feature'
-
-const { getEnablementNumber } = utils.globals
 
 export interface StanzaContext {
   readonly name: string
@@ -10,8 +8,8 @@ export interface StanzaContext {
   ready: boolean
 }
 
-export const createContext = (name: string, featureStates: FeatureState[], ready = false): StanzaContext => {
-  const features = createFeaturesFromFeatureState(featureStates, getEnablementNumber()).reduce(groupBy('name', identity), {})
+export const createContext = (name: string, featureStates: FeatureState[], enablementNumber: number, ready = false): StanzaContext => {
+  const features = createFeaturesFromFeatureState(featureStates, enablementNumber).reduce(groupBy('name', identity), {})
 
   return {
     name,

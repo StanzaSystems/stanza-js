@@ -14,7 +14,11 @@ const config: StanzaCoreConfig = {
       features: ['productSummary', 'pricing', 'shipping', 'checkout']
     }
   ],
-  refreshSeconds: 3
+  refreshSeconds: 3,
+  enablementNumberGenerator: async () => {
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    return 50
+  }
 }
 
 export { config }

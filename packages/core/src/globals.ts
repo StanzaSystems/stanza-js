@@ -9,29 +9,31 @@ interface StanzaInternalConfig {
   stanzaCustomerId: string
   url: string
   refreshSeconds?: number
-  enablementNumberGenerator?: () => number
+  enablementNumberGenerator?: () => Promise<number>
   contextConfigs: Record<string, { features: string[] }>
 }
 
 let stanzaConfig: StanzaInternalConfig
 let localStateProvider: LocalStateProvider
-let enablementNumberGenerator: () => number
+let enablementNumberGenerator: () => Promise<number>
+let enablementNumber = 100
 
-export const changes = new StanzaChangeTarget<FeatureState>()
+export const featureChanges = new StanzaChangeTarget<FeatureState>()
+export const enablementNumberChanges = new StanzaChangeTarget<number>()
 
 export function init (config: StanzaCoreConfig, provider: LocalStateProvider): void {
   if (stanzaConfig !== undefined || localStateProvider !== undefined) {
     throw new Error('Stanza is already initialized')
   }
-  if (config.enablementNumberGenerator === undefined) {
-    enablementNumberGenerator = getEnablementNumberSimple
-  }
+  enablementNumberGenerator = config.enablementNumberGenerator ?? getEnablementNumberSimple
   stanzaConfig = {
     ...config,
     contextConfigs: config.contextConfigs
       .reduce(groupBy('name', ({ features }) => ({ features })), {})
   }
   localStateProvider = provider
+
+  void getEnablementNumber()
 }
 
 export function getConfig (): StanzaInternalConfig {
@@ -48,10 +50,18 @@ export function getStateProvider (): LocalStateProvider {
   return localStateProvider
 }
 
-export function getEnablementNumber (): number {
-  return enablementNumberGenerator()
+export async function getEnablementNumber (): Promise<number> {
+  return enablementNumberGenerator().then(nr => {
+    enablementNumber = nr
+    enablementNumberChanges.dispatchChange(nr)
+    return nr
+  })
 }
 
-function getEnablementNumberSimple (): number {
-  return Math.floor(Math.random() * 99)
+export function getEnablementNumberStale (): number {
+  return enablementNumber
+}
+
+async function getEnablementNumberSimple (): Promise<number> {
+  return Promise.resolve(Math.floor(Math.random() * 99))
 }

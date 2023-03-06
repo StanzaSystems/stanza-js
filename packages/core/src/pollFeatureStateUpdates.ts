@@ -1,5 +1,5 @@
 import { getFeatureStatesHot } from './getFeatureStatesHot'
-import { changes, getConfig, getStateProvider } from './globals'
+import { featureChanges, getConfig, getStateProvider } from './globals'
 import { groupBy, identity } from './index'
 import { featureStatesEqual } from './models/featureStatesEqual'
 
@@ -14,7 +14,7 @@ export async function pollFeatureStateUpdates (): Promise<void> {
     const oldFeatureState = oldFeatureStatesMap[newFeaturesState.featureName]
     return oldFeatureState == null || !featureStatesEqual(newFeaturesState, oldFeatureState)
   }).forEach(newFeaturesState => {
-    changes.dispatchChange(newFeaturesState)
+    featureChanges.dispatchChange(newFeaturesState)
   })
   await poll()
   void pollFeatureStateUpdates()

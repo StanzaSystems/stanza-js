@@ -26,6 +26,14 @@ const searchFeatureUnavailable = {
 }
 const featuresStatic = [
   {
+    featureName: 'checkout',
+    actionCodeEnabled: 0,
+    actionCodeDisabled: 2,
+    enabledPercent: 60,
+    messageEnabled: 'We are having trouble with checkout - please retry your request.',
+    messageDisabled: 'Checkout is unavailable right now'
+  },
+  {
     featureName: 'featured',
     actionCodeDisabled: 2,
     enabledPercent: 0
