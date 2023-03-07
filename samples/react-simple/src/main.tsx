@@ -7,7 +7,7 @@ import './index.css'
 import { config } from './stanzaConfig'
 
 let loadPromise: Promise<any>
-if (process.env.NODE_ENV === 'development') {
+if (import.meta.env.DEV) {
   loadPromise = worker.start()
 } else {
   loadPromise = Promise.resolve()

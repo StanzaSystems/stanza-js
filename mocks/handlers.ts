@@ -53,7 +53,7 @@ const featuresStatic = [
 ]
 let count = 0
 export const handlers = [
-  rest.get('http://localhost:3004/v1/config/browser', async (req, res, ctx) => {
+  rest.get('https://hub.dev.getstanza.dev/v1/config/browser', async (req, res, ctx) => {
     // adding artificial delay to respond
     await new Promise(resolve => setTimeout(resolve, 500))
     count++

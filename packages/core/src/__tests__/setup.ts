@@ -32,7 +32,7 @@ const featuresStatic = [
 ]
 
 const server = setupServer(
-  rest.get('http://localhost:3004/v1/config/browser', (req, res, ctx) => {
+  rest.get('https://hub.dev.getstanza.dev/v1/config/browser', (req, res, ctx) => {
     const features = req.url.searchParams.getAll('feature')
     return res(ctx.status(200),
       ctx.set('ETag', 'eTag1'),

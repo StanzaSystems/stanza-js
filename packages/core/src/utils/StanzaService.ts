@@ -80,11 +80,11 @@ export async function getFeatureStates (features: string[]): Promise<FeatureStat
 }
 
 async function getApiFeaturesStates (features: string[]): Promise<ApiFeatureState[]> {
-  const { stanzaCustomerId } = getConfig()
+  const { stanzaApiKey } = getConfig()
   const browserFeaturesUrl = getBrowserFeaturesUrl(features)
   const response = await fetch(browserFeaturesUrl, {
     headers: {
-      'x-stanza-customer-id': stanzaCustomerId
+      'X-Stanza-Key': stanzaApiKey
     }
   }).catch((e) => {
     console.log(e)
