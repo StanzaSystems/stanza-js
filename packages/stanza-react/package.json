@@ -2,7 +2,9 @@
   "name": "@getstanza/react",
   "version": "1.0.0",
   "description": "stanza react components",
-  "main": "index.ts",
+  "main": "./dist/getstanza-react.umd.cjs",
+  "module": "./dist/getstanza-react.js",
+  "types": "./dist/index.d.ts",
   "author": "Stanza",
   "license": "MIT",
   "scripts": {

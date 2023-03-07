@@ -1,5 +1,5 @@
+import { getContextHot, getContextStale, type StanzaContext } from '@getstanza/browser'
 import { useContext, useEffect, useState } from 'react'
-import { getContextStale, type StanzaContext } from '@getstanza/browser'
 import { StanzaReactContext } from './context/StanzaContext'
 
 export * from './context/StanzaContext'
@@ -14,6 +14,10 @@ export const useStanzaContext = (contextName: string): StanzaContext => {
   if (stanzaInstance === undefined) {
     throw Error('Component needs to be wrapped with StanzaProvider')
   }
+
+  useEffect(() => {
+    void getContextHot(contextName)
+  }, [])
 
   useEffect(() => {
     return stanzaInstance.contextChanges.addChangeListener(async () => {

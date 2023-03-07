@@ -11,5 +11,7 @@ export const init = (config: StanzaCoreConfig, provider?: LocalStateProvider): v
     throw new Error(`${config.url} is not a valid url`)
   }
   globalsInit(config, provider ?? InMemoryLocalStateProvider)
-  void pollFeatureStateUpdates()
+
+  const pollDelay = config.pollDelay ?? Promise.resolve()
+  void pollDelay.then(pollFeatureStateUpdates)
 }

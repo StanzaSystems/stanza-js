@@ -7,11 +7,13 @@ interface StanzaSessionOptions {
   generateEnablementNumber: () => Promise<number>
 }
 
-export function stanzaSession (options: StanzaSessionOptions = {
-  name: 'stanza-enablement-number',
-  generateEnablementNumber: async () => Math.floor(Math.random() * 99)
+export function stanzaSession (options: Partial<StanzaSessionOptions> = {
 }) {
-  const cookieName = options.name
+  const {
+    name = 'stanza-enablement-number',
+    generateEnablementNumber = async () => Math.floor(Math.random() * 99)
+  } = options
+  const cookieName = name
   return { getEnablementNumber }
 
   async function getEnablementNumber (
@@ -21,7 +23,7 @@ export function stanzaSession (options: StanzaSessionOptions = {
     const cookieEnablementNumber = req.cookies[cookieName]
     const enablementNumberMaybe = parseInt(cookieEnablementNumber ?? '')
     const enablementNumber = isNaN(enablementNumberMaybe)
-      ? await options.generateEnablementNumber()
+      ? await generateEnablementNumber()
       : enablementNumberMaybe
 
     isNaN(enablementNumberMaybe) && commitHeader(res, enablementNumber)

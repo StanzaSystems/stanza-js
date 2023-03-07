@@ -2,7 +2,9 @@
   "name": "@getstanza/next",
   "version": "1.0.0",
   "description": "stanza Next components",
-  "main": "index.ts",
+  "main": "./dist/getstanza-next.umd.cjs",
+  "module": "./dist/getstanza-next.js",
+  "types": "./dist/index.d.ts",
   "author": "Stanza",
   "license": "MIT",
   "scripts": {

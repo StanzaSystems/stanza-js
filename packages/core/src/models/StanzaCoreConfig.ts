@@ -4,6 +4,7 @@ export interface StanzaCoreConfig {
   url: string
   refreshSeconds?: number
   enablementNumberGenerator?: () => Promise<number>
+  pollDelay?: Promise<void>
   contextConfigs: ContextConfig[]
 }
 

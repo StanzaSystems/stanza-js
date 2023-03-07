@@ -9,7 +9,7 @@ const { getConfig, getEnablementNumber, getEnablementNumberStale } = utils.globa
 const contextChanges = new StanzaChangeTarget<StanzaContext>()
 
 export const init = (initialConfig: StanzaCoreConfig): void => {
-  Stanza.init(initialConfig, localState)
+  Stanza.init(initialConfig, (process as any).browse === true ? localState : undefined)
 
   const featureToContextMap = initialConfig.contextConfigs.reduce<Record<string, string[]>>((result, contextConfig) => {
     contextConfig.features.forEach(feature => {
