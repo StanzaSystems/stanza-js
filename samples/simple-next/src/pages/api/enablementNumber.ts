@@ -1,7 +1,12 @@
 import { stanzaSession } from '@getstanza/next'
 import { type NextApiHandler } from 'next'
+import getConfig from 'next/config'
 
-const { getEnablementNumber } = stanzaSession()
+const { publicRuntimeConfig } = getConfig()
+
+const { getEnablementNumber } = stanzaSession({
+  name: publicRuntimeConfig.stanzaEnablementNumberCookieName
+})
 
 const enablementNumberHandler: NextApiHandler = async (req, res) => {
   const enablementNumber = await getEnablementNumber(req, res)

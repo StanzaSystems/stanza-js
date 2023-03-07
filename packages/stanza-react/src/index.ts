@@ -7,8 +7,8 @@ export * from './context/StanzaProvider'
 export * from './stanzaInstance'
 export * from './createStanzaInstance'
 
-export const useStanzaContext = (contextName: string): StanzaContext => {
-  const [state, setState] = useState(getContextStale(contextName))
+export const useStanzaContext = (contextName: string): StanzaContext | undefined => {
+  const [state, setState] = useState<StanzaContext | undefined>(undefined)
   const stanzaInstance = useContext(StanzaReactContext)
 
   if (stanzaInstance === undefined) {
@@ -16,6 +16,7 @@ export const useStanzaContext = (contextName: string): StanzaContext => {
   }
 
   useEffect(() => {
+    setState(getContextStale(contextName))
     void getContextHot(contextName)
   }, [])
 
