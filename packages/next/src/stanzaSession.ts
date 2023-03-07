@@ -4,7 +4,7 @@ import { addCookie } from './addCookie'
 
 interface StanzaSessionOptions {
   name: string
-  generateEnablementNumber: () => Promise<number>
+  generateEnablementNumber: () => Promise<number> | number
 }
 
 export function stanzaSession (options: Partial<StanzaSessionOptions> = {
