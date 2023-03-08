@@ -1,0 +1,36 @@
+{
+  "name": "simple-next",
+  "description": "NextJS 12, React Query, and TailwindCSS",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=16.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "clsx": "^1.2.1",
+    "next": "12.3.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@getstanza/browser": "*",
+    "@getstanza/react": "*",
+    "@getstanza/next": "*"
+  },
+  "devDependencies": {
+    "@types/node": "18.13.0",
+    "@types/react": "^18.0.24",
+    "autoprefixer": "^10.4.13",
+    "identity-obj-proxy": "3.0.0",
+    "isomorphic-unfetch": "3.1.0",
+    "postcss": "^8.4.18",
+    "tailwindcss": "^3.2.1"
+  },
+  "msw": {
+    "workerDirectory": "public"
+  }
+}

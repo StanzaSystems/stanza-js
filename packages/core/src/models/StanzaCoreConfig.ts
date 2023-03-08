@@ -3,7 +3,8 @@ export interface StanzaCoreConfig {
   stanzaCustomerId: string
   url: string
   refreshSeconds?: number
-  enablementNumberGenerator?: () => number
+  enablementNumberGenerator?: () => Promise<number>
+  pollDelay?: Promise<void>
   contextConfigs: ContextConfig[]
 }
 

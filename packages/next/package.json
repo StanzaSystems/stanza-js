@@ -1,0 +1,28 @@
+{
+  "name": "@getstanza/next",
+  "version": "1.0.0",
+  "description": "stanza Next components",
+  "main": "./dist/getstanza-next.umd.cjs",
+  "module": "./dist/getstanza-next.js",
+  "types": "./dist/index.d.ts",
+  "author": "Stanza",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite build --mode development --watch",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@getstanza/browser": "*",
+    "@getstanza/core": "*",
+    "@getstanza/react": "*",
+    "cookie": "^0.5.0",
+    "next": "^13.2.3"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.27"
+  }
+}

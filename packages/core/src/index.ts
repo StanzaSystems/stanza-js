@@ -15,7 +15,12 @@ export const utils = {
 }
 
 export const Stanza = {
-  init, getFeatureStatesHot, getFeatureStatesStale, getFeatureStates, featureChanges: globals.changes
+  init,
+  getFeatureStatesHot,
+  getFeatureStatesStale,
+  getFeatureStates,
+  featureChanges: globals.featureChanges,
+  enablementNumberChanges: globals.enablementNumberChanges
 }
 
 export const identity = <V>(value: V): V => value

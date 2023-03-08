@@ -4,12 +4,12 @@ import localState from './localStorageStateProvider'
 
 export type { StanzaContext }
 
-const { getConfig } = utils.globals
+const { getConfig, getEnablementNumber, getEnablementNumberStale } = utils.globals
 
 const contextChanges = new StanzaChangeTarget<StanzaContext>()
 
 export const init = (initialConfig: StanzaCoreConfig): void => {
-  Stanza.init(initialConfig, localState)
+  Stanza.init(initialConfig, typeof window !== 'undefined' ? localState : undefined)
 
   const featureToContextMap = initialConfig.contextConfigs.reduce<Record<string, string[]>>((result, contextConfig) => {
     contextConfig.features.forEach(feature => {
@@ -24,24 +24,33 @@ export const init = (initialConfig: StanzaCoreConfig): void => {
       contextChanges.dispatchChange(getContextStale(contextName))
     })
   })
+
+  Stanza.enablementNumberChanges.addChangeListener(() => {
+    new Set(Object.values(featureToContextMap).flat()).forEach(contextName => {
+      contextChanges.dispatchChange(getContextStale(contextName))
+    })
+  })
 }
 
 export async function getContextHot (name: string): Promise<StanzaContext> {
   const features = getContextFeatures(name)
   const newFeatures = await Stanza.getFeatureStatesHot(features)
-  return createContext(name, newFeatures, true)
+  const enablementNumber = await getEnablementNumber()
+  return createContext(name, newFeatures, enablementNumber, true)
 }
 
 export function getContextStale (name: string): StanzaContext {
   const features = getContextFeatures(name)
   const featureStates = Stanza.getFeatureStatesStale(features)
-  return createContext(name, featureStates, true)
+  const enablementNumber = getEnablementNumberStale()
+  return createContext(name, featureStates, enablementNumber, true)
 }
 
 export async function getContext (name: string): Promise<StanzaContext> {
   const features = getContextFeatures(name)
   const featureStates = await Stanza.getFeatureStates(features)
-  return createContext(name, featureStates, true)
+  const enablementNumber = await getEnablementNumber()
+  return createContext(name, featureStates, enablementNumber, true)
 }
 
 function getContextFeatures (name: string): string[] {
