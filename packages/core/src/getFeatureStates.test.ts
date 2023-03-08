@@ -58,10 +58,6 @@ describe('getFeatureStates', () => {
     })
   })
 
-  // afterEach(() => {
-  //   vi.useRealTimers()
-  // })
-
   it('should return stale data if it exists and is fresh', async () => {
     mockIsFeatureFresh.mockImplementation(() => true)
 

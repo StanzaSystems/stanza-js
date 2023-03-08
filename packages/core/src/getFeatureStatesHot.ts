@@ -8,6 +8,5 @@ export async function getFeatureStatesHot (features: string[]): Promise<FeatureS
   featureStates.forEach(featureState => {
     stateProvider.setFeatureState(featureState)
   })
-
   return featureStates
 }
