@@ -69,7 +69,7 @@ export const handlers = [
         ctx.status(200),
         ctx.set('ETag', 'eTag1'),
         ctx.json({
-          Features: [searchFeatureAvailable, ...featuresStatic].filter(f => {
+          featureConfigs: [searchFeatureAvailable, ...featuresStatic].filter(f => {
             return features.includes(f.featureName)
           })
         })
@@ -86,7 +86,7 @@ export const handlers = [
         ctx.status(200),
         ctx.set('ETag', 'eTag2'),
         ctx.json({
-          Features: [searchFeaturePartiallyAvailable, ...featuresStatic].filter(f => {
+          featureConfigs: [searchFeaturePartiallyAvailable, ...featuresStatic].filter(f => {
             return features.includes(f.featureName)
           })
         })
@@ -103,7 +103,7 @@ export const handlers = [
         ctx.status(200),
         ctx.set('ETag', 'eTag3'),
         ctx.json({
-          Features: [searchFeatureUnavailable, ...featuresStatic].filter(f => features.includes(f.featureName))
+          featureConfigs: [searchFeatureUnavailable, ...featuresStatic].filter(f => features.includes(f.featureName))
         })
       )
     }

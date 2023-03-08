@@ -2,8 +2,10 @@ import { fetch } from 'cross-fetch'
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
 import { afterAll, afterEach, beforeAll } from 'vitest'
+import { type ApiFeatureState } from '../api/featureState'
+import { type ApiFeaturesResponse } from '../api/featureStateResponse'
 
-const featuresStatic = [
+const featuresStatic: ApiFeatureState[] = [
   {
     featureName: 'search',
     actionCodeEnabled: 0,
@@ -34,11 +36,12 @@ const featuresStatic = [
 const server = setupServer(
   rest.get('https://hub.dev.getstanza.dev/v1/context/browser', (req, res, ctx) => {
     const features = req.url.searchParams.getAll('features')
+    const configs: ApiFeaturesResponse = {
+      featureConfigs: featuresStatic.filter(f => { return features.includes(f.featureName) })
+    }
     return res(ctx.status(200),
       ctx.set('ETag', 'eTag1'),
-      ctx.json({
-        Features: featuresStatic.filter(f => { return features.includes(f.featureName) })
-      }))
+      ctx.json(configs))
   }
   ))
 

@@ -98,7 +98,7 @@ async function getApiFeaturesStates (features: string[]): Promise<ApiFeatureStat
   }
   if (response.status === 200) {
     const data: ApiFeaturesResponse = await response?.json()
-    const featureStates = (data?.Features ?? [])
+    const featureStates = (data?.featureConfigs ?? [])
     browserFeaturesCache.set(browserFeaturesUrl, featureStates)
     return featureStates
   }
