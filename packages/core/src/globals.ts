@@ -2,7 +2,7 @@ import { StanzaChangeTarget } from './eventEmitter'
 import { groupBy } from './index'
 import { type FeatureState } from './models/featureState'
 import { type LocalStateProvider } from './models/localStateProvider'
-import { type StanzaCoreConfig } from './models/StanzaCoreConfig'
+import { type StanzaCoreConfig } from './models/stanzaCoreConfig'
 
 interface StanzaInternalConfig {
   environment: string

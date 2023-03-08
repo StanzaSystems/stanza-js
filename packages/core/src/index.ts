@@ -5,10 +5,10 @@ import * as globals from './globals'
 import { init } from './init'
 export * from './eventEmitter'
 
-export { ActionCode } from './models/Feature'
+export { ActionCode } from './models/feature'
 export type { FeatureState } from './models/featureState'
 export type { LocalStateProvider } from './models/localStateProvider'
-export type { StanzaCoreConfig } from './models/StanzaCoreConfig'
+export type { StanzaCoreConfig } from './models/stanzaCoreConfig'
 
 export const utils = {
   globals

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { Stanza } from '../index'
-import { type StanzaCoreConfig } from '../models/StanzaCoreConfig'
+import { type StanzaCoreConfig } from '../models/stanzaCoreConfig'
 
 describe('saveState', () => {
   it('configures a stanza instance', () => {

@@ -1,8 +1,8 @@
 import { init as globalsInit } from './globals'
 import { type LocalStateProvider } from './models/localStateProvider'
-import { type StanzaCoreConfig } from './models/StanzaCoreConfig'
+import { type StanzaCoreConfig } from './models/stanzaCoreConfig'
 import { pollFeatureStateUpdates } from './pollFeatureStateUpdates'
-import InMemoryLocalStateProvider from './utils/InMemoryLocalStateProvider'
+import { createInMemoryLocalStateProvider } from './utils/inMemoryLocalStateProvider'
 
 export const init = (config: StanzaCoreConfig, provider?: LocalStateProvider): void => {
   try {
@@ -10,7 +10,7 @@ export const init = (config: StanzaCoreConfig, provider?: LocalStateProvider): v
   } catch {
     throw new Error(`${config.url} is not a valid url`)
   }
-  globalsInit(config, provider ?? InMemoryLocalStateProvider)
+  globalsInit(config, provider ?? createInMemoryLocalStateProvider())
 
   const pollDelay = config.pollDelay ?? Promise.resolve()
   void pollDelay.then(pollFeatureStateUpdates)
