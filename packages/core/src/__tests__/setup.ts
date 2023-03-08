@@ -32,8 +32,8 @@ const featuresStatic = [
 ]
 
 const server = setupServer(
-  rest.get('https://hub.dev.getstanza.dev/v1/config/browser', (req, res, ctx) => {
-    const features = req.url.searchParams.getAll('feature')
+  rest.get('https://hub.dev.getstanza.dev/v1/context/browser', (req, res, ctx) => {
+    const features = req.url.searchParams.getAll('features')
     return res(ctx.status(200),
       ctx.set('ETag', 'eTag1'),
       ctx.json({

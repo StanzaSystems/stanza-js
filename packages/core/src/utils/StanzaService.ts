@@ -107,10 +107,11 @@ async function getApiFeaturesStates (features: string[]): Promise<ApiFeatureStat
 }
 
 function getBrowserFeaturesUrl (features: string[]): string {
-  const { url } = getConfig()
+  const { url, environment } = getConfig()
   const params = new URLSearchParams()
   features.forEach(s => {
-    params.append('feature', s)
+    params.append('features', s)
   })
-  return `${url}/v1/config/browser?${params.toString()}`
+  params.append('environment', environment)
+  return `${url}/v1/context/browser?${params.toString()}`
 }

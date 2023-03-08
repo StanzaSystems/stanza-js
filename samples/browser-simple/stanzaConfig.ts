@@ -3,7 +3,7 @@ import type { StanzaCoreConfig } from '@getstanza/core'
 const config: StanzaCoreConfig = {
   url: 'https://hub.dev.getstanza.dev',
   environment: 'local',
-  stanzaApiKey: '12345667',
+  stanzaApiKey: 'valid-api-key',
   contextConfigs: [
     {
       name: 'main',
