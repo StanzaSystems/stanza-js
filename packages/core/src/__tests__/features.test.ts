@@ -5,9 +5,9 @@ let { Stanza, utils } = await import('../index')
 
 describe('features', () => {
   const config: StanzaCoreConfig = {
-    url: 'http://localhost:3004',
+    url: 'https://hub.dev.getstanza.dev',
     environment: 'local',
-    stanzaCustomerId: '12345667',
+    stanzaApiKey: '12345667',
     contextConfigs: [
       {
         name: 'main',

@@ -5,7 +5,8 @@ import { initState, updateState } from './stanzaState'
 import { worker } from '../../../mocks/browser'
 
 let loadPromise: Promise<any>
-if (process.env.NODE_ENV === 'development') {
+
+if (import.meta.env.MODE === 'development') {
   loadPromise = worker.start()
 } else {
   loadPromise = Promise.resolve()
