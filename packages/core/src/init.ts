@@ -1,7 +1,7 @@
 import { init as globalsInit } from './globals'
 import { type LocalStateProvider } from './models/localStateProvider'
 import { type StanzaCoreConfig } from './models/stanzaCoreConfig'
-import { pollFeatureStateUpdates } from './pollFeatureStateUpdates'
+import { startPollingFeatureStateUpdates } from './startPollingFeatureStateUpdates'
 import { createInMemoryLocalStateProvider } from './utils/inMemoryLocalStateProvider'
 
 export const init = (config: StanzaCoreConfig, provider?: LocalStateProvider): void => {
@@ -13,5 +13,5 @@ export const init = (config: StanzaCoreConfig, provider?: LocalStateProvider): v
   globalsInit(config, provider ?? createInMemoryLocalStateProvider())
 
   const pollDelay = config.pollDelay ?? Promise.resolve()
-  void pollDelay.then(pollFeatureStateUpdates)
+  void pollDelay.then(startPollingFeatureStateUpdates)
 }

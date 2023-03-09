@@ -3,7 +3,14 @@ import { featureChanges, getConfig, getStateProvider } from './globals'
 import { groupBy, identity } from './index'
 import { featureStatesEqual } from './models/featureStatesEqual'
 
-export async function pollFeatureStateUpdates (): Promise<void> {
+export async function startPollingFeatureStateUpdates (): Promise<void> {
+  while (true) {
+    await pollFeatureStateUpdates()
+    await poll()
+  }
+}
+
+async function pollFeatureStateUpdates (): Promise<void> {
   const featureStates = getStateProvider().getAllFeatureStates()
   const features = featureStates.map(({ featureName }) => featureName)
   const newFeaturesStates = await getFeatureStatesHot(features)
@@ -16,10 +23,12 @@ export async function pollFeatureStateUpdates (): Promise<void> {
   }).forEach(newFeaturesState => {
     featureChanges.dispatchChange(newFeaturesState)
   })
-  await poll()
-  void pollFeatureStateUpdates()
 }
 
 async function poll (): Promise<void> {
-  await new Promise(resolve => setTimeout(resolve, (getConfig().refreshSeconds ?? 10) * 1000))
+  const config = getConfig()
+  const timeout = (config.refreshSeconds ?? 10) * 1000
+  console.log('timeout', timeout)
+  await new Promise(resolve => setTimeout(resolve, timeout))
+  console.log('poll end')
 }
