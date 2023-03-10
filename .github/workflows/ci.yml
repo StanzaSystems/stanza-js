@@ -68,6 +68,10 @@ jobs:
       - uses: nrwl/nx-set-shas@v3
       - run: npm ci
       - run: npx nx run-many --target=test:coverage --parallel=3
+
+      - name: Install lcov
+        run: sudo apt-get install lcov
+
       - uses: zgosalvez/github-actions-report-lcov@v3
         with:
           coverage-files: "**/coverage/lcov.info"
