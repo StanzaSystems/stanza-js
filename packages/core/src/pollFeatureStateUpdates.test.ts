@@ -17,10 +17,7 @@ vi.mock('./getFeatureStatesHot', () => {
 vi.mock('./globals', () => {
   return {
     getConfig: () => mockGetConfig(),
-    getStateProvider: () => {
-      console.log('getting mock provider')
-      return mockGetStateProvider()
-    },
+    getStateProvider: () => mockGetStateProvider(),
     featureChanges: new StanzaChangeTarget(),
     enablementNumberChanges: new StanzaChangeTarget()
   }

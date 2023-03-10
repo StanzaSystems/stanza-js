@@ -28,7 +28,5 @@ async function pollFeatureStateUpdates (): Promise<void> {
 async function poll (): Promise<void> {
   const config = getConfig()
   const timeout = (config.refreshSeconds ?? 10) * 1000
-  console.log('timeout', timeout)
   await new Promise(resolve => setTimeout(resolve, timeout))
-  console.log('poll end')
 }
