@@ -24,4 +24,4 @@ packages/**/node_modules
 *.sln
 *.sw?
 
-packages/**/coverage
+coverage

@@ -18,8 +18,8 @@ export default defineConfig({
   test: {
     setupFiles: ['./src/__tests__/setup.ts'],
     coverage: {
-      provider: 'istanbul',
-      reporter: ['text', 'lcov'],
+      reporter: [['lcov', {'projectRoot': '../..'}]],
+      reportsDirectory: '../../coverage/packages/core'
     },
   }
 })
