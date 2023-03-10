@@ -21,6 +21,9 @@
     "test": {
       "dependsOn": ["build"]
     },
+    "test:coverage": {
+      "dependsOn": ["build"]
+    },
     "dev": {
       "dependsOn": ["^build"]
     }

@@ -16,6 +16,10 @@ export default defineConfig({
     sourcemap: true
   },
   test: {
-    setupFiles: ['./src/__tests__/setup.ts']
+    setupFiles: ['./src/__tests__/setup.ts'],
+    coverage: {
+      reporter: [['lcov', {'projectRoot': '../..'}]],
+      reportsDirectory: '../../coverage/packages/core'
+    },
   }
 })

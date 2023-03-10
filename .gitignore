@@ -23,3 +23,5 @@ packages/**/node_modules
 *.njsproj
 *.sln
 *.sw?
+
+coverage
