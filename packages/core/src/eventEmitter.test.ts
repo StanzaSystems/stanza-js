@@ -39,7 +39,7 @@ describe('eventEmitter', () => {
     expect(listener2).toHaveBeenCalledWith('My change')
   })
 
-  it('should not listen to a dispatched change event after it has been unsubscribed', () => {
+  it('should not listen to a dispatched change event after it has been unsubscribed - using unsubscribe returned from addChange', () => {
     const eventEmitter = new StanzaChangeTarget<string>()
 
     const listener1 = vi.fn()
@@ -70,6 +70,44 @@ describe('eventEmitter', () => {
     listener2.mockReset()
 
     unsubscribe2()
+
+    eventEmitter.dispatchChange('My change 3')
+
+    expect(listener1).not.toHaveBeenCalled()
+    expect(listener2).not.toHaveBeenCalled()
+  })
+
+  it('should not listen to a dispatched change event after it has been unsubscribed - using removeChangeListener', () => {
+    const eventEmitter = new StanzaChangeTarget<string>()
+
+    const listener1 = vi.fn()
+    const listener2 = vi.fn()
+
+    eventEmitter.addChangeListener(listener1)
+    eventEmitter.addChangeListener(listener2)
+
+    eventEmitter.dispatchChange('My change')
+
+    expect(listener1).toHaveBeenCalledOnce()
+    expect(listener1).toHaveBeenCalledWith('My change')
+
+    expect(listener2).toHaveBeenCalledOnce()
+    expect(listener2).toHaveBeenCalledWith('My change')
+
+    listener1.mockReset()
+    listener2.mockReset()
+
+    eventEmitter.removeChangeListener(listener1)
+
+    eventEmitter.dispatchChange('My change 2')
+
+    expect(listener1).not.toHaveBeenCalled()
+    expect(listener2).toHaveBeenCalledOnce()
+
+    listener1.mockReset()
+    listener2.mockReset()
+
+    eventEmitter.removeChangeListener(listener2)
 
     eventEmitter.dispatchChange('My change 3')
 
