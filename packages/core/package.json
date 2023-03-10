@@ -20,6 +20,7 @@
     "dev": "vite build --mode development --watch",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "lint": "eslint ."
   },
   "devDependencies": {

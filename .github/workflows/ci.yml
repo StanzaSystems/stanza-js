@@ -54,3 +54,28 @@ jobs:
       - run: npm ci
       - run: npx nx run-many --target=test --parallel=3
 
+  coverage:
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - uses: nrwl/nx-set-shas@v3
+      - run: npm ci
+      - run: npx nx run-many --target=test:coverage --parallel=3
+
+      - name: Install lcov
+        run: sudo apt-get install lcov
+
+      - uses: zgosalvez/github-actions-report-lcov@v3
+        with:
+          coverage-files: "coverage/**/lcov.info"
+          minimum-coverage: 75
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          update-comment: true
+

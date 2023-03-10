@@ -11,11 +11,11 @@ interface ApiFeatureStateCache {
 const browserFeaturesCache: ApiFeatureStateCache = new Map()
 
 export async function fetchApiFeaturesStates (features: string[]): Promise<ApiFeatureState[]> {
-  const { stanzaCustomerId } = getConfig()
+  const { stanzaApiKey } = getConfig()
   const browserFeaturesUrl = getBrowserFeaturesUrl(features)
   const response = await fetch(browserFeaturesUrl, {
     headers: {
-      'x-stanza-customer-id': stanzaCustomerId
+      'X-Stanza-Key': stanzaApiKey
     }
   }).catch((e) => {
     console.log(e)
@@ -29,7 +29,7 @@ export async function fetchApiFeaturesStates (features: string[]): Promise<ApiFe
   }
   if (response.status === 200) {
     const data: ApiFeaturesResponse = await response?.json()
-    const featureStates = (data?.Features ?? [])
+    const featureStates = (data?.featureConfigs ?? [])
     browserFeaturesCache.set(browserFeaturesUrl, featureStates)
     return featureStates
   }
@@ -38,10 +38,11 @@ export async function fetchApiFeaturesStates (features: string[]): Promise<ApiFe
 }
 
 function getBrowserFeaturesUrl (features: string[]): string {
-  const { url } = getConfig()
+  const { url, environment } = getConfig()
   const params = new URLSearchParams()
   features.forEach(s => {
-    params.append('feature', s)
+    params.append('features', s)
   })
-  return `${url}/v1/config/browser?${params.toString()}`
+  params.append('environment', environment)
+  return `${url}/v1/context/browser?${params.toString()}`
 }

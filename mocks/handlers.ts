@@ -53,17 +53,23 @@ const featuresStatic = [
 ]
 let count = 0
 export const handlers = [
-  rest.get('http://localhost:3004/v1/config/browser', async (req, res, ctx) => {
+  rest.get('https://hub.dev.getstanza.dev/v1/context/browser', async (req, res, ctx) => {
     // adding artificial delay to respond
     await new Promise(resolve => setTimeout(resolve, 500))
     count++
-    const features = req.url.searchParams.getAll('feature')
+    const features = req.url.searchParams.getAll('features')
+    const environment = req.url.searchParams.get('environment')
+    if (environment == null) {
+      return res(
+        ctx.status(400)
+      )
+    }
     if (count <= 2) {
       return res(
         ctx.status(200),
         ctx.set('ETag', 'eTag1'),
         ctx.json({
-          Features: [searchFeatureAvailable, ...featuresStatic].filter(f => {
+          featureConfigs: [searchFeatureAvailable, ...featuresStatic].filter(f => {
             return features.includes(f.featureName)
           })
         })
@@ -80,7 +86,7 @@ export const handlers = [
         ctx.status(200),
         ctx.set('ETag', 'eTag2'),
         ctx.json({
-          Features: [searchFeaturePartiallyAvailable, ...featuresStatic].filter(f => {
+          featureConfigs: [searchFeaturePartiallyAvailable, ...featuresStatic].filter(f => {
             return features.includes(f.featureName)
           })
         })
@@ -97,7 +103,7 @@ export const handlers = [
         ctx.status(200),
         ctx.set('ETag', 'eTag3'),
         ctx.json({
-          Features: [searchFeatureUnavailable, ...featuresStatic].filter(f => features.includes(f.featureName))
+          featureConfigs: [searchFeatureUnavailable, ...featuresStatic].filter(f => features.includes(f.featureName))
         })
       )
     }

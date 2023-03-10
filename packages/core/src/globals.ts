@@ -6,7 +6,7 @@ import { type StanzaCoreConfig } from './models/stanzaCoreConfig'
 
 interface StanzaInternalConfig {
   environment: string
-  stanzaCustomerId: string
+  stanzaApiKey: string
   url: string
   refreshSeconds?: number
   enablementNumberGenerator?: () => Promise<number>

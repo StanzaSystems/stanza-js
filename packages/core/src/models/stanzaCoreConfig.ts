@@ -1,6 +1,6 @@
 export interface StanzaCoreConfig {
   environment: string
-  stanzaCustomerId: string
+  stanzaApiKey: string
   url: string
   refreshSeconds?: number
   enablementNumberGenerator?: () => Promise<number>
