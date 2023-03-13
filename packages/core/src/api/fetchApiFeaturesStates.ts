@@ -2,9 +2,14 @@ import { type ApiFeatureState } from './featureState'
 import { type ApiFeaturesResponse } from './featureStateResponse'
 import { getConfig } from '../globals'
 
+interface ApiFeatureStatus {
+  featureStates: ApiFeatureState[]
+  eTag: string | undefined
+}
+
 interface ApiFeatureStateCache {
-  get: (key: string) => ApiFeatureState[] | undefined
-  set: (key: string, value: ApiFeatureState[]) => void
+  get: (key: string) => ApiFeatureStatus | undefined
+  set: (key: string, value: ApiFeatureStatus) => void
   has: (key: string) => void
 }
 
@@ -13,9 +18,11 @@ const browserFeaturesCache: ApiFeatureStateCache = new Map()
 export async function fetchApiFeaturesStates (features: string[]): Promise<ApiFeatureState[]> {
   const { stanzaApiKey } = getConfig()
   const browserFeaturesUrl = getBrowserFeaturesUrl(features)
+  const existingETag = browserFeaturesCache.get(browserFeaturesUrl)?.eTag
   const response = await fetch(browserFeaturesUrl, {
     headers: {
-      'X-Stanza-Key': stanzaApiKey
+      'X-Stanza-Key': stanzaApiKey,
+      ...(existingETag !== undefined ? { 'If-None-Match': existingETag } : {})
     }
   }).catch((e) => {
     console.log(e)
@@ -25,12 +32,13 @@ export async function fetchApiFeaturesStates (features: string[]): Promise<ApiFe
     return []
   }
   if (response.status === 304) {
-    return browserFeaturesCache.get(browserFeaturesUrl) ?? []
+    return browserFeaturesCache.get(browserFeaturesUrl)?.featureStates ?? []
   }
   if (response.status === 200) {
     const data: ApiFeaturesResponse = await response?.json()
     const featureStates = (data?.featureConfigs ?? [])
-    browserFeaturesCache.set(browserFeaturesUrl, featureStates)
+    const responseETag = response.headers.get('ETag') ?? undefined
+    browserFeaturesCache.set(browserFeaturesUrl, { featureStates, eTag: responseETag })
     return featureStates
   }
   // TODO: should we throw we receive unexpected status code?
