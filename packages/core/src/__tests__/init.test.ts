@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { type StanzaCoreConfig } from '../models/StanzaCoreConfig'
+import { type StanzaCoreConfig } from '../models/stanzaCoreConfig'
 
 let { Stanza } = await import('../index')
 
