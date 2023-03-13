@@ -20,8 +20,12 @@ export const createContext = (name: string, featureStates: FeatureState[], enabl
 }
 
 export function equals (context: StanzaContext, other: StanzaContext): boolean {
+  if (context.name !== other.name) {
+    return false
+  }
+
   // if the feature lengths are not the same obviously context not the same
-  if (context.features.length !== other.features.length) {
+  if (context.featuresNames.length !== other.featuresNames.length) {
     return false
   }
 
@@ -35,50 +39,53 @@ export function equals (context: StanzaContext, other: StanzaContext): boolean {
 }
 
 export function createFeaturesFromFeatureState (featureResponse: FeatureState[], enablementNumber: number): StanzaFeature[] {
-  const response: StanzaFeature[] = []
+  return featureResponse
+    .map(featureState => createFeatureFromFeatureState(featureState, enablementNumber))
+    .filter((feature): feature is StanzaFeature => feature !== undefined)
+}
 
-  featureResponse.forEach(({
-    actionCodeEnabled,
-    actionCodeDisabled,
-    enabledPercent,
-    featureName,
-    messageEnabled,
-    messageDisabled,
-    lastRefreshTime
-  }) => {
-    if (enabledPercent >= 100) {
-      response.push({
-        code: ActionCode.ENABLED,
+export function createFeatureFromFeatureState ({
+  actionCodeEnabled,
+  actionCodeDisabled,
+  enabledPercent,
+  featureName,
+  messageEnabled,
+  messageDisabled,
+  lastRefreshTime
+}: FeatureState, enablementNumber: number): StanzaFeature | undefined {
+  if (enabledPercent >= 100) {
+    return ({
+      code: ActionCode.ENABLED,
+      name: featureName,
+      lastRefreshTime
+    })
+  } else if (
+    // if the enabled percent is less than this context's enablement number, this feature is enabled
+    enabledPercent > enablementNumber
+  ) {
+    if (actionCodeEnabled === undefined || ActionCode[actionCodeEnabled] === undefined) {
+      console.log(`feature ${featureName} has an unknown or invalid enabled action code ${actionCodeEnabled}. Stanza fails open.`)
+      return undefined
+    } else {
+      return ({
         name: featureName,
+        code: actionCodeEnabled,
+        message: messageEnabled,
         lastRefreshTime
       })
-    } else if (
-      // if the enabled percent is less than this context's enablement number, this feature is enabled
-      enabledPercent > enablementNumber
-    ) {
-      if (actionCodeEnabled === undefined || ActionCode[actionCodeEnabled] === undefined) {
-        console.log(`feature ${featureName} has an unknown or invalid enabled action code ${actionCodeEnabled}. Stanza fails open.`)
-      } else {
-        response.push({
-          name: featureName,
-          code: actionCodeEnabled,
-          message: messageEnabled,
-          lastRefreshTime
-        })
-      }
-    } else {
-      /// if not use values for a disabled feature
-      if (actionCodeDisabled === undefined || ActionCode[actionCodeDisabled] === undefined) {
-        console.log(`feature ${featureName} has an unknown or invalid disabled action code ${actionCodeDisabled}. Stanza fails open.`)
-      } else {
-        response.push({
-          name: featureName,
-          code: actionCodeDisabled,
-          message: messageDisabled,
-          lastRefreshTime
-        })
-      }
     }
-  })
-  return response
+  } else {
+    /// if not use values for a disabled feature
+    if (actionCodeDisabled === undefined || ActionCode[actionCodeDisabled] === undefined) {
+      console.log(`feature ${featureName} has an unknown or invalid disabled action code ${actionCodeDisabled}. Stanza fails open.`)
+      return undefined
+    } else {
+      return ({
+        name: featureName,
+        code: actionCodeDisabled,
+        message: messageDisabled,
+        lastRefreshTime
+      })
+    }
+  }
 }
