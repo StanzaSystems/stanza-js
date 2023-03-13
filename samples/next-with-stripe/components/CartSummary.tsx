@@ -67,6 +67,11 @@ const CartSummary = () => {
                 <p style={{ color: 'red' }}>Error: {errorMessage}</p>
                   )
                 : null}
+              {stanzaContext?.features.checkout.message !== undefined
+                ? (
+                <p style={{ color: 'red' }}>{stanzaContext?.features.checkout.message}</p>
+                  )
+                : null}
               {/* This is where we'll render our cart */}
               <p suppressHydrationWarning>
                 <strong>Number of Items:</strong> {cartCount}
@@ -91,11 +96,10 @@ const CartSummary = () => {
               >
                 Clear Cart
               </button>
-              <div>{stanzaContext?.features.checkout.message}</div>
             </form>
           )}
           {stanzaContext?.features.checkout.code === 2 && (
-            <div>{stanzaContext?.features.checkout.message}</div>
+             <p style={{ color: 'red' }}>Error: {stanzaContext?.features.checkout.message}</p>
           )}
         </Popover.Content>
       </Popover.Portal>
