@@ -87,11 +87,11 @@ describe('context', () => {
         featureName: 'aFeature',
         enabledPercent: 80,
         lastRefreshTime: 123,
-        actionCodeDisabled: ActionCode.MESSAGE_AND_SEND,
+        actionCodeDisabled: ActionCode.DISABLED_VISIBLE,
         messageDisabled: 'messageDisabled'
       }, 90)).toEqual({
         name: 'aFeature',
-        code: ActionCode.MESSAGE_AND_SEND,
+        code: ActionCode.DISABLED_VISIBLE,
         lastRefreshTime: 123,
         message: 'messageDisabled'
       } satisfies StanzaFeature)
