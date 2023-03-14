@@ -6,8 +6,7 @@ export interface StanzaFeature {
 }
 
 export enum ActionCode {
-  ENABLED = -1,
-  MESSAGE_AND_SEND = 0,
-  MESSAGE_NO_SEND = 1,
-  REMOVE = 2
+  ENABLED = 0,
+  DISABLED_VISIBLE = 1,
+  DISABLED_REMOVE = 2
 }
