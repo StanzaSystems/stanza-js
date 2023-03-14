@@ -11,7 +11,7 @@ const CartButton = () => {
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
-        <button className="IconButton" aria-label="Update dimensions">
+        <button className="IconButton checkout-style-background" aria-label="Update dimensions">
           <AiOutlineShoppingCart />
         </button>
       </Popover.Trigger>

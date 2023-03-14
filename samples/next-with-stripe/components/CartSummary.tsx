@@ -44,7 +44,7 @@ const CartSummary = () => {
   }
 
   return (
-    <form onSubmit={handleCheckout}>
+    <form onSubmit={handleCheckout} style={{ padding: '16px' }}>
       <h2>Cart summary</h2>
       {errorMessage.length > 0
         ? (

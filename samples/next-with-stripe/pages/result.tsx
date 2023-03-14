@@ -1,13 +1,12 @@
 import { type NextPage } from 'next'
 import { useRouter } from 'next/router'
+import useSWR from 'swr'
+import ClearCart from '../components/ClearCart'
 
 import Layout from '../components/Layout'
 import PrintObject from '../components/PrintObject'
-import StripeCartProvider from '../components/StripeCartProvider'
-import ClearCart from '../components/ClearCart'
 
 import { fetchGetJSON } from '../utils/api-helpers'
-import useSWR from 'swr'
 
 const ResultPage: NextPage = () => {
   const router = useRouter()
@@ -31,10 +30,8 @@ const ResultPage: NextPage = () => {
         <h1>Checkout Payment Result</h1>
         <h2>Status: {data?.payment_intent?.status ?? 'loading...'}</h2>
         <h3>CheckoutSession response:</h3>
-        <PrintObject content={data ?? 'loading...'} />
-        <StripeCartProvider>
-          <ClearCart />
-        </StripeCartProvider>
+        <PrintObject content={data ?? 'loading...'}/>
+        <ClearCart/>
       </div>
     </Layout>
   )

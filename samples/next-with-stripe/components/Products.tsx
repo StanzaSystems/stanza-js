@@ -1,7 +1,7 @@
-import products from '../data/products'
 import { formatCurrencyString, useShoppingCart } from 'use-shopping-cart'
+import { type Product } from '../data/product'
 
-const Products = () => {
+const Products = ({ products }: { products: Product[] }) => {
   const { addItem, removeItem } = useShoppingCart()
 
   return (

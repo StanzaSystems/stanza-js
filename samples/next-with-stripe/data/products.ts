@@ -1,4 +1,6 @@
-const product = [
+import { type Product } from './product'
+
+const product: Product[] = [
   {
     name: 'Bananas',
     description: 'Yummy yellow fruit',
