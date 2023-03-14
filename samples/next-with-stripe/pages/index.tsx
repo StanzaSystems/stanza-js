@@ -1,11 +1,9 @@
-import { type NextPage } from 'next'
+import { ActionCode } from '@getstanza/browser'
 import { useStanzaContext } from '@getstanza/react'
+import { type NextPage } from 'next'
+import CartButton from '../components/CartButton'
 import Layout from '../components/Layout'
-
-import Cart from '../components/Cart'
-import CartSummary from '../components/CartSummary'
 import Products from '../components/Products'
-import { ActionCode } from '@getstanza/core'
 
 const MainPage: NextPage = () => {
   const stanzaContext = useStanzaContext('main')
@@ -13,20 +11,18 @@ const MainPage: NextPage = () => {
   return (
     <Layout title="Stanza Swag Shop">
       <div className="page-container">
-        <Cart>
-          <CartSummary />
+          <CartButton />
           <form style={{ display: 'flex' }}>
             <input style={{ flexBasis: '75%' }} type='text' id='searchProducts' placeholder={stanzaContext?.features.search.message}></input>
           <button style={{ flexBasis: '25%' }}>Search</button>
           </form>
-          {stanzaContext?.features.featured.code !== ActionCode.REMOVE.valueOf() && (
+          {stanzaContext?.features.featured.code !== ActionCode.DISABLED_REMOVE.valueOf() && (
             <>
             <h2>Cool New Swag!</h2>
             <Products />
             </>
           ) }
           {stanzaContext?.features.featured.message}
-        </Cart>
       </div>
     </Layout>
   )

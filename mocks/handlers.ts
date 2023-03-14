@@ -4,7 +4,7 @@ const searchFeatureAvailable = {
   featureName: 'search',
   actionCodeEnabled: 0,
   messageEnabled: 'Search is working as expected',
-  actionCodeDisabled: 2,
+  actionCodeDisabled: 1,
   messageDisabled: 'Search is unavailable right now',
   enabledPercent: 100
 }
@@ -12,7 +12,7 @@ const searchFeaturePartiallyAvailable = {
   featureName: 'search',
   actionCodeEnabled: 0,
   messageEnabled: 'We are having trouble with search - please retry your request.',
-  actionCodeDisabled: 2,
+  actionCodeDisabled: 1,
   messageDisabled: 'Search is unavailable right now',
   enabledPercent: 80
 }
@@ -20,7 +20,7 @@ const searchFeatureUnavailable = {
   featureName: 'search',
   actionCodeEnabled: 0,
   messageEnabled: 'We are having trouble with search - please retry your request.',
-  actionCodeDisabled: 2,
+  actionCodeDisabled: 1,
   messageDisabled: 'Search is totally messed up RUNNNNN!!!!!!',
   enabledPercent: 0
 }
@@ -28,14 +28,14 @@ const featuresStatic = [
   {
     featureName: 'checkout',
     actionCodeEnabled: 0,
-    actionCodeDisabled: 2,
+    actionCodeDisabled: 1,
     enabledPercent: 60,
     messageEnabled: 'We are having trouble with checkout - please retry your request.',
     messageDisabled: 'Checkout is unavailable right now'
   },
   {
     featureName: 'featured',
-    actionCodeDisabled: 2,
+    actionCodeDisabled: 1,
     enabledPercent: 0
   },
   {

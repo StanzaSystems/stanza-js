@@ -1,6 +1,7 @@
 import { createStanzaInstance, StanzaProvider } from '@getstanza/react'
-import { config } from '../stanzaConfig'
 import { type AppProps } from 'next/app'
+import StripeCartProvider from '../components/StripeCartProvider'
+import { config } from '../stanzaConfig'
 
 import '../styles.css'
 
@@ -11,11 +12,14 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const stanzaInstance = createStanzaInstance({ ...config, pollDelay: loadPromise })
+
 function MyApp ({ Component, pageProps }: AppProps) {
   return (
-  <StanzaProvider instance={stanzaInstance}>
-    <Component {...pageProps} />
-  </StanzaProvider>
+    <StanzaProvider instance={stanzaInstance}>
+      <StripeCartProvider>
+        <Component {...pageProps} />
+      </StripeCartProvider>
+    </StanzaProvider>
   )
 }
 
