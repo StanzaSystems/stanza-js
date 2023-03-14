@@ -1,10 +1,10 @@
-import { ActionCode } from '@getstanza/browser'
 import { useStanzaContext } from '@getstanza/react'
 import { type NextPage } from 'next'
 import { useRouter } from 'next/router'
 import React, { useCallback } from 'react'
 import Products from '../components/Products'
 import SearchBar from '../components/SearchBar'
+import StanzaComponent from '../components/StanzaComponent'
 import products from '../data/products'
 
 const MainPage: NextPage = () => {
@@ -15,12 +15,10 @@ const MainPage: NextPage = () => {
   return (
     <>
       <SearchBar onSearch={handleSearch}/>
-      {stanzaContext?.features.featured.code !== ActionCode.DISABLED_REMOVE.valueOf() && (
-        <>
-          <h2>Cool New Swag!</h2>
-          <Products products={products}/>
-        </>
-      )}
+      <StanzaComponent contextName="main" featureName="featured">
+        <h2>Cool New Swag!</h2>
+        <Products products={products}/>
+      </StanzaComponent>
       {stanzaContext?.features.featured.message}
     </>
   )
