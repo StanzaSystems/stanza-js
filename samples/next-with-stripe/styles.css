@@ -74,7 +74,6 @@ a {
 
 header {
   position: relative;
-  padding-right: 48px;
 }
 
 .header-content {
@@ -83,6 +82,7 @@ header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  column-gap: 1rem;
 }
 
 
@@ -133,6 +133,26 @@ li {
   color: #ef2961;
 }
 
+.badge-container {
+  position: relative;
+}
+
+.badge {
+  background-color: #e60026;
+  color: white;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translate(50%, -50%);
+}
+
 .FormRow,
 fieldset,
 input[type='number'],
@@ -144,6 +164,11 @@ input[type='text'] {
   appearance: none;
   font-size: 16px;
   margin-top: 10px;
+}
+
+input[type='number']:disabled,
+input[type='text']:disabled {
+  background: #eee;
 }
 
 input[type='range'] {
@@ -168,6 +193,12 @@ button {
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+button.icon-button {
+  width: 48px;
+  height: 48px;
+  margin-top: 0;
 }
 
 .elements-style {
@@ -217,8 +248,8 @@ button:disabled {
   display: block;
   margin-block-start: 1em;
   margin-block-end: 1em;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
 }
 .card-number {
   display: inline;

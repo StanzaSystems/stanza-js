@@ -7,4 +7,5 @@ export interface Product {
   string
   attribution: string
   currency: string
+  tags: string[]
 }

@@ -2,6 +2,7 @@ import React, { type ReactNode } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
+import CartButton from './CartButton'
 
 interface Props {
   children: ReactNode
@@ -36,8 +37,9 @@ const Layout = ({
             <Image src="/logo.png" width={150} height={50} alt="Stanza logo" />
           </Link>
           <h1>
-            <span className="light">Stanza Swag Shop</span>
+            <span className="light">{title}</span>
           </h1>
+          <CartButton/>
         </div>
       </header>
       <>{children}</>

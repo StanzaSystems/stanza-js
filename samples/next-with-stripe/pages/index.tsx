@@ -1,10 +1,8 @@
 import { type NextPage } from 'next'
 import { useRouter } from 'next/router'
 import React, { useCallback } from 'react'
-import Products from '../components/Products'
+import FeaturedProducts from '../components/FeaturedProducts'
 import SearchBar from '../components/SearchBar'
-import StanzaComponent from '../components/StanzaComponent'
-import products from '../data/products'
 
 const MainPage: NextPage = () => {
   const router = useRouter()
@@ -15,12 +13,7 @@ const MainPage: NextPage = () => {
   return (
     <>
       <SearchBar onSearch={handleSearch}/>
-      <StanzaComponent contextName="main" featureName="featured" removedFallback={({ message }) => (
-        <p style={{ color: 'red' }}>{message}</p>
-      )}>
-        <h2>Cool New Swag!</h2>
-        <Products products={products}/>
-      </StanzaComponent>
+      <FeaturedProducts/>
     </>
   )
 }

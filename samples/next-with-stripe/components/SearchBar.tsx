@@ -30,7 +30,7 @@ const SearchBar = ({ onSearch = () => {} }: { onSearch?: (searchValue: string) =
         value={searchValue}
         onInput={updateSearchValue}
         disabled={stanzaContext?.features.search.code !== ActionCode.ENABLED}
-        placeholder={stanzaContext?.features.search.message}
+        placeholder={stanzaContext?.features.search.message ?? 'Search...'}
       />
       <button
         style={{ flexBasis: '25%' }}
