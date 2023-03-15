@@ -1,38 +1,17 @@
-import { formatCurrencyString, useShoppingCart } from 'use-shopping-cart'
-import { type Product } from '../data/product'
+import { useShoppingCart } from 'use-shopping-cart'
+import { type Product as ProductData } from '../data/product'
+import Product from './Product'
 
-const Products = ({ products }: { products: Product[] }) => {
+const Products = ({ products }: { products: ProductData[] }) => {
   const { addItem, removeItem } = useShoppingCart()
 
   return (
     <section className="products">
-      {products.map((product) => (
-        <div key={product.id} className="product">
-          <img src={product.image} alt={product.name} />
-          <h2>{product.name}</h2>
-          <p className="price">
-            {formatCurrencyString({
-              value: product.price,
-              currency: product.currency
-            })}
-          </p>
-          <button
-            className="cart-style-background"
-            onClick={() => {
-              console.log(product)
-              addItem(product)
-            }}
-          >
-            Add to cart
-          </button>
-          <button
-            className="cart-style-background"
-            onClick={() => { removeItem(product.id) }}
-          >
-            Remove
-          </button>
-        </div>
-      ))}
+      {
+        products.length > 0
+          ? products.map((product) => <Product product={product} addProduct={addItem} removeProduct={removeItem}/>)
+          : <p>No products found</p>
+      }
     </section>
   )
 }

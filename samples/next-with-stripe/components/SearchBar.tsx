@@ -13,6 +13,7 @@ const SearchBar = ({ onSearch = () => {} }: { onSearch?: (searchValue: string) =
 
   const handleSearch = useCallback((event: FormEvent<HTMLFormElement>, searchValue: string) => {
     event.preventDefault()
+    setSearchValue('')
     onSearch(searchValue)
   }, [searchValue])
 
@@ -30,7 +31,7 @@ const SearchBar = ({ onSearch = () => {} }: { onSearch?: (searchValue: string) =
         value={searchValue}
         onInput={updateSearchValue}
         disabled={stanzaContext?.features.search.code !== ActionCode.ENABLED}
-        placeholder={stanzaContext?.features.search.message ?? 'Search...'}
+        placeholder={stanzaContext?.features.search.message ?? 'Search products...'}
       />
       <button
         style={{ flexBasis: '25%' }}

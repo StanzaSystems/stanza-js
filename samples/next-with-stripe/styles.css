@@ -231,12 +231,16 @@ button.icon-button {
   box-shadow: 20px 20px 60px teal, -20px -20px 60px teal;
 }
 
+.section-title {
+  margin: 2rem 0;
+}
+
 /* Products */
 .products {
   display: grid;
   gap: 2rem;
   grid-template-columns: repeat(2, 1fr);
-  margin-top: 3rem;
+  margin-top: 1rem;
 }
 
 .product img {

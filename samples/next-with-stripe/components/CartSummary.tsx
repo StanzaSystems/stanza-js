@@ -1,6 +1,6 @@
 import { useStanzaContext } from '@getstanza/react'
 import React, { useState } from 'react'
-import { useShoppingCart } from 'use-shopping-cart'
+import { useShoppingCart, formatCurrencyString } from 'use-shopping-cart'
 import { fetchPostJSON } from '../utils/api-helpers'
 import StripeTestCards from './StripeTestCards'
 
@@ -12,9 +12,9 @@ const CartSummary = () => {
     cartCount,
     clearCart,
     cartDetails,
+    language,
     redirectToCheckout
   } = useShoppingCart()
-
   const cartEmpty = cartCount === 0
 
   const stanzaContext = useStanzaContext('main')
@@ -57,6 +57,11 @@ const CartSummary = () => {
           )
         : null}
       {/* This is where we'll render our cart */}
+      {
+        Object.values(cartDetails ?? {}).map(detail => (
+          <p>{detail.name} - {detail.quantity} x {formatCurrencyString({ value: detail.price, currency: detail.currency, language })} - {detail.formattedValue}</p>
+        ))
+      }
       <p suppressHydrationWarning>
         <strong>Number of Items:</strong> {cartCount}
       </p>
