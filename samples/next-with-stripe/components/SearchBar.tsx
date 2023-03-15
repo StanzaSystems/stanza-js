@@ -1,3 +1,4 @@
+import { ActionCode } from '@getstanza/browser'
 import { useStanzaContext } from '@getstanza/react'
 import React, { type ChangeEvent, type FormEvent, useCallback, useState } from 'react'
 import StanzaComponent from './StanzaComponent'
@@ -22,14 +23,21 @@ const SearchBar = ({ onSearch = () => {} }: { onSearch?: (searchValue: string) =
       contextName="main"
       featureName="search"
     >
-      <input style={{ flexBasis: '75%' }}
-             type="text"
-             name="searchProducts"
-             value={searchValue}
-             onInput={updateSearchValue}
-             placeholder={stanzaContext?.features.search.message}/>
+      <input
+        style={{ flexBasis: '75%' }}
+        type="text"
+        name="searchProducts"
+        value={searchValue}
+        onInput={updateSearchValue}
+        disabled={stanzaContext?.features.search.code !== ActionCode.ENABLED}
+        placeholder={stanzaContext?.features.search.message}
+      />
+      <button
+        style={{ flexBasis: '25%' }}
+        className="elements-style-background"
+        disabled={stanzaContext?.features.search.code !== ActionCode.ENABLED}
+      >Search</button>
     </StanzaComponent>
-    <button style={{ flexBasis: '25%' }} className="elements-style-background">Search</button>
   </form>
 }
 
