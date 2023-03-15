@@ -34,7 +34,7 @@ const featuresStatic: ApiFeatureState[] = [
 ]
 
 const server = setupServer(
-  rest.get('https://hub.dev.getstanza.dev/v1/context/browser', (req, res, ctx) => {
+  rest.get('https://hub.dev.getstanza.dev/v1/context/browser', async (req, res, ctx) => {
     const features = req.url.searchParams.getAll('features')
     const configs: ApiFeaturesResponse = {
       featureConfigs: featuresStatic.filter(f => { return features.includes(f.featureName) })
