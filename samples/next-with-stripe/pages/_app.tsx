@@ -20,7 +20,7 @@ function MyApp ({ Component, pageProps }: AppProps) {
   return (
     <StanzaProvider instance={stanzaInstance}>
       <StripeCartProvider>
-        <Layout title="Stanza Swag Shop">
+        <Layout title="Stanza Fruit Stand">
           <div className="page-container">
             <Component {...pageProps} />
           </div>

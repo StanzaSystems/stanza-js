@@ -8,7 +8,7 @@ const FeaturedProducts = () => {
   return <StanzaComponent contextName="main" featureName="featured" removedFallback={({ message }) => (
     <p style={{ color: 'red' }}>{message}</p>
   )}>
-    <h2 className="section-title">Cool New Swag!</h2>
+    <h2 className="section-title">Fruit on Sale Today!</h2>
     <Products products={featuredProducts}/>
   </StanzaComponent>
 }

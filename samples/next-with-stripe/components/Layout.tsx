@@ -11,7 +11,7 @@ interface Props {
 
 const Layout = ({
   children,
-  title = 'Stanza Swag Shop'
+  title = 'Stanza Fruit Stand'
 }: Props) => (
   <>
     <Head>
@@ -19,11 +19,11 @@ const Layout = ({
       <meta charSet="utf-8" />
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:site" content="@thorwebdev" />
-      <meta name="twitter:title" content="Stanza Swag Shop" />
+      <meta name="twitter:site" content="@stanzasystems" />
+      <meta name="twitter:title" content="Stanza Fruit Stand" />
       <meta
         name="twitter:description"
-        content="Stanza Swag Shop: Robust demo for stanza.systems"
+        content="Stanza Fruit Stand: Robust demo for stanza.systems"
       />
       <meta
         name="twitter:image"
