@@ -9,8 +9,8 @@ const Products = ({ products }: { products: ProductData[] }) => {
     <section className="products">
       {
         products.length > 0
-          ? products.map((product) => <Product product={product} addProduct={addItem} removeProduct={removeItem}/>)
-          : <p>No products found</p>
+          ? products.map((product) => <Product key={product.id} product={product} addProduct={addItem} removeProduct={removeItem}/>)
+          : <p id='nonefound'>No products found</p>
       }
     </section>
   )

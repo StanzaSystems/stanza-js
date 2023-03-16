@@ -24,7 +24,7 @@ const product: Product[] = [
   },
   {
     name: 'Apples',
-    id: 'sku_GBJ2WWfMaGNC2A',
+    id: 'sku_GBJ2WWfMaGNC2f',
     price: 80,
     image:
       'https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8YXBwbGUlMjBmcnVpdHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=225&q=60',
@@ -34,7 +34,7 @@ const product: Product[] = [
   },
   {
     name: 'Pineapples',
-    id: 'sku_GBJ2WWfMaGWFR4',
+    id: 'sku_GBJ2WWfMaGWFRd',
     price: 380,
     image:
       'https://images.unsplash.com/photo-1490885578174-acda8905c2c6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8cGluZWFwcGxlJTIwZnJ1aXR8ZW58MHx8MHx8&auto=format&fit=crop&w=225&q=60',

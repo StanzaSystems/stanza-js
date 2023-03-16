@@ -10,13 +10,12 @@ type StanzaComponentProps = React.PropsWithChildren<{
 
 const StanzaComponent: React.FC<StanzaComponentProps> = ({ children, contextName, featureName, removedFallback }) => {
   const stanzaContext = useStanzaContext(contextName)
-
   const feature = stanzaContext?.features[featureName]
   const contextCode = feature?.code ?? ActionCode.ENABLED
 
   return <>
-    {contextCode !== ActionCode.DISABLED_REMOVE ? children : undefined}
-    {contextCode === ActionCode.DISABLED_REMOVE && removedFallback !== undefined
+    {contextCode.toString() !== ActionCode.DISABLED_REMOVE.toString() ? children : undefined}
+    {contextCode.toString() === ActionCode.DISABLED_REMOVE.toString() && removedFallback !== undefined
       ? React.createElement(removedFallback, {
         message: feature?.message ?? ''
       })
