@@ -307,6 +307,12 @@ pre {
   box-shadow: -20px 20px 60px #abacad, 20px -20px 60px #ffffff;
 }
 
+.statsWindow {
+  height: 500px;
+  position: sticky; 
+  bottom: 0;
+}
+
 @media only screen and (max-width: 980px) {
   .container {
     flex-direction: column;

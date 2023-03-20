@@ -44,6 +44,9 @@ const Layout = ({
       </header>
       <>{children}</>
     </div>
+    <div className='container'>
+      <iframe className='statsWindow' src='https://loadtest.dev.getstanza.dev/'></iframe>
+    </div>
   </>
 )
 
