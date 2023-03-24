@@ -1,3 +1,5 @@
+import { getStanzaFeature } from '@getstanza/node'
+
 interface StripeAPIProduct {
   id: string
   object: string
@@ -35,6 +37,10 @@ const createStripeAPI = async (key: string): Promise<StripeAPI> => {
       const url = new URL(PRODUCTS_URL)
 
       url.searchParams.append('expand[]', 'data.default_price')
+
+      const feature = getStanzaFeature()
+      console.log('############### getting products')
+      console.log('feature', feature)
 
       const response = await fetch(url, {
         headers: {

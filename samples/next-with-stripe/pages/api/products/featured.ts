@@ -1,8 +1,9 @@
+import { withStanzaFeature } from '@getstanza/node'
 import { type NextApiHandler } from 'next'
 import { type Product } from '../../../data/product'
 import getStripeAPI from '../../../utils/stripe-api'
 
-const handler: NextApiHandler = async (req, res) => {
+const handler: NextApiHandler = withStanzaFeature(async (req, res) => {
   const stripeAPI = await getStripeAPI()
   const result = await stripeAPI.getProducts()
   const products = result.data
@@ -19,6 +20,6 @@ const handler: NextApiHandler = async (req, res) => {
   }))
     .filter((_, index) => index < 2)
   res.json(resultProducts)
-}
+})
 
 export default handler

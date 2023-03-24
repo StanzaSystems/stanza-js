@@ -1,0 +1,23 @@
+{
+  "name": "@getstanza/node",
+  "version": "1.0.0",
+  "description": "Stanza Node SDK",
+  "main": "./dist/getstanza-node.umd.cjs",
+  "module": "./dist/getstanza-node.js",
+  "types": "./dist/index.d.ts",
+  "author": "Stanza",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite build --mode development --watch",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "^1.4.1",
+    "@opentelemetry/context-async-hooks": "^1.10.1"
+  }
+}
