@@ -40,7 +40,8 @@ const featureConfigs = new Map<string, ApiFeatureState>([
   }
 ].map(f => [f.featureName, f]))
 
-app.get('/ping', (_req, res) => {
+app.get('/ping', (req, res) => {
+  console.log('ping headers', req.headers)
   res.status(200).send('pong')
 })
 

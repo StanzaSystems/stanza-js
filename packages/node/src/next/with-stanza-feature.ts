@@ -6,13 +6,8 @@ export const withStanzaFeature = (nextApiHandler: NextApiHandler): NextApiHandle
   return (req, res) => {
     const activeContext = oTelApi.context.active()
 
-    const baggage = req.headers.baggage ?? ''
-    const baggageArr = typeof baggage === 'string' ? baggage.split(';') : baggage
-    const baggageObj = baggageArr.map(entry => entry.trim().split(/\s*=\s*/)).reduce<Record<string, string>>((prev, [key, value]) => {
-      prev[key] = value ?? ''
-      return prev
-    }, {})
+    const stanzaFeature = oTelApi.propagation.getActiveBaggage()?.getEntry('stanzaFeature')?.value
 
-    return oTelApi.context.with(activeContext.setValue(featureKey, baggageObj.stanzaFeature), nextApiHandler, this, req, res)
+    return oTelApi.context.with(activeContext.setValue(featureKey, stanzaFeature), nextApiHandler, this, req, res)
   }
 }

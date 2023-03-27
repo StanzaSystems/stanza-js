@@ -1,12 +1,21 @@
-import * as oTelApi from '@opentelemetry/api'
-
 export const init = () => {
-  console.log('init called')
   if (typeof window === 'undefined') {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const AsyncLocalStorageContextManager = require('@opentelemetry/context-async-hooks').AsyncLocalStorageContextManager
-    const contextManager = new AsyncLocalStorageContextManager()
-    contextManager.enable()
-    oTelApi.context.setGlobalContextManager(contextManager)
+    /* eslint-disable @typescript-eslint/no-var-requires */
+    const { HttpInstrumentation } = require('@opentelemetry/instrumentation-http')
+    // TODO: enable when Fetch instrumentation supports Node
+    // const { FetchInstrumentation } = require('@opentelemetry/instrumentation-fetch')
+    const httpInstrumentation = new HttpInstrumentation()
+
+    const { NodeSDK } = require('@opentelemetry/sdk-node')
+    const { ConsoleSpanExporter } = require('@opentelemetry/sdk-trace-node')
+    const sdk = new NodeSDK({
+      traceExporter: new ConsoleSpanExporter(),
+      instrumentations: [
+        httpInstrumentation
+        // TODO: enable when FetchInstrumentation supports Node
+        // ...(typeof globalThis.fetch === 'function' ? [new FetchInstrumentation()] : [])
+      ]
+    })
+    sdk.start()
   }
 }

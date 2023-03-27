@@ -1,0 +1,1 @@
+require('@getstanza/node').init()

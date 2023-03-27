@@ -42,6 +42,9 @@ const createStripeAPI = async (key: string): Promise<StripeAPI> => {
       console.log('############### getting products')
       console.log('feature', feature)
 
+      // TODO: remove - just for testing purposes
+      await fetch('http://localhost:3001/ping')
+
       const response = await fetch(url, {
         headers: {
           Authorization: `Bearer ${key}`
