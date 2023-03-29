@@ -1,7 +1,7 @@
 import type { StanzaCoreConfig } from '@getstanza/core'
 
 const config: StanzaCoreConfig = {
-  url: process.env.STANZA_API ?? 'https://hub.dev.getstanza.dev',
+  url: process.env.NEXT_PUBLIC_STANZA_API ?? 'https://hub.dev.getstanza.dev',
   environment: 'local',
   stanzaApiKey: 'valid-api-key',
   contextConfigs: [

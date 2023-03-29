@@ -25,3 +25,5 @@ packages/**/node_modules
 *.sw?
 
 coverage
+
+samples/next-with-stripe/.env
