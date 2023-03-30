@@ -10,7 +10,7 @@ interface ProductProps {
 
 const Product: React.FC<ProductProps> = ({ product, addProduct = () => {}, removeProduct = () => {} }) => {
   return <div key={product.id} className="product">
-    <img src={product.image} alt={product.name} />
+    <div className="product-image-container"><img src={product.image ?? 'https://actogmbh.com/files/no-product-image.png'} alt={product.name} /></div>
     <h2>{product.name}</h2>
     <p className="price">
       {formatCurrencyString({
@@ -20,10 +20,7 @@ const Product: React.FC<ProductProps> = ({ product, addProduct = () => {}, remov
     </p>
     <button
       className="cart-style-background"
-      onClick={() => {
-        console.log(product)
-        addProduct(product)
-      }}
+      onClick={() => { addProduct(product) }}
     >
       Add to cart
     </button>

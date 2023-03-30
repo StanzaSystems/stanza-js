@@ -1,10 +1,20 @@
-import React from 'react'
-import products from '../data/products'
+import React, { useEffect, useState } from 'react'
+import { type Product } from '../data/product'
 import Products from './Products'
 import StanzaComponent from './StanzaComponent'
 
 const FeaturedProducts = () => {
-  const featuredProducts = products.filter(({ tags }) => tags.includes('featured'))
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
+  useEffect(() => {
+    fetch('api/products/featured', {
+      headers: {
+        baggage: 'stanzaFeature=featured'
+      }
+    })
+      .then(async response => response.json())
+      .then(data => { setFeaturedProducts(data) })
+      .catch(() => {})
+  }, [])
   return <StanzaComponent contextName="main" featureName="featured" removedFallback={({ message }) => (
     <p style={{ color: 'red' }}>{message}</p>
   )}>
