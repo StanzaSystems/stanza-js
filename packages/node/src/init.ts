@@ -1,3 +1,4 @@
+import { generateClientId } from './generateClientId'
 import { getEnvInitOptions } from './getEnvInitOptions'
 import { stanzaInitOptions, type StanzaInitOptions } from './stanzaInitOptions'
 
@@ -12,11 +13,13 @@ export const init = async (options: Partial<StanzaInitOptions> = {}) => {
     return
   }
   const initOptions = parseResult.data
+  const clientId = generateClientId()
 
   console.log(`
     Stanza successfully initialized:
       environment: ${initOptions.environment}
       service name: ${initOptions.serviceName}
       service release: ${initOptions.serviceRelease}
+      client id: ${clientId}
   `)
 }
