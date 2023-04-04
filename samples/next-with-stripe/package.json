@@ -20,7 +20,8 @@
     "swr": "^2.0.0",
     "use-shopping-cart": "3.1.2",
     "@getstanza/react": "*",
-    "@getstanza/next": "*"
+    "@getstanza/next": "*",
+    "@getstanza/node": "*"
   },
   "devDependencies": {
     "@types/micro": "^7.3.7",
