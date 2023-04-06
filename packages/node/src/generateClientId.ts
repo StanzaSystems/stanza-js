@@ -1,3 +1,9 @@
-import { v4 as uuid } from 'uuid'
-
-export const generateClientId = (): string => uuid()
+export const generateClientId = (): string => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const crypto = require('crypto')
+    return crypto.randomUUID()
+  } catch {
+    return ''
+  }
+}
