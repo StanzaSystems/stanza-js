@@ -17,7 +17,9 @@
 body {
   margin: 0;
   padding: 0;
-  background: var(--body-color);
+  background: #6772e5;
+  background: linear-gradient(to bottom right, #6772e5 0%, #bd91ff 20%, white 50%);
+  background-repeat: no-repeat;
   overflow-y: scroll;
 }
 
@@ -34,6 +36,7 @@ body {
 
 .container {
   max-width: var(--container-width-max);
+  background: var(--body-color);
   padding: 45px 25px;
   display: flex;
   flex-direction: column;
