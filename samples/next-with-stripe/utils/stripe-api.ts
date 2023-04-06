@@ -1,4 +1,4 @@
-interface StripeAPIProduct {
+export interface StripeAPIProduct {
   id: string
   object: string
   active: boolean

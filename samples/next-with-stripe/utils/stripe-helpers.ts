@@ -1,3 +1,5 @@
+import { type StripeAPIProduct } from './stripe-api'
+
 export function formatAmountForDisplay (
   amount: number,
   currency: string
@@ -46,4 +48,17 @@ export function formatAmountFromStripe (
     }
   }
   return zeroDecimalCurrency ? amount : Math.round(amount / 100)
+}
+
+export function productsFromStripeProduct (stripeProducts: StripeAPIProduct[]) {
+  return stripeProducts.map((apiProduct) => ({
+    name: apiProduct.name,
+    id: apiProduct.id,
+    currency: apiProduct.default_price.currency,
+    image: apiProduct.images[0],
+    tags: [],
+    price: apiProduct.default_price.unit_amount,
+    description: apiProduct.description,
+    attribution: ''
+  }))
 }
