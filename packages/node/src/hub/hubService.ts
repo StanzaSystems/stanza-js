@@ -1,51 +1,6 @@
-import { z } from 'zod'
+import { serviceConfig, type ServiceConfigResult } from './model/serviceConfig'
 
 const HUB_REQUEST_TIMEOUT = 1000
-
-const zService = z.object({
-  name: z.string(),
-  environment: z.string(),
-  release: z.string(),
-  tags: z.array(z.object({ key: z.string(), value: z.string() }))
-})
-const zNonStrictObject = z.object({}).nonstrict()
-const zTraceConfig = z.object({
-  collectorUrl: z.string(),
-  collectorKey: z.string(),
-  sampleRateDefault: z.number(),
-  overrides: z.array(zNonStrictObject)
-})
-const zMetricConfig = z.object({
-  collectorUrl: z.string(),
-  collectorKey: z.string()
-})
-const zSentinelConfig = z.object({
-  circuitbreakerRulesJson: z.string(),
-  flowRulesJson: z.string(),
-  isolationRulesJson: z.string(),
-  systemRulesJson: z.string()
-})
-const serviceConfigNoData = z.object({
-  version: z.string(),
-  configDataSent: z.literal(false),
-  config: z.null().optional()
-})
-
-const serviceConfigWithData = z.object({
-  version: z.string(),
-  configDataSent: z.literal(true),
-  config: z.object({
-    service: zService,
-    traceConfig: zTraceConfig,
-    metricConfig: zMetricConfig,
-    sentinelConfig: zSentinelConfig
-  })
-})
-const serviceConfig = z.union(
-  [serviceConfigWithData, serviceConfigNoData]
-)
-
-export type ServiceConfigResult = z.infer<typeof serviceConfig>
 
 export type ServiceConfig = Pick<ServiceConfigResult, 'version' | 'config'>
 

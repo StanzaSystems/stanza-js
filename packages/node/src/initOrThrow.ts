@@ -1,6 +1,6 @@
 import { generateClientId } from './generateClientId'
 import { getEnvInitOptions } from './getEnvInitOptions'
-import { createHubService } from './hubService'
+import { createHubService } from './hub/hubService'
 import { stanzaInitOptions, type StanzaInitOptions } from './stanzaInitOptions'
 
 export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {

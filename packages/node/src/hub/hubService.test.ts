@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createHubService, type ServiceConfigResult } from './hubService'
+import { type ServiceConfigResult } from './model/serviceConfig'
+import { createHubService } from './hubService'
 
 const fetchMock = vi.fn()
 
