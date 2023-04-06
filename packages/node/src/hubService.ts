@@ -25,7 +25,13 @@ const zSentinelConfig = z.object({
   isolationRulesJson: z.string(),
   systemRulesJson: z.string()
 })
-const serviceConfig = z.union([z.object({
+const serviceConfigNoData = z.object({
+  version: z.string(),
+  configDataSent: z.literal(false),
+  config: z.null().optional()
+})
+
+const serviceConfigWithData = z.object({
   version: z.string(),
   configDataSent: z.literal(true),
   config: z.object({
@@ -34,13 +40,14 @@ const serviceConfig = z.union([z.object({
     metricConfig: zMetricConfig,
     sentinelConfig: zSentinelConfig
   })
-}), z.object({
-  version: z.string(),
-  configDataSent: z.literal(false),
-  config: z.null()
-})])
+})
+const serviceConfig = z.union(
+  [serviceConfigWithData, serviceConfigNoData]
+)
 
-type ServiceConfig = Pick<z.infer<typeof serviceConfig>, 'version' | 'config'>
+export type ServiceConfigResult = z.infer<typeof serviceConfig>
+
+export type ServiceConfig = Pick<ServiceConfigResult, 'version' | 'config'>
 
 export const createHubService = (hubUrl: string, apiKey: string) => ({
   fetchServiceConfig: async ({ serviceName, serviceRelease, environment, lastVersionSeen }: {
