@@ -8,9 +8,12 @@ import type { NextApiRequest, NextApiResponse } from 'next'
  * The important thing is that the product info is loaded from somewhere trusted
  * so you know the pricing information is accurate.
  */
-import inventory from '../../../data/products'
+// import inventory from '../../../data/products'
+
+import getStripeAPI from '../../../utils/stripe-api'
 
 import Stripe from 'stripe'
+import { productsFromStripeProduct } from '../../../utils/stripe-helpers'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { validateCartItems } = require('use-shopping-cart/utilities')
@@ -26,6 +29,9 @@ export default async function handler (
 ) {
   if (req.method === 'POST') {
     try {
+      const stripeAPI = await getStripeAPI()
+      const stripeProducts = await stripeAPI.getProducts()
+      const inventory = productsFromStripeProduct(stripeProducts.data)
       // Validate the cart details that were sent from the client.
       const lineItems = validateCartItems(inventory as any, req.body)
       console.dir(lineItems)
@@ -44,7 +50,7 @@ export default async function handler (
         },
         line_items: lineItems,
         success_url: `${req.headers.origin}/result?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${req.headers.origin}/use-shopping-cart`,
+        cancel_url: `${req.headers.origin}/`,
         mode: (hasSubscription !== undefined) ? 'subscription' : 'payment'
       }
 
