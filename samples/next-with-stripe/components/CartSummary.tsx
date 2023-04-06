@@ -59,7 +59,7 @@ const CartSummary = () => {
       {/* This is where we'll render our cart */}
       {
         Object.values(cartDetails ?? {}).map(detail => (
-          <p>{detail.name} - {detail.quantity} x {formatCurrencyString({ value: detail.price, currency: detail.currency, language })} - {detail.formattedValue}</p>
+          <p key={detail.id}>{detail.name} - {detail.quantity} x {formatCurrencyString({ value: detail.price, currency: detail.currency, language })} - {detail.formattedValue}</p>
         ))
       }
       <p suppressHydrationWarning>

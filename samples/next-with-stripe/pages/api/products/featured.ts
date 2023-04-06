@@ -5,8 +5,8 @@ import getStripeAPI from '../../../utils/stripe-api'
 const handler: NextApiHandler = async (req, res) => {
   const stripeAPI = await getStripeAPI()
   const result = await stripeAPI.getProducts()
-
   const products = result.data
+
   const resultProducts: Product[] = products.map((apiProduct) => ({
     name: apiProduct.name,
     id: apiProduct.id,
@@ -17,8 +17,8 @@ const handler: NextApiHandler = async (req, res) => {
     description: apiProduct.description,
     attribution: ''
   }))
-  const searchString = req.query.search?.toString() ?? ''
-  res.json(resultProducts.filter(({ name }) => name.toLowerCase().includes(searchString.toLowerCase())))
+    .filter((_, index) => index < 2)
+  res.json(resultProducts)
 }
 
 export default handler
