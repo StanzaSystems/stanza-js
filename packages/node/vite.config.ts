@@ -6,6 +6,7 @@ import dts from 'vite-plugin-dts'
 export default defineConfig({
   plugins: [eslint(), dts()],
   build: {
+    target: 'es2020',
     lib: {
       // Could also be a dictionary or array of multiple entry points
       entry: resolve(__dirname, 'index.ts'),

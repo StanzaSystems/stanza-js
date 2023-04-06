@@ -12,14 +12,19 @@ vi.mock('./getEnvInitOptions', () => {
 })
 
 const getEnvInitOptionsMock = vi.fn()
+const fetchMock = vi.fn()
 
 beforeEach(async () => {
   const { getEnvInitOptions } = await vi.importActual<{ getEnvInitOptions: typeof getEnvInitOptionsType }>('./getEnvInitOptions')
   getEnvInitOptionsMock.mockImplementation(getEnvInitOptions)
+  fetchMock.mockImplementation(fetch)
+  vi.stubGlobal('fetch', fetchMock)
 })
 
 afterEach(() => {
   getEnvInitOptionsMock.mockReset()
+  fetchMock.mockReset()
+  vi.unstubAllGlobals()
 })
 
 describe('Stanza init', function () {
@@ -35,6 +40,9 @@ describe('Stanza init', function () {
 
   describe('valid options', () => {
     it('should resolve when valid options provided', async () => {
+      fetchMock.mockImplementation(async () => ({
+        json: async () => ({})
+      }))
       await expect(initOrThrow({
         hubUrl: 'https://url.to.stanza.hub',
         apiKey: 'dummyAPIKey',
@@ -45,6 +53,9 @@ describe('Stanza init', function () {
     })
 
     it('should resolve if valid config is provided', async () => {
+      fetchMock.mockImplementation(async () => ({
+        json: async () => ({})
+      }))
       await expect(initOrThrow({
         hubUrl: 'https://url.to.stanza.hub',
         apiKey: 'dummyAPIKey',
@@ -55,6 +66,9 @@ describe('Stanza init', function () {
     })
 
     it('should resolve for empty config if env variables are set', async () => {
+      fetchMock.mockImplementation(async () => ({
+        json: async () => ({})
+      }))
       getEnvInitOptionsMock.mockImplementation(() => {
         return {
           hubUrl: 'https://url.to.stanza.hub',
