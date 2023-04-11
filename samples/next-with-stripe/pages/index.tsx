@@ -1,11 +1,11 @@
-import { stanzaSession } from '@getstanza/next'
 import { type GetServerSideProps, type NextPage } from 'next'
 import { useRouter } from 'next/router'
 import React, { useCallback } from 'react'
 import FeaturedProducts from '../components/FeaturedProducts'
 import SearchBar from '../components/SearchBar'
+import appStanzaSession from '../utils/app-stanza-session'
 
-const { getEnablementNumber } = stanzaSession()
+const { getEnablementNumber } = appStanzaSession
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const enablementNumber = await getEnablementNumber(context.req)

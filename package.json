@@ -33,5 +33,8 @@
   "workspaces": [
     "packages/*",
     "samples/*"
-  ]
+  ],
+  "dependencies": {
+    "zod": "^3.21.4"
+  }
 }

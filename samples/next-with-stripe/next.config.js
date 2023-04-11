@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const withTM = require('next-transpile-modules')([
   '@getstanza/react',
-  '@getstanza/next'
+  '@getstanza/next',
+  '@getstanza/node',
 ])
 
 const COOKIE_PREFIX = process.env.NODE_ENV === 'development' ? '__Dev-' : '__Host-'
@@ -11,4 +12,7 @@ module.exports = withTM({
   publicRuntimeConfig: {
     stanzaEnablementNumberCookieName: `${COOKIE_PREFIX}stanza-enablement-number`,
   },
+  experimental: {
+    instrumentationHook: true
+  }
 })

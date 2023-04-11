@@ -1,0 +1,30 @@
+{
+  "name": "@getstanza/node",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Stanza Node SDK",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/getstanza-node.umd.cjs",
+  "module": "./dist/getstanza-node.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/getstanza-node.js",
+      "require": "./dist/getstanza-node.umd.cjs"
+    }
+  },
+  "author": "Stanza",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite build --mode development --watch",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  }
+}
