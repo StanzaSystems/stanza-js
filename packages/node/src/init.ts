@@ -1,3 +1,4 @@
+import { addInstrumentation } from './addInstrumentation'
 import { generateClientId } from './generateClientId'
 import { getEnvInitOptions } from './getEnvInitOptions'
 import { createHubService } from './hub/hubService'
@@ -17,6 +18,8 @@ export const init = async (options: Partial<StanzaInitOptions> = {}) => {
   const clientId = generateClientId()
 
   try {
+    await addInstrumentation()
+
     const hubService = createHubService(initOptions.hubUrl, initOptions.apiKey)
     const serviceConfig = await hubService.fetchServiceConfig({
       serviceName: initOptions.serviceName,
