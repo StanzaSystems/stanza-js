@@ -7,7 +7,7 @@ import { builtinModules } from "module"
 export default defineConfig({
   plugins: [eslint(), dts()],
   build: {
-    target: 'esnext',
+    target: 'es2020',
     lib: {
       // Could also be a dictionary or array of multiple entry points
       entry: resolve(__dirname, 'index.ts'),

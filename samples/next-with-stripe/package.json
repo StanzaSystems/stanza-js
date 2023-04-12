@@ -21,10 +21,7 @@
     "use-shopping-cart": "3.1.2",
     "@getstanza/react": "*",
     "@getstanza/next": "*",
-    "@getstanza/node": "*",
-    "@opentelemetry/instrumentation-http": "^0.37.0",
-    "@opentelemetry/sdk-node": "^0.36.1",
-    "@opentelemetry/sdk-trace-node": "^1.10.1"
+    "@getstanza/node": "*"
   },
   "devDependencies": {
     "@types/micro": "^7.3.7",
