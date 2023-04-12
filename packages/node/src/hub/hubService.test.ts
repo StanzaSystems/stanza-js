@@ -2,18 +2,22 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { type ServiceConfigResult } from './model/serviceConfig'
 import { createHubService } from './hubService'
 
+vi.mock('../fetchImplementation', () => {
+  return {
+    fetch: ((...args) => fetchMock(...args)) satisfies typeof fetch
+  }
+})
+
 const fetchMock = vi.fn()
 
 beforeEach(async () => {
   fetchMock.mockImplementation(async () => ({
     json: async () => ({})
   }))
-  vi.stubGlobal('fetch', fetchMock)
 })
 
 afterEach(() => {
   fetchMock.mockReset()
-  vi.unstubAllGlobals()
 })
 describe('hubService', async () => {
   describe('fetchServiceConfig', function () {

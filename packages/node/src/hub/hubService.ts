@@ -1,4 +1,5 @@
 import { serviceConfig, type ServiceConfigResult } from './model/serviceConfig'
+import { fetch } from '../fetchImplementation'
 
 const HUB_REQUEST_TIMEOUT = 1000
 
