@@ -1,3 +1,5 @@
+import { StanzaBaggagePropagator } from './StanzaBaggagePropagator'
+
 export const addInstrumentation = async () => {
   /* eslint-disable @typescript-eslint/no-var-requires */
   const { HttpInstrumentation } = require('@opentelemetry/instrumentation-http')
@@ -7,10 +9,18 @@ export const addInstrumentation = async () => {
   // NOTE: @opentelemetry/sdk-node needs to be required after we create the instrumentation.
   // Otherwise, the instrumentation fails to work
   const { NodeSDK } = require('@opentelemetry/sdk-node')
+  const { CompositePropagator, W3CTraceContextPropagator } = require('@opentelemetry/core')
 
   /* eslint-enable @typescript-eslint/no-var-requires */
   const sdk = new NodeSDK({
     traceExporter: new InMemorySpanExporter(),
+    textMapPropagator:
+      new CompositePropagator({
+        propagators: [
+          new W3CTraceContextPropagator(),
+          new StanzaBaggagePropagator()
+        ]
+      }),
     instrumentations: [
       httpInstrumentation
       // TODO: enable when FetchInstrumentation supports Node
