@@ -18,7 +18,5 @@ export const addInstrumentation = async () => {
     ]
   })
   sdk.start()
-
-  console.log('##### Added instrumentation')
 }
 export {}

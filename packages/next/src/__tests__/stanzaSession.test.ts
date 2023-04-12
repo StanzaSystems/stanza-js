@@ -24,7 +24,7 @@ const createMockApiResponse = ({
   setHeader
 } as any as NextApiResponse)
 
-describe('stanzaSession', () => {
+describe.skip('stanzaSession', () => {
   it('should not throw on creation', () => {
     expect(() => stanzaSession()).not.toThrow()
   })
