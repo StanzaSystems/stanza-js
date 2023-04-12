@@ -13,8 +13,9 @@ jobs:
     name: Build - node ${{ matrix.nodeVersion }}
     runs-on: 'ubuntu-latest'
     timeout-minutes: 12
-    matrix:
-      nodeVersion: [16, 18]
+    strategy:
+      matrix:
+        nodeVersion: [16, 18]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -46,8 +47,9 @@ jobs:
     name: Test - node ${{ matrix.nodeVersion }}
     runs-on: 'ubuntu-latest'
     timeout-minutes: 12
-    matrix:
-      nodeVersion: [16, 18]
+    strategy:
+      matrix:
+        nodeVersion: [16, 18]
     steps:
       - uses: actions/checkout@v3
         with:
