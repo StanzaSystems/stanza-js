@@ -28,9 +28,10 @@ export default defineConfig({
     }
   },
   test: {
+    setupFiles: ['./src/__tests__/setup.ts'],
     coverage: {
       reporter: [['lcov', {'projectRoot': '../..'}]],
       reportsDirectory: '../../coverage/packages/next'
-    },
+    }
   }
 })

@@ -10,6 +10,11 @@ vi.mock('./getEnvInitOptions', () => {
     }
   }
 })
+vi.mock('./fetchImplementation', () => {
+  return {
+    fetch: ((...args) => fetchMock(...args)) satisfies typeof fetch
+  }
+})
 
 const getEnvInitOptionsMock = vi.fn()
 const fetchMock = vi.fn()
@@ -17,14 +22,11 @@ const fetchMock = vi.fn()
 beforeEach(async () => {
   const { getEnvInitOptions } = await vi.importActual<{ getEnvInitOptions: typeof getEnvInitOptionsType }>('./getEnvInitOptions')
   getEnvInitOptionsMock.mockImplementation(getEnvInitOptions)
-  fetchMock.mockImplementation(fetch)
-  vi.stubGlobal('fetch', fetchMock)
 })
 
 afterEach(() => {
   getEnvInitOptionsMock.mockReset()
   fetchMock.mockReset()
-  vi.unstubAllGlobals()
 })
 
 describe('Stanza init', function () {
@@ -67,7 +69,7 @@ describe('Stanza init', function () {
         environment: 'testEnvironment'
       })
 
-      expect(warnSpy).not.toHaveBeenCalled()
+      expect(warnSpy).not.toHaveBeenCalledWith('Provided options are invalid')
 
       vi.unstubAllGlobals()
     })

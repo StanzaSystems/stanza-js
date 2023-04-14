@@ -10,15 +10,19 @@ on:
 
 jobs:
   build:
+    name: Build - node ${{ matrix.nodeVersion }}
     runs-on: 'ubuntu-latest'
     timeout-minutes: 12
+    strategy:
+      matrix:
+        nodeVersion: [16, 18]
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
-          node-version-file: '.nvmrc'
+          node-version: ${{ matrix.nodeVersion }}
           cache: 'npm'
       - uses: nrwl/nx-set-shas@v3
       - run: npm ci
@@ -40,15 +44,19 @@ jobs:
       - run: npx nx run-many --target=lint --parallel=3
 
   test:
+    name: Test - node ${{ matrix.nodeVersion }}
     runs-on: 'ubuntu-latest'
     timeout-minutes: 12
+    strategy:
+      matrix:
+        nodeVersion: [16, 18]
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
-          node-version-file: '.nvmrc'
+          node-version: ${{ matrix.nodeVersion }}
           cache: 'npm'
       - uses: nrwl/nx-set-shas@v3
       - run: npm ci

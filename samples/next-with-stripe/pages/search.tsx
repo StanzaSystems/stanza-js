@@ -15,7 +15,7 @@ const SearchPage = () => {
   useEffect(() => {
     fetch(`api/products?search=${searchString}`, {
       headers: {
-        baggage: 'stanzaFeature=search'
+        baggage: 'stz-feat=search'
       }
     })
       .then(async response => response.json())

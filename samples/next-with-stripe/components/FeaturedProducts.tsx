@@ -8,7 +8,7 @@ const FeaturedProducts = () => {
   useEffect(() => {
     fetch('api/products/featured', {
       headers: {
-        baggage: 'stanzaFeature=featured'
+        baggage: 'stz-feat=featured'
       }
     })
       .then(async response => response.json())
