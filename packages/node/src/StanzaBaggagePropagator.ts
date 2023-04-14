@@ -2,7 +2,7 @@ import { type Context, propagation, type TextMapGetter, type TextMapSetter } fro
 import { W3CBaggagePropagator } from '@opentelemetry/core'
 import { getAllStanzaBaggageEntries, getStanzaBaggageKeys } from './stanzaBaggageKey'
 
-const enrichContextBaggage = (context: Context): Context => {
+export const enrichContextBaggage = (context: Context): Context => {
   const baggage = propagation.getBaggage(context)
 
   if (baggage === undefined) {

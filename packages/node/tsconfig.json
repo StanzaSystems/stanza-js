@@ -2,9 +2,11 @@
   "extends": "../../tsconfig.json",
 
 
-  "include": ["src/**/*", "index.ts"],
+  "include": ["src/**/*", "index.ts", "types/*.d.ts"],
+
 
   "compilerOptions": {
+    "typeRoots": ["./types"]
     // package-specific options
   }
 }
