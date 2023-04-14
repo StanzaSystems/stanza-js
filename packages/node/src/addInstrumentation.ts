@@ -1,4 +1,4 @@
-import { StanzaBaggagePropagator } from './StanzaBaggagePropagator'
+import { StanzaBaggagePropagator } from './propagation/StanzaBaggagePropagator'
 
 export const addInstrumentation = async () => {
   /* eslint-disable @typescript-eslint/no-var-requires */
