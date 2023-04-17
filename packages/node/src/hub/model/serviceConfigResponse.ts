@@ -39,8 +39,8 @@ const serviceConfigWithData = z.object({
     sentinelConfig: zSentinelConfig
   })
 })
-export const serviceConfig = z.union(
+export const serviceConfigResponse = z.union(
   [serviceConfigWithData, serviceConfigNoData]
 )
 
-export type ServiceConfigResult = z.infer<typeof serviceConfig>
+export type ServiceConfigResponse = z.infer<typeof serviceConfigResponse>

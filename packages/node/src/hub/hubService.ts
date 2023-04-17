@@ -1,13 +1,14 @@
+import { type z, type ZodType } from 'zod'
 import { fetch } from '../fetchImplementation'
-import { decoratorConfig, type DecoratorConfigResult } from './model/decoratorConfig'
-import { serviceConfig, type ServiceConfigResult } from './model/serviceConfig'
-import { getToken, type GetTokenResponse } from './model/stanzaToken'
+import { decoratorConfigResponse, type DecoratorConfigResponse } from './model/decoratorConfigResponse'
+import { serviceConfigResponse, type ServiceConfigResponse } from './model/serviceConfigResponse'
+import { stanzaTokenResponse, type StanzaTokenResponse } from './model/stanzaTokenResponse'
 
 const HUB_REQUEST_TIMEOUT = 1000
 
-export type ServiceConfig = Pick<ServiceConfigResult, 'version' | 'config'>
-export type DecoratorConfig = Pick<DecoratorConfigResult, 'version' | 'config'>
-export type StanzaToken = GetTokenResponse
+export type ServiceConfig = Pick<ServiceConfigResponse, 'version' | 'config'>
+export type DecoratorConfigResult = Pick<DecoratorConfigResponse, 'version' | 'config'>
+export type StanzaToken = StanzaTokenResponse
 
 interface FetchServiceConfigOptions {
   lastVersionSeen?: string
@@ -26,7 +27,7 @@ interface GetTokenOptions {
 
 export interface HubService {
   fetchServiceConfig: (options?: FetchServiceConfigOptions) => Promise<ServiceConfig | null>
-  fetchDecoratorConfig: (options: FetchDecoratorConfigOptions) => Promise<DecoratorConfig | null>
+  fetchDecoratorConfig: (options: FetchDecoratorConfigOptions) => Promise<DecoratorConfigResult | null>
   getToken: (options: GetTokenOptions) => Promise<StanzaToken | null>
 }
 
@@ -37,53 +38,15 @@ interface HubServiceInitOptions {
   serviceRelease: string
   environment: string
 }
+type HubApiPath = string
 
-export const createHubService = ({ hubUrl, serviceName, serviceRelease, environment, apiKey }: HubServiceInitOptions): HubService => ({
-  fetchServiceConfig: async ({ lastVersionSeen } = {}) => {
-    const requestUrl = new URL(`${hubUrl}/v1/config/service`)
-    requestUrl.searchParams.append('service.name', serviceName)
-    requestUrl.searchParams.append('service.release', serviceRelease)
-    requestUrl.searchParams.append('service.environment', environment)
-    lastVersionSeen !== undefined && requestUrl.searchParams.append('versionSeen', lastVersionSeen)
+export const createHubService = ({ hubUrl, serviceName, serviceRelease, environment, apiKey }: HubServiceInitOptions): HubService => {
+  const hubRequest = async <T extends ZodType>(apiPath: HubApiPath, params: Record<string, string | undefined>, validateRequest: T): Promise<z.infer<T> | null> => {
+    const requestUrl = new URL(`${hubUrl}/${apiPath}`)
 
-    const response = await Promise.race([
-      fetch(requestUrl, {
-        headers: {
-          'X-Stanza-Key': apiKey
-        }
-      }),
-      new Promise<Promise<Response>>((_resolve, reject) => {
-        setTimeout(() => {
-          reject(new Error('Hub request timed out'))
-        }, HUB_REQUEST_TIMEOUT)
-      })
-    ])
-
-    const data = await response.json()
-
-    const serviceConfigResult = serviceConfig.safeParse(data)
-
-    if (!serviceConfigResult.success) {
-      return null
-    }
-    if (!serviceConfigResult.data.configDataSent) {
-      return null
-    }
-
-    const serviceConfigData = serviceConfigResult.data
-
-    return {
-      config: serviceConfigData.config,
-      version: serviceConfigData.version
-    }
-  },
-  fetchDecoratorConfig: async ({ decorator, lastVersionSeen }) => {
-    const requestUrl = new URL(`${hubUrl}/v1/config/decorator`)
-    requestUrl.searchParams.append('decorator', decorator)
-    requestUrl.searchParams.append('service.name', serviceName)
-    requestUrl.searchParams.append('service.release', serviceRelease)
-    requestUrl.searchParams.append('service.environment', environment)
-    lastVersionSeen !== undefined && requestUrl.searchParams.append('versionSeen', lastVersionSeen)
+    Object.entries(params).forEach(([key, value]) => {
+      key !== '' && value !== undefined && value !== '' && requestUrl.searchParams.append(key, value)
+    })
 
     const response = await Promise.race([
       fetch(requestUrl, {
@@ -100,54 +63,63 @@ export const createHubService = ({ hubUrl, serviceName, serviceRelease, environm
 
     const data = await response.json()
 
-    const decoratorConfigResult = decoratorConfig.safeParse(data)
+    const parsedResult = validateRequest.safeParse(data)
 
-    if (!decoratorConfigResult.success) {
-      return null
-    }
-    if (!decoratorConfigResult.data.configDataSent) {
+    if (!parsedResult.success) {
       return null
     }
 
-    const serviceConfigData = decoratorConfigResult.data
-
-    return {
-      config: serviceConfigData.config,
-      version: serviceConfigData.version
-    }
-  },
-  getToken: async ({ decorator, feature, priorityBoost }) => {
-    const requestUrl = new URL(`${hubUrl}/v1/quota/token`)
-    requestUrl.searchParams.append('decorator', decorator)
-    feature !== undefined && requestUrl.searchParams.append('feature', feature)
-    priorityBoost !== undefined && requestUrl.searchParams.append('priorityBoos', priorityBoost.toFixed(0))
-
-    const response = await Promise.race([
-      fetch(requestUrl, {
-        headers: {
-          'X-Stanza-Key': apiKey
-        }
-      }),
-      new Promise<Promise<Response>>((_resolve, reject) => {
-        setTimeout(() => {
-          reject(new Error('Hub request timed out'))
-        }, HUB_REQUEST_TIMEOUT)
-      })
-    ])
-
-    const data = await response.json()
-
-    const getTokenResult = getToken.safeParse(data)
-
-    if (!getTokenResult.success) {
-      return null
-    }
-    if (!getTokenResult.data.granted) {
-      return null
-    }
-
-    const getTokenData = getTokenResult.data
-
-    return getTokenData
+    return parsedResult.data
   }
-})
+
+  return ({
+    fetchServiceConfig: async ({ lastVersionSeen } = {}) => {
+      const serviceConfigResult = await hubRequest('v1/config/service', {
+        'service.name': serviceName,
+        'service.release': serviceRelease,
+        'service.environment': environment,
+        versionSeen: lastVersionSeen
+      }, serviceConfigResponse)
+
+      if (serviceConfigResult === null || !serviceConfigResult.configDataSent) {
+        return null
+      }
+
+      return {
+        config: serviceConfigResult.config,
+        version: serviceConfigResult.version
+      }
+    },
+    fetchDecoratorConfig: async ({ decorator, lastVersionSeen }) => {
+      const decoratorConfigResult = await hubRequest('v1/config/decorator', {
+        decorator,
+        'service.name': serviceName,
+        'service.release': serviceRelease,
+        'service.environment': environment,
+        versionSeen: lastVersionSeen
+      }, decoratorConfigResponse)
+
+      if (decoratorConfigResult === null || !decoratorConfigResult.configDataSent) {
+        return null
+      }
+
+      return {
+        config: decoratorConfigResult.config,
+        version: decoratorConfigResult.version
+      }
+    },
+    getToken: async ({ decorator, feature, priorityBoost }) => {
+      const getTokenResult = await hubRequest('v1/quota/token', {
+        decorator,
+        feature,
+        priorityBoost: priorityBoost?.toFixed(0)
+      }, stanzaTokenResponse)
+
+      if (getTokenResult === null || !getTokenResult.granted) {
+        return null
+      }
+
+      return getTokenResult
+    }
+  })
+}

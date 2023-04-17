@@ -17,7 +17,7 @@ const decoratorConfigWithData = z.object({
   version: z.string(),
   configDataSent: z.literal(true),
   config: z.object({
-    decoratorConfig: z.string(),
+    decorator: z.string(),
     environment: z.string(),
     checkQuota: z.boolean(),
     strictSynchronousQuota: z.boolean(),
@@ -26,8 +26,8 @@ const decoratorConfigWithData = z.object({
     traceConfig: zTraceConfig
   })
 })
-export const decoratorConfig = z.union(
+export const decoratorConfigResponse = z.union(
   [decoratorConfigWithData, decoratorConfigNoData]
 )
 
-export type DecoratorConfigResult = z.infer<typeof decoratorConfig>
+export type DecoratorConfigResponse = z.infer<typeof decoratorConfigResponse>

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { type ServiceConfigResult } from './model/serviceConfig'
+import { type ServiceConfigResponse } from './model/serviceConfigResponse'
 import { createHubService } from './hubService'
 
 vi.mock('../fetchImplementation', () => {
@@ -72,7 +72,7 @@ describe('hubService', async () => {
           json: async () => ({
             version: '1',
             configDataSent: false
-          } satisfies ServiceConfigResult)
+          } satisfies ServiceConfigResponse)
         }
       })
 
@@ -106,7 +106,7 @@ describe('hubService', async () => {
                 systemRulesJson: 'systemRulesJson'
               }
             }
-          } satisfies ServiceConfigResult)
+          } satisfies ServiceConfigResponse)
         }
       })
 

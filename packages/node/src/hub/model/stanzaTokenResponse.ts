@@ -8,6 +8,6 @@ const getTokenRejected = z.object({
   granted: z.literal(false)
 })
 
-export const getToken = z.union([getTokenGranted, getTokenRejected])
+export const stanzaTokenResponse = z.union([getTokenGranted, getTokenRejected])
 
-export type GetTokenResponse = z.infer<typeof getToken>
+export type StanzaTokenResponse = z.infer<typeof stanzaTokenResponse>

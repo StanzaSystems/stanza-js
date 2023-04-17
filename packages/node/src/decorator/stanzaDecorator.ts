@@ -1,25 +1,21 @@
 import { hubService } from '../global'
-
-interface StanzaDecoratorOptions {
-  decorator: string
-  feature?: string
-  priorityBoost?: number
-}
+import { initDecorator, type StanzaDecoratorOptions } from './initStanzaDecorator'
 
 type Promisify<T> = T extends PromiseLike<unknown> ? T : Promise<T>
 
 export const stanzaDecorator = <Fn extends (...args: unknown[]) => unknown>(options: StanzaDecoratorOptions, fn: Fn): (...args: Parameters<Fn>) => Promisify<ReturnType<Fn>> => {
-  void hubService.fetchDecoratorConfig({
-    decorator: options.decorator
-  })
+  const { shouldCheckQuota } = initDecorator(options)
 
   return (async (...args: Parameters<Fn>) => {
-    try {
-      const token = await hubService.getToken(options)
-      if (token?.granted === false) {
-        return
+    if (shouldCheckQuota()) {
+      try {
+        const token = await hubService.getToken(options)
+        if (token?.granted === false) {
+          return
+        }
+      } catch {
       }
-    } catch {}
+    }
 
     return fn(...args)
   }) as (...args: Parameters<Fn>) => Promisify<ReturnType<Fn>>
