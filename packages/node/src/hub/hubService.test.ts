@@ -21,12 +21,16 @@ afterEach(() => {
 })
 describe('hubService', async () => {
   describe('fetchServiceConfig', function () {
-    const { fetchServiceConfig } = createHubService('https://url.to.hub', 'valid-api-key')
+    const { fetchServiceConfig } = createHubService({
+      hubUrl: 'https://url.to.hub',
+      apiKey: 'valid-api-key',
+      serviceName: 'TestService',
+      serviceRelease: '1',
+      environment: 'test'
+    })
     it('should call fetch with proper params', async () => {
       await fetchServiceConfig({
-        serviceName: 'TestService',
-        serviceRelease: '1',
-        environment: 'test'
+
       })
 
       expect(fetchMock).toHaveBeenCalledOnce()
@@ -42,9 +46,6 @@ describe('hubService', async () => {
 
     it('should call fetch with proper params - including lastVersionSeen', async () => {
       await fetchServiceConfig({
-        serviceName: 'TestService',
-        serviceRelease: '1',
-        environment: 'test',
         lastVersionSeen: '123'
       })
 
@@ -60,11 +61,7 @@ describe('hubService', async () => {
     })
 
     it('should return null if invalid data returned', async () => {
-      const result = await fetchServiceConfig({
-        serviceName: 'TestService',
-        serviceRelease: '1',
-        environment: 'test'
-      })
+      const result = await fetchServiceConfig()
 
       expect(result).toBeNull()
     })
@@ -79,11 +76,7 @@ describe('hubService', async () => {
         }
       })
 
-      const result = await fetchServiceConfig({
-        serviceName: 'TestService',
-        serviceRelease: '1',
-        environment: 'test'
-      })
+      const result = await fetchServiceConfig()
 
       expect(result).toBeNull()
     })
@@ -117,11 +110,7 @@ describe('hubService', async () => {
         }
       })
 
-      const result = await fetchServiceConfig({
-        serviceName: 'TestService',
-        serviceRelease: '1',
-        environment: 'test'
-      })
+      const result = await fetchServiceConfig()
 
       expect(result).toEqual({
         version: '1',
@@ -153,11 +142,7 @@ describe('hubService', async () => {
         return new Promise(() => {})
       })
 
-      void fetchServiceConfig({
-        serviceName: 'TestService',
-        serviceRelease: '1',
-        environment: 'test'
-      }).catch((e) => {
+      void fetchServiceConfig().catch((e) => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
