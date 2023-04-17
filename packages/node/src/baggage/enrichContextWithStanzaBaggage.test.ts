@@ -1,10 +1,10 @@
 import { type BaggageEntry, propagation, ROOT_CONTEXT } from '@opentelemetry/api'
 import { describe, expect, it } from 'vitest'
-import { enrichContextBaggage } from './StanzaBaggagePropagator'
+import { enrichContextWithStanzaBaggage } from './enrichContextWithStanzaBaggage'
 
 const EMPTY_CONTEXT = ROOT_CONTEXT
 
-describe('enrichContextBaggage', function () {
+describe('enrichContextWithStanzaBaggage', function () {
   it.each([
     {
       'stz-feat': { value: 'testFeature' }
@@ -18,7 +18,7 @@ describe('enrichContextBaggage', function () {
   ] as Array<Record<string, BaggageEntry>>)('should enrich context with all additional keys given: %o', function (baggageEntries) {
     const contextWithFeatureBaggage = propagation.setBaggage(EMPTY_CONTEXT, propagation.createBaggage(baggageEntries))
 
-    expect(enrichContextBaggage(contextWithFeatureBaggage)).toHaveBaggage({
+    expect(enrichContextWithStanzaBaggage(contextWithFeatureBaggage)).toHaveBaggage({
       'stz-feat': { value: 'testFeature' },
       'uberctx-stz-feat': { value: 'testFeature' },
       'ot-baggage-stz-feat': { value: 'testFeature' }
@@ -41,7 +41,7 @@ describe('enrichContextBaggage', function () {
   ] as Array<Record<string, BaggageEntry>>)('should enrich context with all additional keys preferring keys in order [StanzaKey, JaegerKeys, DatadogKeys] and given: %o', function (baggageEntries) {
     const contextWithFeatureBaggage = propagation.setBaggage(EMPTY_CONTEXT, propagation.createBaggage(baggageEntries))
 
-    expect(enrichContextBaggage(contextWithFeatureBaggage)).toHaveBaggage({
+    expect(enrichContextWithStanzaBaggage(contextWithFeatureBaggage)).toHaveBaggage({
       'stz-feat': { value: 'testFeature' },
       'uberctx-stz-feat': { value: 'testFeature' },
       'ot-baggage-stz-feat': { value: 'testFeature' }
@@ -49,14 +49,14 @@ describe('enrichContextBaggage', function () {
   })
 
   it('should not enrich an empty context', function () {
-    expect(enrichContextBaggage(EMPTY_CONTEXT)).toEqual(EMPTY_CONTEXT)
+    expect(enrichContextWithStanzaBaggage(EMPTY_CONTEXT)).toEqual(EMPTY_CONTEXT)
   })
 
   it('should not enrich a context without Stanza specific baggage', function () {
     const contextWithNonStanzaBaggage = propagation.setBaggage(EMPTY_CONTEXT, propagation.createBaggage({
       'another-baggage': { value: 'test value' }
     }))
-    expect(enrichContextBaggage(contextWithNonStanzaBaggage)).toHaveBaggage({
+    expect(enrichContextWithStanzaBaggage(contextWithNonStanzaBaggage)).toHaveBaggage({
       'another-baggage': { value: 'test value' }
     })
   })

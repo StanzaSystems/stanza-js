@@ -1,3 +1,4 @@
+import { getActiveStanzaEntry } from '@getstanza/node'
 import { type NextApiHandler } from 'next'
 import { type Product } from '../../../data/product'
 import getStripeAPI from '../../../utils/stripe-api'
@@ -6,6 +7,9 @@ const handler: NextApiHandler = async (req, res) => {
   const stripeAPI = await getStripeAPI()
   const result = await stripeAPI.getProducts()
   const products = result.data
+
+  const activeFeature: string = getActiveStanzaEntry('stz-feat') ?? ''
+  console.log(`Active Stanza feature: "${activeFeature}"`)
 
   const resultProducts: Product[] = products.map((apiProduct) => ({
     name: apiProduct.name,
