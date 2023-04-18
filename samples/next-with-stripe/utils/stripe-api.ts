@@ -36,6 +36,11 @@ const createStripeAPI = async (key: string): Promise<StripeAPI> => {
 
       url.searchParams.append('expand[]', 'data.default_price')
 
+      try {
+        // TODO: temporary call for testing
+        await fetch('http://localhost:3001/ping')
+      } catch {}
+
       const response = await fetch(url, {
         headers: {
           Authorization: `Bearer ${key}`

@@ -41,10 +41,12 @@ interface HubServiceInitOptions {
 type HubApiPath = string
 
 export const createHubService = ({ hubUrl, serviceName, serviceRelease, environment, apiKey }: HubServiceInitOptions): HubService => {
-  const hubRequest = async <T extends ZodType>(apiPath: HubApiPath, params: Record<string, string | undefined>, validateRequest: T): Promise<z.infer<T> | null> => {
+  const hubRequest = async <T extends ZodType>(apiPath: HubApiPath, params: Record<string, string | undefined> & { method?: string }, validateRequest: T): Promise<z.infer<T> | null> => {
     const requestUrl = new URL(`${hubUrl}/${apiPath}`)
 
-    Object.entries(params).forEach(([key, value]) => {
+    const { method = 'GET', ...restParams } = params
+
+    Object.entries(restParams).forEach(([key, value]) => {
       key !== '' && value !== undefined && value !== '' && requestUrl.searchParams.append(key, value)
     })
 
@@ -52,7 +54,8 @@ export const createHubService = ({ hubUrl, serviceName, serviceRelease, environm
       fetch(requestUrl, {
         headers: {
           'X-Stanza-Key': apiKey
-        }
+        },
+        method
       }),
       new Promise<Promise<Response>>((_resolve, reject) => {
         setTimeout(() => {
@@ -110,8 +113,10 @@ export const createHubService = ({ hubUrl, serviceName, serviceRelease, environm
     },
     getToken: async ({ decorator, feature, priorityBoost }) => {
       const getTokenResult = await hubRequest('v1/quota/token', {
+        method: 'POST',
         decorator,
         feature,
+        environment,
         priorityBoost: priorityBoost?.toFixed(0)
       }, stanzaTokenResponse)
 

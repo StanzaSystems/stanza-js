@@ -39,7 +39,8 @@ describe('hubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
-          }
+          },
+          method: 'GET'
         }
       )
     })
@@ -55,7 +56,8 @@ describe('hubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
-          }
+          },
+          method: 'GET'
         }
       )
     })
@@ -88,7 +90,6 @@ describe('hubService', async () => {
             version: '1',
             configDataSent: true,
             config: {
-              service: { name: 'TestService', release: '1', environment: 'test', tags: [] },
               traceConfig: {
                 collectorUrl: 'https://url.to.trace.collector',
                 collectorKey: 'trace-collector-key',
@@ -115,7 +116,6 @@ describe('hubService', async () => {
       expect(result).toEqual({
         version: '1',
         config: {
-          service: { name: 'TestService', release: '1', environment: 'test', tags: [] },
           traceConfig: {
             collectorUrl: 'https://url.to.trace.collector',
             collectorKey: 'trace-collector-key',
@@ -171,7 +171,8 @@ describe('hubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
-          }
+          },
+          method: 'GET'
         }
       )
     })
@@ -188,7 +189,8 @@ describe('hubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
-          }
+          },
+          method: 'GET'
         }
       )
     })

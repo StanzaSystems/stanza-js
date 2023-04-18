@@ -1,3 +1,4 @@
+import { StanzaApiKeyPropagator } from './propagation/StanzaApiKeyPropagator'
 import { StanzaBaggagePropagator } from './propagation/StanzaBaggagePropagator'
 
 export const addInstrumentation = async () => {
@@ -18,7 +19,8 @@ export const addInstrumentation = async () => {
       new CompositePropagator({
         propagators: [
           new W3CTraceContextPropagator(),
-          new StanzaBaggagePropagator()
+          new StanzaBaggagePropagator(),
+          new StanzaApiKeyPropagator()
         ]
       }),
     instrumentations: [
