@@ -1,9 +1,12 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { context } from '@opentelemetry/api'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { stanzaApiKeyContextKey } from '../context/stanzaApiKeyContextKey'
 import { updateHubService } from '../global'
 import { type DecoratorConfigResponse } from '../hub/model/decoratorConfigResponse'
 import { type ServiceConfigResponse } from '../hub/model/serviceConfigResponse'
 import { type StanzaTokenResponse } from '../hub/model/stanzaTokenResponse'
 import { stanzaDecorator } from './stanzaDecorator'
+import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks'
 
 const fetchServiceConfigMock = vi.fn<any[], Promise<ServiceConfigResponse | null>>(async () => new Promise<never>(() => {}))
 const fetchDecoratorConfigMock = vi.fn<any[], Promise<DecoratorConfigResponse | null>>(async () => new Promise<never>(() => {}))
@@ -27,6 +30,13 @@ beforeEach(() => {
     getToken: getTokenMock
   })
 })
+
+beforeAll(() => {
+  const contextManager = new AsyncHooksContextManager()
+  contextManager.enable()
+  context.setGlobalContextManager(contextManager)
+})
+
 describe('stanzaDecorator', function () {
   it('should pass-through execution initially', async function () {
     const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }, () => {
@@ -207,6 +217,76 @@ describe('stanzaDecorator', function () {
     rejectToken(new Error('Getting token failed'))
 
     expect(doStuff).not.toHaveBeenCalled()
+    await vi.advanceTimersByTimeAsync(0)
+
+    expect(doStuff).toHaveBeenCalledOnce()
+
+    vi.useRealTimers()
+  })
+
+  it('should attach token to an execution context when token is granted', async function () {
+    vi.useFakeTimers()
+
+    let resolveToken: (value: { granted: boolean, token: string }) => void = () => {}
+    getTokenMock.mockImplementation(async () => {
+      return new Promise<StanzaTokenResponse>((resolve) => {
+        resolveToken = resolve
+      })
+    })
+    fetchDecoratorConfigMock.mockImplementation(async () => Promise.resolve({
+      version: 'test',
+      configDataSent: true,
+      config: {
+        checkQuota: true
+      } as any
+    }))
+    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }, () => {
+      doStuff()
+      expect(context.active().getValue(stanzaApiKeyContextKey)).toBe('test-token')
+    })
+
+    // wait for decorator config to be initialized
+    await vi.advanceTimersByTimeAsync(0)
+
+    void decoratedDoStuff()
+
+    resolveToken({ granted: true, token: 'test-token' })
+
+    await vi.advanceTimersByTimeAsync(0)
+
+    expect(doStuff).toHaveBeenCalledOnce()
+
+    vi.useRealTimers()
+  })
+
+  it('should NOT attach token to an execution context when token fetching throws', async function () {
+    vi.useFakeTimers()
+
+    let rejectToken: (reason: Error) => void = () => {}
+    getTokenMock.mockImplementation(async () => {
+      return new Promise<never>((_resolve, reject) => {
+        rejectToken = reject
+      })
+    })
+    fetchDecoratorConfigMock.mockImplementation(async () => Promise.resolve({
+      version: 'test',
+      configDataSent: true,
+      config: {
+        checkQuota: true
+      } as any
+    }))
+    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }, () => {
+      doStuff()
+      expect(context.active().getValue(stanzaApiKeyContextKey)).toBeUndefined()
+    })
+
+    // wait for decorator config to be initialized
+    await vi.advanceTimersByTimeAsync(0)
+
+    void decoratedDoStuff()
+
+    rejectToken(new Error('Getting token failed'))
+
     await vi.advanceTimersByTimeAsync(0)
 
     expect(doStuff).toHaveBeenCalledOnce()

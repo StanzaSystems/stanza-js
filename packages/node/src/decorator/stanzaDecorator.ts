@@ -1,4 +1,4 @@
-import { withStanzaApiKey } from '../context/withStanzaApiKey'
+import { bindStanzaApiKey } from '../context/bindStanzaApiKey'
 import { hubService } from '../global'
 import { type StanzaToken } from '../hub/hubService'
 import { initDecorator, type StanzaDecoratorOptions } from './initStanzaDecorator'
@@ -20,6 +20,8 @@ export const stanzaDecorator = <Fn extends (...args: any[]) => unknown>(options:
     if (token?.granted === false) {
       return
     }
-    return token !== null ? withStanzaApiKey(token.token, () => fn(...args))() : fn(...args)
+    return token !== null
+      ? bindStanzaApiKey(token.token, fn)(...args)
+      : fn(...args)
   }) as (...args: Parameters<Fn>) => Promisify<ReturnType<Fn>>
 }

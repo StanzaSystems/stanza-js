@@ -19,7 +19,7 @@ export class StanzaApiKeyPropagator implements TextMapPropagator {
         ? headerValue
         : undefined
 
-    return apiKey !== undefined ? context.setValue(stanzaApiKeyContextKey, headerValue) : context
+    return apiKey !== undefined ? context.setValue(stanzaApiKeyContextKey, apiKey) : context
   }
 
   fields (): string[] {
