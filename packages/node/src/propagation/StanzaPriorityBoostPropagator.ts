@@ -1,30 +1,29 @@
-import { type Context, propagation, type TextMapGetter, type TextMapSetter } from '@opentelemetry/api'
+import { type Baggage, type Context, propagation, type TextMapGetter, type TextMapSetter } from '@opentelemetry/api'
 import { W3CBaggagePropagator } from '@opentelemetry/core'
 import { getStanzaBaggageEntry } from '../baggage/getStanzaBaggageEntry'
 import { getStanzaBaggageKeys } from '../baggage/getStanzaBaggageKeys'
+import { addPriorityBoostToContext } from '../context/addPriorityBoostToContext'
 import { stanzaPriorityBoostContextKey } from '../context/stanzaPriorityBoostContextKey'
 
-export const addPriorityBoostToContextBaggage = (context: Context): Context => {
-  const contextPriorityBoost = context.getValue(stanzaPriorityBoostContextKey)
-
-  if (typeof (contextPriorityBoost) !== 'number') {
-    return context
-  }
-
-  const baggage = propagation.getBaggage(context) ?? propagation.createBaggage()
-
+const getStanzaPriorityBoost = (baggage: Baggage) => {
   const baggageMaybePriorityBoost = parseInt(getStanzaBaggageEntry('stz-boost', baggage)?.value ?? '')
 
-  const baggagePriorityBoost = !isNaN(baggageMaybePriorityBoost) ? baggageMaybePriorityBoost : 0
+  return !isNaN(baggageMaybePriorityBoost) ? baggageMaybePriorityBoost : 0
+}
+
+export const addPriorityBoostToContextBaggage = (context: Context): Context => {
+  const baggage = propagation.getBaggage(context) ?? propagation.createBaggage()
+
+  const contextWithTotalPriorityBoost = addPriorityBoostToContext(getStanzaPriorityBoost(baggage))(context)
+
+  const totalPriorityBoost = contextWithTotalPriorityBoost.getValue(stanzaPriorityBoostContextKey)
 
   const boostStanzaBaggageKeys = getStanzaBaggageKeys('stz-boost')
 
-  const totalPriorityBoost = baggagePriorityBoost + contextPriorityBoost
-
-  const newBaggage = totalPriorityBoost !== 0
-    ? boostStanzaBaggageKeys
+  const newBaggage = typeof (totalPriorityBoost) !== 'number' || totalPriorityBoost === 0
+    ? baggage.removeEntries(...boostStanzaBaggageKeys)
+    : boostStanzaBaggageKeys
       .reduce((currentBaggage, key) => currentBaggage.setEntry(key, { value: totalPriorityBoost.toFixed(0) }), baggage)
-    : baggage.removeEntries(...boostStanzaBaggageKeys)
 
   return propagation.setBaggage(context, newBaggage)
 }
