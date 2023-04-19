@@ -1,9 +1,9 @@
 import * as oTelApi from '@opentelemetry/api'
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
-declare namespace global {
-  let stanzaApiKeyContextKey: symbol | undefined
-}
+const STANZA_API_KEY_CONTEXT_KEY_SYMBOL = Symbol.for('StanzaApiKeyContextKey')
 
-export const stanzaApiKeyContextKey = global.stanzaApiKeyContextKey = global.stanzaApiKeyContextKey ?? oTelApi.createContextKey(
+interface StanzaApiKeyContextKeyGlobal { [STANZA_API_KEY_CONTEXT_KEY_SYMBOL]: symbol | undefined }
+const stanzaApiKeyContextKeyGlobal = global as unknown as StanzaApiKeyContextKeyGlobal
+
+export const stanzaApiKeyContextKey = stanzaApiKeyContextKeyGlobal[STANZA_API_KEY_CONTEXT_KEY_SYMBOL] = stanzaApiKeyContextKeyGlobal[STANZA_API_KEY_CONTEXT_KEY_SYMBOL] ?? oTelApi.createContextKey(
   'Stanza API Key')

@@ -1,9 +1,9 @@
 import * as oTelApi from '@opentelemetry/api'
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
-declare namespace global {
-  let stanzaPriorityBoostContextKey: symbol | undefined
-}
+const STANZA_PRIORITY_BOOST_CONTEXT_KEY_SYMBOL = Symbol.for('Stanza Priority Boost Context Key')
 
-export const stanzaPriorityBoostContextKey = global.stanzaPriorityBoostContextKey = global.stanzaPriorityBoostContextKey ?? oTelApi.createContextKey(
+interface StanzaPriorityBoostContextKeyGlobal { [STANZA_PRIORITY_BOOST_CONTEXT_KEY_SYMBOL]: symbol | undefined }
+const stanzaPriorityBoostContextKeyGlobal = global as unknown as StanzaPriorityBoostContextKeyGlobal
+
+export const stanzaPriorityBoostContextKey = stanzaPriorityBoostContextKeyGlobal[STANZA_PRIORITY_BOOST_CONTEXT_KEY_SYMBOL] = stanzaPriorityBoostContextKeyGlobal[STANZA_PRIORITY_BOOST_CONTEXT_KEY_SYMBOL] ?? oTelApi.createContextKey(
   'Stanza Priority Boost')
