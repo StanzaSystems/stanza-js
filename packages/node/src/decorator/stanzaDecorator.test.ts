@@ -39,7 +39,7 @@ beforeAll(() => {
 
 describe('stanzaDecorator', function () {
   it('should pass-through execution initially', async function () {
-    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }, () => {
+    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
       doStuff()
     })
 
@@ -57,7 +57,7 @@ describe('stanzaDecorator', function () {
         rejectConfig = reject
       })
     })
-    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }, () => {
+    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
       doStuff()
     })
 
@@ -79,7 +79,7 @@ describe('stanzaDecorator', function () {
       config: {} as any
     }))
 
-    stanzaDecorator({ decorator: 'testDecorator' }, () => {
+    stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
       doStuff()
     })
 
@@ -93,7 +93,7 @@ describe('stanzaDecorator', function () {
     fetchDecoratorConfigMock.mockImplementation(async () => new Promise<DecoratorConfigResponse>((resolve) => {
       resolveConfig = resolve
     }))
-    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }, () => {
+    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
       doStuff()
     })
 
@@ -130,7 +130,7 @@ describe('stanzaDecorator', function () {
         checkQuota: true
       } as any
     }))
-    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }, () => {
+    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
       doStuff()
     })
 
@@ -167,7 +167,7 @@ describe('stanzaDecorator', function () {
         checkQuota: true
       } as any
     }))
-    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }, () => {
+    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
       doStuff()
     })
 
@@ -203,7 +203,7 @@ describe('stanzaDecorator', function () {
         checkQuota: true
       } as any
     }))
-    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }, () => {
+    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
       doStuff()
     })
 
@@ -240,7 +240,7 @@ describe('stanzaDecorator', function () {
         checkQuota: true
       } as any
     }))
-    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }, () => {
+    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
       doStuff()
       expect(context.active().getValue(stanzaApiKeyContextKey)).toBe('test-token')
     })
@@ -275,7 +275,7 @@ describe('stanzaDecorator', function () {
         checkQuota: true
       } as any
     }))
-    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }, () => {
+    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
       doStuff()
       expect(context.active().getValue(stanzaApiKeyContextKey)).toBeUndefined()
     })
