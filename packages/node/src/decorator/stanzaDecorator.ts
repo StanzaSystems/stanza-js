@@ -1,6 +1,9 @@
-import { bindStanzaApiKey } from '../context/bindStanzaApiKey'
+import { addPriorityBoostToContext } from '../context/addPriorityBoostToContext'
+import { addStanzaApiKeyToContext } from '../context/addStanzaApiKeyToContext'
+import { bindContext } from '../context/bindContext'
 import { hubService } from '../global'
 import { type StanzaToken } from '../hub/hubService'
+import { isTruthy } from '../utils/isTruthy'
 import { initDecorator, type StanzaDecoratorOptions } from './initStanzaDecorator'
 
 type Promisify<T> = T extends PromiseLike<unknown> ? T : Promise<T>
@@ -17,11 +20,16 @@ export const stanzaDecorator = <Fn extends (...args: any[]) => unknown>(options:
         console.warn('Failed to fetch the token:', e instanceof Error ? e.message : e)
       }
     }
+
     if (token?.granted === false) {
       return
     }
-    return token !== null
-      ? bindStanzaApiKey(token.token, fn)(...args)
-      : fn(...args)
+
+    const fnWithBoundContext = bindContext([
+      token !== null ? addStanzaApiKeyToContext(token.token) : undefined,
+      options.priorityBoost !== undefined ? addPriorityBoostToContext(options.priorityBoost) : undefined
+    ].filter(isTruthy), fn)
+
+    return fnWithBoundContext(...args)
   }) as (...args: Parameters<Fn>) => Promisify<ReturnType<Fn>>
 }

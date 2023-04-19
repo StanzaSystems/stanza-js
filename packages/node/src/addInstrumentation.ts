@@ -1,5 +1,6 @@
 import { StanzaApiKeyPropagator } from './propagation/StanzaApiKeyPropagator'
 import { StanzaBaggagePropagator } from './propagation/StanzaBaggagePropagator'
+import { StanzaPriorityBoostPropagator } from './propagation/StanzaPriorityBoostPropagator'
 
 export const addInstrumentation = async () => {
   /* eslint-disable @typescript-eslint/no-var-requires */
@@ -20,6 +21,7 @@ export const addInstrumentation = async () => {
         propagators: [
           new W3CTraceContextPropagator(),
           new StanzaBaggagePropagator(),
+          new StanzaPriorityBoostPropagator(),
           new StanzaApiKeyPropagator()
         ]
       }),
