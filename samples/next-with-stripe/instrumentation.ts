@@ -5,7 +5,7 @@ export async function register () {
     await init({
       hubUrl: 'http:/localhost:9010',
       apiKey: 'valid-api-key',
-      serviceName: 'DemoService',
+      serviceName: 'DemoCommerce',
       serviceRelease: '1',
       environment: 'local'
     })

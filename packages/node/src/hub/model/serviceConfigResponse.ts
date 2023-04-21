@@ -1,11 +1,5 @@
 import { z } from 'zod'
 
-const zService = z.object({
-  name: z.string(),
-  environment: z.string(),
-  release: z.string(),
-  tags: z.array(z.object({ key: z.string(), value: z.string() }))
-})
 const zNonStrictObject = z.object({}).nonstrict()
 const zTraceConfig = z.object({
   collectorUrl: z.string(),
@@ -33,14 +27,13 @@ const serviceConfigWithData = z.object({
   version: z.string(),
   configDataSent: z.literal(true),
   config: z.object({
-    service: zService,
     traceConfig: zTraceConfig,
     metricConfig: zMetricConfig,
     sentinelConfig: zSentinelConfig
   })
 })
-export const serviceConfig = z.union(
+export const serviceConfigResponse = z.union(
   [serviceConfigWithData, serviceConfigNoData]
 )
 
-export type ServiceConfigResult = z.infer<typeof serviceConfig>
+export type ServiceConfigResponse = z.infer<typeof serviceConfigResponse>
