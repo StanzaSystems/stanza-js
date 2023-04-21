@@ -2,6 +2,7 @@ import { generateClientId } from './generateClientId'
 import { getEnvInitOptions } from './getEnvInitOptions'
 import { hubService, updateHubService } from './global'
 import { createHubService } from './hub/hubService'
+import { updateServiceConfig } from './serviceConfig'
 import { stanzaInitOptions, type StanzaInitOptions } from './stanzaInitOptions'
 
 export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
@@ -33,4 +34,5 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
       client id: ${clientId}
       service config: ${JSON.stringify(serviceConfig)}
 `)
+  serviceConfig !== null && updateServiceConfig(serviceConfig)
 }

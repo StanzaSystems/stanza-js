@@ -1,14 +1,11 @@
 import { type z, type ZodType } from 'zod'
 import { fetch } from '../fetchImplementation'
-import { decoratorConfigResponse, type DecoratorConfigResponse } from './model/decoratorConfigResponse'
-import { serviceConfigResponse, type ServiceConfigResponse } from './model/serviceConfigResponse'
-import { stanzaTokenResponse, type StanzaTokenResponse } from './model/stanzaTokenResponse'
+import { decoratorConfigResponse } from './api/decoratorConfigResponse'
+import { serviceConfigResponse } from './api/serviceConfigResponse'
+import { stanzaTokenResponse } from './api/stanzaTokenResponse'
+import { type DecoratorConfigResult, type ServiceConfig, type StanzaToken } from './model'
 
 const HUB_REQUEST_TIMEOUT = 1000
-
-export type ServiceConfig = Pick<ServiceConfigResponse, 'version' | 'config'>
-export type DecoratorConfigResult = Pick<DecoratorConfigResponse, 'version' | 'config'>
-export type StanzaToken = StanzaTokenResponse
 
 interface FetchServiceConfigOptions {
   lastVersionSeen?: string

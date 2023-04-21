@@ -2,15 +2,13 @@ import { context } from '@opentelemetry/api'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { stanzaApiKeyContextKey } from '../context/stanzaApiKeyContextKey'
 import { updateHubService } from '../global'
-import { type DecoratorConfigResponse } from '../hub/model/decoratorConfigResponse'
-import { type ServiceConfigResponse } from '../hub/model/serviceConfigResponse'
-import { type StanzaTokenResponse } from '../hub/model/stanzaTokenResponse'
+import { type DecoratorConfigResult, type ServiceConfig, type StanzaToken } from '../hub/model'
 import { stanzaDecorator } from './stanzaDecorator'
 import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks'
 
-const fetchServiceConfigMock = vi.fn<any[], Promise<ServiceConfigResponse | null>>(async () => new Promise<never>(() => {}))
-const fetchDecoratorConfigMock = vi.fn<any[], Promise<DecoratorConfigResponse | null>>(async () => new Promise<never>(() => {}))
-const getTokenMock = vi.fn<any[], Promise<StanzaTokenResponse | null>>(async () => new Promise<never>(() => {}))
+const fetchServiceConfigMock = vi.fn<any[], Promise<ServiceConfig | null>>(async () => new Promise<never>(() => {}))
+const fetchDecoratorConfigMock = vi.fn<any[], Promise<DecoratorConfigResult | null>>(async () => new Promise<never>(() => {}))
+const getTokenMock = vi.fn<any[], Promise<StanzaToken | null>>(async () => new Promise<never>(() => {}))
 
 const doStuff = vi.fn()
 
@@ -75,7 +73,6 @@ describe('stanzaDecorator', function () {
   it('should fetch decorator config upon initialization', async function () {
     fetchServiceConfigMock.mockImplementation(async () => Promise.resolve({
       version: 'test',
-      configDataSent: true,
       config: {} as any
     }))
 
@@ -89,8 +86,8 @@ describe('stanzaDecorator', function () {
   it('should NOT be pass-through execution after config is fetched', async function () {
     vi.useFakeTimers()
 
-    let resolveConfig: (config: DecoratorConfigResponse) => void = () => {}
-    fetchDecoratorConfigMock.mockImplementation(async () => new Promise<DecoratorConfigResponse>((resolve) => {
+    let resolveConfig: (config: DecoratorConfigResult) => void = () => {}
+    fetchDecoratorConfigMock.mockImplementation(async () => new Promise<DecoratorConfigResult>((resolve) => {
       resolveConfig = resolve
     }))
     const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
@@ -99,7 +96,6 @@ describe('stanzaDecorator', function () {
 
     resolveConfig({
       version: 'test',
-      configDataSent: true,
       config: {
         checkQuota: true
       } as any
@@ -119,13 +115,12 @@ describe('stanzaDecorator', function () {
 
     let resolveToken: (value: { granted: boolean, token: string }) => void = () => {}
     getTokenMock.mockImplementation(async () => {
-      return new Promise<StanzaTokenResponse>((resolve) => {
+      return new Promise<StanzaToken>((resolve) => {
         resolveToken = resolve
       })
     })
     fetchDecoratorConfigMock.mockImplementation(async () => Promise.resolve({
       version: 'test',
-      configDataSent: true,
       config: {
         checkQuota: true
       } as any
@@ -154,15 +149,14 @@ describe('stanzaDecorator', function () {
 
   it('should NOT proceed execution if token is not granted', async function () {
     vi.useFakeTimers()
-    let resolveToken: (value: StanzaTokenResponse) => void = () => {}
+    let resolveToken: (value: StanzaToken) => void = () => {}
     getTokenMock.mockImplementation(async () => {
-      return new Promise<StanzaTokenResponse>((resolve) => {
+      return new Promise<StanzaToken>((resolve) => {
         resolveToken = resolve
       })
     })
     fetchDecoratorConfigMock.mockImplementation(async () => Promise.resolve({
       version: 'test',
-      configDataSent: true,
       config: {
         checkQuota: true
       } as any
@@ -198,7 +192,6 @@ describe('stanzaDecorator', function () {
     })
     fetchDecoratorConfigMock.mockImplementation(async () => Promise.resolve({
       version: 'test',
-      configDataSent: true,
       config: {
         checkQuota: true
       } as any
@@ -229,13 +222,12 @@ describe('stanzaDecorator', function () {
 
     let resolveToken: (value: { granted: boolean, token: string }) => void = () => {}
     getTokenMock.mockImplementation(async () => {
-      return new Promise<StanzaTokenResponse>((resolve) => {
+      return new Promise<StanzaToken>((resolve) => {
         resolveToken = resolve
       })
     })
     fetchDecoratorConfigMock.mockImplementation(async () => Promise.resolve({
       version: 'test',
-      configDataSent: true,
       config: {
         checkQuota: true
       } as any
@@ -270,7 +262,6 @@ describe('stanzaDecorator', function () {
     })
     fetchDecoratorConfigMock.mockImplementation(async () => Promise.resolve({
       version: 'test',
-      configDataSent: true,
       config: {
         checkQuota: true
       } as any
