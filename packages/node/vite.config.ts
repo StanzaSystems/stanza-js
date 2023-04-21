@@ -17,7 +17,12 @@ export default defineConfig({
     },
     sourcemap: true,
     rollupOptions: {
-      external: [...builtinModules, ...builtinModules.map(m => `node:${m}`), '@opentelemetry/exporter-trace-otlp-grpc'],
+      external: [
+        ...builtinModules,
+        ...builtinModules.map(m => `node:${m}`),
+        /^@opentelemetry\/.*/,
+        '@grpc/grpc-js'
+      ],
       output: {
         globals: builtinModules.reduce((g, m) => {
           g[`node:${m}`] = m
