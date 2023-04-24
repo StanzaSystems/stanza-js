@@ -1,9 +1,11 @@
+import { addInstrumentation } from './addInstrumentation'
+import { fetchServiceConfig } from './fetchServiceConfig'
 import { generateClientId } from './generateClientId'
 import { getEnvInitOptions } from './getEnvInitOptions'
-import { hubService, updateHubService } from './global'
+import { updateHubService } from './global'
 import { createHubService } from './hub/hubService'
-import { updateServiceConfig } from './serviceConfig'
 import { stanzaInitOptions, type StanzaInitOptions } from './stanzaInitOptions'
+import { startPolling } from './startPolling'
 
 export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
   const parseResult = stanzaInitOptions.safeParse({
@@ -12,10 +14,12 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
   })
 
   if (!parseResult.success) {
-    throw new Error('Provided options are invalid')
+    throw new TypeError('Provided options are invalid')
   }
   const initOptions = parseResult.data
   const clientId = generateClientId()
+
+  await addInstrumentation(initOptions.serviceName)
 
   updateHubService(createHubService({
     hubUrl: initOptions.hubUrl,
@@ -24,15 +28,14 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
     serviceRelease: initOptions.serviceRelease,
     environment: initOptions.environment
   }))
-  const serviceConfig = await hubService.fetchServiceConfig()
+
+  startPolling(fetchServiceConfig, { pollInterval: 15000 })
 
   console.log(`
-    Stanza successfully initialized:
-      environment: ${initOptions.environment}
-      service name: ${initOptions.serviceName}
-      service release: ${initOptions.serviceRelease}
-      client id: ${clientId}
-      service config: ${JSON.stringify(serviceConfig)}
-`)
-  serviceConfig !== null && updateServiceConfig(serviceConfig)
+      Stanza successfully initialized:
+        environment: ${initOptions.environment}
+        service name: ${initOptions.serviceName}
+        service release: ${initOptions.serviceRelease}
+        client id: ${clientId}
+  `)
 }
