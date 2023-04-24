@@ -1,8 +1,10 @@
 export interface ApiFeatureState {
-  featureName: string
-  enabledPercent: number
-  actionCodeEnabled?: number
-  messageEnabled?: string
-  actionCodeDisabled?: number
-  messageDisabled?: string
+  name: string
+  config: {
+    enabledPercent: number
+    actionCodeEnabled?: number
+    messageEnabled?: string
+    actionCodeDisabled?: number
+    messageDisabled?: string
+  }
 }
