@@ -66,4 +66,67 @@ describe('startPolling', function () {
 
     vi.useRealTimers()
   })
+
+  it('should run pass previous result to next polling call', async () => {
+    vi.useFakeTimers()
+
+    let count = 0
+    const aFunction = vi.fn(async () => {
+      return Promise.resolve(count++)
+    })
+
+    void startPolling(aFunction, { pollInterval: 1000 })
+
+    expect(aFunction).toHaveBeenCalledWith(null)
+
+    aFunction.mockClear()
+
+    await vi.advanceTimersByTimeAsync(1000)
+
+    expect(aFunction).toHaveBeenCalledWith(0)
+
+    aFunction.mockClear()
+
+    await vi.advanceTimersByTimeAsync(1000)
+
+    expect(aFunction).toHaveBeenCalledWith(1)
+
+    vi.useRealTimers()
+  })
+
+  it('should omit not use null as previous result if non null value existed', async () => {
+    vi.useFakeTimers()
+
+    let count = 0
+    const aFunction = vi.fn(async (): Promise<number | null> => {
+      return Promise.resolve(count++)
+    })
+
+    void startPolling(aFunction, { pollInterval: 1000 })
+
+    expect(aFunction).toHaveBeenCalledWith(null)
+
+    aFunction.mockClear()
+
+    await vi.advanceTimersByTimeAsync(1000)
+
+    expect(aFunction).toHaveBeenCalledWith(0)
+
+    aFunction.mockClear()
+    aFunction.mockImplementationOnce(async () => {
+      return Promise.resolve(null)
+    })
+
+    await vi.advanceTimersByTimeAsync(1000)
+
+    expect(aFunction).toHaveBeenCalledWith(1)
+
+    aFunction.mockClear()
+
+    await vi.advanceTimersByTimeAsync(1000)
+
+    expect(aFunction).toHaveBeenCalledWith(1)
+
+    vi.useRealTimers()
+  })
 })

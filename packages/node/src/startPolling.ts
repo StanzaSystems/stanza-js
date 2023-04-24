@@ -1,16 +1,19 @@
-
-type AsyncFunction = () => Promise<unknown>
+type AsyncFunction<T> = (prevResult: T | null) => Promise<T | null>
 const DEFAULT_POLL_INTERVAL = 1000
 
-export const startPolling = (fn: AsyncFunction, options: { pollInterval: number, onError?: (e: unknown) => void } = { pollInterval: DEFAULT_POLL_INTERVAL }) => {
+export const startPolling = <T = unknown>(fn: AsyncFunction<T>, options: { pollInterval: number, onError?: (e: unknown) => void } = { pollInterval: DEFAULT_POLL_INTERVAL }) => {
   let shouldStop = false
+  let prevResult: T | null = null
   void (async () => {
     while (true) {
       if (shouldStop) {
         break
       }
       try {
-        await fn()
+        const result: T | null = await fn(prevResult)
+        if (result !== null) {
+          prevResult = result
+        }
       } catch (e) {
         if (options.onError !== undefined) {
           options.onError(e)

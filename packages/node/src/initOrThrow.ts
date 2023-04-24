@@ -1,11 +1,10 @@
 import { addInstrumentation } from './addInstrumentation'
-import { fetchServiceConfig } from './fetchServiceConfig'
 import { generateClientId } from './generateClientId'
 import { getEnvInitOptions } from './getEnvInitOptions'
 import { updateHubService } from './global'
 import { createHubService } from './hub/hubService'
 import { stanzaInitOptions, type StanzaInitOptions } from './stanzaInitOptions'
-import { startPolling } from './startPolling'
+import { startPollingServiceConfig } from './startPollingConfigService'
 
 export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
   const parseResult = stanzaInitOptions.safeParse({
@@ -26,16 +25,9 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
     apiKey: initOptions.apiKey,
     serviceName: initOptions.serviceName,
     serviceRelease: initOptions.serviceRelease,
-    environment: initOptions.environment
+    environment: initOptions.environment,
+    clientId
   }))
 
-  startPolling(fetchServiceConfig, { pollInterval: 15000 })
-
-  console.log(`
-      Stanza successfully initialized:
-        environment: ${initOptions.environment}
-        service name: ${initOptions.serviceName}
-        service release: ${initOptions.serviceRelease}
-        client id: ${clientId}
-  `)
+  startPollingServiceConfig()
 }
