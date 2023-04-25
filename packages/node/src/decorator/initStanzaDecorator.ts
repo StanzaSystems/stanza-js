@@ -1,4 +1,4 @@
-import { hubService } from '../global'
+import { hubService } from '../global/hubService'
 import { type DecoratorConfigResult } from '../hub/model'
 
 export interface StanzaDecoratorOptions {

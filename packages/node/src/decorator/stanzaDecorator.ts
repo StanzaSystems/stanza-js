@@ -1,7 +1,7 @@
 import { addPriorityBoostToContext } from '../context/addPriorityBoostToContext'
 import { addStanzaApiKeyToContext } from '../context/addStanzaApiKeyToContext'
 import { bindContext } from '../context/bindContext'
-import { hubService } from '../global'
+import { hubService } from '../global/hubService'
 import { type StanzaToken } from '../hub/model'
 import { isTruthy } from '../utils/isTruthy'
 import { initDecorator, type StanzaDecoratorOptions } from './initStanzaDecorator'

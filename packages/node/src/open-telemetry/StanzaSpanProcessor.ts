@@ -2,7 +2,7 @@ import { Metadata } from '@grpc/grpc-js'
 import { type Context } from '@opentelemetry/api'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc'
 import { BatchSpanProcessor, NoopSpanProcessor, type ReadableSpan, type Span, type SpanProcessor } from '@opentelemetry/sdk-trace-node'
-import { addServiceConfigListener } from '../serviceConfig'
+import { addServiceConfigListener } from '../global/serviceConfig'
 
 export class StanzaSpanProcessor implements SpanProcessor {
   private serviceProcessor: SpanProcessor = new NoopSpanProcessor()

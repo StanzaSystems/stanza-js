@@ -1,10 +1,10 @@
 import { context } from '@opentelemetry/api'
+import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { stanzaApiKeyContextKey } from '../context/stanzaApiKeyContextKey'
-import { updateHubService } from '../global'
+import { updateHubService } from '../global/hubService'
 import { type DecoratorConfigResult, type ServiceConfig, type StanzaToken } from '../hub/model'
 import { stanzaDecorator } from './stanzaDecorator'
-import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks'
 
 const fetchServiceConfigMock = vi.fn<any[], Promise<ServiceConfig | null>>(async () => new Promise<never>(() => {}))
 const fetchDecoratorConfigMock = vi.fn<any[], Promise<DecoratorConfigResult | null>>(async () => new Promise<never>(() => {}))
