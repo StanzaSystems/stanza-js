@@ -3,6 +3,7 @@ import { generateClientId } from './generateClientId'
 import { getEnvInitOptions } from './getEnvInitOptions'
 import { hubService, updateHubService } from './global'
 import { createHubService } from './hub/hubService'
+import { updateServiceConfig } from './serviceConfig'
 import { stanzaInitOptions, type StanzaInitOptions } from './stanzaInitOptions'
 
 export const init = async (options: Partial<StanzaInitOptions> = {}) => {
@@ -19,7 +20,7 @@ export const init = async (options: Partial<StanzaInitOptions> = {}) => {
   const clientId = generateClientId()
 
   try {
-    await addInstrumentation()
+    await addInstrumentation(initOptions.serviceName)
 
     updateHubService(createHubService({
       hubUrl: initOptions.hubUrl,
@@ -38,6 +39,7 @@ export const init = async (options: Partial<StanzaInitOptions> = {}) => {
       client id: ${clientId},
       service config: ${JSON.stringify(serviceConfig, undefined, 2)}
   `)
+    serviceConfig !== null && updateServiceConfig(serviceConfig)
   } catch (e) {
     console.warn('Failed to fetch the service config:', e instanceof Error ? e.message : e)
   }

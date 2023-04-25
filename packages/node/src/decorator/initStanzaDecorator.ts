@@ -1,5 +1,5 @@
 import { hubService } from '../global'
-import { type DecoratorConfigResult } from '../hub/hubService'
+import { type DecoratorConfigResult } from '../hub/model'
 
 export interface StanzaDecoratorOptions {
   decorator: string
@@ -9,7 +9,7 @@ export interface StanzaDecoratorOptions {
 
 export const initDecorator = (options: StanzaDecoratorOptions) => {
   const shouldCheckQuota = () => {
-    return decoratorConfig.initialized && decoratorConfig.data !== null && decoratorConfig.data.config?.checkQuota === true
+    return decoratorConfig.initialized && decoratorConfig.data !== null && decoratorConfig.data.config?.checkQuota
   }
 
   let decoratorConfig = {
