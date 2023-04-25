@@ -99,4 +99,13 @@ describe('serviceConfig', function () {
     expect(listener2).toHaveBeenCalledOnce()
     expect(listener2).toHaveBeenCalledWith(updatedConfig2)
   })
+
+  it('should not fail when unsubscribing a listener multiple times', function () {
+    const listener = vi.fn()
+
+    const unsubscribe = serviceConfigModule.addServiceConfigListener(listener)
+
+    expect(unsubscribe).not.toThrow()
+    expect(unsubscribe).not.toThrow()
+  })
 })

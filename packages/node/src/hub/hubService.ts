@@ -3,7 +3,7 @@ import { fetch } from '../fetchImplementation'
 import { decoratorConfigResponse } from './api/decoratorConfigResponse'
 import { serviceConfigResponse } from './api/serviceConfigResponse'
 import { stanzaTokenResponse } from './api/stanzaTokenResponse'
-import { type DecoratorConfigResult, type ServiceConfig, type StanzaToken } from './model'
+import { type DecoratorConfig, type ServiceConfig, type StanzaToken } from './model'
 
 const HUB_REQUEST_TIMEOUT = 1000
 
@@ -24,7 +24,7 @@ interface GetTokenOptions {
 
 export interface HubService {
   fetchServiceConfig: (options?: FetchServiceConfigOptions) => Promise<ServiceConfig | null>
-  fetchDecoratorConfig: (options: FetchDecoratorConfigOptions) => Promise<DecoratorConfigResult | null>
+  fetchDecoratorConfig: (options: FetchDecoratorConfigOptions) => Promise<DecoratorConfig | null>
   getToken: (options: GetTokenOptions) => Promise<StanzaToken | null>
 }
 

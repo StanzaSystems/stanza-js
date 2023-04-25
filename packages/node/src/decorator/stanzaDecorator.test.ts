@@ -3,11 +3,11 @@ import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { stanzaApiKeyContextKey } from '../context/stanzaApiKeyContextKey'
 import { updateHubService } from '../global/hubService'
-import { type DecoratorConfigResult, type ServiceConfig, type StanzaToken } from '../hub/model'
+import { type DecoratorConfig, type ServiceConfig, type StanzaToken } from '../hub/model'
 import { stanzaDecorator } from './stanzaDecorator'
 
 const fetchServiceConfigMock = vi.fn<any[], Promise<ServiceConfig | null>>(async () => new Promise<never>(() => {}))
-const fetchDecoratorConfigMock = vi.fn<any[], Promise<DecoratorConfigResult | null>>(async () => new Promise<never>(() => {}))
+const fetchDecoratorConfigMock = vi.fn<any[], Promise<DecoratorConfig | null>>(async () => new Promise<never>(() => {}))
 const getTokenMock = vi.fn<any[], Promise<StanzaToken | null>>(async () => new Promise<never>(() => {}))
 
 const doStuff = vi.fn()
@@ -86,8 +86,8 @@ describe('stanzaDecorator', function () {
   it('should NOT be pass-through execution after config is fetched', async function () {
     vi.useFakeTimers()
 
-    let resolveConfig: (config: DecoratorConfigResult) => void = () => {}
-    fetchDecoratorConfigMock.mockImplementation(async () => new Promise<DecoratorConfigResult>((resolve) => {
+    let resolveConfig: (config: DecoratorConfig) => void = () => {}
+    fetchDecoratorConfigMock.mockImplementation(async () => new Promise<DecoratorConfig>((resolve) => {
       resolveConfig = resolve
     }))
     const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {

@@ -1,5 +1,5 @@
 import { hubService } from '../global/hubService'
-import { type DecoratorConfigResult } from '../hub/model'
+import { type DecoratorConfig } from '../hub/model'
 
 export interface StanzaDecoratorOptions {
   decorator: string
@@ -14,7 +14,7 @@ export const initDecorator = (options: StanzaDecoratorOptions) => {
 
   let decoratorConfig = {
     initialized: false,
-    data: null as DecoratorConfigResult | null
+    data: null as DecoratorConfig | null
   }
   void (hubService.fetchDecoratorConfig({
     decorator: options.decorator
