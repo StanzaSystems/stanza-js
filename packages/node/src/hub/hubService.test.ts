@@ -27,7 +27,8 @@ describe('hubService', async () => {
       apiKey: 'valid-api-key',
       serviceName: 'TestService',
       serviceRelease: '1',
-      environment: 'test'
+      environment: 'test',
+      clientId: 'test-client-id'
     })
 
     it('should call fetch with proper params', async () => {
@@ -157,7 +158,8 @@ describe('hubService', async () => {
       apiKey: 'valid-api-key',
       serviceName: 'TestService',
       serviceRelease: '1',
-      environment: 'test'
+      environment: 'test',
+      clientId: 'test-client-id'
     })
 
     it('should call fetch with proper params', async () => {

@@ -7,7 +7,7 @@ import { type DecoratorConfigResult, type ServiceConfig, type StanzaToken } from
 
 const HUB_REQUEST_TIMEOUT = 1000
 
-interface FetchServiceConfigOptions {
+export interface FetchServiceConfigOptions {
   lastVersionSeen?: string
 }
 
@@ -34,10 +34,11 @@ interface HubServiceInitOptions {
   serviceName: string
   serviceRelease: string
   environment: string
+  clientId: string
 }
 type HubApiPath = string
 
-export const createHubService = ({ hubUrl, serviceName, serviceRelease, environment, apiKey }: HubServiceInitOptions): HubService => {
+export const createHubService = ({ hubUrl, serviceName, serviceRelease, environment, apiKey, clientId }: HubServiceInitOptions): HubService => {
   const hubRequest = async <T extends ZodType>(apiPath: HubApiPath, params: Record<string, string | undefined> & { method?: string }, validateRequest: T): Promise<z.infer<T> | null> => {
     const requestUrl = new URL(`${hubUrl}/${apiPath}`)
 
@@ -114,6 +115,7 @@ export const createHubService = ({ hubUrl, serviceName, serviceRelease, environm
         decorator,
         feature,
         environment,
+        clientId,
         priorityBoost: priorityBoost?.toFixed(0)
       }, stanzaTokenResponse)
 
