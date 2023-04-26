@@ -3,7 +3,7 @@ import { type DecoratorConfig } from '../hub/model'
 const STANZA_DECORATOR_CONFIG_SYMBOL = Symbol.for('Decorator Config')
 const STANZA_DECORATOR_CONFIG_LISTENERS_SYMBOL = Symbol.for('Decorator Config Listeners')
 
-type DecoratorConfigListener = (config: DecoratorConfig) => void
+export type DecoratorConfigListener = (config: DecoratorConfig) => void
 
 interface StanzaDecoratorConfigGlobal {
   [STANZA_DECORATOR_CONFIG_SYMBOL]: Record<string, DecoratorConfig> | undefined

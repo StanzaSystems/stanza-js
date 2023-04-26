@@ -3,7 +3,7 @@ import { type ServiceConfig } from '../hub/model'
 const STANZA_SERVICE_CONFIG_SYMBOL = Symbol.for('Service Config')
 const STANZA_SERVICE_CONFIG_LISTENERS_SYMBOL = Symbol.for('Service Config Listeners')
 
-type ServiceConfigListener = (config: ServiceConfig) => void
+export type ServiceConfigListener = (config: ServiceConfig) => void
 
 interface StanzaServiceConfigGlobal {
   [STANZA_SERVICE_CONFIG_SYMBOL]: ServiceConfig | undefined
