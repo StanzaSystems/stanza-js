@@ -1,10 +1,10 @@
 import { ROOT_CONTEXT } from '@opentelemetry/api'
 import { AlwaysOffSampler, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-node'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { stanzaDecoratorContextKey } from '../context/stanzaDecoratorContextKey'
-import { type DecoratorConfigListener, type getDecoratorConfig } from '../global/decoratorConfig'
-import { type getServiceConfig, type ServiceConfigListener } from '../global/serviceConfig'
-import { type DecoratorConfig, type ServiceConfig } from '../hub/model'
+import { stanzaDecoratorContextKey } from '../../context/stanzaDecoratorContextKey'
+import { type DecoratorConfigListener, type getDecoratorConfig } from '../../global/decoratorConfig'
+import { type getServiceConfig, type ServiceConfigListener } from '../../global/serviceConfig'
+import { type DecoratorConfig, type ServiceConfig } from '../../hub/model'
 import { StanzaSamplerManager } from './StanzaSamplerManager'
 
 let serviceListener: ServiceConfigListener
@@ -14,7 +14,7 @@ type GetServiceConfig = typeof getServiceConfig
 type GetDecoratorConfig = typeof getDecoratorConfig
 const getServiceConfigMock = vi.fn<Parameters<GetServiceConfig>, ReturnType<GetServiceConfig>>()
 const getDecoratorConfigMock = vi.fn<Parameters<GetDecoratorConfig>, ReturnType<GetDecoratorConfig>>()
-vi.mock('../global/serviceConfig', () => {
+vi.mock('../../global/serviceConfig', () => {
   return {
     getServiceConfig: ((...args) => getServiceConfigMock(...args)) satisfies GetServiceConfig,
     addServiceConfigListener: (newListener: ServiceConfigListener) => {
@@ -22,7 +22,7 @@ vi.mock('../global/serviceConfig', () => {
     }
   }
 })
-vi.mock('../global/decoratorConfig', async (importOriginal) => {
+vi.mock('../../global/decoratorConfig', async (importOriginal) => {
   const original: any = await importOriginal()
 
   return {

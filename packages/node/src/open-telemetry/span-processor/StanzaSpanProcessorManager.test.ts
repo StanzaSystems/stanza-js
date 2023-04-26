@@ -4,11 +4,11 @@ import type * as SdkTraceNodeModule from '@opentelemetry/sdk-trace-node'
 import { BatchSpanProcessor, InMemorySpanExporter, NoopSpanProcessor, type SpanExporter } from '@opentelemetry/sdk-trace-node'
 /* eslint-enable import/no-duplicates */
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { stanzaDecoratorContextKey } from '../context/stanzaDecoratorContextKey'
-import { type DecoratorConfigListener, type getDecoratorConfig } from '../global/decoratorConfig'
-import { type getServiceConfig, type ServiceConfigListener } from '../global/serviceConfig'
-import { type DecoratorConfig, type ServiceConfig } from '../hub/model'
-import type * as createSpanExporterModule from './createSpanExporter'
+import { stanzaDecoratorContextKey } from '../../context/stanzaDecoratorContextKey'
+import { type DecoratorConfigListener, type getDecoratorConfig } from '../../global/decoratorConfig'
+import { type getServiceConfig, type ServiceConfigListener } from '../../global/serviceConfig'
+import { type DecoratorConfig, type ServiceConfig } from '../../hub/model'
+import type * as createSpanExporterModule from '../createSpanExporter'
 import { StanzaSpanProcessorManager } from './StanzaSpanProcessorManager'
 
 let serviceListener: ServiceConfigListener
@@ -18,7 +18,7 @@ type GetServiceConfig = typeof getServiceConfig
 type GetDecoratorConfig = typeof getDecoratorConfig
 const getServiceConfigMock = vi.fn<Parameters<GetServiceConfig>, ReturnType<GetServiceConfig>>()
 const getDecoratorConfigMock = vi.fn<Parameters<GetDecoratorConfig>, ReturnType<GetDecoratorConfig>>()
-vi.mock('../global/serviceConfig', () => {
+vi.mock('../../global/serviceConfig', () => {
   return {
     getServiceConfig: ((...args) => getServiceConfigMock(...args)) satisfies GetServiceConfig,
     addServiceConfigListener: (newListener: ServiceConfigListener) => {
@@ -26,7 +26,7 @@ vi.mock('../global/serviceConfig', () => {
     }
   }
 })
-vi.mock('../global/decoratorConfig', async (importOriginal) => {
+vi.mock('../../global/decoratorConfig', async (importOriginal) => {
   const original: any = await importOriginal()
 
   return {
@@ -38,7 +38,7 @@ vi.mock('../global/decoratorConfig', async (importOriginal) => {
   }
 })
 
-vi.mock('./createSpanExporter', () => {
+vi.mock('../createSpanExporter', () => {
   return {
     createSpanExporter: (...args) => createSpanExporterMock(...args)
   } satisfies typeof createSpanExporterModule

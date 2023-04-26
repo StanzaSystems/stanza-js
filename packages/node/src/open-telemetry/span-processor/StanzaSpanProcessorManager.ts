@@ -1,10 +1,10 @@
 import { type Context } from '@opentelemetry/api'
 import { BatchSpanProcessor, NoopSpanProcessor, type SpanProcessor } from '@opentelemetry/sdk-trace-node'
-import { stanzaDecoratorContextKey } from '../context/stanzaDecoratorContextKey'
-import { addDecoratorConfigListener, getDecoratorConfig } from '../global/decoratorConfig'
-import { addServiceConfigListener, getServiceConfig } from '../global/serviceConfig'
-import { type ServiceConfig } from '../hub/model'
-import { createSpanExporter } from './createSpanExporter'
+import { stanzaDecoratorContextKey } from '../../context/stanzaDecoratorContextKey'
+import { addDecoratorConfigListener, getDecoratorConfig } from '../../global/decoratorConfig'
+import { addServiceConfigListener, getServiceConfig } from '../../global/serviceConfig'
+import { type ServiceConfig } from '../../hub/model'
+import { createSpanExporter } from '../createSpanExporter'
 import { type SpanProcessorManager } from './SpanProcessorManager'
 
 export class StanzaSpanProcessorManager implements SpanProcessorManager {

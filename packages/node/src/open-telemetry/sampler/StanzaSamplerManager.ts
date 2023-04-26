@@ -1,11 +1,12 @@
 import { type Context } from '@opentelemetry/api'
 import { AlwaysOffSampler, type Sampler, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-node'
-import { stanzaDecoratorContextKey } from '../context/stanzaDecoratorContextKey'
-import { addDecoratorConfigListener, getDecoratorConfig } from '../global/decoratorConfig'
-import { addServiceConfigListener, getServiceConfig } from '../global/serviceConfig'
-import { type ServiceConfig } from '../hub/model'
+import { stanzaDecoratorContextKey } from '../../context/stanzaDecoratorContextKey'
+import { addDecoratorConfigListener, getDecoratorConfig } from '../../global/decoratorConfig'
+import { addServiceConfigListener, getServiceConfig } from '../../global/serviceConfig'
+import { type ServiceConfig } from '../../hub/model'
+import { type SamplerManager } from './SamplerManager'
 
-export class StanzaSamplerManager {
+export class StanzaSamplerManager implements SamplerManager {
   private serviceSampler: Sampler = new AlwaysOffSampler()
   private readonly decoratorSamplers: Record<string, Sampler> = {}
   private readonly unsubscribeServiceConfigListener = addServiceConfigListener(({ config: { traceConfig } }) => {
@@ -25,13 +26,12 @@ export class StanzaSamplerManager {
     return this.getDecoratorSampler(context) ?? this.serviceSampler
   }
 
-  shutdown () {
+  async shutdown () {
     this.unsubscribeServiceConfigListener()
     this.unsubscribeDecoratorConfigListeners.forEach(unsubscribe => { unsubscribe() })
   }
 
   private updateServiceSampler (traceConfig: ServiceConfig['config']['traceConfig']) {
-    // void this.serviceSampler.()
     this.serviceSampler = new TraceIdRatioBasedSampler(traceConfig.sampleRateDefault)
   }
 
