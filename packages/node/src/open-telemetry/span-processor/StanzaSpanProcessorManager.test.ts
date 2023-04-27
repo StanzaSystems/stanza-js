@@ -8,7 +8,7 @@ import { stanzaDecoratorContextKey } from '../../context/stanzaDecoratorContextK
 import { type DecoratorConfigListener, type getDecoratorConfig } from '../../global/decoratorConfig'
 import { type getServiceConfig, type ServiceConfigListener } from '../../global/serviceConfig'
 import { type DecoratorConfig, type ServiceConfig } from '../../hub/model'
-import type * as createSpanExporterModule from '../createSpanExporter'
+import type * as createSpanExporterModule from './createSpanExporter'
 import { StanzaSpanProcessorManager } from './StanzaSpanProcessorManager'
 
 let serviceListener: ServiceConfigListener
@@ -38,7 +38,7 @@ vi.mock('../../global/decoratorConfig', async (importOriginal) => {
   }
 })
 
-vi.mock('../createSpanExporter', () => {
+vi.mock('./createSpanExporter', () => {
   return {
     createSpanExporter: (...args) => createSpanExporterMock(...args)
   } satisfies typeof createSpanExporterModule
