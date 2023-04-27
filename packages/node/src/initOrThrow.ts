@@ -4,7 +4,7 @@ import { getEnvInitOptions } from './getEnvInitOptions'
 import { updateHubService } from './global/hubService'
 import { createHubService } from './hub/hubService'
 import { stanzaInitOptions, type StanzaInitOptions } from './stanzaInitOptions'
-import { startPollingServiceConfig } from './startPollingConfigService'
+import { startPollingServiceConfig } from './service/startPollingConfigService'
 
 export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
   const parseResult = stanzaInitOptions.safeParse({
