@@ -5,7 +5,6 @@ import { type FetchDecoratorConfigOptions } from '../hub/hubService'
 export async function fetchDecoratorConfig (options: FetchDecoratorConfigOptions) {
   const response = await hubService.fetchDecoratorConfig(options)
 
-  console.log('##### decorator response', response)
   response !== null && updateDecoratorConfig(options.decorator, response)
 
   return response
