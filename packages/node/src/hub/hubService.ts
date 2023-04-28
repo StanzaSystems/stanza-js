@@ -11,7 +11,7 @@ export interface FetchServiceConfigOptions {
   lastVersionSeen?: string
 }
 
-interface FetchDecoratorConfigOptions {
+export interface FetchDecoratorConfigOptions {
   decorator: string
   lastVersionSeen?: string
 }
