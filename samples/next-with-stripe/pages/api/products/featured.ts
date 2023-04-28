@@ -1,9 +1,9 @@
-import { stanzaDecorator } from '@getstanza/node'
+import { stanzaDecorator, nextRequestErrorHandler } from '@getstanza/node'
 import { type NextApiHandler } from 'next'
 import { type Product } from '../../../data/product'
 import getStripeAPI from '../../../utils/stripe-api'
 
-const handler: NextApiHandler = stanzaDecorator({ decorator: 'Stripe_Products_API', priorityBoost: 1 }).bind(async (req, res) => {
+const handler: NextApiHandler = async (req, res) => {
   const stripeAPI = await getStripeAPI()
 
   const result = await stripeAPI.getProducts()
@@ -21,6 +21,8 @@ const handler: NextApiHandler = stanzaDecorator({ decorator: 'Stripe_Products_AP
   }))
     .filter((_, index) => index < 2)
   res.json(resultProducts)
-})
+}
 
-export default handler
+export default nextRequestErrorHandler(
+  stanzaDecorator({ decorator: 'Stripe_Products_API', priorityBoost: 1 }).bind(handler)
+)

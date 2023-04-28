@@ -110,7 +110,7 @@ export const createHubService = ({ hubUrl, serviceName, serviceRelease, environm
       }
     },
     getToken: async ({ decorator, feature, priorityBoost }) => {
-      const getTokenResult = await hubRequest('v1/quota/token', {
+      return hubRequest('v1/quota/token', {
         method: 'POST',
         decorator,
         feature,
@@ -118,12 +118,6 @@ export const createHubService = ({ hubUrl, serviceName, serviceRelease, environm
         clientId,
         priorityBoost: priorityBoost?.toFixed(0)
       }, stanzaTokenResponse)
-
-      if (getTokenResult === null || !getTokenResult.granted) {
-        return null
-      }
-
-      return getTokenResult
     }
   })
 }

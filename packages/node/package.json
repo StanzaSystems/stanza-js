@@ -39,5 +39,8 @@
     "@opentelemetry/sdk-trace-node": "^1.10.1",
     "@opentelemetry/semantic-conventions": "^1.12.0",
     "node-fetch": "^3.3.1"
+  },
+  "peerDependencies": {
+    "next": ">= 13"
   }
 }
