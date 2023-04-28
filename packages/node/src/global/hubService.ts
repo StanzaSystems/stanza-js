@@ -1,4 +1,4 @@
-import { type HubService } from './hub/hubService'
+import { type HubService } from '../hub/hubService'
 
 const HUB_SERVICE_SYMBOL = Symbol.for('Hub Service')
 

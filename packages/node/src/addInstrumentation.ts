@@ -1,4 +1,4 @@
-import { StanzaSampler } from './open-telemetry/StanzaSampler'
+import { StanzaSampler } from './open-telemetry/sampler/StanzaSampler'
 import { StanzaApiKeyPropagator } from './propagation/StanzaApiKeyPropagator'
 import { StanzaBaggagePropagator } from './propagation/StanzaBaggagePropagator'
 import { StanzaPriorityBoostPropagator } from './propagation/StanzaPriorityBoostPropagator'
@@ -14,7 +14,7 @@ export const addInstrumentation = async (serviceName: string) => {
   const { CompositePropagator, W3CTraceContextPropagator } = require('@opentelemetry/core')
   const { Resource } = require('@opentelemetry/resources')
   const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions')
-  const { StanzaSpanProcessor } = await import('./open-telemetry/StanzaSpanProcessor')
+  const { StanzaSpanProcessor } = await import('./open-telemetry/span-processor/StanzaSpanProcessor')
   /* eslint-enable @typescript-eslint/no-var-requires */
   const sdk = new NodeSDK({
     sampler: new StanzaSampler(),

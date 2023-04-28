@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getTraceConfig } from './getTraceConfig'
-import { type ServiceConfig } from './hub/model'
+import { type ServiceConfig } from '../hub/model'
 
 type TraceConfig = ReturnType<typeof getTraceConfig>
 

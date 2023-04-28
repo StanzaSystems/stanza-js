@@ -1,5 +1,5 @@
-import { hubService } from '../global'
-import { type DecoratorConfigResult } from '../hub/model'
+import { getDecoratorConfig, updateDecoratorConfig } from '../global/decoratorConfig'
+import { hubService } from '../global/hubService'
 
 export interface StanzaDecoratorOptions {
   decorator: string
@@ -7,26 +7,28 @@ export interface StanzaDecoratorOptions {
   priorityBoost?: number
 }
 
-export const initDecorator = (options: StanzaDecoratorOptions) => {
-  const shouldCheckQuota = () => {
-    return decoratorConfig.initialized && decoratorConfig.data !== null && decoratorConfig.data.config?.checkQuota
-  }
+async function fetchDecoratorConfig (options: StanzaDecoratorOptions) {
+  try {
+    const response = await hubService.fetchDecoratorConfig({
+      decorator: options.decorator
+    })
 
-  let decoratorConfig = {
-    initialized: false,
-    data: null as DecoratorConfigResult | null
-  }
-  void (hubService.fetchDecoratorConfig({
-    decorator: options.decorator
-  }).then((response) => {
-    if (response !== null) {
-      decoratorConfig = {
-        initialized: true,
-        data: response
-      }
-    }
-  })).catch((e) => {
+    console.log('##### decorator response', response)
+    response !== null && updateDecoratorConfig(options.decorator, response)
+
+    return response
+  } catch (e) {
     console.warn('Failed to fetch the decorator config:', e instanceof Error ? e.message : e)
-  })
+    return null
+  }
+}
+
+export const initDecorator = (options: StanzaDecoratorOptions) => {
+  const shouldCheckQuota = (): boolean => {
+    const decoratorConfig = getDecoratorConfig(options.decorator)
+
+    return decoratorConfig?.config?.checkQuota === true
+  }
+  void fetchDecoratorConfig(options)
   return { shouldCheckQuota }
 }

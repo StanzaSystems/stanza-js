@@ -1,4 +1,4 @@
-import { type ServiceConfig } from './hub/model'
+import { type ServiceConfig } from '../hub/model'
 import { getServiceConfig } from './serviceConfig'
 
 type TraceConfig = ServiceConfig['config']['traceConfig']

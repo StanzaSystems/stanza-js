@@ -1,7 +1,8 @@
 import { addPriorityBoostToContext } from '../context/addPriorityBoostToContext'
 import { addStanzaApiKeyToContext } from '../context/addStanzaApiKeyToContext'
+import { addStanzaDecoratorToContext } from '../context/addStanzaDecoratorToContext'
 import { bindContext } from '../context/bindContext'
-import { hubService } from '../global'
+import { hubService } from '../global/hubService'
 import { type StanzaToken } from '../hub/model'
 import { isTruthy } from '../utils/isTruthy'
 import { initDecorator, type StanzaDecoratorOptions } from './initStanzaDecorator'
@@ -33,6 +34,7 @@ export const stanzaDecorator = (options: StanzaDecoratorOptions) => {
       }
 
       const fnWithBoundContext = bindContext([
+        addStanzaDecoratorToContext(options.decorator),
         token !== null ? addStanzaApiKeyToContext(token.token) : undefined,
         options.priorityBoost !== undefined ? addPriorityBoostToContext(options.priorityBoost) : undefined
       ].filter(isTruthy), fn)

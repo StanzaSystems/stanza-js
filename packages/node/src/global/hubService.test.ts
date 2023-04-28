@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { hubService, updateHubService } from './global'
+import { hubService, updateHubService } from './hubService'
 
 const originalHubService = hubService
 
