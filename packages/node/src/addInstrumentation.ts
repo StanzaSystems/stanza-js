@@ -14,7 +14,10 @@ export const addInstrumentation = async (serviceName: string) => {
   const { CompositePropagator, W3CTraceContextPropagator } = require('@opentelemetry/core')
   const { Resource } = require('@opentelemetry/resources')
   const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions')
+  const { PeriodicExportingMetricReader } = require('@opentelemetry/sdk-metrics')
   const { StanzaSpanProcessor } = await import('./open-telemetry/span-processor/StanzaSpanProcessor')
+  const { StanzaMetricExporter } = await import('./open-telemetry/metric/stanzaMetricExporter')
+
   /* eslint-enable @typescript-eslint/no-var-requires */
   const sdk = new NodeSDK({
     sampler: new StanzaSampler(),
@@ -31,6 +34,9 @@ export const addInstrumentation = async (serviceName: string) => {
           new StanzaApiKeyPropagator()
         ]
       }),
+    metricReader: new PeriodicExportingMetricReader({
+      exporter: new StanzaMetricExporter()
+    }),
     instrumentations: [
       httpInstrumentation
       // TODO: enable when FetchInstrumentation supports Node
