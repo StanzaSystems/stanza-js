@@ -1,4 +1,4 @@
-import { nextApiRequestDecorator } from '@getstanza/next-node/src/nextApiRequestDecorator'
+import { nextApiRequestDecorator } from '@getstanza/next-node'
 import { type NextApiHandler } from 'next'
 import { type Product } from '../../../data/product'
 import getStripeAPI from '../../../utils/stripe-api'
