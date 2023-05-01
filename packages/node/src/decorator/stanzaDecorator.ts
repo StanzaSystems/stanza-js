@@ -40,7 +40,7 @@ export const stanzaDecorator = (options: StanzaDecoratorOptions) => {
       }
 
       if (token?.granted === false) {
-        throw new StanzaDecoratorError('TooManyRequests', 'Decorator can\'t be executed')
+        throw new StanzaDecoratorError('TooManyRequests', 'Decorator can not be executed')
       }
 
       const fnWithBoundContext = bindContext([
