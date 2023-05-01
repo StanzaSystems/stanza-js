@@ -33,7 +33,7 @@ export default defineConfig({
   test: {
     coverage: {
       reporter: [['lcov', {'projectRoot': '../..'}]],
-      reportsDirectory: '../../coverage/packages/node'
+      reportsDirectory: '../../coverage/packages/next-node'
     },
   }
 })
