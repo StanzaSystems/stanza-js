@@ -5,7 +5,8 @@ import { bindContext } from '../context/bindContext'
 import { hubService } from '../global/hubService'
 import { type StanzaToken } from '../hub/model'
 import { isTruthy } from '../utils/isTruthy'
-import { initDecorator, type StanzaDecoratorOptions } from './initStanzaDecorator'
+import { initDecorator } from './initStanzaDecorator'
+import { type StanzaDecoratorOptions } from './model'
 import { StanzaDecoratorError } from './stanzaDecoratorError'
 
 type Promisify<T> = T extends PromiseLike<unknown> ? T : Promise<T>

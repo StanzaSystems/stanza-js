@@ -1,5 +1,5 @@
 import { type NextApiHandler } from 'next'
-import { StanzaDecoratorError } from '../decorator/stanzaDecoratorError'
+import { StanzaDecoratorError } from '@getstanza/node'
 
 export const nextRequestErrorHandler = (handler: NextApiHandler): NextApiHandler => {
   return async (req, res) => {

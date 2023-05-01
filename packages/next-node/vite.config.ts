@@ -11,18 +11,16 @@ export default defineConfig({
     lib: {
       // Could also be a dictionary or array of multiple entry points
       entry: resolve(__dirname, 'index.ts'),
-      name: '@getstanza/node',
+      name: '@getstanza/next-node',
       // the proper extensions will be added
-      fileName: 'getstanza-node'
+      fileName: 'getstanza-next-node'
     },
     sourcemap: true,
     rollupOptions: {
       external: [
         ...builtinModules,
         ...builtinModules.map(m => `node:${m}`),
-        /^@opentelemetry\/.*/,
-        '@grpc/grpc-js',
-        'node-fetch'
+        /^@getstanza\/.*/,
       ],
       output: {
         globals: builtinModules.reduce((g, m) => {
@@ -33,7 +31,6 @@ export default defineConfig({
     }
   },
   test: {
-    setupFiles: ['./src/__tests__/setup.ts'],
     coverage: {
       reporter: [['lcov', {'projectRoot': '../..'}]],
       reportsDirectory: '../../coverage/packages/node'

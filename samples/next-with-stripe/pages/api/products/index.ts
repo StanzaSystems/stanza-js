@@ -1,4 +1,4 @@
-import { getActiveStanzaEntry, nextRequestErrorHandler, stanzaDecorator } from '@getstanza/node'
+import { nextApiRequestDecorator } from '@getstanza/next-node/src/nextApiRequestDecorator'
 import { type NextApiHandler } from 'next'
 import { type Product } from '../../../data/product'
 import getStripeAPI from '../../../utils/stripe-api'
@@ -6,9 +6,6 @@ import getStripeAPI from '../../../utils/stripe-api'
 const handler: NextApiHandler = async (req, res) => {
   const stripeAPI = await getStripeAPI()
   const result = await stripeAPI.getProducts()
-
-  const activeFeature: string = getActiveStanzaEntry('stz-feat') ?? ''
-  console.log(`Active Stanza feature: "${activeFeature}"`)
 
   const products = result.data
   const resultProducts: Product[] = products.map((apiProduct) => ({
@@ -25,6 +22,8 @@ const handler: NextApiHandler = async (req, res) => {
   res.json(resultProducts.filter(({ name }) => name.toLowerCase().includes(searchString.toLowerCase())))
 }
 
-export default nextRequestErrorHandler(
-  stanzaDecorator({ decorator: 'Stripe_Products_API', priorityBoost: 1 }).bind(handler)
-)
+const nextApiRequestStripeProductsApiDecorator = nextApiRequestDecorator({
+  decorator: 'Stripe_Products_API',
+  priorityBoost: 1
+})
+export default nextApiRequestStripeProductsApiDecorator(handler)
