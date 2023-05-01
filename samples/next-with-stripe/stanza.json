@@ -1,0 +1,89 @@
+{
+  "stanzaConfigVersion":1,
+  "customer": "relyagility",
+  "project":"default",
+  "environment":"default",
+  "features":[
+    {
+      "name": "checkout",
+      "priority":0,
+      "featureAutoUpdateRules":{
+        "healthOverloaded":{
+          "autoUpdate":true,
+          "targetState":"enabled",
+          "targetActionCode":0
+        },
+        "healthDown":{
+          "autoUpdate": true,
+          "targetState": "disabled",
+          "targetActionCode":1,
+          "targetMessage": "We are having some problems with checkout right now."
+        }
+      }
+
+    },
+    {
+      "name": "search",
+      "priority":1,
+      "featureAutoUpdateRules":{
+        "healthOverloaded":{
+          "autoUpdate":true,
+          "targetState":"enabled",
+          "targetActionCode":0
+        },
+        "healthDown":{
+          "autoUpdate": true,
+          "targetState": "disabled",
+          "targetActionCode":1,
+          "targetMessage": "We are having trouble with search right now but you can still buy products"
+        }
+      }
+    },
+    {
+      "name": "featured",
+      "priority":2,
+      "featureAutoUpdateRules":{
+        "healthOverloaded":{
+          "autoUpdate":true,
+          "targetState":"enabled",
+          "targetActionCode":0
+        },
+        "healthDown":{
+          "autoUpdate": true,
+          "targetState": "disabled",
+          "targetActionCode":2,
+          "targetMessage": "We are having some problems with featured right now"
+        }
+      }
+    }
+  ],
+  "services":[
+    {
+      "name":"DemoCommerce",
+      "sampleRate": 0.3,
+      "thirdPartyCode": false
+    },
+    {
+      "name":"Stripe",
+      "thirdPartyCode": true
+    }
+  ],
+  "decorators":[
+    {
+      "name":"Stripe_Products_API",
+      "networkTrafficType":"OUTBOUND",
+      "configMetadata":{
+        "quota":{"burst": 10, 
+        "enabled": true, 
+        "refillRate": 10, 
+        "strictSync": false}
+      },
+      "guardsService":"Stripe"
+    }
+  ]
+}
+
+
+// create diff state API that shows effect of change
+// track change since last time people uploaded config
+// generate config state from current data
