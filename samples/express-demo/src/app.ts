@@ -1,7 +1,7 @@
 import './addInstrumentation'
-import { stanzaDecorator, stanzaPriorityBoost } from '@getstanza/node'
+import { stanzaDecorator, StanzaDecoratorError, stanzaPriorityBoost } from '@getstanza/node'
 
-import express from 'express'
+import express, { type ErrorRequestHandler, type NextFunction, type Request, type Response } from 'express'
 import * as dotenv from 'dotenv'
 import cors from 'cors'
 import fetch from 'node-fetch'
@@ -20,10 +20,10 @@ app.use('/ping', (req, res, next) => {
   void stanzaDecorator({
     decorator: 'Stripe_Products_API',
     priorityBoost: 2
-  }).call(next)
+  }).call(next).catch(next)
 })
 
-app.get('/ping', (req, res) => {
+app.get('/ping', (req, res, next) => {
   void (async () => {
     console.log('Incoming headers: ping')
     console.log(JSON.stringify(req.headers, undefined, 2))
@@ -32,7 +32,7 @@ app.get('/ping', (req, res) => {
       await fetch('http://localhost:3002/pong')
     })
     res.status(200).send('pong')
-  })()
+  })().catch(next)
 })
 
 app.get('/pong', (req, res) => {
@@ -40,6 +40,14 @@ app.get('/pong', (req, res) => {
   console.log(JSON.stringify(req.headers, undefined, 2))
   res.status(200).send('ok')
 })
+
+app.use(((err, req, res, next) => {
+  if (err instanceof StanzaDecoratorError) {
+    res.status(429).send('Too many requests')
+  } else {
+    next(err)
+  }
+}) satisfies ErrorRequestHandler)
 
 app.listen(3002, () => {
   console.debug('🚀 Server ready at: http://localhost:3002')
