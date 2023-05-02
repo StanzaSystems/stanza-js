@@ -33,7 +33,7 @@ export const initDecorator = (options: StanzaDecoratorOptions) => {
     }
 
     if (token?.granted === false) {
-      throw new StanzaDecoratorError('TooManyRequests', 'Decorator can\'t be executed')
+      throw new StanzaDecoratorError('TooManyRequests', 'Decorator can not be executed')
     }
 
     return token?.token ?? null
