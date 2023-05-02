@@ -31,6 +31,6 @@
     "@getstanza/node": "*"
   },
   "peerDependencies": {
-    "next": ">= 13"
+    "next": ">= 12 < 14"
   }
 }
