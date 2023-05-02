@@ -41,6 +41,9 @@ const createStripeAPI = async (key: string): Promise<StripeAPI> => {
           Authorization: `Bearer ${key}`
         }
       })
+      if (response.status !== 200) {
+        throw new Error('Stripe API did not return correctly')
+      }
       return response.json()
     }
   }
