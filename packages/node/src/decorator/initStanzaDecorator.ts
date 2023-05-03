@@ -2,13 +2,14 @@ import { context } from '@opentelemetry/api'
 import { stanzaTokenContextKey } from '../context/stanzaTokenContextKey'
 import { getDecoratorConfig } from '../global/decoratorConfig'
 import { hubService } from '../global/hubService'
-import { type StanzaToken, type ValidatedToken } from '../hub/model'
+import { type ValidatedToken } from '../hub/model'
+import { getQuota } from '../quota/getQuota'
 import { withTimeout } from '../utils/withTimeout'
 import { type StanzaDecoratorOptions } from './model'
 import { StanzaDecoratorError } from './stanzaDecoratorError'
 import { startPollingDecoratorConfig } from './startPollingDecoratorConfig'
 
-const CHECK_QUOTA_TIMEOUT = 1000
+const VALIDATE_QUOTA_TIMEOUT = 1000
 
 export const initDecorator = (options: StanzaDecoratorOptions) => {
   startPollingDecoratorConfig(options.decorator)
@@ -38,16 +39,7 @@ export const initDecorator = (options: StanzaDecoratorOptions) => {
   }
 
   async function checkQuota (): Promise<{ type: 'TOKEN_GRANTED', token: string } | null> {
-    let token: StanzaToken | null = null
-    try {
-      token = await withTimeout(
-        CHECK_QUOTA_TIMEOUT,
-        'Check quota timed out',
-        hubService.getToken(options)
-      )
-    } catch (e) {
-      console.warn('Failed to fetch the token:', e instanceof Error ? e.message : e)
-    }
+    const token = await getQuota(options)
     if (token?.granted === false) {
       throw new StanzaDecoratorError('NoQuota', 'Decorator can not be executed')
     }
@@ -65,7 +57,7 @@ export const initDecorator = (options: StanzaDecoratorOptions) => {
     let validatedToken: ValidatedToken | null = null
     try {
       validatedToken = await withTimeout(
-        CHECK_QUOTA_TIMEOUT,
+        VALIDATE_QUOTA_TIMEOUT,
         'Validate token timed out',
         hubService.validateToken({
           decorator: options.decorator,

@@ -3,6 +3,7 @@ import { fetch } from '../fetchImplementation'
 import { withTimeout } from '../utils/withTimeout'
 import { decoratorConfigResponse } from './api/decoratorConfigResponse'
 import { serviceConfigResponse } from './api/serviceConfigResponse'
+import { stanzaTokenLeaseResponse } from './api/stanzaTokenLeaseResponse'
 import { stanzaTokenResponse } from './api/stanzaTokenResponse'
 import { stanzaValidateTokenResponse } from './api/stanzaValidateTokenResponse'
 import { type HubService } from './hubService'
@@ -102,6 +103,19 @@ export const createHubService = ({ hubUrl, serviceName, serviceRelease, environm
           priorityBoost: priorityBoost?.toFixed(0)
         }
       }, stanzaTokenResponse)
+    },
+    getTokenLease: async ({ decorator, feature, priorityBoost }) => {
+      const response = await hubRequest('v1/quota/lease', {
+        method: 'POST',
+        searchParams: {
+          decorator,
+          feature,
+          environment,
+          clientId,
+          priorityBoost: priorityBoost?.toFixed(0)
+        }
+      }, stanzaTokenLeaseResponse)
+      return response?.leases ?? null
     },
     validateToken: async ({ token, decorator }) => {
       const response = await hubRequest('v1/quota/validatetoken', {
