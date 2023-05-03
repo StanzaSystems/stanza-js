@@ -2,6 +2,7 @@ import { StanzaSampler } from './open-telemetry/sampler/StanzaSampler'
 import { StanzaApiKeyPropagator } from './propagation/StanzaApiKeyPropagator'
 import { StanzaBaggagePropagator } from './propagation/StanzaBaggagePropagator'
 import { StanzaPriorityBoostPropagator } from './propagation/StanzaPriorityBoostPropagator'
+import { StanzaTokenPropagator } from './propagation/StanzaTokenPropagator'
 
 export const addInstrumentation = async (serviceName: string) => {
   /* eslint-disable @typescript-eslint/no-var-requires */
@@ -31,7 +32,8 @@ export const addInstrumentation = async (serviceName: string) => {
           new W3CTraceContextPropagator(),
           new StanzaBaggagePropagator(),
           new StanzaPriorityBoostPropagator(),
-          new StanzaApiKeyPropagator()
+          new StanzaApiKeyPropagator(),
+          new StanzaTokenPropagator()
         ]
       }),
     metricReader: new PeriodicExportingMetricReader({

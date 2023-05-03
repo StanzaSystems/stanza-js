@@ -1,4 +1,7 @@
-const StanzaDecoratorErrorReasonsValues = ['TooManyRequests'] as const
+const StanzaDecoratorErrorReasonsValues = [
+  'TooManyRequests',
+  'InvalidToken'
+] as const
 
 export type StanzaDecoratorErrorReasons = (typeof StanzaDecoratorErrorReasonsValues)[number]
 

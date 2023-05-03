@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { type DecoratorConfigResponse } from './api/decoratorConfigResponse'
 import { type ServiceConfigResponse } from './api/serviceConfigResponse'
-import { createHubService } from './hubService'
+import { createHubService } from './createHubService'
 
 vi.mock('../fetchImplementation', () => {
   return {
