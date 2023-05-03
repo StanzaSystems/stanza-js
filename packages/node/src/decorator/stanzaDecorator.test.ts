@@ -227,7 +227,7 @@ describe('stanzaDecorator', function () {
 
       resolveToken({ granted: false })
 
-      await expect(decoratedDoStuffPromise).rejects.toThrow(new StanzaDecoratorError('TooManyRequests', 'Decorator can not be executed'))
+      await expect(decoratedDoStuffPromise).rejects.toThrow(new StanzaDecoratorError('NoQuota', 'Decorator can not be executed'))
 
       expect(doStuff).not.toHaveBeenCalled()
 

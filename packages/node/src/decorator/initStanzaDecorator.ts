@@ -37,7 +37,7 @@ export const initDecorator = (options: StanzaDecoratorOptions) => {
         console.warn('Failed to fetch the token:', e instanceof Error ? e.message : e)
       }
       if (token?.granted === false) {
-        throw new StanzaDecoratorError('TooManyRequests', 'Decorator can not be executed')
+        throw new StanzaDecoratorError('NoQuota', 'Decorator can not be executed')
       }
 
       return token?.granted ? { type: 'TOKEN_GRANTED', token: token.token } : null

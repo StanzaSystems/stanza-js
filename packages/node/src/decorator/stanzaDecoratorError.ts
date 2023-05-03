@@ -1,5 +1,5 @@
 const StanzaDecoratorErrorReasonsValues = [
-  'TooManyRequests',
+  'NoQuota',
   'InvalidToken'
 ] as const
 

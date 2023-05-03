@@ -9,7 +9,8 @@ const notInitializedServiceMethod = async () => Promise.reject(new Error('Hub Se
 export let hubService: HubService = hubServiceGlobal[HUB_SERVICE_SYMBOL] = hubServiceGlobal[HUB_SERVICE_SYMBOL] ?? {
   fetchServiceConfig: notInitializedServiceMethod,
   fetchDecoratorConfig: notInitializedServiceMethod,
-  getToken: notInitializedServiceMethod
+  getToken: notInitializedServiceMethod,
+  validateToken: notInitializedServiceMethod
 }
 
 export const updateHubService = (updatedService: HubService) => {
