@@ -10,6 +10,7 @@ export let hubService: HubService = hubServiceGlobal[HUB_SERVICE_SYMBOL] = hubSe
   fetchServiceConfig: notInitializedServiceMethod,
   fetchDecoratorConfig: notInitializedServiceMethod,
   getToken: notInitializedServiceMethod,
+  getTokenLease: notInitializedServiceMethod,
   validateToken: notInitializedServiceMethod
 }
 
