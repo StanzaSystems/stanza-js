@@ -115,7 +115,13 @@ export const createHubService = ({ hubUrl, serviceName, serviceRelease, environm
           priorityBoost: priorityBoost?.toFixed(0)
         }
       }, stanzaTokenLeaseResponse)
-      return response?.leases ?? null
+      const now = Date.now()
+      return response?.leases.map(lease => ({
+        token: lease.token,
+        feature: lease.feature,
+        priorityBoost: lease.priorityBoost,
+        expiresAt: now + lease.durationMsec
+      })) ?? null
     },
     validateToken: async ({ token, decorator }) => {
       const response = await hubRequest('v1/quota/validatetoken', {

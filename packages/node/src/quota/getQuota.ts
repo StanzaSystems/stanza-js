@@ -10,6 +10,12 @@ interface GetQuotaOptions {
   priorityBoost?: number
 }
 export const getQuota = async (options: GetQuotaOptions): Promise<StanzaToken | null> => {
+  // TODO
+  // if (decoratorConfigFromContext.isStrict()) {
+  //   // call hub
+  // } else {
+  //   // call store
+  // }
   try {
     return await withTimeout(
       CHECK_QUOTA_TIMEOUT,
@@ -21,6 +27,4 @@ export const getQuota = async (options: GetQuotaOptions): Promise<StanzaToken | 
   }
 
   return null
-
-  // return hubService.getToken(options)
 }
