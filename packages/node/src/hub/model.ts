@@ -7,7 +7,7 @@ type DataSent<T extends { configDataSent: boolean }> = T extends { configDataSen
 export type ServiceConfig = Pick<DataSent<ServiceConfigResponse>, 'version' | 'config'>
 export type DecoratorConfig = Pick<DataSent<DecoratorConfigResponse>, 'version' | 'config'>
 export type StanzaToken = StanzaTokenResponse
-export type ValidatedTokens = Array<{
+export interface ValidatedToken {
   token: string
   valid: boolean
-}>
+}

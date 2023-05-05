@@ -111,7 +111,7 @@ export const createHubService = ({ hubUrl, serviceName, serviceRelease, environm
           decorator
         }]
       }, stanzaValidateTokenResponse)
-      return response?.tokensValid ?? null
+      return response?.tokensValid?.[0] ?? null
     }
   })
 }

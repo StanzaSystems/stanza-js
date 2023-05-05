@@ -5,14 +5,14 @@ import { stanzaTokenContextKey } from '../context/stanzaTokenContextKey'
 import { updateDecoratorConfig } from '../global/decoratorConfig'
 import { updateHubService } from '../global/hubService'
 import { type HubService } from '../hub/hubService'
-import { type DecoratorConfig, type ServiceConfig, type StanzaToken, type ValidatedTokens } from '../hub/model'
+import { type DecoratorConfig, type ServiceConfig, type StanzaToken, type ValidatedToken } from '../hub/model'
 import { stanzaDecorator } from './stanzaDecorator'
 import { StanzaDecoratorError } from './stanzaDecoratorError'
 
 const fetchServiceConfigMock = vi.fn<any[], Promise<ServiceConfig | null>>(async () => new Promise<never>(() => {}))
 const fetchDecoratorConfigMock = vi.fn<any[], Promise<DecoratorConfig | null>>(async () => new Promise<never>(() => {}))
 const getTokenMock = vi.fn<any[], Promise<StanzaToken | null>>(async () => new Promise<never>(() => {}))
-const validateTokenMock = vi.fn<Parameters<HubService['validateToken']>, Promise<ValidatedTokens | null>>(async () => new Promise<never>(() => {}))
+const validateTokenMock = vi.fn<Parameters<HubService['validateToken']>, Promise<ValidatedToken | null>>(async () => new Promise<never>(() => {}))
 
 const doStuff = vi.fn()
 
@@ -358,7 +358,7 @@ describe('stanzaDecorator', function () {
     })
   })
 
-  describe('check quota', () => {
+  describe('validate ingress token', () => {
     const validateIngressTokenDecoratorConfig = {
       version: 'test',
       config: {
@@ -414,10 +414,10 @@ describe('stanzaDecorator', function () {
 
       doStuff.mockReturnValueOnce('test-value-token-resolved')
 
-      let resolveValidatedTokens: (value: ValidatedTokens) => void = () => {}
+      let resolveValidatedToken: (value: ValidatedToken) => void = () => {}
       validateTokenMock.mockImplementation(async () => {
-        return new Promise<ValidatedTokens>((resolve) => {
-          resolveValidatedTokens = resolve
+        return new Promise<ValidatedToken>((resolve) => {
+          resolveValidatedToken = resolve
         })
       })
       fetchDecoratorConfigMock.mockImplementation(async () => Promise.resolve(validateIngressTokenDecoratorConfig))
@@ -430,10 +430,10 @@ describe('stanzaDecorator', function () {
 
       const decoratedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), decoratedDoStuff)
 
-      resolveValidatedTokens([{
+      resolveValidatedToken({
         token: 'aToken',
         valid: true
-      }])
+      })
 
       await vi.advanceTimersByTimeAsync(0)
 
@@ -468,10 +468,10 @@ describe('stanzaDecorator', function () {
 
     it('should fail the execution with StanzaDecoratorError if token is not validated', async function () {
       vi.useFakeTimers()
-      let resolveValidatedTokens: (value: ValidatedTokens) => void = () => {}
+      let resolveValidatedToken: (value: ValidatedToken) => void = () => {}
       validateTokenMock.mockImplementation(async () => {
-        return new Promise<ValidatedTokens>((resolve) => {
-          resolveValidatedTokens = resolve
+        return new Promise<ValidatedToken>((resolve) => {
+          resolveValidatedToken = resolve
         })
       })
       fetchDecoratorConfigMock.mockImplementation(async () => Promise.resolve(validateIngressTokenDecoratorConfig))
@@ -486,7 +486,7 @@ describe('stanzaDecorator', function () {
 
       expect(doStuff).not.toHaveBeenCalled()
 
-      resolveValidatedTokens([{ token: 'aToken', valid: false }])
+      resolveValidatedToken({ token: 'aToken', valid: false })
 
       await expect(decoratedDoStuffPromise).rejects.toThrow(new StanzaDecoratorError('InvalidToken', 'Provided token was invalid'))
 
@@ -499,13 +499,13 @@ describe('stanzaDecorator', function () {
       vi.useRealTimers()
     })
 
-    it('should fail the execution with StanzaDecoratorError if validate token resolves with empty array', async function () {
+    it('should proceed the execution if validate token resolves with null', async function () {
       vi.useFakeTimers()
 
-      let resolveValidatedTokens: (value: ValidatedTokens) => void = () => {}
+      let resolveValidatedToken: (value: ValidatedToken | null) => void = () => {}
       validateTokenMock.mockImplementation(async () => {
-        return new Promise<ValidatedTokens>((resolve) => {
-          resolveValidatedTokens = resolve
+        return new Promise<ValidatedToken | null>((resolve) => {
+          resolveValidatedToken = resolve
         })
       })
       fetchDecoratorConfigMock.mockImplementation(async () => Promise.resolve(validateIngressTokenDecoratorConfig))
@@ -520,15 +520,14 @@ describe('stanzaDecorator', function () {
 
       expect(doStuff).not.toHaveBeenCalled()
 
-      resolveValidatedTokens([])
-
-      await expect(decoratedDoStuffPromise).rejects.toThrow(new StanzaDecoratorError('InvalidToken', 'Provided token was invalid'))
+      resolveValidatedToken(null)
 
       expect(doStuff).not.toHaveBeenCalled()
+      await vi.advanceTimersByTimeAsync(0)
 
-      await vi.advanceTimersByTimeAsync(5000)
+      await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
 
-      expect(doStuff).not.toHaveBeenCalledOnce()
+      expect(doStuff).toHaveBeenCalledOnce()
 
       vi.useRealTimers()
     })
@@ -594,10 +593,10 @@ describe('stanzaDecorator', function () {
     it('should remove token from an execution context when token is validated', async function () {
       vi.useFakeTimers()
 
-      let resolveValidatedTokens: (value: ValidatedTokens) => void = () => {}
+      let resolveValidatedToken: (value: ValidatedToken) => void = () => {}
       validateTokenMock.mockImplementation(async () => {
-        return new Promise<ValidatedTokens>((resolve) => {
-          resolveValidatedTokens = resolve
+        return new Promise<ValidatedToken>((resolve) => {
+          resolveValidatedToken = resolve
         })
       })
       fetchDecoratorConfigMock.mockImplementation(async () => Promise.resolve(validateIngressTokenDecoratorConfig))
@@ -611,7 +610,7 @@ describe('stanzaDecorator', function () {
 
       const decoratedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), decoratedDoStuff)
 
-      resolveValidatedTokens([{ token: 'aToken', valid: true }])
+      resolveValidatedToken({ token: 'aToken', valid: true })
 
       await vi.advanceTimersByTimeAsync(0)
 

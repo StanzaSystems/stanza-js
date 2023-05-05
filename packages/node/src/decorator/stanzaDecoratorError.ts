@@ -1,9 +1,4 @@
-const StanzaDecoratorErrorReasonsValues = [
-  'NoQuota',
-  'InvalidToken'
-] as const
-
-export type StanzaDecoratorErrorReasons = (typeof StanzaDecoratorErrorReasonsValues)[number]
+export type StanzaDecoratorErrorReasons = 'NoQuota' | 'InvalidToken'
 
 export class StanzaDecoratorError extends Error {
   constructor (public readonly reason: StanzaDecoratorErrorReasons, message: string) {
