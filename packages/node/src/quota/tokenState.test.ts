@@ -4,7 +4,7 @@ import { createTokenState, type TokenQuery } from './tokenState'
 describe('tokenState', function () {
   beforeEach(() => {
     vi.useFakeTimers({
-      now: 100
+      now: 0
     })
   })
   afterEach(() => {
@@ -398,7 +398,7 @@ describe('tokenState', function () {
 
       expect(listener).not.toHaveBeenCalled()
 
-      await vi.advanceTimersByTimeAsync(200)
+      await vi.advanceTimersByTimeAsync(300)
 
       expect(listener).toHaveBeenCalledOnce()
       expect(listener).toHaveBeenCalledWith(0.5)
@@ -409,6 +409,70 @@ describe('tokenState', function () {
 
       expect(listener).toHaveBeenCalledOnce()
       expect(listener).toHaveBeenCalledWith(0)
+    })
+
+    it('should call appropriate onTokensAvailableRatioChange listener when token expires', async function () {
+      const tokenState = createTokenState()
+
+      const listener1 = vi.fn()
+      const listener2 = vi.fn()
+
+      tokenState.addTokens([{
+        token: 'testToken 1',
+        feature: 'testFeature',
+        priorityBoost: 0,
+        expiresAt: 600
+      }, {
+        token: 'testToken 2',
+        feature: 'testFeature',
+        priorityBoost: 0,
+        expiresAt: 800
+      }])
+
+      await vi.advanceTimersByTimeAsync(0)
+
+      tokenState.onTokensAvailableRatioChange(300, listener1)
+
+      tokenState.onTokensAvailableRatioChange(200, listener2)
+
+      expect(listener1).not.toHaveBeenCalled()
+
+      await vi.advanceTimersByTimeAsync(300)
+
+      // time: 300, "testToken 1" expires in 300, "testToken 2" expires in 500, call listener 1
+      expect(listener1).toHaveBeenCalledOnce()
+      expect(listener1).toHaveBeenCalledWith(0.5)
+      expect(listener2).not.toHaveBeenCalled()
+
+      listener1.mockClear()
+      listener2.mockClear()
+
+      await vi.advanceTimersByTimeAsync(100)
+
+      // time: 400, "testToken 1" expires in 200, "testToken 2" expires in 400, call listener 2
+      expect(listener1).not.toHaveBeenCalled()
+      expect(listener2).toHaveBeenCalledOnce()
+      expect(listener2).toHaveBeenCalledWith(0.5)
+
+      listener1.mockClear()
+      listener2.mockClear()
+
+      await vi.advanceTimersByTimeAsync(100)
+
+      // time: 500, "testToken 1" expires in 100, "testToken 2" expires in 300, call listener 1
+      expect(listener1).toHaveBeenCalledOnce()
+      expect(listener1).toHaveBeenCalledWith(0)
+      expect(listener2).not.toHaveBeenCalled()
+
+      listener1.mockClear()
+      listener2.mockClear()
+
+      await vi.advanceTimersByTimeAsync(100)
+
+      // time: 600, "testToken 1" expired, "testToken 2" expires in 200, call listener 2
+      expect(listener1).not.toHaveBeenCalled()
+      expect(listener2).toHaveBeenCalledOnce()
+      expect(listener2).toHaveBeenCalledWith(0)
     })
   })
 })

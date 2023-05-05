@@ -82,42 +82,52 @@ export const createTokenState = (): TokenState => {
       tokenExpiresCallbackHandle = undefined
     }
 
-    console.log('foo', availableRatioListeners.length)
-
-    if (availableRatioListeners.length === 0) {
-      return
-    }
-    console.log('foo')
-
-    const earliestListenerOffset = Math.max(...availableRatioListeners.map(({ expiresOffset }) => expiresOffset))
     const now = Date.now()
 
-    const tokensExpiringAfterOffset = tokenLeases
-      .filter(isTokenValidAfter(now + earliestListenerOffset))
+    const tokensNotifyAt = availableRatioListeners.map((listener) => tokenLeases
+      .map(({ expiresAt }) => ({ ...listener, notifyAt: expiresAt - listener.expiresOffset })))
+      .flat(1)
+      .filter(({ notifyAt }) => notifyAt - now > 0)
 
-    if (tokensExpiringAfterOffset.length === 0) {
+    if (tokensNotifyAt.length === 0) {
       return
     }
 
-    const nextExpiresAt = Math.min(
-      ...tokensExpiringAfterOffset
-        .map(({ expiresAt }) => expiresAt)
-    )
-    const listeners = availableRatioListeners.filter(({ expiresOffset }) => expiresOffset === earliestListenerOffset).map(({ listener }) => listener)
+    console.log(tokensNotifyAt.map(({ notifyAt }) => notifyAt))
 
-    const notifyAt = nextExpiresAt - earliestListenerOffset
+    const earliestNotifyAt = Math.min(...tokensNotifyAt.map(({ notifyAt }) => notifyAt))
+    // const earliestListenerOffset = Math.max(...availableRatioListeners.map(({ expiresOffset }) => expiresOffset))
 
-    const timeout = notifyAt - now
+    console.log(earliestNotifyAt)
+    // const tokensExpiringAfterOffset = tokenLeases
+    //   .filter(isTokenValidAfter(now + earliestListenerOffset))
+
+    // if (tokensExpiringAfterOffset.length === 0) {
+    //   return
+    // }
+
+    // const nextExpiresAt = Math.min(
+    //   ...tokensExpiringAfterOffset
+    //     .map(({ expiresAt }) => expiresAt)
+    // )
+    const listeners = tokensNotifyAt.filter(({ notifyAt }) => notifyAt === earliestNotifyAt)// .map(({ listener }) => listener)
+
+    // const notifyAt = nextExpiresAt - earliestListenerOffset
+
+    console.log(earliestNotifyAt)
+    console.log(now)
+
+    const timeout = earliestNotifyAt - now
 
     console.log(timeout)
 
     tokenExpiresCallbackHandle = setTimeout(() => {
       const now = Date.now()
-      const stanzaTokenLeasesValid = tokenLeases.filter(isTokenValidAfter(now + earliestListenerOffset))
-      const availableCount = stanzaTokenLeasesValid.length
       const totalCount = tokenLeases.length + tokensUsed.length
-      const availableRatio = totalCount !== 0 ? availableCount / totalCount : 0
-      listeners.forEach((listener) => {
+      listeners.forEach(({ listener, expiresOffset }) => {
+        const stanzaTokenLeasesValid = tokenLeases.filter(isTokenValidAfter(now + expiresOffset))
+        const availableCount = stanzaTokenLeasesValid.length
+        const availableRatio = totalCount !== 0 ? availableCount / totalCount : 0
         listener(availableRatio)
       })
       scheduleTokenExpiresCallback()
