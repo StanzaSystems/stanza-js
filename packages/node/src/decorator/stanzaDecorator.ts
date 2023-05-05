@@ -1,7 +1,8 @@
 import { addPriorityBoostToContext } from '../context/addPriorityBoostToContext'
-import { addStanzaApiKeyToContext } from '../context/addStanzaApiKeyToContext'
 import { addStanzaDecoratorToContext } from '../context/addStanzaDecoratorToContext'
+import { addStanzaTokenToContext } from '../context/addStanzaTokenToContext'
 import { bindContext } from '../context/bindContext'
+import { removeStanzaTokenFromContext } from '../context/removeStanzaTokenFromContext'
 import { createStanzaWrapper } from '../utils/createStanzaWrapper'
 import { type Fn } from '../utils/fn'
 import { isTruthy } from '../utils/isTruthy'
@@ -19,7 +20,11 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
       const fnWithBoundContext = bindContext([
         addStanzaDecoratorToContext(options.decorator),
         options.priorityBoost !== undefined ? addPriorityBoostToContext(options.priorityBoost) : undefined,
-        token !== null ? addStanzaApiKeyToContext(token) : undefined
+        token?.type === 'TOKEN_GRANTED'
+          ? addStanzaTokenToContext(token.token)
+          : token?.type === 'TOKEN_VALIDATED'
+            ? removeStanzaTokenFromContext()
+            : null
       ].filter(isTruthy), fn)
 
       return fnWithBoundContext(...args) as Promisify<TReturn>

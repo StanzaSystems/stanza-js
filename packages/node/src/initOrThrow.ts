@@ -2,7 +2,7 @@ import { addInstrumentation } from './addInstrumentation'
 import { generateClientId } from './generateClientId'
 import { getEnvInitOptions } from './getEnvInitOptions'
 import { updateHubService } from './global/hubService'
-import { createHubService } from './hub/hubService'
+import { createHubService } from './hub/createHubService'
 import { stanzaInitOptions, type StanzaInitOptions } from './stanzaInitOptions'
 import { startPollingServiceConfig } from './service/startPollingConfigService'
 

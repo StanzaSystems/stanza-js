@@ -1,41 +1,88 @@
+import { context } from '@opentelemetry/api'
+import { stanzaTokenContextKey } from '../context/stanzaTokenContextKey'
 import { getDecoratorConfig } from '../global/decoratorConfig'
 import { hubService } from '../global/hubService'
-import { type StanzaToken } from '../hub/model'
+import { type StanzaToken, type ValidatedToken } from '../hub/model'
+import { withTimeout } from '../utils/withTimeout'
 import { type StanzaDecoratorOptions } from './model'
 import { StanzaDecoratorError } from './stanzaDecoratorError'
 import { startPollingDecoratorConfig } from './startPollingDecoratorConfig'
+
 const CHECK_QUOTA_TIMEOUT = 1000
 
 export const initDecorator = (options: StanzaDecoratorOptions) => {
-  const shouldCheckQuota = (): boolean => {
-    const decoratorConfig = getDecoratorConfig(options.decorator)
-
-    return decoratorConfig?.config?.checkQuota === true
-  }
   startPollingDecoratorConfig(options.decorator)
   return { guard }
 
   async function guard () {
-    let token: StanzaToken | null = null
+    if (shouldValidateIngressToken()) {
+      return validateIngressToken()
+    }
+
     if (shouldCheckQuota()) {
-      try {
-        token = await Promise.race([
-          hubService.getToken(options),
-          new Promise<ReturnType<typeof hubService.getToken>>((_resolve, reject) => {
-            setTimeout(() => {
-              reject(new Error('Check quota timed out'))
-            }, CHECK_QUOTA_TIMEOUT)
-          })
-        ])
-      } catch (e) {
-        console.warn('Failed to fetch the token:', e instanceof Error ? e.message : e)
-      }
+      return checkQuota()
     }
 
+    return null
+  }
+
+  function shouldCheckQuota (): boolean {
+    const decoratorConfig = getDecoratorConfig(options.decorator)
+
+    return decoratorConfig?.config?.checkQuota === true
+  }
+
+  function shouldValidateIngressToken (): boolean {
+    const decoratorConfig = getDecoratorConfig(options.decorator)
+    return decoratorConfig?.config?.validateIngressTokens === true
+  }
+
+  async function checkQuota (): Promise<{ type: 'TOKEN_GRANTED', token: string } | null> {
+    let token: StanzaToken | null = null
+    try {
+      token = await withTimeout(
+        CHECK_QUOTA_TIMEOUT,
+        'Check quota timed out',
+        hubService.getToken(options)
+      )
+    } catch (e) {
+      console.warn('Failed to fetch the token:', e instanceof Error ? e.message : e)
+    }
     if (token?.granted === false) {
-      throw new StanzaDecoratorError('TooManyRequests', 'Decorator can not be executed')
+      throw new StanzaDecoratorError('NoQuota', 'Decorator can not be executed')
     }
 
-    return token?.token ?? null
+    return token?.granted ? { type: 'TOKEN_GRANTED', token: token.token } : null
+  }
+
+  async function validateIngressToken (): Promise<{ type: 'TOKEN_VALIDATED' } | null> {
+    const token = context.active().getValue(stanzaTokenContextKey)
+
+    if (typeof (token) !== 'string' || token === '') {
+      throw new StanzaDecoratorError('InvalidToken', 'Valid Stanza token was not provided in the incoming header')
+    }
+
+    let validatedToken: ValidatedToken | null = null
+    try {
+      validatedToken = await withTimeout(
+        CHECK_QUOTA_TIMEOUT,
+        'Validate token timed out',
+        hubService.validateToken({
+          decorator: options.decorator,
+          token
+        }))
+    } catch (e) {
+      console.warn('Failed to validate the token:', e instanceof Error ? e.message : e)
+    }
+
+    if (validatedToken === null) {
+      return null
+    }
+
+    if (!validatedToken.valid || validatedToken.token !== token) {
+      throw new StanzaDecoratorError('InvalidToken', 'Provided token was invalid')
+    }
+
+    return { type: 'TOKEN_VALIDATED' }
   }
 }
