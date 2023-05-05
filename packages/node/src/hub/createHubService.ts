@@ -103,10 +103,13 @@ export const createHubService = ({ hubUrl, serviceName, serviceRelease, environm
         }
       }, stanzaTokenResponse)
     },
-    validateToken: async () => {
+    validateToken: async ({ token, decorator }) => {
       const response = await hubRequest('v1/quota/validatetoken', {
         method: 'POST',
-        body: [{}]
+        body: [{
+          token,
+          decorator
+        }]
       }, stanzaValidateTokenResponse)
       return response?.tokensValid ?? null
     }
