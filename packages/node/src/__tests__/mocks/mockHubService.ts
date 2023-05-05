@@ -1,13 +1,13 @@
 import { vi } from 'vitest'
 import { updateHubService } from '../../global/hubService'
 import { type HubService } from '../../hub/hubService'
-import { type DecoratorConfig, type ServiceConfig, type StanzaToken, type StanzaTokenLeases, type ValidatedTokens } from '../../hub/model'
+import { type DecoratorConfig, type ServiceConfig, type StanzaToken, type StanzaTokenLeases, type ValidatedToken } from '../../hub/model'
 
 const fetchServiceConfigMock = vi.fn<any[], Promise<ServiceConfig | null>>(async () => new Promise<never>(() => {}))
 const fetchDecoratorConfigMock = vi.fn<any[], Promise<DecoratorConfig | null>>(async () => new Promise<never>(() => {}))
 const getTokenMock = vi.fn<any[], Promise<StanzaToken | null>>(async () => new Promise<never>(() => {}))
 const getTokenLeaseMock = vi.fn<any[], Promise<StanzaTokenLeases | null>>(async () => new Promise<never>(() => {}))
-const validateTokenMock = vi.fn<Parameters<HubService['validateToken']>, Promise<ValidatedTokens | null>>(async () => new Promise<never>(() => {}))
+const validateTokenMock = vi.fn<Parameters<HubService['validateToken']>, Promise<ValidatedToken | null>>(async () => new Promise<never>(() => {}))
 
 export const mockHubService = {
   fetchServiceConfig: fetchServiceConfigMock,
