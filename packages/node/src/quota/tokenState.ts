@@ -6,62 +6,75 @@ export interface TokenQuery {
 }
 const isTokenValidAfter = (expirationTime: number) => ({ expiresAt }: StanzaTokenLease) => expiresAt > expirationTime
 
-type AvailableRatioListener = (ratioAvailable: number) => void
+type AvailableRatioListenerFn = (ratioAvailable: number) => void
 
+interface AvailableRationListener {
+  listener: AvailableRatioListenerFn
+  expiresOffset: number
+}
 export interface TokenState {
   addTokens: (leases: StanzaTokenLeases) => void
   hasToken: (query?: TokenQuery) => boolean
   popToken: (query?: TokenQuery) => StanzaTokenLease | null
-  onTokensAvailableRatioChange: (expiresOffset: number, listener: AvailableRatioListener) => void
+  onTokensAvailableRatioChange: (expiresOffset: number, listener: AvailableRatioListenerFn) => void
 }
 
 export const createTokenState = (): TokenState => {
-  const tokenLeases = Array<StanzaTokenLease>()
-  const tokensUsed = Array<StanzaTokenLease>()
-  const availableRatioListeners = Array<{ listener: AvailableRatioListener, expiresOffset: number }>()
+  let tokenLeases = Array<StanzaTokenLease>()
+  let tokensUsed = Array<StanzaTokenLease>()
+  const availableRatioListeners = Array<AvailableRationListener>()
   let tokenExpiresCallbackHandle: ReturnType<typeof setTimeout> | undefined
 
+  onTokensAvailableRatioChange(0, clearExpiredTokens)
+
   return {
-    addTokens: (leases) => {
-      tokenLeases.push(...leases)
+    addTokens,
+    hasToken,
+    popToken,
+    onTokensAvailableRatioChange
+  }
+
+  function addTokens (leases: StanzaTokenLease[]) {
+    tokenLeases.push(...leases)
+    tokensUsed = []
+    onChange()
+  }
+
+  function hasToken ({ feature, priorityBoost }: TokenQuery = {}) {
+    const now = Date.now()
+
+    return tokenLeases.some((lease) => {
+      const isNotExpired = lease.expiresAt > now
+      const featureMatch = feature === undefined || lease.feature === feature
+      const priorityBoostMatch = priorityBoost === undefined || lease.priorityBoost >= priorityBoost
+      return isNotExpired && featureMatch && priorityBoostMatch
+    })
+  }
+  function popToken ({ feature, priorityBoost }: TokenQuery = {}) {
+    const now = Date.now()
+
+    const tokenIndex = tokenLeases.findIndex((lease) => {
+      const isNotExpired = lease.expiresAt > now
+      const featureMatch = feature === undefined || lease.feature === feature
+      const priorityBoostMatch = priorityBoost === undefined || lease.priorityBoost >= priorityBoost
+      return isNotExpired && featureMatch && priorityBoostMatch
+    })
+
+    const result = tokenIndex >= 0 ? tokenLeases.splice(tokenIndex, 1)[0] : null
+
+    if (result !== null) {
+      tokensUsed.push(result)
       onChange()
-    },
-    hasToken: ({ feature, priorityBoost } = {}) => {
-      const now = Date.now()
-
-      return tokenLeases.some((lease) => {
-        const isNotExpired = lease.expiresAt > now
-        const featureMatch = feature === undefined || lease.feature === feature
-        const priorityBoostMatch = priorityBoost === undefined || lease.priorityBoost >= priorityBoost
-        return isNotExpired && featureMatch && priorityBoostMatch
-      })
-    },
-    popToken: ({ feature, priorityBoost } = {}) => {
-      const now = Date.now()
-
-      const tokenIndex = tokenLeases.findIndex((lease) => {
-        const isNotExpired = lease.expiresAt > now
-        const featureMatch = feature === undefined || lease.feature === feature
-        const priorityBoostMatch = priorityBoost === undefined || lease.priorityBoost >= priorityBoost
-        return isNotExpired && featureMatch && priorityBoostMatch
-      })
-
-      const result = tokenIndex >= 0 ? tokenLeases.splice(tokenIndex, 1)[0] : null
-
-      if (result !== null) {
-        tokensUsed.push(result)
-        onChange()
-      }
-
-      return result
-    },
-    onTokensAvailableRatioChange: (expiresOffset, listener) => {
-      availableRatioListeners.push({
-        listener,
-        expiresOffset
-      })
-      scheduleTokenExpiresCallback()
     }
+
+    return result
+  }
+  function onTokensAvailableRatioChange (expiresOffset: number, listener: AvailableRatioListenerFn) {
+    availableRatioListeners.push({
+      listener,
+      expiresOffset
+    })
+    scheduleTokenExpiresCallback()
   }
 
   function onChange () {
@@ -93,59 +106,36 @@ export const createTokenState = (): TokenState => {
       return
     }
 
-    console.log(tokensNotifyAt.map(({ notifyAt }) => notifyAt))
-
     const earliestNotifyAt = Math.min(...tokensNotifyAt.map(({ notifyAt }) => notifyAt))
-    // const earliestListenerOffset = Math.max(...availableRatioListeners.map(({ expiresOffset }) => expiresOffset))
-
-    console.log(earliestNotifyAt)
-    // const tokensExpiringAfterOffset = tokenLeases
-    //   .filter(isTokenValidAfter(now + earliestListenerOffset))
-
-    // if (tokensExpiringAfterOffset.length === 0) {
-    //   return
-    // }
-
-    // const nextExpiresAt = Math.min(
-    //   ...tokensExpiringAfterOffset
-    //     .map(({ expiresAt }) => expiresAt)
-    // )
-    const listeners = tokensNotifyAt.filter(({ notifyAt }) => notifyAt === earliestNotifyAt)// .map(({ listener }) => listener)
-
-    // const notifyAt = nextExpiresAt - earliestListenerOffset
-
-    console.log(earliestNotifyAt)
-    console.log(now)
-
+    const listeners = tokensNotifyAt.filter(({ notifyAt }) => notifyAt === earliestNotifyAt)
     const timeout = earliestNotifyAt - now
 
-    console.log(timeout)
-
-    tokenExpiresCallbackHandle = setTimeout(() => {
-      const now = Date.now()
-      const totalCount = tokenLeases.length + tokensUsed.length
-      listeners.forEach(({ listener, expiresOffset }) => {
-        const stanzaTokenLeasesValid = tokenLeases.filter(isTokenValidAfter(now + expiresOffset))
-        const availableCount = stanzaTokenLeasesValid.length
-        const availableRatio = totalCount !== 0 ? availableCount / totalCount : 0
-        listener(availableRatio)
-      })
-      scheduleTokenExpiresCallback()
-    }, timeout)
+    tokenExpiresCallbackHandle = setTimeout(() => { notifyAvailableRatioListeners(listeners) }, timeout)
   }
 
-  // function clearExpiredTokens () {
-  //   const now = Date.now()
-  //   const isValid = ({ expiresAt }: StanzaTokenLease) => expiresAt > now
-  //   const [expiredTokenLeases, validTokenLeases] = tokenLeases.reduce<[StanzaTokenLease[], StanzaTokenLease[]]>((groups, value) => {
-  //     const predicateResult = isValid(value)
-  //     const key = predicateResult ? 1 : 0
-  //     groups[key] = groups[key] ?? []
-  //     groups[key].push(value)
-  //     return groups
-  //   }, [[], []])
-  //
-  //   tokenLeases = validTokenLeases
-  //   tokensUsed.push(...expiredTokenLeases)
-  // }
+  function clearExpiredTokens () {
+    const now = Date.now()
+    const isValid = ({ expiresAt }: StanzaTokenLease) => expiresAt > now
+    const [expiredTokenLeases, validTokenLeases] = tokenLeases.reduce<[StanzaTokenLease[], StanzaTokenLease[]]>((groups, value) => {
+      const predicateResult = isValid(value)
+      const key = predicateResult ? 1 : 0
+      groups[key].push(value)
+      return groups
+    }, [[], []])
+
+    tokenLeases = validTokenLeases
+    tokensUsed.push(...expiredTokenLeases)
+  }
+
+  function notifyAvailableRatioListeners (listeners: AvailableRationListener[]) {
+    const now = Date.now()
+    const totalCount = tokenLeases.length + tokensUsed.length
+    listeners.forEach(({ listener, expiresOffset }) => {
+      const stanzaTokenLeasesValid = tokenLeases.filter(isTokenValidAfter(now + expiresOffset))
+      const availableCount = stanzaTokenLeasesValid.length
+      const availableRatio = totalCount !== 0 ? availableCount / totalCount : 0
+      listener(availableRatio)
+    })
+    scheduleTokenExpiresCallback()
+  }
 }
