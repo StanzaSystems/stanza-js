@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createTokenState, type TokenQuery } from './tokenState'
+import { createTokenState, type TokenQuery } from './createTokenState'
 
-describe('tokenState', function () {
+describe('createTokenState', function () {
   beforeEach(() => {
     vi.useFakeTimers({
       now: 0
