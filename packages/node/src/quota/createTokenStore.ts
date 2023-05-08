@@ -1,42 +1,31 @@
-import { type TokenStore } from './tokenStore'
+import { type TokenStore, type TokenStoreQuery } from './tokenStore'
 import { hubService } from '../global/hubService'
 import { createTokenState } from './createTokenState'
 
 export const createTokenStore = (): TokenStore => {
   const state = createTokenState()
-  // let getTokenLeaseInProgress: Promise<void> | undefined
+  let getTokenLeaseInProgress: Promise<void> | undefined
 
   return {
     getToken: async (query) => {
-      if (state.hasToken(query)) {
-        return state.popToken(query)?.token ?? null
-      }
+      await fetchTokensIfNecessary(query)
 
-      // if (getTokenLeaseInProgress === undefined) {
-      //   getTokenLeaseInProgress = hubService.getTokenLease({
-      //     ...query
-      //   }).then(tokenLeases => {
-      //     if (tokenLeases !== null) {
-      //       state.addTokens(tokenLeases)
-      //     }
-      //   })
-      //
-      //   await getTokenLeaseInProgress
-      //
-      //   return state.popToken(query)?.token ?? null
-      // }
-
-      const tokenLeases = await hubService.getTokenLease({
-        ...query
-      })
-
-      if (tokenLeases !== null) {
-        state.addTokens(tokenLeases)
-        return state.popToken(query)?.token ?? null
-      }
-
-      return null
+      return state.popToken(query)?.token ?? null
     },
     markTokenAsConsumed: () => {}
+  }
+
+  async function fetchTokensIfNecessary (query: TokenStoreQuery) {
+    if (!state.hasToken(query) && getTokenLeaseInProgress === undefined) {
+      getTokenLeaseInProgress = hubService.getTokenLease({
+        ...query
+      }).then(tokenLeases => {
+        getTokenLeaseInProgress = undefined
+        if (tokenLeases !== null) {
+          state.addTokens(tokenLeases)
+        }
+      })
+    }
+    return getTokenLeaseInProgress
   }
 }

@@ -139,7 +139,7 @@ describe('tokenStore', function () {
       await expect(getSecondTokenFromStorePromise).resolves.toEqual('testToken3')
     })
 
-    it.skip('should call getTokenLeases only once if waiting for multiple tokens', async function () {
+    it('should call getTokenLeases only once if waiting for multiple tokens', async function () {
       let resolveTokenLeases: (config: StanzaTokenLeases | null) => void = () => {}
       mockHubService.getTokenLease.mockImplementation(async () => new Promise<StanzaTokenLeases | null>((resolve) => {
         resolveTokenLeases = resolve
