@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createTokenState, type TokenQuery } from './createTokenState'
+import { createTokenState } from './createTokenState'
+import { type TokenQuery } from './tokenState'
 
 describe('createTokenState', function () {
   beforeEach(() => {

@@ -19,11 +19,13 @@ export const mockHubService = {
     fetchServiceConfigMock.mockReset()
     fetchDecoratorConfigMock.mockReset()
     getTokenMock.mockReset()
+    getTokenLeaseMock.mockReset()
     validateTokenMock.mockReset()
 
     fetchServiceConfigMock.mockImplementation(async () => new Promise<never>(() => {}))
     fetchDecoratorConfigMock.mockImplementation(async () => new Promise<never>(() => {}))
     getTokenMock.mockImplementation(async () => new Promise<never>(() => {}))
+    getTokenLeaseMock.mockImplementation(async () => new Promise<never>(() => {}))
     validateTokenMock.mockImplementation(async () => new Promise<never>(() => {}))
 
     updateHubService({
