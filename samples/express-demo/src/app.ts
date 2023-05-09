@@ -41,10 +41,105 @@ app.get('/pong', (req, res) => {
   res.status(200).send('ok')
 })
 
+app.use('/aService/*', (req, res, next) => {
+  console.log('a service data decorator')
+  void stanzaDecorator({ decorator: 'Demo_Check_Quota_Decorator' }).call(next).catch(next)
+})
+app.use('/anotherService/*', (req, res, next) => {
+  console.log('another service data decorator')
+  console.log('Incoming headers decorator: another service data')
+  console.log(JSON.stringify(req.headers, undefined, 2))
+  void stanzaDecorator({ decorator: 'Demo_Validate_Ingress_Token_Decorator' }).call(next).catch(next)
+})
+app.use('/sharedService/*', (req, res, next) => {
+  console.log('shared service data decorator')
+  void stanzaDecorator({ decorator: 'Demo_Check_Quota_Second_Decorator' }).call(next).catch(next)
+})
+
+app.get('/aService/data', (req, res, next) => {
+  void (async () => {
+    console.log('Incoming headers: a service data')
+    console.log(JSON.stringify(req.headers, undefined, 2))
+    const response = await fetch('http://localhost:3002/anotherService/data')
+    if (response.status === 200) {
+      const data = await response.json()
+      res.status(200).json(data)
+    } else if (response.status === 429) {
+      res.status(429).send('Too many requests to another service')
+    } else {
+      throw Error('Invalid response from another service')
+    }
+  })().catch(next)
+})
+
+app.get('/aService/shared-data', (req, res, next) => {
+  void (async () => {
+    console.log('Incoming headers: a service data')
+    console.log(JSON.stringify(req.headers, undefined, 2))
+    const response = await fetch('http://localhost:3002/sharedService/data')
+    if (response.status === 200) {
+      const data = await response.json()
+      res.status(200).json(data)
+    } else if (response.status === 429) {
+      res.status(429).send('Too many requests to another service')
+    } else {
+      throw Error('Invalid response from another service')
+    }
+  })().catch(next)
+})
+
+app.get('/yetAnotherService/shared-data', (req, res, next) => {
+  void (async () => {
+    console.log('Incoming headers: a service data')
+    console.log(JSON.stringify(req.headers, undefined, 2))
+    const response = await fetch('http://localhost:3002/sharedService/data')
+    if (response.status === 200) {
+      const data = await response.json()
+      res.status(200).json(data)
+    } else if (response.status === 429) {
+      res.status(429).send('Too many requests to another service')
+    } else {
+      throw Error('Invalid response from another service')
+    }
+  })().catch(next)
+})
+
+app.get('/aService/simple-data', (req, res, next) => {
+  void (async () => {
+    console.log('Incoming headers: a service data')
+    console.log(JSON.stringify(req.headers, undefined, 2))
+    res.status(200).json({
+      data: 'simple data'
+    })
+  })().catch(next)
+})
+
+app.get('/anotherService/data', (req, res, next) => {
+  void (async () => {
+    console.log('Incoming headers: another service data')
+    console.log(JSON.stringify(req.headers, undefined, 2))
+    res.status(200).json({
+      data: 'data from another service'
+    })
+  })().catch(next)
+})
+
+app.get('/sharedService/data', (req, res, next) => {
+  void (async () => {
+    console.log('Incoming headers: shared service data')
+    console.log(JSON.stringify(req.headers, undefined, 2))
+    res.status(200).json({
+      data: 'data from shared service'
+    })
+  })().catch(next)
+})
+
 app.use(((err, req, res, next) => {
   if (err instanceof StanzaDecoratorError) {
+    console.log('StanzaDecoratorError', err)
     res.status(429).send('Too many requests')
   } else {
+    console.log('Another error', err)
     next(err)
   }
 }) satisfies ErrorRequestHandler)
