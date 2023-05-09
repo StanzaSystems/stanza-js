@@ -1,17 +1,11 @@
 import { type TokenQuery } from './tokenState'
+import { type StanzaToken } from '../hub/model'
 
-// type DecoratorName = string
-
-// responsible for fetching tokens
 export interface TokenStoreQuery extends TokenQuery {
   decorator: string
 }
 
 export interface TokenStore {
-  // private props
-  // decoratorState: Record<DecoratorName, TokenState>
-
-  // methods
-  getToken: (query: TokenStoreQuery) => Promise<string | null>
+  getToken: (query: TokenStoreQuery) => Promise<StanzaToken | null>
   markTokenAsConsumed: (token: string) => void
 }

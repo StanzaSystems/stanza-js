@@ -13,7 +13,12 @@ export interface StanzaTokenLease {
   token: string
   expiresAt: number
 }
-export type StanzaTokenLeases = StanzaTokenLease[]
+export type StanzaTokenLeasesResult = {
+  granted: true
+  leases: StanzaTokenLease[]
+} | {
+  granted: false
+}
 export interface ValidatedToken {
   token: string
   valid: boolean

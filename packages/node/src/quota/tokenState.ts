@@ -1,4 +1,4 @@
-import { type StanzaTokenLease, type StanzaTokenLeases } from '../hub/model'
+import { type StanzaTokenLease } from '../hub/model'
 
 export interface TokenQuery {
   feature?: string
@@ -12,7 +12,7 @@ export interface AvailableRatioListener {
   expiresOffset: number
 }
 export interface TokenState {
-  addTokens: (leases: StanzaTokenLeases) => void
+  addTokens: (leases: StanzaTokenLease[]) => void
   hasToken: (query?: TokenQuery) => boolean
   popToken: (query?: TokenQuery) => StanzaTokenLease | null
   onTokensAvailableRatioChange: (expiresOffset: number, listener: AvailableRatioListenerFn) => void

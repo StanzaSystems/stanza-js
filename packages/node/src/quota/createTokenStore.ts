@@ -2,10 +2,10 @@ import { type TokenStore } from './tokenStore'
 import { hubService } from '../global/hubService'
 import { createTokenState } from './createTokenState'
 import { type TokenQuery } from './tokenState'
-import { type StanzaTokenLease } from '../hub/model'
+import { type StanzaToken } from '../hub/model'
 
 interface DecoratorTokenStore {
-  fetchTokensIfNecessary: (query: TokenQuery) => Promise<StanzaTokenLease | null>
+  fetchTokensIfNecessary: (query: TokenQuery) => Promise<StanzaToken | null>
 }
 export const createTokenStore = (): TokenStore => {
   const decoratorTokenStores: Record<string, DecoratorTokenStore> = {}
@@ -13,9 +13,7 @@ export const createTokenStore = (): TokenStore => {
   return {
     getToken: async (query) => {
       const { fetchTokensIfNecessary } = getDecoratorTokenStore(query.decorator)
-      const tokenLease = await fetchTokensIfNecessary(query)
-
-      return tokenLease?.token ?? null
+      return fetchTokensIfNecessary(query)
     },
     markTokenAsConsumed: () => {}
   }
@@ -28,37 +26,48 @@ export const createTokenStore = (): TokenStore => {
 
 function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
   const state = createTokenState()
-  let getTokenLeaseInProgress: Promise<StanzaTokenLease | null> | undefined
+  let getTokenLeaseInProgress: Promise<StanzaToken | null> | undefined
 
   return { fetchTokensIfNecessary }
 
-  async function fetchTokensIfNecessary (query: TokenQuery): Promise<StanzaTokenLease | null> {
-    if (state.hasToken(query)) {
-      return state.popToken(query)
+  async function fetchTokensIfNecessary (query: TokenQuery): Promise<StanzaToken | null> {
+    const tokenInState = state.popToken(query)
+    if (tokenInState !== null) {
+      return {
+        granted: true,
+        token: tokenInState.token
+      }
     }
 
     if (getTokenLeaseInProgress === undefined) {
       getTokenLeaseInProgress = requestTokenLease(query)
     } else {
-      getTokenLeaseInProgress = getTokenLeaseInProgress.then(async () => {
-        if (state.hasToken(query)) {
-          return state.popToken(query)
+      getTokenLeaseInProgress = getTokenLeaseInProgress.then(async (result) => {
+        if (result?.granted === false) {
+          return { granted: false }
         }
-        return requestTokenLease(query)
+        const tokenInState = state.popToken(query)
+        return tokenInState !== null ? { granted: true, token: tokenInState.token } : requestTokenLease(query)
       })
     }
-    return getTokenLeaseInProgress
+    return getTokenLeaseInProgress ?? null
   }
 
-  async function requestTokenLease (query: TokenQuery) {
+  async function requestTokenLease (query: TokenQuery): Promise<StanzaToken | null> {
     const tokenLeases = await hubService.getTokenLease({
       ...query,
       decorator
-    })
+    }).catch(() => null)
     getTokenLeaseInProgress = undefined
-    if (tokenLeases !== null) {
-      state.addTokens(tokenLeases)
+
+    if (tokenLeases === null) {
+      return null
     }
-    return state.popToken(query)
+
+    if (tokenLeases.granted) {
+      state.addTokens(tokenLeases.leases)
+    }
+    const tokenInState = state.popToken(query)
+    return tokenInState !== null ? { granted: true, token: tokenInState.token } : { granted: false }
   }
 }

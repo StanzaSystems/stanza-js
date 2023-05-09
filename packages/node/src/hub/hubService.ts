@@ -1,4 +1,4 @@
-import { type DecoratorConfig, type ServiceConfig, type StanzaToken, type StanzaTokenLeases, type ValidatedToken } from './model'
+import { type DecoratorConfig, type ServiceConfig, type StanzaToken, type ValidatedToken, type StanzaTokenLeasesResult } from './model'
 
 export interface FetchServiceConfigOptions {
   lastVersionSeen?: string
@@ -30,6 +30,6 @@ export interface HubService {
   fetchServiceConfig: (options?: FetchServiceConfigOptions) => Promise<ServiceConfig | null>
   fetchDecoratorConfig: (options: FetchDecoratorConfigOptions) => Promise<DecoratorConfig | null>
   getToken: (options: GetTokenOptions) => Promise<StanzaToken | null>
-  getTokenLease: (options: GetTokenLeaseOptions) => Promise<StanzaTokenLeases | null>
+  getTokenLease: (options: GetTokenLeaseOptions) => Promise<StanzaTokenLeasesResult | null>
   validateToken: (options: ValidateTokenOptions) => Promise<ValidatedToken | null>
 }
