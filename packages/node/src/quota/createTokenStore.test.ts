@@ -35,8 +35,7 @@ describe('tokenStore', function () {
     })
 
     it('should return token returned from getTokenLeases', async () => {
-      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {
-      }
+      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {}
       mockHubService.getTokenLease.mockImplementationOnce(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
         resolveTokenLeases = resolve
       }))
@@ -61,8 +60,7 @@ describe('tokenStore', function () {
     })
 
     it('should return token second token without calling hub again', async () => {
-      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {
-      }
+      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {}
       mockHubService.getTokenLease.mockImplementationOnce(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
         resolveTokenLeases = resolve
       }))
@@ -100,8 +98,7 @@ describe('tokenStore', function () {
     })
 
     it('should fetch new token leases if current state does not contain token for a given query', async () => {
-      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {
-      }
+      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {}
       mockHubService.getTokenLease.mockImplementation(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
         resolveTokenLeases = resolve
       }))
@@ -155,8 +152,7 @@ describe('tokenStore', function () {
     })
 
     it('should call getTokenLeases only once if waiting for multiple tokens', async () => {
-      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {
-      }
+      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {}
       mockHubService.getTokenLease.mockImplementationOnce(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
         resolveTokenLeases = resolve
       }))
@@ -190,10 +186,8 @@ describe('tokenStore', function () {
     })
 
     it('should get tokens for 2 different decorators separately', async () => {
-      let resolveFirstTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {
-      }
-      let resolveSecondTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {
-      }
+      let resolveFirstTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {}
+      let resolveSecondTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {}
       mockHubService.getTokenLease.mockImplementationOnce(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
         resolveFirstTokenLeases = resolve
       }))
@@ -235,8 +229,7 @@ describe('tokenStore', function () {
     })
 
     it('should queue get tokens until current get token leases resolves', async () => {
-      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {
-      }
+      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {}
       mockHubService.getTokenLease.mockImplementation(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
         resolveTokenLeases = resolve
       }))
@@ -325,8 +318,7 @@ describe('tokenStore', function () {
     })
 
     it('should fail the getToken if token batch is not granted', async () => {
-      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {
-      }
+      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {}
       mockHubService.getTokenLease.mockImplementation(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
         resolveTokenLeases = resolve
       }))
@@ -345,8 +337,7 @@ describe('tokenStore', function () {
     })
 
     it('should fail all current getToken if token batch is not granted', async () => {
-      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {
-      }
+      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {}
       mockHubService.getTokenLease.mockImplementation(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
         resolveTokenLeases = resolve
       }))
@@ -372,8 +363,7 @@ describe('tokenStore', function () {
     })
 
     it('should fetch tokens again after one getToken rejection', async () => {
-      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {
-      }
+      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {}
       mockHubService.getTokenLease.mockImplementation(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
         resolveTokenLeases = resolve
       }))
@@ -413,8 +403,7 @@ describe('tokenStore', function () {
     })
 
     it('should return null if token batch returns null', async () => {
-      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {
-      }
+      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {}
       mockHubService.getTokenLease.mockImplementation(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
         resolveTokenLeases = resolve
       }))
