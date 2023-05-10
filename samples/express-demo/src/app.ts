@@ -41,6 +41,7 @@ app.get('/pong', (req, res) => {
   res.status(200).send('ok')
 })
 
+// app.use('/aService/*', stanzaExpressDecoratorMiddleware({ decorator: 'Demo_Check_Quota_Decorator' }))
 app.use('/aService/*', (req, res, next) => {
   console.log('a service data decorator')
   void stanzaDecorator({ decorator: 'Demo_Check_Quota_Decorator' }).call(next).catch(next)
