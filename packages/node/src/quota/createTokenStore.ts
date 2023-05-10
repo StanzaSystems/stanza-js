@@ -4,18 +4,36 @@ import { createTokenState } from './createTokenState'
 import { type TokenQuery } from './tokenState'
 import { type StanzaToken } from '../hub/model'
 
+const MARK_TOKENS_AS_CONSUMED_DELAY = 100
+
 interface DecoratorTokenStore {
   fetchTokensIfNecessary: (query: TokenQuery) => Promise<StanzaToken | null>
 }
 export const createTokenStore = (): TokenStore => {
   const decoratorTokenStores: Record<string, DecoratorTokenStore> = {}
+  let tokensConsumed = Array<string>()
+  let tokensConsumedTimeout: ReturnType<typeof setTimeout> | undefined
 
   return {
     getToken: async (query) => {
       const { fetchTokensIfNecessary } = getDecoratorTokenStore(query.decorator)
       return fetchTokensIfNecessary(query)
     },
-    markTokenAsConsumed: () => {}
+    markTokenAsConsumed: (token) => {
+      tokensConsumed.push(token)
+
+      if (tokensConsumedTimeout === undefined) {
+        tokensConsumedTimeout = setTimeout(() => {
+          void (async () => {
+            const tokensToConsume = tokensConsumed
+            tokensConsumed = []
+            tokensConsumedTimeout = undefined
+
+            await hubService.markTokensAsConsumed({ tokens: tokensToConsume })
+          })().catch()
+        }, MARK_TOKENS_AS_CONSUMED_DELAY)
+      }
+    }
   }
 
   function getDecoratorTokenStore (decoratorName: string) {

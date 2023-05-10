@@ -4,7 +4,7 @@ import { type TokenStore } from './tokenStore'
 import { mockHubService } from '../__tests__/mocks/mockHubService'
 import { type StanzaTokenLeasesResult } from '../hub/model'
 
-describe('tokenStore', function () {
+describe('tokenStore', () => {
   beforeEach(() => {
     mockHubService.reset()
     vi.useFakeTimers({
@@ -15,11 +15,11 @@ describe('tokenStore', function () {
     vi.useRealTimers()
   })
 
-  it('should create token store', function () {
+  it('should create token store', () => {
     expect(createTokenStore).not.toThrow()
   })
 
-  describe('getToken', function () {
+  describe('getToken', () => {
     let tokenStore: TokenStore
 
     beforeEach(() => {
@@ -430,6 +430,88 @@ describe('tokenStore', function () {
       rejectTokenLeases(new Error('An error'))
 
       await expect(getTokenFromStorePromiseFirst).resolves.toEqual(null)
+    })
+  })
+
+  describe('markTokenAsConsumed', () => {
+    let tokenStore: TokenStore
+
+    const MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY = 100
+
+    beforeEach(() => {
+      tokenStore = createTokenStore()
+    })
+
+    it('should call markTokenAsResolved without errors', () => {
+      expect(() => { tokenStore.markTokenAsConsumed('aToken') }).not.toThrow()
+    })
+
+    it('should not call hubService\'s markTokensAsResolved immediately', () => {
+      tokenStore.markTokenAsConsumed('aToken')
+      expect(mockHubService.markTokensAsConsumed).not.toHaveBeenCalled()
+    })
+
+    it(`should call hubService's markTokensAsResolved after ${MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY}ms`, async () => {
+      tokenStore.markTokenAsConsumed('aToken')
+
+      await vi.advanceTimersByTimeAsync(MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY)
+
+      expect(mockHubService.markTokensAsConsumed).toHaveBeenCalledOnce()
+      expect(mockHubService.markTokensAsConsumed).toHaveBeenCalledWith({ tokens: ['aToken'] })
+    })
+
+    it(`should call hubService's markTokensAsResolved after ${MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY}ms with all the tokens provided during that time`, async () => {
+      tokenStore.markTokenAsConsumed('aToken1')
+
+      await vi.advanceTimersByTimeAsync(MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY / 4)
+
+      tokenStore.markTokenAsConsumed('aToken2')
+
+      await vi.advanceTimersByTimeAsync(MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY / 4)
+
+      tokenStore.markTokenAsConsumed('aToken3')
+
+      await vi.advanceTimersByTimeAsync(MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY / 4)
+
+      tokenStore.markTokenAsConsumed('aToken4')
+
+      await vi.advanceTimersByTimeAsync(MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY / 4)
+
+      expect(mockHubService.markTokensAsConsumed).toHaveBeenCalledOnce()
+      expect(mockHubService.markTokensAsConsumed).toHaveBeenCalledWith({ tokens: ['aToken1', 'aToken2', 'aToken3', 'aToken4'] })
+    })
+
+    it(`should not include the tokens that were provided after ${MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY}ms in the first call to hubService's markTokensAsResolved`, async () => {
+      tokenStore.markTokenAsConsumed('aToken1')
+      tokenStore.markTokenAsConsumed('aToken2')
+      tokenStore.markTokenAsConsumed('aToken3')
+      tokenStore.markTokenAsConsumed('aToken4')
+
+      await vi.advanceTimersByTimeAsync(MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY)
+
+      tokenStore.markTokenAsConsumed('aToken4')
+
+      expect(mockHubService.markTokensAsConsumed).toHaveBeenCalledOnce()
+      expect(mockHubService.markTokensAsConsumed).toHaveBeenCalledWith({ tokens: ['aToken1', 'aToken2', 'aToken3', 'aToken4'] })
+    })
+
+    it(`should include the tokens that were provided after ${MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY}ms in the second call to hubService's markTokensAsResolved`, async () => {
+      tokenStore.markTokenAsConsumed('aToken1')
+      tokenStore.markTokenAsConsumed('aToken2')
+      tokenStore.markTokenAsConsumed('aToken3')
+      tokenStore.markTokenAsConsumed('aToken4')
+
+      await vi.advanceTimersByTimeAsync(MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY)
+
+      tokenStore.markTokenAsConsumed('aToken5')
+
+      expect(mockHubService.markTokensAsConsumed).toHaveBeenCalledOnce()
+
+      await vi.advanceTimersByTimeAsync(MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY)
+
+      expect(mockHubService.markTokensAsConsumed).toHaveBeenCalledTimes(2)
+
+      expect(mockHubService.markTokensAsConsumed).toHaveBeenLastCalledWith({ tokens: ['aToken5'] })
     })
   })
 })

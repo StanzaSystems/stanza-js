@@ -7,6 +7,7 @@ import { stanzaTokenLeaseResponse } from './api/stanzaTokenLeaseResponse'
 import { stanzaTokenResponse } from './api/stanzaTokenResponse'
 import { stanzaValidateTokenResponse } from './api/stanzaValidateTokenResponse'
 import { type HubService } from './hubService'
+import { stanzaMarkTokensAsConsumedResponse } from './api/stanzaMarkTokensAsConsumedResponse'
 
 const HUB_REQUEST_TIMEOUT = 1000
 
@@ -21,14 +22,21 @@ interface HubServiceInitOptions {
 type HubApiPath = string
 
 export const createHubService = ({ hubUrl, serviceName, serviceRelease, environment, apiKey, clientId }: HubServiceInitOptions): HubService => {
-  const hubRequest = async <T extends ZodType>(apiPath: HubApiPath, params: { method?: string, searchParams?: Record<string, string | undefined>, body?: unknown }, validateRequest: T): Promise<z.infer<T> | null> => {
+  const hubRequest = async <T extends ZodType>(apiPath: HubApiPath, params: { method?: string, searchParams?: Record<string, string | string[] | undefined>, body?: unknown }, validateRequest: T): Promise<z.infer<T> | null> => {
     const requestUrl = new URL(`${hubUrl}/${apiPath}`)
 
     const { method = 'GET', searchParams = {}, body } = params
 
-    Object.entries(searchParams).forEach(([key, value]) => {
-      key !== '' && value !== undefined && value !== '' && requestUrl.searchParams.append(key, value)
-    })
+    Object.entries(searchParams)
+      .map(([key, value]) => typeof (value) === 'object' ? value.map(v => [key, v] as const) : [[key, value] as const])
+      .flat(1)
+      .filter((entry): entry is [string, string] => {
+        const [key, value] = entry
+        return key !== '' && value !== undefined
+      })
+      .forEach(([key, value]) => {
+        requestUrl.searchParams.append(key, value)
+      })
 
     const response = await withTimeout(
       HUB_REQUEST_TIMEOUT,
@@ -144,6 +152,16 @@ export const createHubService = ({ hubUrl, serviceName, serviceRelease, environm
         }]
       }, stanzaValidateTokenResponse)
       return response?.tokensValid?.[0] ?? null
+    },
+    markTokensAsConsumed: async ({ tokens }) => {
+      const response = await hubRequest('v1/quota/consumed', {
+        method: 'POST',
+        searchParams: {
+          token: tokens
+        }
+      }, stanzaMarkTokensAsConsumedResponse)
+
+      return response !== null ? { ok: true } : null
     }
   })
 }
