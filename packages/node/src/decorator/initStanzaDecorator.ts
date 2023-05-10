@@ -38,8 +38,16 @@ export const initDecorator = (options: StanzaDecoratorOptions) => {
     return decoratorConfig?.config?.validateIngressTokens === true
   }
 
+  function isStrictSynchronousQuota (): boolean {
+    const decoratorConfig = getDecoratorConfig(options.decorator)
+    return decoratorConfig?.config?.strictSynchronousQuota === true
+  }
+
   async function checkQuota (): Promise<{ type: 'TOKEN_GRANTED', token: string } | null> {
-    const token = await getQuota(options)
+    const token = await getQuota({
+      ...options,
+      isStrictSynchronousQuota: isStrictSynchronousQuota()
+    })
     if (token?.granted === false) {
       throw new StanzaDecoratorError('NoQuota', 'Decorator can not be executed')
     }

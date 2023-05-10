@@ -92,249 +92,252 @@ describe('stanzaDecorator', function () {
   })
 
   describe('check quota', () => {
-    const checkQuotaDecoratorConfig = {
-      version: 'test',
-      config: {
-        checkQuota: true
-      } as any
-    } satisfies DecoratorConfig
+    describe('strictSynchronousQuota', () => {
+      const checkQuotaDecoratorConfig = {
+        version: 'test',
+        config: {
+          checkQuota: true,
+          strictSynchronousQuota: true
+        } as any
+      } satisfies DecoratorConfig
 
-    it('should NOT be pass-through execution after config is fetched', async function () {
-      vi.useFakeTimers()
+      it('should NOT be pass-through execution after config is fetched', async function () {
+        vi.useFakeTimers()
 
-      let resolveConfig: (config: DecoratorConfig) => void = () => {}
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => new Promise<DecoratorConfig>((resolve) => {
-        resolveConfig = resolve
-      }))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
-        doStuff()
-      })
-
-      resolveConfig(checkQuotaDecoratorConfig)
-
-      await vi.advanceTimersByTimeAsync(0)
-
-      void decoratedDoStuff()
-
-      expect(doStuff).not.toHaveBeenCalled()
-
-      vi.useRealTimers()
-    })
-
-    it('should return same value as wrapped function when token is granted', async function () {
-      vi.useFakeTimers()
-
-      doStuff.mockReturnValueOnce('test-value-token-resolved')
-
-      let resolveToken: (value: { granted: boolean, token: string }) => void = () => {}
-      mockHubService.getToken.mockImplementation(async () => {
-        return new Promise<StanzaToken>((resolve) => {
-          resolveToken = resolve
+        let resolveConfig: (config: DecoratorConfig) => void = () => {}
+        mockHubService.fetchDecoratorConfig.mockImplementation(async () => new Promise<DecoratorConfig>((resolve) => {
+          resolveConfig = resolve
+        }))
+        const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+          doStuff()
         })
+
+        resolveConfig(checkQuotaDecoratorConfig)
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        void decoratedDoStuff()
+
+        expect(doStuff).not.toHaveBeenCalled()
+
+        vi.useRealTimers()
       })
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
-        return doStuff()
-      })
 
-      // wait for decorator config to be initialized
-      await vi.advanceTimersByTimeAsync(0)
+      it('should return same value as wrapped function when token is granted', async function () {
+        vi.useFakeTimers()
 
-      const decoratedDoStuffPromise = decoratedDoStuff()
+        doStuff.mockReturnValueOnce('test-value-token-resolved')
 
-      resolveToken({ granted: true, token: 'test-token' })
-
-      await vi.advanceTimersByTimeAsync(0)
-
-      await expect(decoratedDoStuffPromise).resolves.toBe('test-value-token-resolved')
-
-      vi.useRealTimers()
-    })
-
-    it('should request for token before proceeding with execution', async function () {
-      vi.useFakeTimers()
-
-      let resolveToken: (value: { granted: boolean, token: string }) => void = () => {}
-      mockHubService.getToken.mockImplementation(async () => {
-        return new Promise<StanzaToken>((resolve) => {
-          resolveToken = resolve
+        let resolveToken: (value: { granted: boolean, token: string }) => void = () => {}
+        mockHubService.getToken.mockImplementation(async () => {
+          return new Promise<StanzaToken>((resolve) => {
+            resolveToken = resolve
+          })
         })
-      })
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
-        doStuff()
-      })
-
-      // wait for decorator config to be initialized
-      await vi.advanceTimersByTimeAsync(0)
-
-      const decoratedDoStuffPromise = decoratedDoStuff()
-
-      expect(doStuff).not.toHaveBeenCalled()
-
-      resolveToken({ granted: true, token: 'test-token' })
-
-      expect(doStuff).not.toHaveBeenCalled()
-
-      await vi.advanceTimersByTimeAsync(0)
-
-      expect(doStuff).toHaveBeenCalledOnce()
-
-      await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
-
-      vi.useRealTimers()
-    })
-
-    it('should fail the execution with StanzaDecoratorError if token is not granted', async function () {
-      vi.useFakeTimers()
-      let resolveToken: (value: StanzaToken) => void = () => {}
-      mockHubService.getToken.mockImplementation(async () => {
-        return new Promise<StanzaToken>((resolve) => {
-          resolveToken = resolve
+        mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
+        const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+          return doStuff()
         })
+
+        // wait for decorator config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const decoratedDoStuffPromise = decoratedDoStuff()
+
+        resolveToken({ granted: true, token: 'test-token' })
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        await expect(decoratedDoStuffPromise).resolves.toBe('test-value-token-resolved')
+
+        vi.useRealTimers()
       })
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
-        doStuff()
-      })
 
-      // wait for decorator config to be initialized
-      await vi.advanceTimersByTimeAsync(0)
+      it('should request for token before proceeding with execution', async function () {
+        vi.useFakeTimers()
 
-      const decoratedDoStuffPromise = decoratedDoStuff()
-
-      expect(doStuff).not.toHaveBeenCalled()
-
-      resolveToken({ granted: false })
-
-      await expect(decoratedDoStuffPromise).rejects.toThrow(new StanzaDecoratorError('NoQuota', 'Decorator can not be executed'))
-
-      expect(doStuff).not.toHaveBeenCalled()
-
-      await vi.advanceTimersByTimeAsync(5000)
-
-      expect(doStuff).not.toHaveBeenCalledOnce()
-
-      vi.useRealTimers()
-    })
-
-    it('should proceed execution if getting token throws', async function () {
-      vi.useFakeTimers()
-      let rejectToken: (reason: Error) => void = () => {}
-      mockHubService.getToken.mockImplementation(async () => {
-        return new Promise<never>((_resolve, reject) => {
-          rejectToken = reject
+        let resolveToken: (value: { granted: boolean, token: string }) => void = () => {}
+        mockHubService.getToken.mockImplementation(async () => {
+          return new Promise<StanzaToken>((resolve) => {
+            resolveToken = resolve
+          })
         })
-      })
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
-        doStuff()
-      })
-
-      // wait for decorator config to be initialized
-      await vi.advanceTimersByTimeAsync(0)
-
-      const decoratedDoStuffPromise = decoratedDoStuff()
-
-      expect(doStuff).not.toHaveBeenCalled()
-
-      rejectToken(new Error('Getting token failed'))
-
-      expect(doStuff).not.toHaveBeenCalled()
-      await vi.advanceTimersByTimeAsync(0)
-
-      await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
-
-      expect(doStuff).toHaveBeenCalledOnce()
-
-      vi.useRealTimers()
-    })
-
-    it('should proceed execution if getting token takes more than 1000ms', async function () {
-      vi.useFakeTimers()
-      mockHubService.getToken.mockImplementation(async () => {
-        return new Promise<never>(() => {})
-      })
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
-        doStuff()
-      })
-
-      // wait for decorator config to be initialized
-      await vi.advanceTimersByTimeAsync(0)
-
-      const decoratedDoStuffPromise = decoratedDoStuff()
-
-      expect(doStuff).not.toHaveBeenCalled()
-      await vi.advanceTimersByTimeAsync(1000)
-
-      await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
-
-      expect(doStuff).toHaveBeenCalledOnce()
-
-      vi.useRealTimers()
-    })
-
-    it('should attach token to an execution context when token is granted', async function () {
-      vi.useFakeTimers()
-
-      let resolveToken: (value: { granted: boolean, token: string }) => void = () => {}
-      mockHubService.getToken.mockImplementation(async () => {
-        return new Promise<StanzaToken>((resolve) => {
-          resolveToken = resolve
+        mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
+        const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+          doStuff()
         })
+
+        // wait for decorator config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const decoratedDoStuffPromise = decoratedDoStuff()
+
+        expect(doStuff).not.toHaveBeenCalled()
+
+        resolveToken({ granted: true, token: 'test-token' })
+
+        expect(doStuff).not.toHaveBeenCalled()
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        expect(doStuff).toHaveBeenCalledOnce()
+
+        await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+
+        vi.useRealTimers()
       })
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
-        doStuff()
-        expect(context.active().getValue(stanzaTokenContextKey)).toBe('test-token')
-      })
 
-      // wait for decorator config to be initialized
-      await vi.advanceTimersByTimeAsync(0)
-
-      const decoratedDoStuffPromise = decoratedDoStuff()
-
-      resolveToken({ granted: true, token: 'test-token' })
-
-      await vi.advanceTimersByTimeAsync(0)
-
-      await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
-
-      expect(doStuff).toHaveBeenCalledOnce()
-
-      vi.useRealTimers()
-    })
-
-    it('should NOT attach token to an execution context when token fetching throws', async function () {
-      vi.useFakeTimers()
-
-      let rejectToken: (reason: Error) => void = () => {}
-      mockHubService.getToken.mockImplementation(async () => {
-        return new Promise<never>((_resolve, reject) => {
-          rejectToken = reject
+      it('should fail the execution with StanzaDecoratorError if token is not granted', async function () {
+        vi.useFakeTimers()
+        let resolveToken: (value: StanzaToken) => void = () => {}
+        mockHubService.getToken.mockImplementation(async () => {
+          return new Promise<StanzaToken>((resolve) => {
+            resolveToken = resolve
+          })
         })
+        mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
+        const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+          doStuff()
+        })
+
+        // wait for decorator config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const decoratedDoStuffPromise = decoratedDoStuff()
+
+        expect(doStuff).not.toHaveBeenCalled()
+
+        resolveToken({ granted: false })
+
+        await expect(decoratedDoStuffPromise).rejects.toThrow(new StanzaDecoratorError('NoQuota', 'Decorator can not be executed'))
+
+        expect(doStuff).not.toHaveBeenCalled()
+
+        await vi.advanceTimersByTimeAsync(5000)
+
+        expect(doStuff).not.toHaveBeenCalledOnce()
+
+        vi.useRealTimers()
       })
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
-        doStuff()
-        expect(context.active().getValue(stanzaTokenContextKey)).toBeUndefined()
+
+      it('should proceed execution if getting token throws', async function () {
+        vi.useFakeTimers()
+        let rejectToken: (reason: Error) => void = () => {}
+        mockHubService.getToken.mockImplementation(async () => {
+          return new Promise<never>((_resolve, reject) => {
+            rejectToken = reject
+          })
+        })
+        mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
+        const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+          doStuff()
+        })
+
+        // wait for decorator config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const decoratedDoStuffPromise = decoratedDoStuff()
+
+        expect(doStuff).not.toHaveBeenCalled()
+
+        rejectToken(new Error('Getting token failed'))
+
+        expect(doStuff).not.toHaveBeenCalled()
+        await vi.advanceTimersByTimeAsync(0)
+
+        await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+
+        expect(doStuff).toHaveBeenCalledOnce()
+
+        vi.useRealTimers()
       })
 
-      // wait for decorator config to be initialized
-      await vi.advanceTimersByTimeAsync(0)
+      it('should proceed execution if getting token takes more than 1000ms', async function () {
+        vi.useFakeTimers()
+        mockHubService.getToken.mockImplementation(async () => {
+          return new Promise<never>(() => {})
+        })
+        mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
+        const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+          doStuff()
+        })
 
-      const decoratedDoStuffPromise = decoratedDoStuff()
+        // wait for decorator config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
 
-      rejectToken(new Error('Getting token failed'))
+        const decoratedDoStuffPromise = decoratedDoStuff()
 
-      await vi.advanceTimersByTimeAsync(0)
+        expect(doStuff).not.toHaveBeenCalled()
+        await vi.advanceTimersByTimeAsync(1000)
 
-      await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+        await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
 
-      expect(doStuff).toHaveBeenCalledOnce()
+        expect(doStuff).toHaveBeenCalledOnce()
 
-      vi.useRealTimers()
+        vi.useRealTimers()
+      })
+
+      it('should attach token to an execution context when token is granted', async function () {
+        vi.useFakeTimers()
+
+        let resolveToken: (value: { granted: boolean, token: string }) => void = () => {}
+        mockHubService.getToken.mockImplementation(async () => {
+          return new Promise<StanzaToken>((resolve) => {
+            resolveToken = resolve
+          })
+        })
+        mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
+        const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+          doStuff()
+          expect(context.active().getValue(stanzaTokenContextKey)).toBe('test-token')
+        })
+
+        // wait for decorator config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const decoratedDoStuffPromise = decoratedDoStuff()
+
+        resolveToken({ granted: true, token: 'test-token' })
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+
+        expect(doStuff).toHaveBeenCalledOnce()
+
+        vi.useRealTimers()
+      })
+
+      it('should NOT attach token to an execution context when token fetching throws', async function () {
+        vi.useFakeTimers()
+
+        let rejectToken: (reason: Error) => void = () => {}
+        mockHubService.getToken.mockImplementation(async () => {
+          return new Promise<never>((_resolve, reject) => {
+            rejectToken = reject
+          })
+        })
+        mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
+        const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+          doStuff()
+          expect(context.active().getValue(stanzaTokenContextKey)).toBeUndefined()
+        })
+
+        // wait for decorator config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const decoratedDoStuffPromise = decoratedDoStuff()
+
+        rejectToken(new Error('Getting token failed'))
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+
+        expect(doStuff).toHaveBeenCalledOnce()
+
+        vi.useRealTimers()
+      })
     })
   })
 
