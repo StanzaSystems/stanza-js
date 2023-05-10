@@ -29,6 +29,9 @@ export const createHubService = ({ hubUrl, serviceName, serviceRelease, environm
       key !== '' && value !== undefined && value !== '' && requestUrl.searchParams.append(key, value)
     })
 
+    console.log('Hub request: ', requestUrl)
+    console.log('Request body', JSON.stringify(body))
+
     const response = await withTimeout(
       HUB_REQUEST_TIMEOUT,
       'Hub request timed out',
@@ -40,7 +43,11 @@ export const createHubService = ({ hubUrl, serviceName, serviceRelease, environm
         ...(body != null ? { body: JSON.stringify(body) } : {})
       }))
 
+    console.log('Hub response status', response.status)
+
     const data = await response.json()
+
+    console.log('Hub response', JSON.stringify(data))
 
     const parsedResult = validateRequest.safeParse(data)
 
