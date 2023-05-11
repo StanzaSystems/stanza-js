@@ -514,4 +514,182 @@ describe('tokenStore', () => {
       expect(mockHubService.markTokensAsConsumed).toHaveBeenLastCalledWith({ tokens: ['aToken5'] })
     })
   })
+
+  describe('refresh tokens', () => {
+    let tokenStore: TokenStore
+
+    beforeEach(() => {
+      tokenStore = createTokenStore()
+    })
+
+    it('should fetch more tokens if 80% of them get used', async () => {
+      mockHubService.getTokenLease.mockImplementationOnce(async () => {
+        return {
+          granted: true,
+          leases: Array(10).fill(0).map((_, index) => ({
+            token: `aToken${index}`,
+            priorityBoost: 0,
+            feature: '',
+            expiresAt: 5000
+          }))
+        }
+      })
+      mockHubService.getTokenLease.mockImplementationOnce(async () => {
+        return {
+          granted: true,
+          leases: Array(10).fill(0).map((_, index) => ({
+            token: `aToken${index + 10}`,
+            priorityBoost: 0,
+            feature: '',
+            expiresAt: 7000
+          }))
+        }
+      })
+
+      for (let i = 0; i < 7; i++) {
+        await tokenStore.getToken({ decorator: 'aDecorator' })
+      }
+
+      expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
+
+      await tokenStore.getToken({ decorator: 'aDecorator' })
+
+      await vi.advanceTimersByTimeAsync(0)
+
+      expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
+    })
+
+    it('should fetch more tokens if 80% of them expire in 2 seconds', async () => {
+      mockHubService.getTokenLease.mockImplementationOnce(async () => {
+        return {
+          granted: true,
+          leases: Array(10).fill(0).map((_, index) => ({
+            token: `aToken${index}`,
+            priorityBoost: 0,
+            feature: '',
+            expiresAt: index < 8 ? 3000 : 5000
+          }))
+        }
+      })
+      mockHubService.getTokenLease.mockImplementationOnce(async () => {
+        return {
+          granted: true,
+          leases: Array(10).fill(0).map((_, index) => ({
+            token: `aToken${index + 10}`,
+            priorityBoost: 0,
+            feature: '',
+            expiresAt: 7000
+          }))
+        }
+      })
+
+      await tokenStore.getToken({ decorator: 'aDecorator' })
+
+      // token 0 is used
+
+      expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
+
+      await vi.advanceTimersByTimeAsync(1000)
+
+      // tokens 1-7 will expire in 2 seconds
+
+      expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
+    })
+
+    it('should fetch more tokens if 80% of them are used or expire in 2 seconds - first expire then used', async () => {
+      mockHubService.getTokenLease.mockImplementationOnce(async () => {
+        return {
+          granted: true,
+          leases: Array(10).fill(0).map((_, index) => ({
+            token: `aToken${index}`,
+            priorityBoost: 0,
+            feature: '',
+            expiresAt: index < 4
+              ? 2500
+              : index < 8
+                ? 4500
+                : 5000
+          }))
+        }
+      })
+      mockHubService.getTokenLease.mockImplementationOnce(async () => {
+        return {
+          granted: true,
+          leases: Array(10).fill(0).map((_, index) => ({
+            token: `aToken${index + 10}`,
+            priorityBoost: 0,
+            feature: '',
+            expiresAt: 7000
+          }))
+        }
+      })
+
+      await tokenStore.getToken({ decorator: 'aDecorator' })
+
+      // token 0 is used
+      expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
+
+      await vi.advanceTimersByTimeAsync(2500)
+
+      // tokens 1-3 expired
+
+      await tokenStore.getToken({ decorator: 'aDecorator' })
+      await tokenStore.getToken({ decorator: 'aDecorator' })
+      await tokenStore.getToken({ decorator: 'aDecorator' })
+      await tokenStore.getToken({ decorator: 'aDecorator' })
+
+      // tokens 4-7 are used
+
+      await vi.advanceTimersByTimeAsync(0)
+
+      expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
+    })
+
+    it('should fetch more tokens if 80% of them are used or expire in 2 seconds - first used then expire', async () => {
+      mockHubService.getTokenLease.mockImplementationOnce(async () => {
+        return {
+          granted: true,
+          leases: Array(10).fill(0).map((_, index) => ({
+            token: `aToken${index}`,
+            priorityBoost: 0,
+            feature: '',
+            expiresAt: index < 4
+              ? 2500
+              : index < 8
+                ? 4500
+                : 5000
+          }))
+        }
+      })
+      mockHubService.getTokenLease.mockImplementationOnce(async () => {
+        return {
+          granted: true,
+          leases: Array(10).fill(0).map((_, index) => ({
+            token: `aToken${index + 10}`,
+            priorityBoost: 0,
+            feature: '',
+            expiresAt: 7000
+          }))
+        }
+      })
+
+      await tokenStore.getToken({ decorator: 'aDecorator' })
+      await tokenStore.getToken({ decorator: 'aDecorator' })
+      await tokenStore.getToken({ decorator: 'aDecorator' })
+      await tokenStore.getToken({ decorator: 'aDecorator' })
+
+      // tokens 0-3 are used
+      expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
+
+      await vi.advanceTimersByTimeAsync(2000)
+
+      // still 2.5 seconds till tokens 4-7 expire
+      expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
+
+      await vi.advanceTimersByTimeAsync(500)
+
+      // tokens 4-7 will expire in 2 seconds
+      expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
+    })
+  })
 })
