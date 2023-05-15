@@ -16,6 +16,7 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
 
   return createStanzaWrapper<TArgs, TReturn, Promisify<TReturn>>((fn) => {
     return (async function (...args: Parameters<typeof fn>) {
+      const decoratorExecutionStart = performance.now()
       const token = await guard().catch(err => {
         void messageBus.emit(events.request.blocked, {
           decorator: options.decorator,
@@ -41,6 +42,11 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
         const result = await (fnWithBoundContext(...args) as Promisify<TReturn>)
         void messageBus.emit(events.request.succeeded, {
           decorator: options.decorator
+        })
+        const decoratorExecutionEnd = performance.now()
+        void messageBus.emit(events.request.latency, {
+          decorator: options.decorator,
+          latency: decoratorExecutionEnd - decoratorExecutionStart
         })
         return result
       } catch (err) {

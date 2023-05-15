@@ -164,5 +164,44 @@ describe('stanzaDecorator', () => {
         // clientId: 'testClientId'
       })
     })
+
+    it('should emit stanza.request.latency event when function wrapped with a decorator succeeds', async () => {
+      vi.useFakeTimers({
+        now: 0
+      })
+      updateDecoratorConfig('testDecorator', {
+        config: {
+          checkQuota: true,
+          strictSynchronousQuota: true
+        } satisfies Partial<DecoratorConfig['config']> as any,
+        version: 'testDecoratorVersion'
+      })
+
+      const tokenDeferred = mockHubService.getToken.mockImplementationDeferred()
+
+      const decoratedDoStuff = stanzaDecorator({
+        decorator: 'testDecorator'
+      }).bind(doStuff)
+
+      const decoratedStuffPromise = decoratedDoStuff()
+
+      await vi.advanceTimersByTimeAsync(123.456)
+
+      tokenDeferred.resolve({ granted: true, token: 'testToken' })
+
+      await expect(decoratedStuffPromise).resolves.toBeUndefined()
+
+      expect(messageBus.emit).toHaveBeenCalledWith(events.request.latency, {
+        decorator: 'testDecorator',
+        feature: undefined,
+        latency: 123.456
+        // TODO: attach service, environment and clientId to the event
+        // service: 'testService',
+        // environment: 'testEnvironment',
+        // clientId: 'testClientId'
+      })
+
+      vi.useRealTimers()
+    })
   })
 })
