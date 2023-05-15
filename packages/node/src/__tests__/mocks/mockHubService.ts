@@ -1,8 +1,26 @@
-import { vi } from 'vitest'
+import { type Mock, vi } from 'vitest'
 import { updateHubService } from '../../global/hubService'
 import { type HubService } from '../../hub/hubService'
 
-const hubServiceMockMethod = <TMethod extends keyof HubService>(implementation: (...args: Parameters<HubService[TMethod]>) => ReturnType<HubService[TMethod]>) => vi.fn<Parameters<HubService[TMethod]>, ReturnType<HubService[TMethod]>>(implementation)
+const hubServiceMockMethod = <TMethod extends keyof HubService>(implementation: (...args: Parameters<HubService[TMethod]>) => ReturnType<HubService[TMethod]>) => Object.assign(vi.fn<Parameters<HubService[TMethod]>, ReturnType<HubService[TMethod]>>(implementation), {
+  mockImplementationDeferred: function (this: Mock<Parameters<HubService[TMethod]>, ReturnType<HubService[TMethod]>>) {
+    const deferred: {
+      resolve: (value: Awaited<ReturnType<HubService[TMethod]>>) => void
+      reject: (reason: unknown) => void
+    } = {
+      resolve: () => {},
+      reject: () => {}
+    }
+    this.mockImplementation((): any => {
+      return new Promise<ReturnType<HubService[TMethod]>>((resolve, reject) => {
+        deferred.resolve = resolve
+        deferred.reject = reject
+      })
+    })
+
+    return deferred
+  }
+})
 
 const fetchServiceConfigMock = hubServiceMockMethod<'fetchServiceConfig'>(async () => new Promise<never>(() => {}))
 const fetchDecoratorConfigMock = hubServiceMockMethod<'fetchDecoratorConfig'>(async () => new Promise<never>(() => {}))

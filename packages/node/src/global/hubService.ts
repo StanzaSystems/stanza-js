@@ -1,6 +1,6 @@
 import { type HubService } from '../hub/hubService'
 
-const HUB_SERVICE_SYMBOL = Symbol.for('Hub Service')
+const HUB_SERVICE_SYMBOL = Symbol.for('[Stanza SDK Internal] Hub Service')
 
 interface HubServiceGlobal { [HUB_SERVICE_SYMBOL]: HubService | undefined }
 const hubServiceGlobal = global as unknown as HubServiceGlobal

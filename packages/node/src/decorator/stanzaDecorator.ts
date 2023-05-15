@@ -9,13 +9,23 @@ import { isTruthy } from '../utils/isTruthy'
 import { type Promisify } from '../utils/promisify'
 import { initDecorator } from './initStanzaDecorator'
 import { type StanzaDecoratorOptions } from './model'
+import { events, messageBus } from '../global/messageBus'
 
 export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDecoratorOptions) => {
   const { guard } = initDecorator(options)
 
   return createStanzaWrapper<TArgs, TReturn, Promisify<TReturn>>((fn) => {
     return (async function (...args: Parameters<typeof fn>) {
-      const token = await guard()
+      const token = await guard().catch(err => {
+        void messageBus.emit(events.request.blocked, {
+          decorator: options.decorator,
+          reason: 'quota'
+        })
+        throw err
+      })
+      void messageBus.emit(events.request.allowed, {
+        decorator: options.decorator
+      })
 
       const fnWithBoundContext = bindContext([
         addStanzaDecoratorToContext(options.decorator),
@@ -27,7 +37,18 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
             : null
       ].filter(isTruthy), fn)
 
-      return fnWithBoundContext(...args) as Promisify<TReturn>
+      try {
+        const result = await (fnWithBoundContext(...args) as Promisify<TReturn>)
+        void messageBus.emit(events.request.succeeded, {
+          decorator: options.decorator
+        })
+        return result
+      } catch (err) {
+        void messageBus.emit(events.request.failed, {
+          decorator: options.decorator
+        })
+        throw err
+      }
     }) as Fn<TArgs, Promisify<TReturn>>
   })
 }
