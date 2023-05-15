@@ -10,8 +10,10 @@ export let hubService: HubService = hubServiceGlobal[HUB_SERVICE_SYMBOL] = hubSe
   fetchServiceConfig: notInitializedServiceMethod,
   fetchDecoratorConfig: notInitializedServiceMethod,
   getToken: notInitializedServiceMethod,
-  validateToken: notInitializedServiceMethod
-}
+  getTokenLease: notInitializedServiceMethod,
+  validateToken: notInitializedServiceMethod,
+  markTokensAsConsumed: notInitializedServiceMethod
+} satisfies HubService
 
 export const updateHubService = (updatedService: HubService) => {
   hubService = hubServiceGlobal[HUB_SERVICE_SYMBOL] = updatedService

@@ -19,7 +19,9 @@ describe('global', function () {
         fetchServiceConfig: async () => Promise.resolve(null),
         fetchDecoratorConfig: async () => Promise.resolve(null),
         getToken: async () => Promise.resolve(null),
-        validateToken: async () => Promise.resolve(null)
+        getTokenLease: async () => Promise.resolve(null),
+        validateToken: async () => Promise.resolve(null),
+        markTokensAsConsumed: async () => Promise.resolve(null)
       })
 
       await expect(hubService.fetchServiceConfig()).resolves.toBeNull()
