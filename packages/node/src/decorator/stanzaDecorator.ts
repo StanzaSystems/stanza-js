@@ -10,23 +10,27 @@ import { type Promisify } from '../utils/promisify'
 import { initDecorator } from './initStanzaDecorator'
 import { type StanzaDecoratorOptions } from './model'
 import { events, messageBus } from '../global/messageBus'
+import { wrapEventsAsync } from '../utils/wrapEventsAsync'
 
 export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDecoratorOptions) => {
-  const { guard } = initDecorator(options)
-
-  return createStanzaWrapper<TArgs, TReturn, Promisify<TReturn>>((fn) => {
-    return (async function (...args: Parameters<typeof fn>) {
-      const decoratorExecutionStart = performance.now()
-      const token = await guard().catch(err => {
-        void messageBus.emit(events.request.blocked, {
-          decorator: options.decorator,
-          reason: 'quota'
-        })
-        throw err
-      })
+  const initializedDecorator = initDecorator(options)
+  const guard = wrapEventsAsync(initializedDecorator.guard, {
+    success: () => {
       void messageBus.emit(events.request.allowed, {
         decorator: options.decorator
       })
+    },
+    failure: () => {
+      void messageBus.emit(events.request.blocked, {
+        decorator: options.decorator,
+        reason: 'quota'
+      })
+    }
+  })
+
+  return createStanzaWrapper<TArgs, TReturn, Promisify<TReturn>>((fn) => {
+    const resultFn = async function (...args: Parameters<typeof fn>) {
+      const token = await guard()
 
       const fnWithBoundContext = bindContext([
         addStanzaDecoratorToContext(options.decorator),
@@ -38,22 +42,25 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
             : null
       ].filter(isTruthy), fn)
 
-      try {
-        const result = await (fnWithBoundContext(...args) as Promisify<TReturn>)
+      return (fnWithBoundContext(...args) as Promisify<TReturn>)
+    }
+
+    return wrapEventsAsync(resultFn, {
+      success: () => {
         void messageBus.emit(events.request.succeeded, {
           decorator: options.decorator
         })
-        const decoratorExecutionEnd = performance.now()
-        void messageBus.emit(events.request.latency, {
-          decorator: options.decorator,
-          latency: decoratorExecutionEnd - decoratorExecutionStart
-        })
-        return result
-      } catch (err) {
+      },
+      failure: () => {
         void messageBus.emit(events.request.failed, {
           decorator: options.decorator
         })
-        throw err
+      },
+      latency: (...[latency]) => {
+        void messageBus.emit(events.request.latency, {
+          decorator: options.decorator,
+          latency
+        })
       }
     }) as Fn<TArgs, Promisify<TReturn>>
   })
