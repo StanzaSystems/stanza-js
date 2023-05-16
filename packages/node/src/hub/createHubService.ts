@@ -1,6 +1,3 @@
-import { type z, type ZodType } from 'zod'
-import { fetch } from '../fetchImplementation'
-import { withTimeout } from '../utils/withTimeout'
 import { decoratorConfigResponse } from './api/decoratorConfigResponse'
 import { serviceConfigResponse } from './api/serviceConfigResponse'
 import { stanzaTokenLeaseResponse } from './api/stanzaTokenLeaseResponse'
@@ -8,58 +5,17 @@ import { stanzaTokenResponse } from './api/stanzaTokenResponse'
 import { stanzaValidateTokenResponse } from './api/stanzaValidateTokenResponse'
 import { type HubService } from './hubService'
 import { stanzaMarkTokensAsConsumedResponse } from './api/stanzaMarkTokensAsConsumedResponse'
-
-const HUB_REQUEST_TIMEOUT = 1000
+import { type HubRequest } from './hubRequest'
 
 interface HubServiceInitOptions {
-  hubUrl: string
-  apiKey: string
   serviceName: string
   serviceRelease: string
   environment: string
   clientId: string
+  hubRequest: HubRequest
 }
-type HubApiPath = string
 
-export const createHubService = ({ hubUrl, serviceName, serviceRelease, environment, apiKey, clientId }: HubServiceInitOptions): HubService => {
-  const hubRequest = async <T extends ZodType>(apiPath: HubApiPath, params: { method?: string, searchParams?: Record<string, string | string[] | undefined>, body?: unknown }, validateRequest: T): Promise<z.infer<T> | null> => {
-    const requestUrl = new URL(`${hubUrl}/${apiPath}`)
-
-    const { method = 'GET', searchParams = {}, body } = params
-
-    Object.entries(searchParams)
-      .map(([key, value]) => typeof (value) === 'object' ? value.map(v => [key, v] as const) : [[key, value] as const])
-      .flat(1)
-      .filter((entry): entry is [string, string] => {
-        const [key, value] = entry
-        return key !== '' && value !== undefined
-      })
-      .forEach(([key, value]) => {
-        requestUrl.searchParams.append(key, value)
-      })
-
-    const response = await withTimeout(
-      HUB_REQUEST_TIMEOUT,
-      'Hub request timed out',
-      fetch(requestUrl, {
-        headers: {
-          'X-Stanza-Key': apiKey
-        },
-        method,
-        ...(body != null ? { body: JSON.stringify(body) } : {})
-      }))
-
-    const data = await response.json()
-
-    const parsedResult = validateRequest.safeParse(data)
-
-    if (!parsedResult.success) {
-      return null
-    }
-
-    return parsedResult.data
-  }
-
+export const createHubService = ({ serviceName, serviceRelease, environment, clientId, hubRequest }: HubServiceInitOptions): HubService => {
   return ({
     fetchServiceConfig: async ({ lastVersionSeen } = {}) => {
       const serviceConfigResult = await hubRequest('v1/config/service', {

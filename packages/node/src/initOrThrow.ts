@@ -5,6 +5,7 @@ import { updateHubService } from './global/hubService'
 import { createHubService } from './hub/createHubService'
 import { stanzaInitOptions, type StanzaInitOptions } from './stanzaInitOptions'
 import { startPollingServiceConfig } from './service/startPollingConfigService'
+import { createHubRequest } from './hub/createHubRequest'
 
 export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
   const parseResult = stanzaInitOptions.safeParse({
@@ -20,13 +21,16 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
 
   await addInstrumentation(initOptions.serviceName)
 
-  updateHubService(createHubService({
+  const hubRequest = createHubRequest({
     hubUrl: initOptions.hubUrl,
-    apiKey: initOptions.apiKey,
+    apiKey: initOptions.apiKey
+  })
+  updateHubService(createHubService({
     serviceName: initOptions.serviceName,
     serviceRelease: initOptions.serviceRelease,
     environment: initOptions.environment,
-    clientId
+    clientId,
+    hubRequest
   }))
 
   startPollingServiceConfig()
