@@ -51,10 +51,9 @@ describe('hubService', () => {
         await expect(fetchServiceConfigPromise).resolves.toBeDefined()
 
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.service.fetchOk, {
-        // TODO: attach service, environment and clientId to the event
-        // service: 'testService',
-        // environment: 'testEnvironment',
-        // clientId: 'testClientId'
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
         })
       })
 
@@ -68,10 +67,9 @@ describe('hubService', () => {
         await expect(fetchServiceConfigPromise).rejects.toThrow('kaboom')
 
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.service.fetchFailed, {
-        // TODO: attach service, environment and clientId to the event
-        // service: 'testService',
-        // environment: 'testEnvironment',
-        // clientId: 'testClientId'
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
         })
       })
 
@@ -94,11 +92,10 @@ describe('hubService', () => {
         await expect(fetchServiceConfigPromise).resolves.toBeDefined()
 
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.service.fetchLatency, {
-          latency: 123.456
-        // TODO: attach service, environment and clientId to the event
-        // service: 'testService',
-        // environment: 'testEnvironment',
-        // clientId: 'testClientId'
+          latency: 123.456,
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
         })
 
         vi.useRealTimers()
@@ -121,11 +118,10 @@ describe('hubService', () => {
         await expect(fetchDecoratorPromise).resolves.toBeDefined()
 
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.decorator.fetchOk, {
-          decorator: 'testDecorator'
-        // TODO: attach service, environment and clientId to the event
-        // service: 'testService',
-        // environment: 'testEnvironment',
-        // clientId: 'testClientId'
+          decorator: 'testDecorator',
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
         })
       })
 
@@ -141,11 +137,10 @@ describe('hubService', () => {
         await expect(fetchDecoratorPromise).rejects.toThrow('kaboom')
 
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.decorator.fetchFailed, {
-          decorator: 'testDecorator'
-        // TODO: attach service, environment and clientId to the event
-        // service: 'testService',
-        // environment: 'testEnvironment',
-        // clientId: 'testClientId'
+          decorator: 'testDecorator',
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
         })
       })
 
@@ -171,11 +166,10 @@ describe('hubService', () => {
 
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.decorator.fetchLatency, {
           decorator: 'testDecorator',
-          latency: 123.456
-        // TODO: attach service, environment and clientId to the event
-        // service: 'testService',
-        // environment: 'testEnvironment',
-        // clientId: 'testClientId'
+          latency: 123.456,
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
         })
 
         vi.useRealTimers()
