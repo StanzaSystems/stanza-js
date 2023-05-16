@@ -6,6 +6,8 @@ import { stanzaValidateTokenResponse } from './api/stanzaValidateTokenResponse'
 import { type HubService } from './hubService'
 import { stanzaMarkTokensAsConsumedResponse } from './api/stanzaMarkTokensAsConsumedResponse'
 import { type HubRequest } from './hubRequest'
+import { wrapEventsAsync } from '../utils/wrapEventsAsync'
+import { events, messageBus } from '../global/messageBus'
 
 interface HubServiceInitOptions {
   serviceName: string
@@ -16,7 +18,7 @@ interface HubServiceInitOptions {
 }
 
 export const createHubService = ({ serviceName, serviceRelease, environment, clientId, hubRequest }: HubServiceInitOptions): HubService => {
-  return ({
+  return withMetrics({
     fetchServiceConfig: async ({ lastVersionSeen } = {}) => {
       const serviceConfigResult = await hubRequest('v1/config/service', {
         searchParams: {
@@ -120,4 +122,45 @@ export const createHubService = ({ serviceName, serviceRelease, environment, cli
       return response !== null ? { ok: true } : null
     }
   })
+}
+
+const withMetrics = (hubService: HubService): HubService => {
+  return {
+    ...hubService,
+    fetchServiceConfig: wrapEventsAsync(hubService.fetchServiceConfig, {
+      success: () => {
+        void messageBus.emit(events.config.service.fetchOk, {})
+      },
+      failure: () => {
+        void messageBus.emit(events.config.service.fetchFailed, {})
+      },
+      latency: (latency) => {
+        void messageBus.emit(events.config.service.fetchLatency, {
+          latency
+        })
+      }
+    }),
+    fetchDecoratorConfig: wrapEventsAsync(hubService.fetchDecoratorConfig, {
+      success: (_, { decorator }) => {
+        void messageBus.emit(events.config.decorator.fetchOk, {
+          decorator
+        })
+      },
+      failure: (_, { decorator }) => {
+        void messageBus.emit(events.config.decorator.fetchFailed, {
+          decorator
+        })
+      },
+      latency: (latency, { decorator }) => {
+        void messageBus.emit(events.config.decorator.fetchLatency, {
+          decorator,
+          latency
+        })
+      }
+    }),
+    getToken: wrapEventsAsync(hubService.getToken),
+    getTokenLease: wrapEventsAsync(hubService.getTokenLease),
+    validateToken: wrapEventsAsync(hubService.validateToken),
+    markTokensAsConsumed: wrapEventsAsync(hubService.markTokensAsConsumed)
+  }
 }
