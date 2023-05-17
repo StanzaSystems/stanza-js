@@ -9,19 +9,19 @@ import { isTruthy } from '../utils/isTruthy'
 import { type Promisify } from '../utils/promisify'
 import { initDecorator } from './initStanzaDecorator'
 import { type StanzaDecoratorOptions } from './model'
-import { events, messageBus } from '../global/messageBus'
+import { eventBus, events } from '../global/eventBus'
 import { wrapEventsAsync } from '../utils/wrapEventsAsync'
 
 export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDecoratorOptions) => {
   const initializedDecorator = initDecorator(options)
   const guard = wrapEventsAsync(initializedDecorator.guard, {
     success: () => {
-      void messageBus.emit(events.request.allowed, {
+      void eventBus.emit(events.request.allowed, {
         decorator: options.decorator
       })
     },
     failure: () => {
-      void messageBus.emit(events.request.blocked, {
+      void eventBus.emit(events.request.blocked, {
         decorator: options.decorator,
         reason: 'quota'
       })
@@ -47,17 +47,17 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
 
     return wrapEventsAsync(resultFn, {
       success: () => {
-        void messageBus.emit(events.request.succeeded, {
+        void eventBus.emit(events.request.succeeded, {
           decorator: options.decorator
         })
       },
       failure: () => {
-        void messageBus.emit(events.request.failed, {
+        void eventBus.emit(events.request.failed, {
           decorator: options.decorator
         })
       },
       latency: (...[latency]) => {
-        void messageBus.emit(events.request.latency, {
+        void eventBus.emit(events.request.latency, {
           decorator: options.decorator,
           latency
         })

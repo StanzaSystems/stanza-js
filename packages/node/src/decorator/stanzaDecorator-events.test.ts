@@ -5,8 +5,8 @@ import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks'
 import { context } from '@opentelemetry/api'
 import { type DecoratorConfig } from '../hub/model'
 import { stanzaDecorator } from './stanzaDecorator'
-import type * as messageBusModule from '../global/messageBus'
-import { events, messageBus } from '../global/messageBus'
+import type * as messageBusModule from '../global/eventBus'
+import { eventBus, events } from '../global/eventBus'
 
 vi.mock('../global/messageBus', async (importOriginal: () => Promise<typeof messageBusModule>) => {
   const original = await importOriginal()
@@ -24,7 +24,7 @@ const doStuff = vi.fn()
 beforeEach(() => {
   updateDecoratorConfig('testDecorator', undefined as any);
 
-  (messageBus.emit as any).mockReset()
+  (eventBus.emit as any).mockReset()
 
   doStuff.mockReset()
   mockHubService.reset()
@@ -59,7 +59,7 @@ describe('stanzaDecorator', () => {
 
       await expect(decoratedStuffPromise).resolves.toBeUndefined()
 
-      expect(messageBus.emit).toHaveBeenCalledWith(events.request.allowed, {
+      expect(eventBus.emit).toHaveBeenCalledWith(events.request.allowed, {
         decorator: 'testDecorator',
         feature: undefined
         // TODO: attach service, environment and clientId to the event
@@ -90,7 +90,7 @@ describe('stanzaDecorator', () => {
 
       await expect(decoratedStuffPromise).rejects.toThrow()
 
-      expect(messageBus.emit).toHaveBeenCalledWith(events.request.blocked, {
+      expect(eventBus.emit).toHaveBeenCalledWith(events.request.blocked, {
         decorator: 'testDecorator',
         feature: undefined,
         reason: 'quota'
@@ -122,7 +122,7 @@ describe('stanzaDecorator', () => {
 
       await expect(decoratedStuffPromise).resolves.toBeUndefined()
 
-      expect(messageBus.emit).toHaveBeenCalledWith(events.request.succeeded, {
+      expect(eventBus.emit).toHaveBeenCalledWith(events.request.succeeded, {
         decorator: 'testDecorator',
         feature: undefined
         // TODO: attach service, environment and clientId to the event
@@ -155,7 +155,7 @@ describe('stanzaDecorator', () => {
 
       await expect(decoratedStuffPromise).rejects.toThrow('kaboom')
 
-      expect(messageBus.emit).toHaveBeenCalledWith(events.request.failed, {
+      expect(eventBus.emit).toHaveBeenCalledWith(events.request.failed, {
         decorator: 'testDecorator',
         feature: undefined
         // TODO: attach service, environment and clientId to the event
@@ -191,7 +191,7 @@ describe('stanzaDecorator', () => {
 
       await expect(decoratedStuffPromise).resolves.toBeUndefined()
 
-      expect(messageBus.emit).toHaveBeenCalledWith(events.request.latency, {
+      expect(eventBus.emit).toHaveBeenCalledWith(events.request.latency, {
         decorator: 'testDecorator',
         feature: undefined,
         latency: 123.456

@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest'
 import { type DecoratorConfig, type ServiceConfig } from './model'
-import { events, messageBus } from '../global/messageBus'
+import { eventBus, events } from '../global/eventBus'
 import { createHubService } from './createHubService'
 
-const mockMessageBusEmit = vi.spyOn(messageBus, 'emit')
+const mockMessageBusEmit = vi.spyOn(eventBus, 'emit')
 const mockHubRequest = Object.assign(vi.fn(), {
   mockImplementationDeferred: function (this: Mock) {
     const deferred: {

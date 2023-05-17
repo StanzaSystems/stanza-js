@@ -1,9 +1,9 @@
 import Emittery from 'emittery'
 
-const MESSAGE_BUS_SYMBOL = Symbol.for('[Stanza SDK Internal] Message Bus')
-const MESSAGE_BUS_EVENTS_SYMBOL = Symbol.for('[Stanza SDK Internal] Message Bus Events')
+const EVENT_BUS_SYMBOL = Symbol.for('[Stanza SDK Internal] Event Bus')
+const EVENT_BUS_EVENTS_SYMBOL = Symbol.for('[Stanza SDK Internal] Event Bus Events')
 
-const messageBustEvents = {
+const eventBusEvents = {
   request: {
     allowed: Symbol('stanza.request.allowed'),
     blocked: Symbol('stanza.request.blocked'),
@@ -37,12 +37,12 @@ const messageBustEvents = {
   }
 } as const
 
-interface MessageBusGlobal {
-  [MESSAGE_BUS_SYMBOL]: Emittery | undefined
-  [MESSAGE_BUS_EVENTS_SYMBOL]: typeof messageBustEvents | undefined
+interface EventBusGlobal {
+  [EVENT_BUS_SYMBOL]: Emittery | undefined
+  [EVENT_BUS_EVENTS_SYMBOL]: typeof eventBusEvents | undefined
 }
-const messageBusGlobal = global as unknown as MessageBusGlobal
+const eventBusGlobal = global as unknown as EventBusGlobal
 
-export const messageBus: Emittery = messageBusGlobal[MESSAGE_BUS_SYMBOL] = messageBusGlobal[MESSAGE_BUS_SYMBOL] ?? new Emittery()
+export const eventBus: Emittery = eventBusGlobal[EVENT_BUS_SYMBOL] = eventBusGlobal[EVENT_BUS_SYMBOL] ?? new Emittery()
 
-export const events = messageBusGlobal[MESSAGE_BUS_EVENTS_SYMBOL] = messageBusGlobal[MESSAGE_BUS_EVENTS_SYMBOL] ?? messageBustEvents
+export const events = eventBusGlobal[EVENT_BUS_EVENTS_SYMBOL] = eventBusGlobal[EVENT_BUS_EVENTS_SYMBOL] ?? eventBusEvents
