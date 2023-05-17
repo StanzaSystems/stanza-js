@@ -5,26 +5,16 @@ import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks'
 import { context } from '@opentelemetry/api'
 import { type DecoratorConfig } from '../hub/model'
 import { stanzaDecorator } from './stanzaDecorator'
-import type * as messageBusModule from '../global/eventBus'
 import { eventBus, events } from '../global/eventBus'
 
-vi.mock('../global/messageBus', async (importOriginal: () => Promise<typeof messageBusModule>) => {
-  const original = await importOriginal()
-
-  return {
-    ...original,
-    messageBus: {
-      emit: vi.fn()
-    }
-  }
-})
+const mockMessageBusEmit = vi.spyOn(eventBus, 'emit')
 
 const doStuff = vi.fn()
 
 beforeEach(() => {
-  updateDecoratorConfig('testDecorator', undefined as any);
+  updateDecoratorConfig('testDecorator', undefined as any)
 
-  (eventBus.emit as any).mockReset()
+  mockMessageBusEmit.mockReset()
 
   doStuff.mockReset()
   mockHubService.reset()

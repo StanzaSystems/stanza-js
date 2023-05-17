@@ -38,7 +38,7 @@ export function wrapHubServiceWithMetrics ({ serviceName, environment, clientId 
     fetchDecoratorConfig: wrapEventsAsync(hubService.fetchDecoratorConfig, {
       success: (_, { decorator }) => {
         void eventBus.emit(events.config.decorator.fetchOk, {
-          decorator,
+          decoratorName: decorator,
           serviceName,
           clientId,
           environment
@@ -46,7 +46,7 @@ export function wrapHubServiceWithMetrics ({ serviceName, environment, clientId 
       },
       failure: (_, { decorator }) => {
         void eventBus.emit(events.config.decorator.fetchFailed, {
-          decorator,
+          decoratorName: decorator,
           serviceName,
           clientId,
           environment
@@ -54,7 +54,7 @@ export function wrapHubServiceWithMetrics ({ serviceName, environment, clientId 
       },
       latency: (latency, { decorator }) => {
         void eventBus.emit(events.config.decorator.fetchLatency, {
-          decorator,
+          decoratorName: decorator,
           latency,
           serviceName,
           clientId,
@@ -62,9 +62,119 @@ export function wrapHubServiceWithMetrics ({ serviceName, environment, clientId 
         })
       }
     }),
-    getToken: wrapEventsAsync(hubService.getToken),
-    getTokenLease: wrapEventsAsync(hubService.getTokenLease),
-    validateToken: wrapEventsAsync(hubService.validateToken),
-    markTokensAsConsumed: wrapEventsAsync(hubService.markTokensAsConsumed)
+    getToken: wrapEventsAsync(hubService.getToken, {
+      success: (_, { decorator }) => {
+        void eventBus.emit(events.quota.fetchOk, {
+          decoratorName: decorator,
+          serviceName,
+          clientId,
+          environment,
+          endpoint: 'GetToken'
+        })
+      },
+      failure: () => {
+        void eventBus.emit(events.quota.fetchFailed, {
+          serviceName,
+          clientId,
+          environment,
+          endpoint: 'GetToken'
+        })
+      },
+      latency: (latency) => {
+        void eventBus.emit(events.quota.fetchLatency, {
+          latency,
+          serviceName,
+          clientId,
+          environment,
+          endpoint: 'GetToken'
+        })
+      }
+    }),
+    getTokenLease: wrapEventsAsync(hubService.getTokenLease, {
+      success: (_, { decorator }) => {
+        void eventBus.emit(events.quota.fetchOk, {
+          decoratorName: decorator,
+          serviceName,
+          clientId,
+          environment,
+          endpoint: 'GetTokenLease'
+        })
+      },
+      failure: () => {
+        void eventBus.emit(events.quota.fetchFailed, {
+          serviceName,
+          clientId,
+          environment,
+          endpoint: 'GetTokenLease'
+        })
+      },
+      latency: (latency) => {
+        void eventBus.emit(events.quota.fetchLatency, {
+          latency,
+          serviceName,
+          clientId,
+          environment,
+          endpoint: 'GetTokenLease'
+        })
+      }
+    }),
+    validateToken: wrapEventsAsync(hubService.validateToken, {
+      success: (result, { decorator }) => {
+        void eventBus.emit(
+          result?.valid === true
+            ? events.quota.validateOk
+            : events.quota.validateFailed,
+          {
+            decoratorName: decorator,
+            serviceName,
+            clientId,
+            environment
+          })
+      },
+      failure: (_, { decorator }) => {
+        void eventBus.emit(events.quota.validateFailed, {
+          decoratorName: decorator,
+          serviceName,
+          clientId,
+          environment
+        })
+      },
+      latency: (latency, { decorator }) => {
+        void eventBus.emit(events.quota.validateLatency, {
+          decoratorName: decorator,
+          latency,
+          serviceName,
+          clientId,
+          environment
+        })
+      }
+    }),
+    markTokensAsConsumed: wrapEventsAsync(hubService.markTokensAsConsumed, {
+      success: (_) => {
+        void eventBus.emit(events.quota.fetchOk, {
+          serviceName,
+          clientId,
+          environment,
+          endpoint: 'SetTokenLeaseConsumed'
+        })
+      },
+      failure: () => {
+        void eventBus.emit(events.quota.fetchFailed, {
+          serviceName,
+          clientId,
+          environment,
+          endpoint: 'SetTokenLeaseConsumed'
+        })
+      },
+      latency: (latency) => {
+        void eventBus.emit(events.quota.fetchLatency, {
+          latency,
+          serviceName,
+          clientId,
+          environment,
+          endpoint: 'SetTokenLeaseConsumed'
+        })
+      }
+    })
   }
 }
