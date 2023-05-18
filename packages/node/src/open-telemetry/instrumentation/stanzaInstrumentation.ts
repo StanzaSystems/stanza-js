@@ -5,6 +5,7 @@ import { eventDataToRequestAttributes, type RequestAttributes } from './requestA
 import { eventDataToRequestBlockedAttributes, type RequestBlockedAttributes } from './requestBlockedAttributes'
 import { type DefaultContextAttributes, eventDataToDefaultContextAttributes } from './defaultContextAttributes'
 import { type DecoratorAttributes, eventDataToDecoratorAttributes } from './decoratorAttributes'
+import { packageName, packageVersion } from '../../meta'
 
 type QuotaEndpoint = 'GetToken' | 'GetTokenLease' | 'SetTokenLeaseConsumed'
 
@@ -44,7 +45,7 @@ export class StanzaInstrumentation extends InstrumentationBase {
   }
 
   constructor () {
-    super('@getstanza/node', '0.0.0')
+    super(packageName, packageVersion)
   }
 
   protected init (): void {
