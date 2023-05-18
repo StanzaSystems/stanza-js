@@ -17,12 +17,12 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
   const guard = wrapEventsAsync(initializedDecorator.guard, {
     success: () => {
       void eventBus.emit(events.request.allowed, {
-        decorator: options.decorator
+        decoratorName: options.decorator
       })
     },
     failure: () => {
       void eventBus.emit(events.request.blocked, {
-        decorator: options.decorator,
+        decoratorName: options.decorator,
         reason: 'quota'
       })
     }
@@ -48,17 +48,17 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
     return wrapEventsAsync(resultFn, {
       success: () => {
         void eventBus.emit(events.request.succeeded, {
-          decorator: options.decorator
+          decoratorName: options.decorator
         })
       },
       failure: () => {
         void eventBus.emit(events.request.failed, {
-          decorator: options.decorator
+          decoratorName: options.decorator
         })
       },
       latency: (...[latency]) => {
         void eventBus.emit(events.request.latency, {
-          decorator: options.decorator,
+          decoratorName: options.decorator,
           latency
         })
       }

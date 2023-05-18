@@ -50,7 +50,7 @@ describe('stanzaDecorator', () => {
       await expect(decoratedStuffPromise).resolves.toBeUndefined()
 
       expect(eventBus.emit).toHaveBeenCalledWith(events.request.allowed, {
-        decorator: 'testDecorator',
+        decoratorName: 'testDecorator',
         feature: undefined
         // TODO: attach service, environment and clientId to the event
         // service: 'testService',
@@ -81,7 +81,7 @@ describe('stanzaDecorator', () => {
       await expect(decoratedStuffPromise).rejects.toThrow()
 
       expect(eventBus.emit).toHaveBeenCalledWith(events.request.blocked, {
-        decorator: 'testDecorator',
+        decoratorName: 'testDecorator',
         feature: undefined,
         reason: 'quota'
         // TODO: attach service, environment and clientId to the event
@@ -113,7 +113,7 @@ describe('stanzaDecorator', () => {
       await expect(decoratedStuffPromise).resolves.toBeUndefined()
 
       expect(eventBus.emit).toHaveBeenCalledWith(events.request.succeeded, {
-        decorator: 'testDecorator',
+        decoratorName: 'testDecorator',
         feature: undefined
         // TODO: attach service, environment and clientId to the event
         // service: 'testService',
@@ -146,7 +146,7 @@ describe('stanzaDecorator', () => {
       await expect(decoratedStuffPromise).rejects.toThrow('kaboom')
 
       expect(eventBus.emit).toHaveBeenCalledWith(events.request.failed, {
-        decorator: 'testDecorator',
+        decoratorName: 'testDecorator',
         feature: undefined
         // TODO: attach service, environment and clientId to the event
         // service: 'testService',
@@ -182,7 +182,7 @@ describe('stanzaDecorator', () => {
       await expect(decoratedStuffPromise).resolves.toBeUndefined()
 
       expect(eventBus.emit).toHaveBeenCalledWith(events.request.latency, {
-        decorator: 'testDecorator',
+        decoratorName: 'testDecorator',
         feature: undefined,
         latency: 123.456
         // TODO: attach service, environment and clientId to the event

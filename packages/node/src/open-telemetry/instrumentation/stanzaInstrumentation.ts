@@ -3,8 +3,8 @@ import { type Counter, type Histogram, type MetricOptions, ValueType } from '@op
 import { eventBus, events } from '../../global/eventBus'
 import { eventDataToRequestAttributes, type RequestAttributes } from './requestAttributes'
 import { eventDataToRequestBlockedAttributes, type RequestBlockedAttributes } from './requestBlockedAttributes'
-import { type DefaultContextAttributes } from './defaultContextAttributes'
-import { type DecoratorAttributes } from './decoratorAttributes'
+import { type DefaultContextAttributes, eventDataToDefaultContextAttributes } from './defaultContextAttributes'
+import { type DecoratorAttributes, eventDataToDecoratorAttributes } from './decoratorAttributes'
 
 type QuotaEndpoint = 'GetToken' | 'GetTokenLease' | 'SetTokenLeaseConsumed'
 
@@ -47,16 +47,23 @@ export class StanzaInstrumentation extends InstrumentationBase {
     super('@getstanza/node', '0.0.0')
   }
 
-  protected init (): void {}
+  protected init (): void {
+    this.initRequestMetrics()
+    this.initConfigMetrics()
+    this.initQuotaMetrics()
+    this.initTelemetryMetrics()
+  }
 
   protected _updateMetricInstruments () {
     this.metrics = {
-      request: this.createRequestMetrics(),
-      config: this.createConfigMetrics(),
-      quota: this.createQuotaMetrics(),
-      telemetry: this.createTelemetryMetrics()
+      request: this.updateRequestMetrics(),
+      config: this.updateConfigMetrics(),
+      quota: this.updateQuotaMetrics(),
+      telemetry: this.updateTelemetryMetrics()
     }
+  }
 
+  private initRequestMetrics () {
     eventBus.on(events.request.allowed, (data) => {
       this.metrics.request.allowed.add(1, eventDataToRequestAttributes(data))
     })
@@ -72,106 +79,178 @@ export class StanzaInstrumentation extends InstrumentationBase {
     eventBus.on(events.request.latency, ({ latency, ...data }) => {
       this.metrics.request.latency.record(latency, eventDataToRequestAttributes(data))
     })
-    eventBus.on(events.request.allowed, data => {
-      this.metrics.request.allowed.add(1, eventDataToRequestAttributes(data))
-    })
   }
 
-  private createRequestMetrics (): typeof this.metrics.request {
+  private updateRequestMetrics (): typeof this.metrics.request {
     return {
       allowed: this.meter.createCounter(
-        events.request.allowed.description ?? '',
+        events.request.allowed.description,
         stanzaCounterMetricOptions('Count of requests permitted to execute on a given Decorator')
       ),
       blocked: this.meter.createCounter(
-        events.request.blocked.description ?? '',
+        events.request.blocked.description,
         stanzaCounterMetricOptions('Count of requests not permitted to execute on a given Decorator')
       ),
       failed: this.meter.createCounter(
-        events.request.failed.description ?? '',
+        events.request.failed.description,
         stanzaCounterMetricOptions('Count of failed requests traversing a particular Decorator')
       ),
       succeeded: this.meter.createCounter(
-        events.request.succeeded.description ?? '',
+        events.request.succeeded.description,
         stanzaCounterMetricOptions('Count of successful requests traversing a particular Decorator')
       ),
       latency: this.meter.createHistogram(
-        events.request.latency.description ?? '',
+        events.request.latency.description,
         stanzaHistogramMetricOptions('Latency histogram for execution time for a particular Decorator')
       )
     }
   }
 
-  private createConfigMetrics (): typeof this.metrics.config {
+  private initConfigMetrics () {
+    eventBus.on(events.config.service.fetchOk, data => {
+      this.metrics.config.service.fetchOk.add(1, eventDataToDefaultContextAttributes(data))
+    })
+    eventBus.on(events.config.service.fetchFailed, data => {
+      this.metrics.config.service.fetchFailed.add(1, eventDataToDefaultContextAttributes(data))
+    })
+    eventBus.on(events.config.service.fetchLatency, ({ latency, ...data }) => {
+      this.metrics.config.service.fetchLatency.record(latency, eventDataToDefaultContextAttributes(data))
+    })
+    eventBus.on(events.config.decorator.fetchOk, data => {
+      this.metrics.config.decorator.fetchOk.add(1, {
+        ...eventDataToDefaultContextAttributes(data),
+        ...eventDataToDecoratorAttributes(data)
+      })
+    })
+    eventBus.on(events.config.decorator.fetchFailed, data => {
+      this.metrics.config.decorator.fetchFailed.add(1, eventDataToDefaultContextAttributes(data))
+    })
+    eventBus.on(events.config.decorator.fetchLatency, ({ latency, ...data }) => {
+      this.metrics.config.decorator.fetchLatency.record(latency, eventDataToDefaultContextAttributes(data))
+    })
+  }
+
+  private updateConfigMetrics (): typeof this.metrics.config {
     return {
       service: {
         fetchOk: this.meter.createCounter(
-          events.config.service.fetchOk.description ?? '',
+          events.config.service.fetchOk.description,
           stanzaCounterMetricOptions('Count of successful fetches of service configuration')
         ),
         fetchFailed: this.meter.createCounter(
-          events.config.service.fetchFailed.description ?? '',
+          events.config.service.fetchFailed.description,
           stanzaCounterMetricOptions('Count of unsuccessful fetches of service configuration')
         ),
         fetchLatency: this.meter.createHistogram(
-          events.config.service.fetchLatency.description ?? '',
+          events.config.service.fetchLatency.description,
           stanzaHistogramMetricOptions('Latency histogram for time to fetch service configuration')
         )
       },
       decorator: {
         fetchOk: this.meter.createCounter(
-          events.config.decorator.fetchOk.description ?? '',
+          events.config.decorator.fetchOk.description,
           stanzaCounterMetricOptions('Count of successful fetches of decorator configuration')
         ),
         fetchFailed: this.meter.createCounter(
-          events.config.decorator.fetchFailed.description ?? '',
+          events.config.decorator.fetchFailed.description,
           stanzaCounterMetricOptions('Count of unsuccessful fetches of decorator configuration')
         ),
         fetchLatency: this.meter.createHistogram(
-          events.config.decorator.fetchLatency.description ?? '',
+          events.config.decorator.fetchLatency.description,
           stanzaHistogramMetricOptions('Latency histogram for time to fetch decorator configuration')
         )
       }
     }
   }
 
-  private createQuotaMetrics (): typeof this.metrics.quota {
+  private initQuotaMetrics () {
+    eventBus.on(events.quota.fetchOk, data => {
+      this.metrics.quota.fetchOk.add(1, {
+        ...eventDataToDefaultContextAttributes(data),
+        ...eventDataToDecoratorAttributes(data),
+        endpoint: data.endpoint
+      })
+    })
+    eventBus.on(events.quota.fetchFailed, data => {
+      this.metrics.quota.fetchFailed.add(1, {
+        ...eventDataToDefaultContextAttributes(data),
+        ...eventDataToDecoratorAttributes(data),
+        endpoint: data.endpoint
+      })
+    })
+    eventBus.on(events.quota.fetchLatency, ({ latency, ...data }) => {
+      this.metrics.quota.fetchLatency.record(latency, {
+        ...eventDataToDefaultContextAttributes(data),
+        ...eventDataToDecoratorAttributes(data),
+        endpoint: data.endpoint
+      })
+    })
+    eventBus.on(events.quota.validateOk, data => {
+      this.metrics.quota.validateOk.add(1, {
+        ...eventDataToDefaultContextAttributes(data),
+        ...eventDataToDecoratorAttributes(data)
+      })
+    })
+    eventBus.on(events.quota.validateFailed, data => {
+      this.metrics.quota.validateFailed.add(1, eventDataToDefaultContextAttributes(data))
+    })
+    eventBus.on(events.quota.validateLatency, ({ latency, ...data }) => {
+      this.metrics.quota.validateLatency.record(latency, eventDataToDefaultContextAttributes(data))
+    })
+  }
+
+  private updateQuotaMetrics (): typeof this.metrics.quota {
     return {
       fetchOk: this.meter.createCounter(
-        events.quota.fetchOk.description ?? '',
+        events.quota.fetchOk.description,
         stanzaCounterMetricOptions('Count of successful fetches of quota')
       ),
       fetchFailed: this.meter.createCounter(
-        events.quota.fetchFailed.description ?? '',
+        events.quota.fetchFailed.description,
         stanzaCounterMetricOptions('Count of unsuccessful fetches quota')
       ),
       fetchLatency: this.meter.createHistogram(
-        events.quota.fetchLatency.description ?? '',
+        events.quota.fetchLatency.description,
         stanzaHistogramMetricOptions('Latency histogram for time to fetch quota')
       ),
       validateOk: this.meter.createCounter(
-        events.quota.validateOk.description ?? '',
+        events.quota.validateOk.description,
         stanzaCounterMetricOptions('Count of successful token validations')
       ),
       validateFailed: this.meter.createCounter(
-        events.quota.validateFailed.description ?? '',
+        events.quota.validateFailed.description,
         stanzaCounterMetricOptions('Count of unsuccessful token validations')
       ),
       validateLatency: this.meter.createHistogram(
-        events.quota.validateLatency.description ?? '',
+        events.quota.validateLatency.description,
         stanzaHistogramMetricOptions('Latency histogram for time to perform token validations')
       )
     }
   }
 
-  private createTelemetryMetrics (): typeof this.metrics.telemetry {
+  private initTelemetryMetrics () {
+    eventBus.on(events.telemetry.sendOk, data => {
+      this.metrics.telemetry.sendOk.add(1, {
+        ...eventDataToRequestAttributes(data),
+        otel_address: data.oTelAddress
+      })
+    })
+    eventBus.on(events.telemetry.sendFailed, data => {
+      this.metrics.telemetry.sendFailed.add(1, {
+        ...eventDataToRequestAttributes(data),
+        otel_address: data.oTelAddress
+      })
+    })
+  }
+
+  private updateTelemetryMetrics (): typeof this.metrics.telemetry {
     return {
       sendOk: this.meter.createCounter(
-        events.telemetry.sendOk.description ?? '',
+        events.telemetry.sendOk.description,
         stanzaCounterMetricOptions('Count of successful telemetry send events')
       ),
       sendFailed: this.meter.createCounter(
-        events.telemetry.sendFailed.description ?? '',
+        events.telemetry.sendFailed.description,
         stanzaCounterMetricOptions('Count of unsuccessful telemetry send events')
       )
     }
