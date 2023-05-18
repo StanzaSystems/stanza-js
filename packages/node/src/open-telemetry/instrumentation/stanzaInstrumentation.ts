@@ -85,23 +85,23 @@ export class StanzaInstrumentation extends InstrumentationBase {
   private updateRequestMetrics (): typeof this.metrics.request {
     return {
       allowed: this.meter.createCounter(
-        events.request.allowed.description,
+        events.request.allowed.description ?? '',
         stanzaCounterMetricOptions('Count of requests permitted to execute on a given Decorator')
       ),
       blocked: this.meter.createCounter(
-        events.request.blocked.description,
+        events.request.blocked.description ?? '',
         stanzaCounterMetricOptions('Count of requests not permitted to execute on a given Decorator')
       ),
       failed: this.meter.createCounter(
-        events.request.failed.description,
+        events.request.failed.description ?? '',
         stanzaCounterMetricOptions('Count of failed requests traversing a particular Decorator')
       ),
       succeeded: this.meter.createCounter(
-        events.request.succeeded.description,
+        events.request.succeeded.description ?? '',
         stanzaCounterMetricOptions('Count of successful requests traversing a particular Decorator')
       ),
       latency: this.meter.createHistogram(
-        events.request.latency.description,
+        events.request.latency.description ?? '',
         stanzaHistogramMetricOptions('Latency histogram for execution time for a particular Decorator')
       )
     }
@@ -135,29 +135,29 @@ export class StanzaInstrumentation extends InstrumentationBase {
     return {
       service: {
         fetchOk: this.meter.createCounter(
-          events.config.service.fetchOk.description,
+          events.config.service.fetchOk.description ?? '',
           stanzaCounterMetricOptions('Count of successful fetches of service configuration')
         ),
         fetchFailed: this.meter.createCounter(
-          events.config.service.fetchFailed.description,
+          events.config.service.fetchFailed.description ?? '',
           stanzaCounterMetricOptions('Count of unsuccessful fetches of service configuration')
         ),
         fetchLatency: this.meter.createHistogram(
-          events.config.service.fetchLatency.description,
+          events.config.service.fetchLatency.description ?? '',
           stanzaHistogramMetricOptions('Latency histogram for time to fetch service configuration')
         )
       },
       decorator: {
         fetchOk: this.meter.createCounter(
-          events.config.decorator.fetchOk.description,
+          events.config.decorator.fetchOk.description ?? '',
           stanzaCounterMetricOptions('Count of successful fetches of decorator configuration')
         ),
         fetchFailed: this.meter.createCounter(
-          events.config.decorator.fetchFailed.description,
+          events.config.decorator.fetchFailed.description ?? '',
           stanzaCounterMetricOptions('Count of unsuccessful fetches of decorator configuration')
         ),
         fetchLatency: this.meter.createHistogram(
-          events.config.decorator.fetchLatency.description,
+          events.config.decorator.fetchLatency.description ?? '',
           stanzaHistogramMetricOptions('Latency histogram for time to fetch decorator configuration')
         )
       }
@@ -175,14 +175,12 @@ export class StanzaInstrumentation extends InstrumentationBase {
     eventBus.on(events.quota.fetchFailed, data => {
       this.metrics.quota.fetchFailed.add(1, {
         ...eventDataToDefaultContextAttributes(data),
-        ...eventDataToDecoratorAttributes(data),
         endpoint: data.endpoint
       })
     })
     eventBus.on(events.quota.fetchLatency, ({ latency, ...data }) => {
       this.metrics.quota.fetchLatency.record(latency, {
         ...eventDataToDefaultContextAttributes(data),
-        ...eventDataToDecoratorAttributes(data),
         endpoint: data.endpoint
       })
     })
@@ -203,27 +201,27 @@ export class StanzaInstrumentation extends InstrumentationBase {
   private updateQuotaMetrics (): typeof this.metrics.quota {
     return {
       fetchOk: this.meter.createCounter(
-        events.quota.fetchOk.description,
+        events.quota.fetchOk.description ?? '',
         stanzaCounterMetricOptions('Count of successful fetches of quota')
       ),
       fetchFailed: this.meter.createCounter(
-        events.quota.fetchFailed.description,
+        events.quota.fetchFailed.description ?? '',
         stanzaCounterMetricOptions('Count of unsuccessful fetches quota')
       ),
       fetchLatency: this.meter.createHistogram(
-        events.quota.fetchLatency.description,
+        events.quota.fetchLatency.description ?? '',
         stanzaHistogramMetricOptions('Latency histogram for time to fetch quota')
       ),
       validateOk: this.meter.createCounter(
-        events.quota.validateOk.description,
+        events.quota.validateOk.description ?? '',
         stanzaCounterMetricOptions('Count of successful token validations')
       ),
       validateFailed: this.meter.createCounter(
-        events.quota.validateFailed.description,
+        events.quota.validateFailed.description ?? '',
         stanzaCounterMetricOptions('Count of unsuccessful token validations')
       ),
       validateLatency: this.meter.createHistogram(
-        events.quota.validateLatency.description,
+        events.quota.validateLatency.description ?? '',
         stanzaHistogramMetricOptions('Latency histogram for time to perform token validations')
       )
     }
@@ -232,13 +230,13 @@ export class StanzaInstrumentation extends InstrumentationBase {
   private initTelemetryMetrics () {
     eventBus.on(events.telemetry.sendOk, data => {
       this.metrics.telemetry.sendOk.add(1, {
-        ...eventDataToRequestAttributes(data),
+        ...eventDataToDefaultContextAttributes(data),
         otel_address: data.oTelAddress
       })
     })
     eventBus.on(events.telemetry.sendFailed, data => {
       this.metrics.telemetry.sendFailed.add(1, {
-        ...eventDataToRequestAttributes(data),
+        ...eventDataToDefaultContextAttributes(data),
         otel_address: data.oTelAddress
       })
     })
@@ -247,11 +245,11 @@ export class StanzaInstrumentation extends InstrumentationBase {
   private updateTelemetryMetrics (): typeof this.metrics.telemetry {
     return {
       sendOk: this.meter.createCounter(
-        events.telemetry.sendOk.description,
+        events.telemetry.sendOk.description ?? '',
         stanzaCounterMetricOptions('Count of successful telemetry send events')
       ),
       sendFailed: this.meter.createCounter(
-        events.telemetry.sendFailed.description,
+        events.telemetry.sendFailed.description ?? '',
         stanzaCounterMetricOptions('Count of unsuccessful telemetry send events')
       )
     }

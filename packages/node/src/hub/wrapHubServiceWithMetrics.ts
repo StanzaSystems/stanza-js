@@ -44,17 +44,15 @@ export function wrapHubServiceWithMetrics ({ serviceName, environment, clientId 
           environment
         })
       },
-      failure: (_, { decorator }) => {
+      failure: () => {
         void eventBus.emit(events.config.decorator.fetchFailed, {
-          decoratorName: decorator,
           serviceName,
           clientId,
           environment
         })
       },
-      latency: (latency, { decorator }) => {
+      latency: (latency) => {
         void eventBus.emit(events.config.decorator.fetchLatency, {
-          decoratorName: decorator,
           latency,
           serviceName,
           clientId,
@@ -133,7 +131,6 @@ export function wrapHubServiceWithMetrics ({ serviceName, environment, clientId 
       },
       failure: (_, { decorator }) => {
         void eventBus.emit(events.quota.validateFailed, {
-          decoratorName: decorator,
           serviceName,
           clientId,
           environment
@@ -141,7 +138,6 @@ export function wrapHubServiceWithMetrics ({ serviceName, environment, clientId 
       },
       latency: (latency, { decorator }) => {
         void eventBus.emit(events.quota.validateLatency, {
-          decoratorName: decorator,
           latency,
           serviceName,
           clientId,

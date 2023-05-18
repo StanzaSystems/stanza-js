@@ -136,7 +136,6 @@ describe('hubService', () => {
         await expect(fetchDecoratorPromise).rejects.toThrow('kaboom')
 
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.decorator.fetchFailed, {
-          decoratorName: 'testDecorator',
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId'
@@ -164,7 +163,6 @@ describe('hubService', () => {
         await expect(fetchDecoratorPromise).resolves.toBeDefined()
 
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.decorator.fetchLatency, {
-          decoratorName: 'testDecorator',
           latency: 123.456,
           serviceName: 'testService',
           environment: 'testEnvironment',

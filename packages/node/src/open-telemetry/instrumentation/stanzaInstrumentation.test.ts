@@ -167,7 +167,7 @@ describe('StanzaInstrumentation', () => {
     }
   ] as const)('should capture request metrics', async ({ given, expected }) => {
     vi.useFakeTimers()
-    void eventBus.emit(given.event, given.data)
+    void eventBus.emit(given.event, given.data as any)
 
     await vi.advanceTimersByTimeAsync(10)
 
@@ -367,7 +367,6 @@ describe('StanzaInstrumentation', () => {
         data: [
           1,
           {
-            decorator: 'testDecorator',
             service: 'testService',
             environment: 'testEnvironment',
             client_id: 'testClientId',
@@ -393,7 +392,6 @@ describe('StanzaInstrumentation', () => {
         data: [
           123.456,
           {
-            decorator: 'testDecorator',
             service: 'testService',
             environment: 'testEnvironment',
             client_id: 'testClientId',

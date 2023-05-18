@@ -19,12 +19,14 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
     success: () => {
       void eventBus.emit(events.request.allowed, {
         ...hubService.getServiceMetadata(),
+        featureName: options.feature ?? '',
         decoratorName: options.decorator
       })
     },
     failure: () => {
       void eventBus.emit(events.request.blocked, {
         ...hubService.getServiceMetadata(),
+        featureName: options.feature ?? '',
         decoratorName: options.decorator,
         reason: 'quota'
       })
@@ -52,18 +54,21 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
       success: () => {
         void eventBus.emit(events.request.succeeded, {
           ...hubService.getServiceMetadata(),
+          featureName: options.feature ?? '',
           decoratorName: options.decorator
         })
       },
       failure: () => {
         void eventBus.emit(events.request.failed, {
           ...hubService.getServiceMetadata(),
+          featureName: options.feature ?? '',
           decoratorName: options.decorator
         })
       },
       latency: (...[latency]) => {
         void eventBus.emit(events.request.latency, {
           ...hubService.getServiceMetadata(),
+          featureName: options.feature ?? '',
           decoratorName: options.decorator,
           latency
         })

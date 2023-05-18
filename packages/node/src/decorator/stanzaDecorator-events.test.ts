@@ -56,7 +56,7 @@ describe('stanzaDecorator', () => {
 
       expect(eventBus.emit).toHaveBeenCalledWith(events.request.allowed, {
         decoratorName: 'testDecorator',
-        feature: undefined,
+        featureName: '',
         serviceName: 'testService',
         environment: 'testEnvironment',
         clientId: 'testClientId'
@@ -86,7 +86,7 @@ describe('stanzaDecorator', () => {
 
       expect(eventBus.emit).toHaveBeenCalledWith(events.request.blocked, {
         decoratorName: 'testDecorator',
-        feature: undefined,
+        featureName: '',
         reason: 'quota',
         serviceName: 'testService',
         environment: 'testEnvironment',
@@ -117,7 +117,7 @@ describe('stanzaDecorator', () => {
 
       expect(eventBus.emit).toHaveBeenCalledWith(events.request.succeeded, {
         decoratorName: 'testDecorator',
-        feature: undefined,
+        featureName: '',
         serviceName: 'testService',
         environment: 'testEnvironment',
         clientId: 'testClientId'
@@ -149,7 +149,7 @@ describe('stanzaDecorator', () => {
 
       expect(eventBus.emit).toHaveBeenCalledWith(events.request.failed, {
         decoratorName: 'testDecorator',
-        feature: undefined,
+        featureName: '',
         serviceName: 'testService',
         environment: 'testEnvironment',
         clientId: 'testClientId'
@@ -184,7 +184,7 @@ describe('stanzaDecorator', () => {
 
       expect(eventBus.emit).toHaveBeenCalledWith(events.request.latency, {
         decoratorName: 'testDecorator',
-        feature: undefined,
+        featureName: '',
         latency: 123.456,
         serviceName: 'testService',
         environment: 'testEnvironment',
