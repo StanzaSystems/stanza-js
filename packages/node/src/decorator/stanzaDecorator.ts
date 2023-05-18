@@ -11,17 +11,20 @@ import { initDecorator } from './initStanzaDecorator'
 import { type StanzaDecoratorOptions } from './model'
 import { eventBus, events } from '../global/eventBus'
 import { wrapEventsAsync } from '../utils/wrapEventsAsync'
+import { hubService } from '../global/hubService'
 
 export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDecoratorOptions) => {
   const initializedDecorator = initDecorator(options)
   const guard = wrapEventsAsync(initializedDecorator.guard, {
     success: () => {
       void eventBus.emit(events.request.allowed, {
+        ...hubService.getServiceMetadata(),
         decoratorName: options.decorator
       })
     },
     failure: () => {
       void eventBus.emit(events.request.blocked, {
+        ...hubService.getServiceMetadata(),
         decoratorName: options.decorator,
         reason: 'quota'
       })
@@ -48,16 +51,19 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
     return wrapEventsAsync(resultFn, {
       success: () => {
         void eventBus.emit(events.request.succeeded, {
+          ...hubService.getServiceMetadata(),
           decoratorName: options.decorator
         })
       },
       failure: () => {
         void eventBus.emit(events.request.failed, {
+          ...hubService.getServiceMetadata(),
           decoratorName: options.decorator
         })
       },
       latency: (...[latency]) => {
         void eventBus.emit(events.request.latency, {
+          ...hubService.getServiceMetadata(),
           decoratorName: options.decorator,
           latency
         })

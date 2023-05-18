@@ -20,6 +20,7 @@ export const createHubService = ({ serviceName, serviceRelease, environment, cli
   return wrapHubServiceWithMetrics(
     { serviceName, environment, clientId },
     {
+      getServiceMetadata: () => ({ serviceName, environment, clientId }),
       fetchServiceConfig: async ({ lastVersionSeen } = {}) => {
         const serviceConfigResult = await hubRequest('v1/config/service', {
           searchParams: {

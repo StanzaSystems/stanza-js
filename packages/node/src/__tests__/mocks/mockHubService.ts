@@ -22,6 +22,11 @@ const hubServiceMockMethod = <TMethod extends keyof HubService>(implementation: 
   }
 })
 
+const getServiceMetadataMock = hubServiceMockMethod<'getServiceMetadata'>(() => ({
+  serviceName: 'mockService',
+  environment: 'mockEnvironment',
+  clientId: 'mockClientId'
+}))
 const fetchServiceConfigMock = hubServiceMockMethod<'fetchServiceConfig'>(async () => new Promise<never>(() => {}))
 const fetchDecoratorConfigMock = hubServiceMockMethod<'fetchDecoratorConfig'>(async () => new Promise<never>(() => {}))
 const getTokenMock = hubServiceMockMethod<'getToken'>(async () => new Promise<never>(() => {}))
@@ -30,6 +35,7 @@ const validateTokenMock = hubServiceMockMethod<'validateToken'>(async () => new 
 const markTokensAsConsumedMock = hubServiceMockMethod<'markTokensAsConsumed'>(async () => new Promise<never>(() => {}))
 
 export const mockHubService = {
+  getServiceMetadata: getServiceMetadataMock,
   fetchServiceConfig: fetchServiceConfigMock,
   fetchDecoratorConfig: fetchDecoratorConfigMock,
   getToken: getTokenMock,
@@ -37,6 +43,7 @@ export const mockHubService = {
   validateToken: validateTokenMock,
   markTokensAsConsumed: markTokensAsConsumedMock,
   reset: () => {
+    getServiceMetadataMock.mockReset()
     fetchServiceConfigMock.mockReset()
     fetchDecoratorConfigMock.mockReset()
     getTokenMock.mockReset()
@@ -51,13 +58,6 @@ export const mockHubService = {
     validateTokenMock.mockImplementation(async () => new Promise<never>(() => {}))
     markTokensAsConsumedMock.mockImplementation(async () => new Promise<never>(() => {}))
 
-    updateHubService({
-      fetchServiceConfig: fetchServiceConfigMock,
-      fetchDecoratorConfig: fetchDecoratorConfigMock,
-      getToken: getTokenMock,
-      getTokenLease: getTokenLeaseMock,
-      validateToken: validateTokenMock,
-      markTokensAsConsumed: markTokensAsConsumedMock
-    })
+    updateHubService(mockHubService)
   }
 } satisfies HubService & { reset: () => void }

@@ -18,6 +18,11 @@ beforeEach(() => {
 
   doStuff.mockReset()
   mockHubService.reset()
+  mockHubService.getServiceMetadata.mockImplementation(() => ({
+    serviceName: 'testService',
+    environment: 'testEnvironment',
+    clientId: 'testClientId'
+  }))
 })
 
 beforeAll(() => {
@@ -51,11 +56,10 @@ describe('stanzaDecorator', () => {
 
       expect(eventBus.emit).toHaveBeenCalledWith(events.request.allowed, {
         decoratorName: 'testDecorator',
-        feature: undefined
-        // TODO: attach service, environment and clientId to the event
-        // service: 'testService',
-        // environment: 'testEnvironment',
-        // clientId: 'testClientId'
+        feature: undefined,
+        serviceName: 'testService',
+        environment: 'testEnvironment',
+        clientId: 'testClientId'
       })
     })
 
@@ -83,11 +87,10 @@ describe('stanzaDecorator', () => {
       expect(eventBus.emit).toHaveBeenCalledWith(events.request.blocked, {
         decoratorName: 'testDecorator',
         feature: undefined,
-        reason: 'quota'
-        // TODO: attach service, environment and clientId to the event
-        // service: 'testService',
-        // environment: 'testEnvironment',
-        // clientId: 'testClientId'
+        reason: 'quota',
+        serviceName: 'testService',
+        environment: 'testEnvironment',
+        clientId: 'testClientId'
       })
     })
 
@@ -114,11 +117,10 @@ describe('stanzaDecorator', () => {
 
       expect(eventBus.emit).toHaveBeenCalledWith(events.request.succeeded, {
         decoratorName: 'testDecorator',
-        feature: undefined
-        // TODO: attach service, environment and clientId to the event
-        // service: 'testService',
-        // environment: 'testEnvironment',
-        // clientId: 'testClientId'
+        feature: undefined,
+        serviceName: 'testService',
+        environment: 'testEnvironment',
+        clientId: 'testClientId'
       })
     })
 
@@ -147,11 +149,10 @@ describe('stanzaDecorator', () => {
 
       expect(eventBus.emit).toHaveBeenCalledWith(events.request.failed, {
         decoratorName: 'testDecorator',
-        feature: undefined
-        // TODO: attach service, environment and clientId to the event
-        // service: 'testService',
-        // environment: 'testEnvironment',
-        // clientId: 'testClientId'
+        feature: undefined,
+        serviceName: 'testService',
+        environment: 'testEnvironment',
+        clientId: 'testClientId'
       })
     })
 
@@ -184,11 +185,10 @@ describe('stanzaDecorator', () => {
       expect(eventBus.emit).toHaveBeenCalledWith(events.request.latency, {
         decoratorName: 'testDecorator',
         feature: undefined,
-        latency: 123.456
-        // TODO: attach service, environment and clientId to the event
-        // service: 'testService',
-        // environment: 'testEnvironment',
-        // clientId: 'testClientId'
+        latency: 123.456,
+        serviceName: 'testService',
+        environment: 'testEnvironment',
+        clientId: 'testClientId'
       })
 
       vi.useRealTimers()

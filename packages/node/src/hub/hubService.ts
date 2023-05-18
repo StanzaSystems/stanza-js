@@ -31,6 +31,11 @@ interface MarkTokensAsConsumedOptions {
 }
 
 export interface HubService {
+  getServiceMetadata: () => {
+    serviceName: string
+    environment: string
+    clientId: string
+  }
   fetchServiceConfig: (options?: FetchServiceConfigOptions) => Promise<ServiceConfig | null>
   fetchDecoratorConfig: (options: FetchDecoratorConfigOptions) => Promise<DecoratorConfig | null>
   getToken: (options: GetTokenOptions) => Promise<StanzaToken | null>
