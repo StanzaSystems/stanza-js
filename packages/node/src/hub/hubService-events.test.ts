@@ -483,7 +483,6 @@ describe('hubService', () => {
         await expect(validateTokenPromise).rejects.toThrow('kaboom')
 
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.quota.validateFailed, {
-          decoratorName: 'testDecorator',
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId'
@@ -547,7 +546,6 @@ describe('hubService', () => {
         })
 
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.quota.validateLatency, {
-          decoratorName: 'testDecorator',
           latency: 123.456,
           serviceName: 'testService',
           environment: 'testEnvironment',

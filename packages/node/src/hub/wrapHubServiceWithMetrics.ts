@@ -129,14 +129,14 @@ export function wrapHubServiceWithMetrics ({ serviceName, environment, clientId 
             environment
           })
       },
-      failure: (_, { decorator }) => {
+      failure: () => {
         void eventBus.emit(events.quota.validateFailed, {
           serviceName,
           clientId,
           environment
         })
       },
-      latency: (latency, { decorator }) => {
+      latency: (latency) => {
         void eventBus.emit(events.quota.validateLatency, {
           latency,
           serviceName,
@@ -146,7 +146,7 @@ export function wrapHubServiceWithMetrics ({ serviceName, environment, clientId 
       }
     }),
     markTokensAsConsumed: wrapEventsAsync(hubService.markTokensAsConsumed, {
-      success: (_) => {
+      success: () => {
         void eventBus.emit(events.quota.fetchOk, {
           serviceName,
           clientId,

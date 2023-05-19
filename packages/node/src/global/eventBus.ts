@@ -81,6 +81,8 @@ export interface DecoratorData {
   decoratorName: string
 }
 
+export type OptionalDecoratorData = Partial<DecoratorData>
+
 export interface LatencyData {
   latency: number
 }
@@ -108,7 +110,7 @@ type StanzaEventBus = EventBus<{
   [configDecoratorFetchOk]: DefaultContextData & DecoratorData
   [configDecoratorFetchFailed]: DefaultContextData
   [configDecoratorFetchLatency]: DefaultContextData & LatencyData
-  [quotaFetchOk]: DefaultContextData & QuotaEndpointData & DecoratorData
+  [quotaFetchOk]: DefaultContextData & QuotaEndpointData & OptionalDecoratorData
   [quotaFetchFailed]: DefaultContextData & QuotaEndpointData
   [quotaFetchLatency]: DefaultContextData & QuotaEndpointData & LatencyData
   [quotaValidateOk]: DefaultContextData & DecoratorData
