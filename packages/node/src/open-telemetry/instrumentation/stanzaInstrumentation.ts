@@ -4,7 +4,11 @@ import { eventBus, events } from '../../global/eventBus'
 import { eventDataToRequestAttributes, type RequestAttributes } from './requestAttributes'
 import { eventDataToRequestBlockedAttributes, type RequestBlockedAttributes } from './requestBlockedAttributes'
 import { type DefaultContextAttributes, eventDataToDefaultContextAttributes } from './defaultContextAttributes'
-import { type DecoratorAttributes, eventDataToDecoratorAttributes } from './decoratorAttributes'
+import {
+  type DecoratorAttributes,
+  eventDataToDecoratorAttributes,
+  eventDataToOptionalDecoratorAttributes
+} from './decoratorAttributes'
 import { packageName, packageVersion } from '../../meta'
 
 type QuotaEndpoint = 'GetToken' | 'GetTokenLease' | 'SetTokenLeaseConsumed'
@@ -31,7 +35,7 @@ export class StanzaInstrumentation extends InstrumentationBase {
       }
     }
     quota: {
-      fetchOk: Counter<DefaultContextAttributes & DecoratorAttributes & { endpoint: QuotaEndpoint }>
+      fetchOk: Counter<DefaultContextAttributes & Partial<DecoratorAttributes> & { endpoint: QuotaEndpoint }>
       fetchFailed: Counter<DefaultContextAttributes & { endpoint: QuotaEndpoint }>
       fetchLatency: Histogram<DefaultContextAttributes & { endpoint: QuotaEndpoint }>
       validateOk: Counter<DefaultContextAttributes & DecoratorAttributes>
@@ -168,7 +172,7 @@ export class StanzaInstrumentation extends InstrumentationBase {
     eventBus.on(events.quota.fetchOk, data => {
       this.metrics.quota.fetchOk.add(1, {
         ...eventDataToDefaultContextAttributes(data),
-        ...eventDataToDecoratorAttributes(data),
+        ...eventDataToOptionalDecoratorAttributes(data),
         endpoint: data.endpoint
       })
     })
