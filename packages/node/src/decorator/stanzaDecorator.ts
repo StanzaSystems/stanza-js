@@ -9,12 +9,32 @@ import { isTruthy } from '../utils/isTruthy'
 import { type Promisify } from '../utils/promisify'
 import { initDecorator } from './initStanzaDecorator'
 import { type StanzaDecoratorOptions } from './model'
+import { eventBus, events } from '../global/eventBus'
+import { wrapEventsAsync } from '../utils/wrapEventsAsync'
+import { hubService } from '../global/hubService'
 
 export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDecoratorOptions) => {
-  const { guard } = initDecorator(options)
+  const initializedDecorator = initDecorator(options)
+  const guard = wrapEventsAsync(initializedDecorator.guard, {
+    success: () => {
+      void eventBus.emit(events.request.allowed, {
+        ...hubService.getServiceMetadata(),
+        featureName: options.feature ?? '',
+        decoratorName: options.decorator
+      })
+    },
+    failure: () => {
+      void eventBus.emit(events.request.blocked, {
+        ...hubService.getServiceMetadata(),
+        featureName: options.feature ?? '',
+        decoratorName: options.decorator,
+        reason: 'quota'
+      })
+    }
+  })
 
   return createStanzaWrapper<TArgs, TReturn, Promisify<TReturn>>((fn) => {
-    return (async function (...args: Parameters<typeof fn>) {
+    const resultFn = async function (...args: Parameters<typeof fn>) {
       const token = await guard()
 
       const fnWithBoundContext = bindContext([
@@ -27,7 +47,32 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
             : null
       ].filter(isTruthy), fn)
 
-      return fnWithBoundContext(...args) as Promisify<TReturn>
+      return (fnWithBoundContext(...args) as Promisify<TReturn>)
+    }
+
+    return wrapEventsAsync(resultFn, {
+      success: () => {
+        void eventBus.emit(events.request.succeeded, {
+          ...hubService.getServiceMetadata(),
+          featureName: options.feature ?? '',
+          decoratorName: options.decorator
+        })
+      },
+      failure: () => {
+        void eventBus.emit(events.request.failed, {
+          ...hubService.getServiceMetadata(),
+          featureName: options.feature ?? '',
+          decoratorName: options.decorator
+        })
+      },
+      latency: (...[latency]) => {
+        void eventBus.emit(events.request.latency, {
+          ...hubService.getServiceMetadata(),
+          featureName: options.feature ?? '',
+          decoratorName: options.decorator,
+          latency
+        })
+      }
     }) as Fn<TArgs, Promisify<TReturn>>
   })
 }

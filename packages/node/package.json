@@ -30,14 +30,16 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.8.14",
     "@opentelemetry/api": "^1.4.1",
-    "@opentelemetry/core": "^1.11.0",
+    "@opentelemetry/core": "^1.13.0",
     "@opentelemetry/exporter-metrics-otlp-grpc": "^0.38.0",
+    "@opentelemetry/instrumentation": "^0.39.1",
     "@opentelemetry/instrumentation-http": "^0.37.0",
     "@opentelemetry/resources": "^1.12.0",
     "@opentelemetry/sdk-metrics": "^1.12.0",
     "@opentelemetry/sdk-node": "^0.36.1",
     "@opentelemetry/sdk-trace-node": "^1.10.1",
     "@opentelemetry/semantic-conventions": "^1.12.0",
+    "emittery": "^1.0.1",
     "node-fetch": "^2.6.9"
   }
 }

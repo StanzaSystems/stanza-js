@@ -1,7 +1,7 @@
 import { type DecoratorConfig } from '../hub/model'
 
-const STANZA_DECORATOR_CONFIG_SYMBOL = Symbol.for('Decorator Config')
-const STANZA_DECORATOR_CONFIG_LISTENERS_SYMBOL = Symbol.for('Decorator Config Listeners')
+const STANZA_DECORATOR_CONFIG_SYMBOL = Symbol.for('[Stanza SDK Internal] Decorator Config')
+const STANZA_DECORATOR_CONFIG_LISTENERS_SYMBOL = Symbol.for('[Stanza SDK Internal] Decorator Config Listeners')
 
 export type DecoratorConfigListener = (config: DecoratorConfig) => void
 

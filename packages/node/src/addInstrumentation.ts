@@ -18,6 +18,7 @@ export const addInstrumentation = async (serviceName: string) => {
   const { PeriodicExportingMetricReader } = require('@opentelemetry/sdk-metrics')
   const { StanzaSpanProcessor } = await import('./open-telemetry/span-processor/StanzaSpanProcessor')
   const { StanzaMetricExporter } = await import('./open-telemetry/metric/stanzaMetricExporter')
+  const { StanzaInstrumentation } = await import('./open-telemetry/instrumentation/stanzaInstrumentation')
 
   /* eslint-enable @typescript-eslint/no-var-requires */
   const sdk = new NodeSDK({
@@ -40,7 +41,8 @@ export const addInstrumentation = async (serviceName: string) => {
       exporter: new StanzaMetricExporter()
     }),
     instrumentations: [
-      httpInstrumentation
+      httpInstrumentation,
+      new StanzaInstrumentation()
       // TODO: enable when FetchInstrumentation supports Node
       // ...(typeof globalThis.fetch === 'function' ? [new FetchInstrumentation()] : [])
     ]

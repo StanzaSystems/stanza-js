@@ -16,6 +16,7 @@ describe('global', function () {
 
     it('should update hub service', async function () {
       updateHubService({
+        getServiceMetadata: () => ({ serviceName: 'updateService', environment: 'updatedEnv', clientId: 'updatedClientId' }),
         fetchServiceConfig: async () => Promise.resolve(null),
         fetchDecoratorConfig: async () => Promise.resolve(null),
         getToken: async () => Promise.resolve(null),

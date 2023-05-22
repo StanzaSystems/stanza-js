@@ -1,7 +1,7 @@
 import { type ServiceConfig } from '../hub/model'
 
-const STANZA_SERVICE_CONFIG_SYMBOL = Symbol.for('Service Config')
-const STANZA_SERVICE_CONFIG_LISTENERS_SYMBOL = Symbol.for('Service Config Listeners')
+const STANZA_SERVICE_CONFIG_SYMBOL = Symbol.for('[Stanza SDK Internal] Service Config')
+const STANZA_SERVICE_CONFIG_LISTENERS_SYMBOL = Symbol.for('[Stanza SDK Internal] Service Config Listeners')
 
 export type ServiceConfigListener = (config: ServiceConfig) => void
 

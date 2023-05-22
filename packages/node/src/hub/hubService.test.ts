@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { type DecoratorConfigResponse } from './api/decoratorConfigResponse'
 import { type ServiceConfigResponse } from './api/serviceConfigResponse'
 import { createHubService } from './createHubService'
+import { createHubRequest } from './createHubRequest'
 
 vi.mock('../fetchImplementation', () => {
   return {
@@ -23,12 +24,14 @@ afterEach(() => {
 describe('hubService', async () => {
   describe('fetchServiceConfig', function () {
     const { fetchServiceConfig } = createHubService({
-      hubUrl: 'https://url.to.hub',
-      apiKey: 'valid-api-key',
       serviceName: 'TestService',
       serviceRelease: '1',
       environment: 'test',
-      clientId: 'test-client-id'
+      clientId: 'test-client-id',
+      hubRequest: createHubRequest({
+        hubUrl: 'https://url.to.hub',
+        apiKey: 'valid-api-key'
+      })
     })
 
     it('should call fetch with proper params', async () => {
@@ -154,12 +157,14 @@ describe('hubService', async () => {
 
   describe('fetchDecoratorConfig', function () {
     const { fetchDecoratorConfig } = createHubService({
-      hubUrl: 'https://url.to.hub',
-      apiKey: 'valid-api-key',
       serviceName: 'TestService',
       serviceRelease: '1',
       environment: 'test',
-      clientId: 'test-client-id'
+      clientId: 'test-client-id',
+      hubRequest: createHubRequest({
+        hubUrl: 'https://url.to.hub',
+        apiKey: 'valid-api-key'
+      })
     })
 
     it('should call fetch with proper params', async () => {
