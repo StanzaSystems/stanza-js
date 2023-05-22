@@ -6,7 +6,12 @@
     "start": "next start"
   },
   "dependencies": {
+    "@getstanza/next": "*",
+    "@getstanza/next-node": "*",
+    "@getstanza/node": "*",
+    "@getstanza/react": "*",
     "@radix-ui/react-popover": "^1.0.5",
+    "@sentry/nextjs": "^7.52.1",
     "@stripe/react-stripe-js": "1.13.0",
     "@stripe/stripe-js": "1.42.0",
     "micro": "^9.4.1",
@@ -18,11 +23,7 @@
     "redux": "4.2.0",
     "stripe": "10.14.0",
     "swr": "^2.0.0",
-    "use-shopping-cart": "3.1.2",
-    "@getstanza/react": "*",
-    "@getstanza/next": "*",
-    "@getstanza/node": "*",
-    "@getstanza/next-node": "*"
+    "use-shopping-cart": "3.1.2"
   },
   "devDependencies": {
     "@types/micro": "^7.3.7",
