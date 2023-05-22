@@ -1,9 +1,11 @@
+import { nextApiRequestDecorator } from '@getstanza/next-node'
 import { type NextApiHandler } from 'next'
 import { type Product } from '../../../data/product'
 import getStripeAPI from '../../../utils/stripe-api'
 
 const handler: NextApiHandler = async (req, res) => {
   const stripeAPI = await getStripeAPI()
+
   const result = await stripeAPI.getProducts()
   const products = result.data
 
@@ -21,4 +23,8 @@ const handler: NextApiHandler = async (req, res) => {
   res.json(resultProducts)
 }
 
-export default handler
+const nextApiRequestStripeProductsApiDecorator = nextApiRequestDecorator({
+  decorator: 'Stripe_Products_API',
+  priorityBoost: 1
+})
+export default nextApiRequestStripeProductsApiDecorator(handler)

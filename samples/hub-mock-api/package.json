@@ -20,7 +20,7 @@
     "rebuild": "tsc --build --clean"
   },
   "engines": {
-    "node": ">16"
+    "node": ">=16"
   },
   "dependencies": {
     "cors": "^2.8.5",

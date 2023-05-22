@@ -1,0 +1,36 @@
+{
+  "name": "@getstanza/next-node",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Stanza Node SDK adapter for NextJS",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/getstanza-next-node.umd.cjs",
+  "module": "./dist/getstanza-next-node.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/getstanza-next-node.js",
+      "require": "./dist/getstanza-next-node.umd.cjs"
+    }
+  },
+  "author": "Stanza",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite build --mode development --watch",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@getstanza/node": "*"
+  },
+  "peerDependencies": {
+    "next": ">= 12 < 14"
+  }
+}

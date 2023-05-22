@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { type ApiFeatureState } from '../api/featureState'
+import { type FeatureState } from '../models/featureState'
 import { fetchFeatureStates } from './fetchFeatureStates'
 
 const mockFetchApiFeaturesStates = vi.fn<any[], Promise<ApiFeatureState[]>>()
@@ -44,11 +45,15 @@ describe('fetchFeatureStates', () => {
 
     mockFetchApiFeaturesStates.mockImplementation(async () => {
       return [{
-        featureName: 'feature1',
-        enabledPercent: 90
+        name: 'feature1',
+        config: {
+          enabledPercent: 90
+        }
       }, {
-        featureName: 'feature2',
-        enabledPercent: 80
+        name: 'feature2',
+        config: {
+          enabledPercent: 80
+        }
       }] satisfies ApiFeatureState[]
     })
 
@@ -60,7 +65,7 @@ describe('fetchFeatureStates', () => {
       featureName: 'feature2',
       enabledPercent: 80,
       lastRefreshTime: 123
-    }])
+    }] satisfies FeatureState[])
   })
 
   it('should return list of all features if API returns the partial list', async () => {
@@ -70,8 +75,10 @@ describe('fetchFeatureStates', () => {
 
     mockFetchApiFeaturesStates.mockImplementation(async () => {
       return [{
-        featureName: 'feature1',
-        enabledPercent: 90
+        name: 'feature1',
+        config: {
+          enabledPercent: 90
+        }
       }] satisfies ApiFeatureState[]
     })
 
@@ -93,14 +100,20 @@ describe('fetchFeatureStates', () => {
 
     mockFetchApiFeaturesStates.mockImplementation(async () => {
       return [{
-        featureName: 'feature1',
-        enabledPercent: 90
+        name: 'feature1',
+        config: {
+          enabledPercent: 90
+        }
       }, {
-        featureName: 'feature2',
-        enabledPercent: 80
+        name: 'feature2',
+        config: {
+          enabledPercent: 80
+        }
       }, {
-        featureName: 'feature3',
-        enabledPercent: 80
+        name: 'feature3',
+        config: {
+          enabledPercent: 80
+        }
       }] satisfies ApiFeatureState[]
     })
 
