@@ -133,6 +133,8 @@ describe('createRestHubService', async () => {
               traceConfig: {
                 collectorUrl: 'https://url.to.trace.collector',
                 overrides: [],
+                headerSampleConfig: [],
+                paramSampleConfig: [],
                 sampleRateDefault: 0.5
               },
               metricConfig: {
@@ -157,6 +159,8 @@ describe('createRestHubService', async () => {
           traceConfig: {
             collectorUrl: 'https://url.to.trace.collector',
             overrides: [],
+            headerSampleConfig: [],
+            paramSampleConfig: [],
             sampleRateDefault: 0.5
           },
           metricConfig: {

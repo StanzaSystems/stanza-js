@@ -2,13 +2,13 @@ import { type Context } from '@opentelemetry/api'
 import { stanzaDecoratorContextKey } from '../context/stanzaDecoratorContextKey'
 import { addDecoratorConfigListener, getDecoratorConfig } from '../global/decoratorConfig'
 import { addServiceConfigListener, getServiceConfig } from '../global/serviceConfig'
-import { type ServiceConfig } from '../hub/model'
+import { type DecoratorConfig, type ServiceConfig } from '../hub/model'
 
-export class StanzaTraceConfigEntityManager<T> {
+export class StanzaConfigEntityManager<T> {
   private serviceEntity: T
   private readonly decoratorEntities: Record<string, T> = {}
-  private readonly unsubscribeServiceConfigListener = addServiceConfigListener(({ config: { traceConfig } }) => {
-    this.updateEntity(traceConfig)
+  private readonly unsubscribeServiceConfigListener = addServiceConfigListener(({ config }) => {
+    this.updateServiceEntity(config)
   })
 
   private readonly unsubscribeDecoratorConfigListeners: Array<() => void> = []
@@ -16,15 +16,16 @@ export class StanzaTraceConfigEntityManager<T> {
   constructor (
     private readonly options: {
       getInitial: () => T
-      create: (traceConfig: ServiceConfig['config']['traceConfig']) => T
+      createWithServiceConfig: (serviceConfig: NonNullable<ServiceConfig['config']>) => T
+      createWithDecoratorConfig?: (decoratorConfig: NonNullable<DecoratorConfig['config']>) => T | undefined
       cleanup: (entity: T) => Promise<void>
     }
   ) {
     this.serviceEntity = this.options.getInitial()
 
     const serviceConfig = getServiceConfig()
-    if (serviceConfig?.config?.traceConfig !== undefined) {
-      this.updateEntity(serviceConfig.config.traceConfig)
+    if (serviceConfig?.config !== undefined) {
+      this.updateServiceEntity(serviceConfig.config)
     }
   }
 
@@ -46,8 +47,8 @@ export class StanzaTraceConfigEntityManager<T> {
     ]
   }
 
-  private updateEntity (traceConfig: ServiceConfig['config']['traceConfig']) {
-    this.serviceEntity = this.options.create(traceConfig)
+  private updateServiceEntity (serviceConfig: NonNullable<ServiceConfig['config']>) {
+    this.serviceEntity = this.options.createWithServiceConfig(serviceConfig)
   }
 
   private getDecoratorEntity (context: Context): T | undefined {
@@ -59,23 +60,28 @@ export class StanzaTraceConfigEntityManager<T> {
       return decoratorProcessor
     }
 
-    this.unsubscribeDecoratorConfigListeners.push(addDecoratorConfigListener(decoratorName, ({ config: { traceConfig } }) => {
-      if (traceConfig !== undefined) {
+    this.unsubscribeDecoratorConfigListeners.push(addDecoratorConfigListener(decoratorName, ({ config }) => {
+      if (config !== undefined) {
         if (this.decoratorEntities[decoratorName] !== undefined) {
           void this.options.cleanup(this.decoratorEntities[decoratorName])
         }
-        this.decoratorEntities[decoratorName] = this.options.create(traceConfig)
+        const decoratorEntity = this.options.createWithDecoratorConfig?.(config)
+        if (decoratorEntity !== undefined) {
+          this.decoratorEntities[decoratorName] = decoratorEntity
+        }
       }
     }))
 
     const decoratorConfig = getDecoratorConfig(decoratorName)
 
-    if (decoratorConfig?.config?.traceConfig !== undefined) {
-      const decoratorEntity = this.options.create(decoratorConfig.config.traceConfig)
+    if (decoratorConfig?.config !== undefined) {
+      const decoratorEntity = this.options.createWithDecoratorConfig?.(decoratorConfig.config)
       if (this.decoratorEntities[decoratorName] !== undefined) {
         void this.options.cleanup(this.decoratorEntities[decoratorName])
       }
-      this.decoratorEntities[decoratorName] = decoratorEntity
+      if (decoratorEntity !== undefined) {
+        this.decoratorEntities[decoratorName] = decoratorEntity
+      }
       return decoratorEntity
     }
 
