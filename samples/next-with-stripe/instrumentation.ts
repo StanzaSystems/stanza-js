@@ -3,7 +3,7 @@ export async function register () {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { init } = require('@getstanza/node')
     await init({
-      hubUrl: 'http:/localhost:9010',
+      hubUrl: process.env.NEXT_PUBLIC_STANZA_API ?? 'https://hub.demo.getstanza.io',
       apiKey: 'valid-api-key',
       serviceName: 'DemoCommerce',
       serviceRelease: '1',
