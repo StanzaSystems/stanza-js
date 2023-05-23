@@ -1,4 +1,4 @@
-import { fetch } from 'cross-fetch'
+import './polyfillFetch'
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
 import { afterAll, afterEach, beforeAll } from 'vitest'
@@ -52,9 +52,6 @@ const server = setupServer(
       ctx.json(configs))
   }
   ))
-
-// Add `fetch` polyfill.
-global.fetch = fetch
 
 beforeAll(() => { server.listen({ onUnhandledRequest: 'error' }) })
 afterAll(() => { server.close() })
