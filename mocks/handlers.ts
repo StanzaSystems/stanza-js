@@ -57,8 +57,8 @@ export const handlers = [
     // adding artificial delay to respond
     await new Promise(resolve => setTimeout(resolve, 500))
     count++
-    const features = req.url.searchParams.getAll('features')
-    const environment = req.url.searchParams.get('environment')
+    const features = req.url.searchParams.getAll('feature.names')
+    const environment = req.url.searchParams.get('feature.environment')
     if (environment == null) {
       return res(
         ctx.status(400)
