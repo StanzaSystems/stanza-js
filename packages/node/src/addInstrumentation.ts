@@ -3,11 +3,41 @@ import { StanzaApiKeyPropagator } from './propagation/StanzaApiKeyPropagator'
 import { StanzaBaggagePropagator } from './propagation/StanzaBaggagePropagator'
 import { StanzaPriorityBoostPropagator } from './propagation/StanzaPriorityBoostPropagator'
 import { StanzaTokenPropagator } from './propagation/StanzaTokenPropagator'
+import { context, type Span as ISpan } from '@opentelemetry/api'
+
+import { type IncomingMessage } from 'http'
+import { StanzaManagedAttributesExtractor } from './open-telemetry/StanzaManagedAttributesExtractor'
+import { Span } from '@opentelemetry/sdk-trace-node'
 
 export const addInstrumentation = async (serviceName: string) => {
   const { HttpInstrumentation } = await import('@opentelemetry/instrumentation-http')
 
-  const httpInstrumentation = new HttpInstrumentation()
+  const attributesExtractor = new StanzaManagedAttributesExtractor()
+
+  const httpInstrumentation = new HttpInstrumentation({
+    // // headersToSpanAttributes: {
+    // // }
+    // applyCustomAttributesOnSpan: (span: ISpan) => {
+    //   console.log('is trace node span:', span instanceof Span)
+    //   if (span instanceof Span) {
+    //     console.log('attr', span.attributes)
+    //   }
+    //   if ('attributes' in span) {
+    //     console.log('attr', span.attributes)
+    //     console.log(span.constructor)
+    //
+    //     console.log(Object.getPrototypeOf(span))
+    //   }
+    //   // console.log('applyCustomAttributesOnSpan: ', span)
+    //   return {}
+    // },
+    // startIncomingSpanHook: (request: IncomingMessage) => {
+    //   attributesExtractor.extractAttributes(context.active(), request)
+    //   return {}
+    // }
+  })
+
+  httpInstrumentation.setConfig()
   // NOTE: @opentelemetry/sdk-node needs to be required after we create the instrumentation.
   // Otherwise, the instrumentation fails to work
   const { NodeSDK } = await import('@opentelemetry/sdk-node')

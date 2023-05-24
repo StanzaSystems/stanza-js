@@ -63,7 +63,7 @@ const createSpanExporterMock = vi.fn((config) => {
 })
 
 class CustomSpanExporter extends InMemorySpanExporter {
-  constructor (public readonly config: ServiceConfig['config']['traceConfig']) {
+  constructor (public readonly config: ServiceConfig['config']['traceConfig'] | DecoratorConfig['config']['traceConfig']) {
     super()
   }
 }
@@ -76,7 +76,9 @@ const mockServiceConfig = {
     traceConfig: {
       collectorUrl: 'https://test.collector',
       sampleRateDefault: 1,
-      overrides: []
+      overrides: [],
+      headerSampleConfig: [],
+      paramSampleConfig: []
     }
   }
 } as unknown as ServiceConfig
@@ -87,7 +89,9 @@ const secondMockServiceConfig = {
     traceConfig: {
       collectorUrl: 'https://test2.collector',
       sampleRateDefault: 0.9,
-      overrides: []
+      overrides: [],
+      headerSampleConfig: [],
+      paramSampleConfig: []
     }
   }
 } as unknown as ServiceConfig
@@ -129,7 +133,9 @@ describe('StanzaSpanProcessorManager', function () {
       expect((spanProcessor as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test.collector',
         sampleRateDefault: 1,
-        overrides: []
+        overrides: [],
+        headerSampleConfig: [],
+        paramSampleConfig: []
       })))
     })
 
@@ -143,7 +149,9 @@ describe('StanzaSpanProcessorManager', function () {
       expect((spanProcessor as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test.collector',
         sampleRateDefault: 1,
-        overrides: []
+        overrides: [],
+        headerSampleConfig: [],
+        paramSampleConfig: []
       })))
     })
 
@@ -157,7 +165,9 @@ describe('StanzaSpanProcessorManager', function () {
       expect((spanProcessor1 as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test.collector',
         sampleRateDefault: 1,
-        overrides: []
+        overrides: [],
+        headerSampleConfig: [],
+        paramSampleConfig: []
       })))
 
       serviceListener(secondMockServiceConfig)
@@ -167,7 +177,9 @@ describe('StanzaSpanProcessorManager', function () {
       expect((spanProcessor2 as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test2.collector',
         sampleRateDefault: 0.9,
-        overrides: []
+        overrides: [],
+        headerSampleConfig: [],
+        paramSampleConfig: []
       })))
     })
   })
@@ -189,7 +201,9 @@ describe('StanzaSpanProcessorManager', function () {
       expect((spanProcessor as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test.collector',
         sampleRateDefault: 1,
-        overrides: []
+        overrides: [],
+        headerSampleConfig: [],
+        paramSampleConfig: []
       })))
     })
 
@@ -220,7 +234,9 @@ describe('StanzaSpanProcessorManager', function () {
       expect((spanProcessor1 as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test.collector',
         sampleRateDefault: 1,
-        overrides: []
+        overrides: [],
+        headerSampleConfig: [],
+        paramSampleConfig: []
       })))
 
       decoratorListener(mockDecoratorConfig)

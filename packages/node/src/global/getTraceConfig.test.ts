@@ -21,7 +21,9 @@ describe('getTraceConfig', function () {
     expect(getTraceConfig()).toEqual({
       sampleRateDefault: 0,
       collectorUrl: '',
-      overrides: []
+      overrides: [],
+      headerSampleConfig: [],
+      paramSampleConfig: []
     } satisfies TraceConfig)
   })
 
@@ -32,7 +34,9 @@ describe('getTraceConfig', function () {
           traceConfig: {
             collectorUrl: 'https://test.collector',
             sampleRateDefault: 0.05,
-            overrides: []
+            overrides: [],
+            headerSampleConfig: [],
+            paramSampleConfig: []
           },
           ...{} as any
         },
@@ -43,7 +47,9 @@ describe('getTraceConfig', function () {
     expect(getTraceConfig()).toEqual({
       collectorUrl: 'https://test.collector',
       sampleRateDefault: 0.05,
-      overrides: []
+      overrides: [],
+      headerSampleConfig: [],
+      paramSampleConfig: []
     } satisfies TraceConfig)
   })
 })

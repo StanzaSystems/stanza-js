@@ -17,6 +17,7 @@ const serviceConfigListeners = stanzaServiceConfigGlobal[STANZA_SERVICE_CONFIG_L
 export const getServiceConfig = () => serviceConfig
 
 export const updateServiceConfig = (newConfig: ServiceConfig) => {
+  console.log('new service config', newConfig)
   serviceConfig = stanzaServiceConfigGlobal[STANZA_SERVICE_CONFIG_SYMBOL] = newConfig
 
   serviceConfigListeners.forEach(listener => {
