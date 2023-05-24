@@ -1,0 +1,9 @@
+# Learn more: https://docs.buf.build/configuration/v1/buf-gen-yaml
+version: v1
+plugins:
+  - plugin: buf.build/bufbuild/es
+    opt: target=ts
+    out: packages/node/gen
+  - plugin: buf.build/bufbuild/connect-es
+    opt: target=ts
+    out: packages/node/gen

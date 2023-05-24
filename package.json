@@ -6,7 +6,8 @@
   "scripts": {
     "build": "nx run-many --target build",
     "lint": "nx run-many --target lint",
-    "test": "nx run-many --target test"
+    "test": "nx run-many --target test",
+    "generate-hub-api": "buf generate https://github.com/StanzaSystems/apis.git --path stanza/hub"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.49.0",
