@@ -12,7 +12,7 @@ import { stanzaTokenLeaseResponse } from './api/stanzaTokenLeaseResponse'
 import { stanzaValidateTokenResponse } from './api/stanzaValidateTokenResponse'
 import { stanzaMarkTokensAsConsumedResponse } from './api/stanzaMarkTokensAsConsumedResponse'
 
-interface HubServiceInitOptions {
+interface GrpcHubServiceInitOptions {
   serviceName: string
   serviceRelease: string
   environment: string
@@ -21,7 +21,7 @@ interface HubServiceInitOptions {
   apiKey: string
 }
 
-export const createGrpcHubService = ({ serviceName, serviceRelease, environment, clientId, hubUrl, apiKey }: HubServiceInitOptions): HubService => {
+export const createGrpcHubService = ({ serviceName, serviceRelease, environment, clientId, hubUrl, apiKey }: GrpcHubServiceInitOptions): HubService => {
   const transport = createGrpcTransport({
     baseUrl: hubUrl,
     httpVersion: '2',
@@ -76,7 +76,6 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
       const parsed = decoratorConfigResponse.safeParse(response)
 
       if (!parsed.success) {
-        console.log('decorator config parse err', parsed.error)
         return null
       }
 
@@ -103,7 +102,6 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
       })
 
       const parsed = stanzaTokenResponse.safeParse(response)
-      console.log('get token parse success', parsed.success)
 
       if (!parsed.success) {
         return null
@@ -112,7 +110,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
       return parsed.data
     },
     getTokenLease: async (options) => {
-      const leaseQ = {
+      const response = await quotaClient.getTokenLease({
         clientId,
         priorityBoost: options.priorityBoost,
         s: {
@@ -120,17 +118,11 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
           decoratorName: options.decorator,
           environment
         }
-      }
 
-      console.log('leaseQ', leaseQ)
-
-      const response = await quotaClient.getTokenLease(leaseQ)
-
-      console.log('lease response', response)
+      })
 
       const parsed = stanzaTokenLeaseResponse.safeParse(response)
 
-      console.log('get token lease parse success', parsed.success)
       if (!parsed.success) {
         return null
       }
