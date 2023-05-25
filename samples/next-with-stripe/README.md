@@ -23,6 +23,7 @@ This is a full-stack TypeScript example using:
 
  1. Create an environment called 'local' in Stanza, if it does not exist
  2. Create three [features](https://ui.demo.getstanza.io/features) (match case)
+
   | Name     | Project | Environment | Priority |
   |----------|---------|-------------|----------|
   | checkout | default | local       | 0        |
@@ -30,6 +31,7 @@ This is a full-stack TypeScript example using:
   | featured | default | local       | 2        |
 
  3. Create a [decorator](https://ui.demo.getstanza.io/decorators) to guard the products API (match case)
+
   | Name                | Project | Environment | Traffic Type |
   |---------------------|---------|-------------|--------------|
   | Stripe_Products_API | default | local       | Outbound     |
