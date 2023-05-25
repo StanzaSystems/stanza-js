@@ -266,6 +266,30 @@ describe('stanzaDecorator', function () {
       vi.useRealTimers()
     })
 
+    it('should proceed execution if getting token takes more than 1000ms', async function () {
+      vi.useFakeTimers()
+
+      getQuotaMock.mockImplementationDeferred()
+      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
+      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+        doStuff()
+      })
+
+      // wait for decorator config to be initialized
+      await vi.advanceTimersByTimeAsync(0)
+
+      const decoratedDoStuffPromise = decoratedDoStuff()
+
+      expect(doStuff).not.toHaveBeenCalled()
+      await vi.advanceTimersByTimeAsync(1000)
+
+      await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+
+      expect(doStuff).toHaveBeenCalledOnce()
+
+      vi.useRealTimers()
+    })
+
     it('should attach token to an execution context when token is granted', async function () {
       vi.useFakeTimers()
 
