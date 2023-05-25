@@ -4,7 +4,7 @@ import { getEnvInitOptions } from './getEnvInitOptions'
 import { updateHubService } from './global/hubService'
 import { stanzaInitOptions, type StanzaInitOptions } from './stanzaInitOptions'
 import { startPollingServiceConfig } from './service/startPollingConfigService'
-import { createGrpcHubService } from './hub/createGrpcHubService'
+import { createGrpcHubService } from './hub/grpc/createGrpcHubService'
 
 export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
   const parseResult = stanzaInitOptions.safeParse({

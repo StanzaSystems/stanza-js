@@ -1,12 +1,12 @@
-import { decoratorConfigResponse } from './api/decoratorConfigResponse'
-import { serviceConfigResponse } from './api/serviceConfigResponse'
-import { stanzaTokenLeaseResponse } from './api/stanzaTokenLeaseResponse'
-import { stanzaTokenResponse } from './api/stanzaTokenResponse'
-import { stanzaValidateTokenResponse } from './api/stanzaValidateTokenResponse'
-import { type HubService } from './hubService'
-import { stanzaMarkTokensAsConsumedResponse } from './api/stanzaMarkTokensAsConsumedResponse'
-import { type HubRequest } from './hubRequest'
-import { wrapHubServiceWithMetrics } from './wrapHubServiceWithMetrics'
+import { decoratorConfigResponse } from '../api/decoratorConfigResponse'
+import { serviceConfigResponse } from '../api/serviceConfigResponse'
+import { stanzaTokenLeaseResponse } from '../api/stanzaTokenLeaseResponse'
+import { stanzaTokenResponse } from '../api/stanzaTokenResponse'
+import { stanzaValidateTokenResponse } from '../api/stanzaValidateTokenResponse'
+import { type HubService } from '../hubService'
+import { stanzaMarkTokensAsConsumedResponse } from '../api/stanzaMarkTokensAsConsumedResponse'
+import { type HubRequest } from '../hubRequest'
+import { wrapHubServiceWithMetrics } from '../wrapHubServiceWithMetrics'
 
 interface HubServiceInitOptions {
   serviceName: string
@@ -16,7 +16,7 @@ interface HubServiceInitOptions {
   hubRequest: HubRequest
 }
 
-export const createHubService = ({ serviceName, serviceRelease, environment, clientId, hubRequest }: HubServiceInitOptions): HubService => {
+export const createRestHubService = ({ serviceName, serviceRelease, environment, clientId, hubRequest }: HubServiceInitOptions): HubService => {
   return wrapHubServiceWithMetrics(
     { serviceName, environment, clientId },
     {

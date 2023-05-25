@@ -1,14 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { type DecoratorConfigResponse } from './api/decoratorConfigResponse'
-import { type ServiceConfigResponse } from './api/serviceConfigResponse'
-import { createHubService } from './createHubService'
+import { type DecoratorConfigResponse } from '../api/decoratorConfigResponse'
+import { type ServiceConfigResponse } from '../api/serviceConfigResponse'
+import { createRestHubService } from './createRestHubService'
 import { createHubRequest } from './createHubRequest'
 import { type StanzaTokenResponse } from './api/stanzaTokenResponse'
 import { type StanzaTokenLeaseResponse } from './api/stanzaTokenLeaseResponse'
 import { type StanzaValidateTokenResponse } from './api/stanzaValidateTokenResponse'
 import { type StanzaMarkTokensAsConsumedResponse } from './api/stanzaMarkTokensAsConsumedResponse'
 
-vi.mock('../fetchImplementation', () => {
+vi.mock('../../fetchImplementation', () => {
   return {
     fetch: ((...args) => fetchMock(...args)) satisfies typeof fetch
   }
@@ -25,9 +25,9 @@ beforeEach(async () => {
 afterEach(() => {
   fetchMock.mockReset()
 })
-describe('hubService', async () => {
+describe('createRestHubService', async () => {
   describe('fetchServiceConfig', function () {
-    const { fetchServiceConfig } = createHubService({
+    const { fetchServiceConfig } = createRestHubService({
       serviceName: 'TestService',
       serviceRelease: '1',
       environment: 'test',
@@ -162,7 +162,7 @@ describe('hubService', async () => {
   })
 
   describe('fetchDecoratorConfig', function () {
-    const { fetchDecoratorConfig } = createHubService({
+    const { fetchDecoratorConfig } = createRestHubService({
       serviceName: 'TestService',
       serviceRelease: '1',
       environment: 'test',

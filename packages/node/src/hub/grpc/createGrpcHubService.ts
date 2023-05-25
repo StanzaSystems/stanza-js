@@ -1,16 +1,19 @@
-import { type HubService } from './hubService'
+import { type HubService } from '../hubService'
 import { createPromiseClient } from '@bufbuild/connect'
-import { ConfigService } from '../../gen/stanza/hub/v1/config_connect'
+import { ConfigService } from '../../../gen/stanza/hub/v1/config_connect'
 import { createGrpcTransport } from '@bufbuild/connect-node'
-import { type ServiceConfig } from './model'
-import { type GetServiceConfigResponse } from '../../gen/stanza/hub/v1/config_pb'
-import { serviceConfigResponse } from './api/serviceConfigResponse'
-import { decoratorConfigResponse } from './api/decoratorConfigResponse'
-import { QuotaService } from '../../gen/stanza/hub/v1/quota_connect'
-import { stanzaTokenResponse } from './api/stanzaTokenResponse'
-import { stanzaTokenLeaseResponse } from './api/stanzaTokenLeaseResponse'
-import { stanzaValidateTokenResponse } from './api/stanzaValidateTokenResponse'
-import { stanzaMarkTokensAsConsumedResponse } from './api/stanzaMarkTokensAsConsumedResponse'
+import { type ServiceConfig } from '../model'
+import { serviceConfigResponse } from '../api/serviceConfigResponse'
+import { decoratorConfigResponse } from '../api/decoratorConfigResponse'
+import { QuotaService } from '../../../gen/stanza/hub/v1/quota_connect'
+import { stanzaTokenResponse } from '../api/stanzaTokenResponse'
+import { stanzaTokenLeaseResponse } from '../api/stanzaTokenLeaseResponse'
+import { stanzaValidateTokenResponse } from '../api/stanzaValidateTokenResponse'
+import { stanzaMarkTokensAsConsumedResponse } from '../api/stanzaMarkTokensAsConsumedResponse'
+import { type z, type ZodType } from 'zod'
+import { withTimeout } from '../../utils/withTimeout'
+
+const HUB_REQUEST_TIMEOUT = 1000
 
 interface GrpcHubServiceInitOptions {
   serviceName: string
@@ -36,24 +39,16 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
   return {
     getServiceMetadata: () => ({ serviceName, environment, clientId }),
     fetchServiceConfig: async (options): Promise<ServiceConfig | null> => {
-      const response: GetServiceConfigResponse = await configClient.getServiceConfig({
+      const data = await grpcRequest(async () => configClient.getServiceConfig({
         service: {
           name: serviceName,
           environment,
           release: serviceRelease
         },
         versionSeen: options?.lastVersionSeen
-      })
+      }), serviceConfigResponse)
 
-      const parsed = serviceConfigResponse.safeParse(response)
-
-      if (!parsed.success) {
-        return null
-      }
-
-      const { data } = parsed
-
-      if (!data.configDataSent) {
+      if (data === null || !data.configDataSent) {
         return null
       }
 
@@ -63,7 +58,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
       }
     },
     fetchDecoratorConfig: async (options) => {
-      const response = await configClient.getDecoratorConfig({
+      const data = await grpcRequest(async () => configClient.getDecoratorConfig({
         s: {
           serviceName,
           serviceRelease,
@@ -71,17 +66,9 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
           decoratorName: options.decorator
         },
         versionSeen: options.lastVersionSeen
-      })
+      }), decoratorConfigResponse)
 
-      const parsed = decoratorConfigResponse.safeParse(response)
-
-      if (!parsed.success) {
-        return null
-      }
-
-      const { data } = parsed
-
-      if (!data.configDataSent) {
+      if (data === null || !data.configDataSent) {
         return null
       }
 
@@ -91,7 +78,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
       }
     },
     getToken: async (options) => {
-      const response = await quotaClient.getToken({
+      return grpcRequest(async () => quotaClient.getToken({
         clientId,
         priorityBoost: options.priorityBoost,
         s: {
@@ -99,18 +86,10 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
           decoratorName: options.decorator,
           environment
         }
-      })
-
-      const parsed = stanzaTokenResponse.safeParse(response)
-
-      if (!parsed.success) {
-        return null
-      }
-
-      return parsed.data
+      }), stanzaTokenResponse)
     },
     getTokenLease: async (options) => {
-      const response = await quotaClient.getTokenLease({
+      const data = await grpcRequest(async () => quotaClient.getTokenLease({
         clientId,
         priorityBoost: options.priorityBoost,
         s: {
@@ -118,16 +97,11 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
           decoratorName: options.decorator,
           environment
         }
+      }), stanzaTokenLeaseResponse)
 
-      })
-
-      const parsed = stanzaTokenLeaseResponse.safeParse(response)
-
-      if (!parsed.success) {
+      if (data === null) {
         return null
       }
-
-      const { data } = parsed
 
       const now = Date.now()
 
@@ -146,7 +120,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
       }
     },
     validateToken: async (options) => {
-      const response = await quotaClient.validateToken({
+      const data = await grpcRequest(async () => quotaClient.validateToken({
         tokens: [{
           token: options.token,
           decorator: {
@@ -154,28 +128,34 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
             environment
           }
         }]
-      })
+      }), stanzaValidateTokenResponse)
 
-      const parsed = stanzaValidateTokenResponse.safeParse(response)
-
-      if (!parsed.success) {
-        return null
-      }
-
-      return parsed.data?.tokensValid?.[0] ?? null
+      return data?.tokensValid?.[0] ?? null
     },
     markTokensAsConsumed: async (options) => {
-      const response = await quotaClient.setTokenLeaseConsumed({
+      const data = grpcRequest(async () => quotaClient.setTokenLeaseConsumed({
         tokens: options.tokens
-      })
+      }),
+      stanzaMarkTokensAsConsumedResponse
+      )
 
-      const parsed = stanzaMarkTokensAsConsumedResponse.safeParse(response)
-
-      if (!parsed.success) {
-        return null
-      }
-
-      return { ok: true }
+      return data === null ? null : { ok: true }
     }
   }
+}
+
+const grpcRequest = async <T extends ZodType>(req: () => Promise<unknown>, validateResult: T): Promise<z.infer<T> | null> => {
+  const response = await withTimeout(
+    HUB_REQUEST_TIMEOUT,
+    'Hub request timed out',
+    req()
+  )
+
+  const parsed = validateResult.safeParse(response)
+
+  if (!parsed.success) {
+    return null
+  }
+
+  return parsed.data
 }

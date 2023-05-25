@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest'
-import { type DecoratorConfig, type ServiceConfig } from './model'
-import { eventBus, events } from '../global/eventBus'
-import { createHubService } from './createHubService'
+import { type DecoratorConfig, type ServiceConfig } from '../model'
+import { eventBus, events } from '../../global/eventBus'
+import { createRestHubService } from './createRestHubService'
 
 const mockMessageBusEmit = vi.spyOn(eventBus, 'emit')
 const mockHubRequest = Object.assign(vi.fn(), {
@@ -23,7 +23,7 @@ const mockHubRequest = Object.assign(vi.fn(), {
     return deferred
   }
 })
-const hubService = createHubService({
+const hubService = createRestHubService({
   serviceName: 'testService',
   serviceRelease: '1.0.0',
   clientId: 'testClientId',
