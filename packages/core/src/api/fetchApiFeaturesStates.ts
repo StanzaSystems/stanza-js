@@ -49,8 +49,8 @@ function getBrowserFeaturesUrl (features: string[]): string {
   const { url, environment } = getConfig()
   const params = new URLSearchParams()
   features.forEach(s => {
-    params.append('features', s)
+    params.append('feature.names', s)
   })
-  params.append('environment', environment)
+  params.append('feature.environment', environment)
   return `${url}/v1/context/browser?${params.toString()}`
 }

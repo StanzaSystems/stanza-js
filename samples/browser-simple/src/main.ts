@@ -2,12 +2,12 @@
 import './style.css'
 import StanzaBrowser from '@getstanza/browser'
 import { initState, updateState } from './stanzaState'
-import { worker } from '../../../mocks/browser'
+// import { worker } from '../../../mocks/browser'
 
 let loadPromise: Promise<any>
 
 if (import.meta.env.MODE === 'development') {
-  loadPromise = worker.start()
+  loadPromise = Promise.resolve()// worker.start()
 } else {
   loadPromise = Promise.resolve()
 }
@@ -25,8 +25,13 @@ void Notification.requestPermission().then((result) => {
   console.log(result)
 })
 
-StanzaBrowser.contextChanges.addChangeListener(async function () {
-  const context = await StanzaBrowser.getContext('main')
+StanzaBrowser.contextChanges.addChangeListener(async function (change) {
+  if (change.name !== 'main') {
+    return
+  }
+  const context = change
+  // TODO: FIX - this seems to trigger the request to hub instead of just using cached values
+  // const context = await StanzaBrowser.getContext('main')
   const text = context.features.search.message ?? ''
   await updateState(document.querySelector<HTMLDivElement>('#stanzaState')!, text)
   void new Notification('Status Notifications', { body: text })
