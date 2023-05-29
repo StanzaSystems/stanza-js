@@ -52,6 +52,21 @@ beforeEach(async () => {
 })
 
 describe('createGrpcHubService', async () => {
+  describe('getServiceMetadata', () => {
+    const { getServiceMetadata } = createGrpcHubService({
+      serviceName: 'TestService',
+      serviceRelease: '1',
+      environment: 'test',
+      clientId: 'test-client-id',
+      hubUrl: 'https://url.to.hub',
+      apiKey: 'valid-api-key'
+    })
+
+    it('should return service metadata', () => {
+      expect(getServiceMetadata()).toEqual({ serviceName: 'TestService', environment: 'test', clientId: 'test-client-id' })
+    })
+  })
+
   describe('fetchServiceConfig', function () {
     createPromiseClientMock.mockImplementationOnce(() => configClientMock)
     createPromiseClientMock.mockImplementationOnce(() => quotaClientMock)

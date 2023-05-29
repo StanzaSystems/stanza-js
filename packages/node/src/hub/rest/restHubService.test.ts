@@ -26,6 +26,23 @@ afterEach(() => {
   fetchMock.mockReset()
 })
 describe('createRestHubService', async () => {
+  describe('getServiceMetadata', () => {
+    const { getServiceMetadata } = createRestHubService({
+      serviceName: 'TestService',
+      serviceRelease: '1',
+      environment: 'test',
+      clientId: 'test-client-id',
+      hubRequest: createHubRequest({
+        hubUrl: 'https://url.to.hub',
+        apiKey: 'valid-api-key'
+      })
+    })
+
+    it('should return service metadata', () => {
+      expect(getServiceMetadata()).toEqual({ serviceName: 'TestService', environment: 'test', clientId: 'test-client-id' })
+    })
+  })
+
   describe('fetchServiceConfig', function () {
     const { fetchServiceConfig } = createRestHubService({
       serviceName: 'TestService',
