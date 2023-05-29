@@ -43,10 +43,10 @@ export const createHubService = ({ serviceName, serviceRelease, environment, cli
       fetchDecoratorConfig: async ({ decorator, lastVersionSeen }) => {
         const decoratorConfigResult = await hubRequest('v1/config/decorator', {
           searchParams: {
-            decorator,
-            'service.name': serviceName,
-            'service.release': serviceRelease,
-            'service.environment': environment,
+            's.decoratorName': decorator,
+            's.serviceName': serviceName,
+            's.serviceRelease': serviceRelease,
+            's.environment': environment,
             versionSeen: lastVersionSeen
           }
         }, decoratorConfigResponse)
@@ -64,9 +64,9 @@ export const createHubService = ({ serviceName, serviceRelease, environment, cli
         return hubRequest('v1/quota/token', {
           method: 'POST',
           searchParams: {
-            decorator,
-            feature,
-            environment,
+            's.decoratorName': decorator,
+            's.featureName': feature,
+            's.environment': environment,
             clientId,
             priorityBoost: priorityBoost?.toFixed(0)
           }
@@ -76,9 +76,9 @@ export const createHubService = ({ serviceName, serviceRelease, environment, cli
         const response = await hubRequest('v1/quota/lease', {
           method: 'POST',
           searchParams: {
-            decorator,
-            feature,
-            environment,
+            's.decoratorName': decorator,
+            's.featureName': feature,
+            's.environment': environment,
             clientId,
             priorityBoost: priorityBoost?.toFixed(0)
           }
@@ -117,7 +117,7 @@ export const createHubService = ({ serviceName, serviceRelease, environment, cli
         const response = await hubRequest('v1/quota/consumed', {
           method: 'POST',
           searchParams: {
-            token: tokens
+            tokens
           }
         }, stanzaMarkTokensAsConsumedResponse)
 
