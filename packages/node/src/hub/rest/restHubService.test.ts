@@ -3,10 +3,10 @@ import { type DecoratorConfigResponse } from '../api/decoratorConfigResponse'
 import { type ServiceConfigResponse } from '../api/serviceConfigResponse'
 import { createRestHubService } from './createRestHubService'
 import { createHubRequest } from './createHubRequest'
-import { type StanzaTokenResponse } from './api/stanzaTokenResponse'
-import { type StanzaTokenLeaseResponse } from './api/stanzaTokenLeaseResponse'
-import { type StanzaValidateTokenResponse } from './api/stanzaValidateTokenResponse'
-import { type StanzaMarkTokensAsConsumedResponse } from './api/stanzaMarkTokensAsConsumedResponse'
+import { type StanzaTokenResponse } from '../api/stanzaTokenResponse'
+import { type StanzaTokenLeaseResponse } from '../api/stanzaTokenLeaseResponse'
+import { type StanzaValidateTokenResponse } from '../api/stanzaValidateTokenResponse'
+import { type StanzaMarkTokensAsConsumedResponse } from '../api/stanzaMarkTokensAsConsumedResponse'
 
 vi.mock('../../fetchImplementation', () => {
   return {
@@ -286,7 +286,7 @@ describe('createRestHubService', async () => {
   })
 
   describe('getToken', function () {
-    const { getToken } = createHubService({
+    const { getToken } = createRestHubService({
       serviceName: 'TestService',
       serviceRelease: '1',
       environment: 'test',
@@ -372,7 +372,7 @@ describe('createRestHubService', async () => {
   })
 
   describe('getTokenLease', function () {
-    const { getTokenLease } = createHubService({
+    const { getTokenLease } = createRestHubService({
       serviceName: 'TestService',
       serviceRelease: '1',
       environment: 'test',
@@ -470,7 +470,7 @@ describe('createRestHubService', async () => {
   })
 
   describe('validateToken', function () {
-    const { validateToken } = createHubService({
+    const { validateToken } = createRestHubService({
       serviceName: 'TestService',
       serviceRelease: '1',
       environment: 'test',
@@ -567,7 +567,7 @@ describe('createRestHubService', async () => {
   })
 
   describe('markTokensAsConsumed', function () {
-    const { markTokensAsConsumed } = createHubService({
+    const { markTokensAsConsumed } = createRestHubService({
       serviceName: 'TestService',
       serviceRelease: '1',
       environment: 'test',
