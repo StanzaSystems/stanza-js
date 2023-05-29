@@ -5,6 +5,8 @@ import { createHubService } from './createHubService'
 import { createHubRequest } from './createHubRequest'
 import { type StanzaTokenResponse } from './api/stanzaTokenResponse'
 import { type StanzaTokenLeaseResponse } from './api/stanzaTokenLeaseResponse'
+import { type StanzaValidateTokenResponse } from './api/stanzaValidateTokenResponse'
+import { type StanzaMarkTokensAsConsumedResponse } from './api/stanzaMarkTokensAsConsumedResponse'
 
 vi.mock('../fetchImplementation', () => {
   return {
@@ -457,6 +459,184 @@ describe('hubService', async () => {
       })
 
       void getTokenLease({ decorator: 'test-decorator' }).catch((e) => {
+        expect(e).toEqual(new Error('Hub request timed out'))
+      })
+
+      await vi.advanceTimersByTimeAsync(1000)
+      expect.assertions(1)
+
+      vi.useRealTimers()
+    })
+  })
+
+  describe('validateToken', function () {
+    const { validateToken } = createHubService({
+      serviceName: 'TestService',
+      serviceRelease: '1',
+      environment: 'test',
+      clientId: 'test-client-id',
+      hubRequest: createHubRequest({
+        hubUrl: 'https://url.to.hub',
+        apiKey: 'valid-api-key'
+      })
+    })
+
+    it('should call fetch with proper params', async () => {
+      await validateToken({
+        decorator: 'test-decorator',
+        token: 'test-token'
+      })
+
+      expect(fetchMock).toHaveBeenCalledOnce()
+      expect(fetchMock).toHaveBeenCalledWith(
+        new URL('https://url.to.hub/v1/quota/validatetoken'),
+        {
+          headers: {
+            'X-Stanza-Key': 'valid-api-key'
+          },
+          body: JSON.stringify([{
+            token: 'test-token',
+            decorator: 'test-decorator'
+          }]),
+          method: 'POST'
+        }
+      )
+    })
+
+    it('should return null if invalid data returned', async () => {
+      const result = await validateToken({ decorator: 'test-decorator', token: 'test-token' })
+
+      expect(result).toBeNull()
+    })
+
+    it('should return valid false', async () => {
+      fetchMock.mockImplementation(async () => {
+        return {
+          json: async () => ({
+            tokensValid: [{
+              valid: false,
+              token: 'test-token'
+            }]
+          } satisfies StanzaValidateTokenResponse)
+        }
+      })
+
+      const result = await validateToken({ decorator: 'test-decorator', token: 'test-token' })
+
+      expect(result).toEqual({ valid: false, token: 'test-token' })
+    })
+
+    it('should return token if valid is true', async () => {
+      vi.useFakeTimers({ now: 123 })
+      fetchMock.mockImplementation(async () => {
+        return {
+          json: async () => ({
+            tokensValid: [{
+              valid: true,
+              token: 'test-token'
+            }]
+          } satisfies StanzaValidateTokenResponse)
+        }
+      })
+
+      const result = await validateToken({ decorator: 'test-decorator', token: 'test-token' })
+
+      expect(result).toEqual({
+        valid: true,
+        token: 'test-token'
+      })
+
+      vi.useRealTimers()
+    })
+
+    it('should timeout if fetch runs too long', async () => {
+      vi.useFakeTimers()
+      fetchMock.mockImplementation(async () => {
+        return new Promise(() => {})
+      })
+
+      void validateToken({ decorator: 'test-decorator', token: 'test-token' }).catch((e) => {
+        expect(e).toEqual(new Error('Hub request timed out'))
+      })
+
+      await vi.advanceTimersByTimeAsync(1000)
+      expect.assertions(1)
+
+      vi.useRealTimers()
+    })
+  })
+
+  describe('markTokensAsConsumed', function () {
+    const { markTokensAsConsumed } = createHubService({
+      serviceName: 'TestService',
+      serviceRelease: '1',
+      environment: 'test',
+      clientId: 'test-client-id',
+      hubRequest: createHubRequest({
+        hubUrl: 'https://url.to.hub',
+        apiKey: 'valid-api-key'
+      })
+    })
+
+    it('should call fetch with proper params', async () => {
+      await markTokensAsConsumed({
+        tokens: ['test-token-one', 'test-token-two']
+      })
+
+      expect(fetchMock).toHaveBeenCalledOnce()
+      expect(fetchMock).toHaveBeenCalledWith(
+        new URL('https://url.to.hub/v1/quota/consumed?tokens=test-token-one&tokens=test-token-two'),
+        {
+          headers: {
+            'X-Stanza-Key': 'valid-api-key'
+          },
+          method: 'POST'
+        }
+      )
+    })
+
+    it('should return null if invalid data returned', async () => {
+      fetchMock.mockImplementation(async () => {
+        return {
+          json: async () => []
+        }
+      })
+
+      const result = await markTokensAsConsumed({
+        tokens: ['test-token-one', 'test-token-two']
+      })
+
+      expect(result).toBeNull()
+    })
+
+    it('should return ok if response is correct', async () => {
+      vi.useFakeTimers({ now: 123 })
+      fetchMock.mockImplementation(async () => {
+        return {
+          json: async () => ({} satisfies StanzaMarkTokensAsConsumedResponse)
+        }
+      })
+
+      const result = await markTokensAsConsumed({
+        tokens: ['test-token-one', 'test-token-two']
+      })
+
+      expect(result).toEqual({
+        ok: true
+      })
+
+      vi.useRealTimers()
+    })
+
+    it('should timeout if fetch runs too long', async () => {
+      vi.useFakeTimers()
+      fetchMock.mockImplementation(async () => {
+        return new Promise(() => {})
+      })
+
+      void markTokensAsConsumed({
+        tokens: ['test-token-one', 'test-token-two']
+      }).catch((e) => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 

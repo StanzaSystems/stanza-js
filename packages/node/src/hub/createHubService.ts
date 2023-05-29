@@ -117,7 +117,7 @@ export const createHubService = ({ serviceName, serviceRelease, environment, cli
         const response = await hubRequest('v1/quota/consumed', {
           method: 'POST',
           searchParams: {
-            token: tokens
+            tokens
           }
         }, stanzaMarkTokensAsConsumedResponse)
 
