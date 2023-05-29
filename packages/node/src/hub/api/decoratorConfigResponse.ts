@@ -17,10 +17,7 @@ const decoratorConfigWithData = z.object({
   version: z.string(),
   configDataSent: z.literal(true),
   config: z.object({
-    decorator: z.string().optional(),
-    environment: z.string().optional(),
     checkQuota: z.boolean(),
-    strictSynchronousQuota: z.boolean(),
     quotaTags: z.array(z.string()),
     validateIngressTokens: z.boolean(),
     traceConfig: zTraceConfig.optional()
