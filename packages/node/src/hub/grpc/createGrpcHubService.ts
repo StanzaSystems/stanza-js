@@ -133,7 +133,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
       return data?.tokensValid?.[0] ?? null
     },
     markTokensAsConsumed: async (options) => {
-      const data = grpcRequest(async () => quotaClient.setTokenLeaseConsumed({
+      const data = await grpcRequest(async () => quotaClient.setTokenLeaseConsumed({
         tokens: options.tokens
       }),
       stanzaMarkTokensAsConsumedResponse
