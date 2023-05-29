@@ -12,6 +12,7 @@ import { stanzaValidateTokenResponse } from '../api/stanzaValidateTokenResponse'
 import { stanzaMarkTokensAsConsumedResponse } from '../api/stanzaMarkTokensAsConsumedResponse'
 import { type z, type ZodType } from 'zod'
 import { withTimeout } from '../../utils/withTimeout'
+import { wrapHubServiceWithMetrics } from '../wrapHubServiceWithMetrics'
 
 const HUB_REQUEST_TIMEOUT = 1000
 
@@ -36,7 +37,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
   const configClient = createPromiseClient(ConfigService, transport)
   const quotaClient = createPromiseClient(QuotaService, transport)
 
-  return {
+  return wrapHubServiceWithMetrics({
     getServiceMetadata: () => ({ serviceName, environment, clientId }),
     fetchServiceConfig: async (options): Promise<ServiceConfig | null> => {
       const data = await grpcRequest(async () => configClient.getServiceConfig({
@@ -141,7 +142,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
 
       return data === null ? null : { ok: true }
     }
-  }
+  })
 }
 
 const grpcRequest = async <T extends ZodType>(req: () => Promise<unknown>, validateResult: T): Promise<z.infer<T> | null> => {

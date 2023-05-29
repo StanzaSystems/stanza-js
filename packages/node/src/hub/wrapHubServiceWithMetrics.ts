@@ -2,13 +2,9 @@ import { type HubService } from './hubService'
 import { wrapEventsAsync } from '../utils/wrapEventsAsync'
 import { eventBus, events } from '../global/eventBus'
 
-interface HubServiceMetricsOptions {
-  serviceName: string
-  environment: string
-  clientId: string
-}
+export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
+  const { serviceName, environment, clientId } = hubService.getServiceMetadata()
 
-export function wrapHubServiceWithMetrics ({ serviceName, environment, clientId }: HubServiceMetricsOptions, hubService: HubService): HubService {
   return {
     ...hubService,
     fetchServiceConfig: wrapEventsAsync(hubService.fetchServiceConfig, {
