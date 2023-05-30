@@ -13,12 +13,14 @@ interface GetTokenOptions {
   decorator: string
   feature?: string
   priorityBoost?: number
+  tags?: string[]
 }
 
 interface GetTokenLeaseOptions {
   decorator: string
   feature?: string
   priorityBoost?: number
+  tags?: string[]
 }
 
 interface ValidateTokenOptions {

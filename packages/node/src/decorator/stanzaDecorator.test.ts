@@ -128,8 +128,9 @@ describe('stanzaDecorator', function () {
     const checkQuotaDecoratorConfig = {
       version: 'test',
       config: {
-        checkQuota: true
-      } as any
+        checkQuota: true,
+        quotaTags: ['validTag', 'anotherValidTag']
+      } satisfies Partial<DecoratorConfig['config']> as any
     } satisfies DecoratorConfig
 
     it('should NOT be pass-through execution after config is fetched', async function () {

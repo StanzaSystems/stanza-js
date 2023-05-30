@@ -6,6 +6,7 @@ export interface QuotaCheckerOptions {
   decorator: string
   feature?: string
   priorityBoost?: number
+  tags?: string[]
 }
 
 export const initQuotaChecker = (options: QuotaCheckerOptions) => {
