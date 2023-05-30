@@ -1,9 +1,15 @@
 import type { StanzaCoreConfig } from '@getstanza/core'
 
+const key = process.env.NEXT_PUBLIC_STANZA_BROWSER_KEY
+
+if (typeof key !== 'string') {
+  throw new Error('NEXT_PUBLIC_STANZA_BROWSER_KEY is a required environment variable')
+}
+
 export const config: StanzaCoreConfig = {
   url: process.env.NEXT_PUBLIC_STANZA_API ?? 'https://hub.demo.getstanza.io',
-  environment: 'local',
-  stanzaApiKey: 'valid-api-key',
+  environment: process.env.NEXT_PUBLIC_STANZA_ENVIRONMENT ?? 'local',
+  stanzaApiKey: key,
   contextConfigs: [
     {
       name: 'main',
