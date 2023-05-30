@@ -2,10 +2,11 @@ import { addInstrumentation } from './addInstrumentation'
 import { generateClientId } from './generateClientId'
 import { getEnvInitOptions } from './getEnvInitOptions'
 import { updateHubService } from './global/hubService'
-import { createHubService } from './hub/createHubService'
 import { stanzaInitOptions, type StanzaInitOptions } from './stanzaInitOptions'
 import { startPollingServiceConfig } from './service/startPollingConfigService'
-import { createHubRequest } from './hub/createHubRequest'
+import { createGrpcHubService } from './hub/grpc/createGrpcHubService'
+import { createHubRequest } from './hub/rest/createHubRequest'
+import { createRestHubService } from './hub/rest/createRestHubService'
 
 export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
   const parseResult = stanzaInitOptions.safeParse({
@@ -21,17 +22,26 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
 
   await addInstrumentation(initOptions.serviceName)
 
-  const hubRequest = createHubRequest({
-    hubUrl: initOptions.hubUrl,
-    apiKey: initOptions.apiKey
-  })
-  updateHubService(createHubService({
-    serviceName: initOptions.serviceName,
-    serviceRelease: initOptions.serviceRelease,
-    environment: initOptions.environment,
-    clientId,
-    hubRequest
-  }))
+  updateHubService(
+    initOptions.useRestHubApi
+      ? createRestHubService({
+        serviceName: initOptions.serviceName,
+        serviceRelease: initOptions.serviceRelease,
+        environment: initOptions.environment,
+        clientId,
+        hubRequest: createHubRequest({
+          hubUrl: initOptions.hubUrl,
+          apiKey: initOptions.apiKey
+        })
+      })
+      : createGrpcHubService({
+        serviceName: initOptions.serviceName,
+        serviceRelease: initOptions.serviceRelease,
+        environment: initOptions.environment,
+        clientId,
+        hubUrl: initOptions.hubUrl,
+        apiKey: initOptions.apiKey
+      }))
 
   startPollingServiceConfig()
 }

@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { initOrThrow } from './initOrThrow'
 import { type StanzaInitOptions } from './stanzaInitOptions'
 import type { getEnvInitOptions as getEnvInitOptionsType } from './getEnvInitOptions'
+import * as createGrpcHubServiceModule from './hub/grpc/createGrpcHubService'
+import * as createRestHubServiceModule from './hub/rest/createRestHubService'
 
 vi.mock('./getEnvInitOptions', () => {
   return {
@@ -16,12 +18,17 @@ vi.mock('./fetchImplementation', () => {
   }
 })
 
+const createGrpcHubServiceMock = vi.spyOn(createGrpcHubServiceModule, 'createGrpcHubService')
+const createRestHubServiceMock = vi.spyOn(createRestHubServiceModule, 'createRestHubService')
+
 const getEnvInitOptionsMock = vi.fn()
 const fetchMock = vi.fn()
 
 beforeEach(async () => {
   const { getEnvInitOptions } = await vi.importActual<{ getEnvInitOptions: typeof getEnvInitOptionsType }>('./getEnvInitOptions')
   getEnvInitOptionsMock.mockImplementation(getEnvInitOptions)
+  createGrpcHubServiceMock.mockReset()
+  createRestHubServiceMock.mockReset()
 })
 
 afterEach(() => {
@@ -82,6 +89,39 @@ describe('Stanza init', function () {
       })
 
       await expect(initOrThrow()).resolves.toBeUndefined()
+    })
+
+    it('should create grpc hub service by default', async () => {
+      fetchMock.mockImplementation(async () => ({
+        json: async () => ({})
+      }))
+      await expect(initOrThrow({
+        hubUrl: 'https://url.to.stanza.hub',
+        apiKey: 'dummyAPIKey',
+        serviceName: 'dummyStanzaService',
+        serviceRelease: 'dummyStanzaRelease',
+        environment: 'testEnvironment'
+      })).resolves.toBeUndefined()
+
+      expect(createGrpcHubServiceMock).toHaveBeenCalledOnce()
+      expect(createRestHubServiceMock).not.toHaveBeenCalled()
+    })
+
+    it('should create rest hub service is useRest is specified', async () => {
+      fetchMock.mockImplementation(async () => ({
+        json: async () => ({})
+      }))
+      await expect(initOrThrow({
+        hubUrl: 'https://url.to.stanza.hub',
+        apiKey: 'dummyAPIKey',
+        serviceName: 'dummyStanzaService',
+        serviceRelease: 'dummyStanzaRelease',
+        environment: 'testEnvironment',
+        useRestHubApi: true
+      })).resolves.toBeUndefined()
+
+      expect(createRestHubServiceMock).toHaveBeenCalled()
+      expect(createGrpcHubServiceMock).not.toHaveBeenCalledOnce()
     })
   })
 })

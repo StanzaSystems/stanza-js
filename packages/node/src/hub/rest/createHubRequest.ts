@@ -1,7 +1,7 @@
 import { type z, type ZodType } from 'zod'
-import { withTimeout } from '../utils/withTimeout'
-import { fetch } from '../fetchImplementation'
-import { type HubApiPath, type HubRequest } from './hubRequest'
+import { withTimeout } from '../../utils/withTimeout'
+import { fetch } from '../../fetchImplementation'
+import { type HubApiPath, type HubRequest } from '../hubRequest'
 
 const HUB_REQUEST_TIMEOUT = 1000
 

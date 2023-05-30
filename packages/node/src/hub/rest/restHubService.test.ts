@@ -1,14 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { type DecoratorConfigResponse } from './api/decoratorConfigResponse'
-import { type ServiceConfigResponse } from './api/serviceConfigResponse'
-import { createHubService } from './createHubService'
+import { type DecoratorConfigResponse } from '../api/decoratorConfigResponse'
+import { type ServiceConfigResponse } from '../api/serviceConfigResponse'
+import { createRestHubService } from './createRestHubService'
 import { createHubRequest } from './createHubRequest'
-import { type StanzaTokenResponse } from './api/stanzaTokenResponse'
-import { type StanzaTokenLeaseResponse } from './api/stanzaTokenLeaseResponse'
-import { type StanzaValidateTokenResponse } from './api/stanzaValidateTokenResponse'
-import { type StanzaMarkTokensAsConsumedResponse } from './api/stanzaMarkTokensAsConsumedResponse'
+import { type StanzaTokenResponse } from '../api/stanzaTokenResponse'
+import { type StanzaTokenLeaseResponse } from '../api/stanzaTokenLeaseResponse'
+import { type StanzaValidateTokenResponse } from '../api/stanzaValidateTokenResponse'
+import { type StanzaMarkTokensAsConsumedResponse } from '../api/stanzaMarkTokensAsConsumedResponse'
 
-vi.mock('../fetchImplementation', () => {
+vi.mock('../../fetchImplementation', () => {
   return {
     fetch: ((...args) => fetchMock(...args)) satisfies typeof fetch
   }
@@ -25,9 +25,26 @@ beforeEach(async () => {
 afterEach(() => {
   fetchMock.mockReset()
 })
-describe('hubService', async () => {
+describe('createRestHubService', async () => {
+  describe('getServiceMetadata', () => {
+    const { getServiceMetadata } = createRestHubService({
+      serviceName: 'TestService',
+      serviceRelease: '1',
+      environment: 'test',
+      clientId: 'test-client-id',
+      hubRequest: createHubRequest({
+        hubUrl: 'https://url.to.hub',
+        apiKey: 'valid-api-key'
+      })
+    })
+
+    it('should return service metadata', () => {
+      expect(getServiceMetadata()).toEqual({ serviceName: 'TestService', environment: 'test', clientId: 'test-client-id' })
+    })
+  })
+
   describe('fetchServiceConfig', function () {
-    const { fetchServiceConfig } = createHubService({
+    const { fetchServiceConfig } = createRestHubService({
       serviceName: 'TestService',
       serviceRelease: '1',
       environment: 'test',
@@ -162,7 +179,7 @@ describe('hubService', async () => {
   })
 
   describe('fetchDecoratorConfig', function () {
-    const { fetchDecoratorConfig } = createHubService({
+    const { fetchDecoratorConfig } = createRestHubService({
       serviceName: 'TestService',
       serviceRelease: '1',
       environment: 'test',
@@ -286,7 +303,7 @@ describe('hubService', async () => {
   })
 
   describe('getToken', function () {
-    const { getToken } = createHubService({
+    const { getToken } = createRestHubService({
       serviceName: 'TestService',
       serviceRelease: '1',
       environment: 'test',
@@ -372,7 +389,7 @@ describe('hubService', async () => {
   })
 
   describe('getTokenLease', function () {
-    const { getTokenLease } = createHubService({
+    const { getTokenLease } = createRestHubService({
       serviceName: 'TestService',
       serviceRelease: '1',
       environment: 'test',
@@ -470,7 +487,7 @@ describe('hubService', async () => {
   })
 
   describe('validateToken', function () {
-    const { validateToken } = createHubService({
+    const { validateToken } = createRestHubService({
       serviceName: 'TestService',
       serviceRelease: '1',
       environment: 'test',
@@ -567,7 +584,7 @@ describe('hubService', async () => {
   })
 
   describe('markTokensAsConsumed', function () {
-    const { markTokensAsConsumed } = createHubService({
+    const { markTokensAsConsumed } = createRestHubService({
       serviceName: 'TestService',
       serviceRelease: '1',
       environment: 'test',
