@@ -1,8 +1,9 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { type DecoratorConfig } from '../../hub/model'
 import { initQuotaChecker } from './quotaChecker'
 import { updateDecoratorConfig } from '../../global/decoratorConfig'
 import { mockHubService } from '../../__tests__/mocks/mockHubService'
+import { logger } from '../../global/logger'
 
 beforeEach(() => {
   mockHubService.reset()
@@ -112,6 +113,69 @@ describe('quotaChecker', () => {
         decorator: 'testDecorator',
         tags: ['validQuotaTag']
       })
+    })
+
+    it('should log skipped tags', () => {
+      const infoSpy = vi.spyOn(logger, 'info')
+
+      const { checkQuota } = initQuotaChecker({
+        decorator: 'testDecorator',
+        tags: ['validQuotaTag', 'invalidQuotaTag', 'anotherInvalidQuotaTag']
+      })
+
+      updateDecoratorConfig('testDecorator', {
+        version: 'testVersion',
+        config: {
+          checkQuota: true,
+          quotaTags: ['validQuotaTag', 'anotherValidQuotaTag']
+        } satisfies Partial<DecoratorConfig['config']> as any
+      })
+
+      void checkQuota()
+
+      expect(infoSpy).toHaveBeenCalledOnce()
+      expect(infoSpy).toHaveBeenCalledWith('Unused tags in decorator "testDecorator". Tags: "invalidQuotaTag", "anotherInvalidQuotaTag"')
+    })
+
+    it('should NOT log if all tags are valid', () => {
+      const infoSpy = vi.spyOn(logger, 'info')
+
+      const { checkQuota } = initQuotaChecker({
+        decorator: 'testDecorator',
+        tags: ['validQuotaTag', 'anotherValidQuotaTag']
+      })
+
+      updateDecoratorConfig('testDecorator', {
+        version: 'testVersion',
+        config: {
+          checkQuota: true,
+          quotaTags: ['validQuotaTag', 'anotherValidQuotaTag']
+        } satisfies Partial<DecoratorConfig['config']> as any
+      })
+
+      void checkQuota()
+
+      expect(infoSpy).not.toHaveBeenCalledOnce()
+    })
+
+    it('should NOT log if no tags are provided', () => {
+      const infoSpy = vi.spyOn(logger, 'info')
+
+      const { checkQuota } = initQuotaChecker({
+        decorator: 'testDecorator'
+      })
+
+      updateDecoratorConfig('testDecorator', {
+        version: 'testVersion',
+        config: {
+          checkQuota: true,
+          quotaTags: ['validQuotaTag', 'anotherValidQuotaTag']
+        } satisfies Partial<DecoratorConfig['config']> as any
+      })
+
+      void checkQuota()
+
+      expect(infoSpy).not.toHaveBeenCalledOnce()
     })
   })
 })
