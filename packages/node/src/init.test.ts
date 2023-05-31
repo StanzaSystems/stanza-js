@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { init } from './init'
 import { type StanzaInitOptions } from './stanzaInitOptions'
 import type { getEnvInitOptions as getEnvInitOptionsType } from './getEnvInitOptions'
+import { logger } from './global/logger'
 
 vi.mock('./getEnvInitOptions', () => {
   return {
@@ -36,7 +37,7 @@ describe('Stanza init', function () {
     })
 
     it('should warn if empty config is provided', async () => {
-      const warnSpy = vi.spyOn(console, 'warn')
+      const warnSpy = vi.spyOn(logger, 'warn')
 
       await init()
 
@@ -57,7 +58,7 @@ describe('Stanza init', function () {
     })
 
     it('should not warn if valid config is provided', async () => {
-      const warnSpy = vi.spyOn(console, 'warn')
+      const warnSpy = vi.spyOn(logger, 'warn')
       fetchMock.mockImplementation(async () => ({
         json: async () => ({})
       }))
@@ -75,7 +76,7 @@ describe('Stanza init', function () {
     })
 
     it('should not warn for empty config if env variables are set', async () => {
-      const warnSpy = vi.spyOn(console, 'warn')
+      const warnSpy = vi.spyOn(logger, 'warn')
       fetchMock.mockImplementation(async () => ({
         json: async () => ({})
       }))

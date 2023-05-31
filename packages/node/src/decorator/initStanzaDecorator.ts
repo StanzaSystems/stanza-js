@@ -8,6 +8,7 @@ import { withTimeout } from '../utils/withTimeout'
 import { type StanzaDecoratorOptions } from './model'
 import { StanzaDecoratorError } from './stanzaDecoratorError'
 import { startPollingDecoratorConfig } from './startPollingDecoratorConfig'
+import { logger } from '../global/logger'
 
 const VALIDATE_QUOTA_TIMEOUT = 1000
 
@@ -66,7 +67,7 @@ export const initDecorator = (options: StanzaDecoratorOptions) => {
           token
         }))
     } catch (e) {
-      console.warn('Failed to validate the token:', e instanceof Error ? e.message : e)
+      logger.warn('Failed to validate the token:', e instanceof Error ? e.message : e)
     }
 
     if (validatedToken === null) {
