@@ -183,7 +183,6 @@ describe('createGrpcHubService', async () => {
       })
 
       void fetchServiceConfig().catch((e) => {
-        console.log(e)
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 

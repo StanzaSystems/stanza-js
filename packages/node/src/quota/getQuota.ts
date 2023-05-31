@@ -1,6 +1,7 @@
 import { type StanzaToken } from '../hub/model'
 import { withTimeout } from '../utils/withTimeout'
 import { tokenStore } from '../global/tokenStore'
+import { logger } from '../global/logger'
 
 const CHECK_QUOTA_TIMEOUT = 1000
 
@@ -22,7 +23,7 @@ export const getQuota = async (options: GetQuotaOptions): Promise<StanzaToken | 
       })
     )
   } catch (e) {
-    console.warn('Failed to fetch the token:', e instanceof Error ? e.message : e)
+    logger.warn('Failed to fetch the token:', e instanceof Error ? e.message : e)
   }
 
   return null

@@ -2,7 +2,7 @@ import { resolve } from 'path'
 import { defineConfig } from 'vitest/config'
 import eslint from 'vite-plugin-eslint'
 import dts from 'vite-plugin-dts'
-import { builtinModules } from "module"
+import { builtinModules } from 'module'
 
 export default defineConfig({
   plugins: [eslint(), dts()],
@@ -22,7 +22,8 @@ export default defineConfig({
         ...builtinModules.map(m => `node:${m}`),
         /^@opentelemetry\/.*/,
         '@grpc/grpc-js',
-        'node-fetch'
+        'node-fetch',
+        'pino'
       ],
       output: {
         globals: builtinModules.reduce((g, m) => {
