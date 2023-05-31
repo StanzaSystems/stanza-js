@@ -38,12 +38,23 @@ This is a full-stack TypeScript example using:
   |---------------------|---------|-------------|--------------|
   | Stripe_Products_API | default | local       | Outbound     |
 
- 4. Add a [browser API key](https://ui.demo.getstanza.io/admin?tab=keys) for the local environment to [stanzaConfig.ts](samples/next-with-stripe/stanzaConfig.ts)
+ 4. On creation you will be redirected to the decorator details page. From there, ensure the traffic configuration JSON is as follows:
+
+ ```json
+{
+  "quotaConfig": {
+    "burst": 10,
+    "enabled": true,
+    "refillRate": 10,
+    "strictSynchronous": false
+  }
+}
+ ```
 
 ### Environment Configuration:
 Make an account in the [stripe dashboard](https://dashboard.stripe.com). 
 
-Set the following in your .env file (copy from dashboard)
+Set the following in your .env file (copy from stripe and stanza dashboards)
 ```
 # Stripe keys
 # https://dashboard.stripe.com/apikeys
@@ -66,3 +77,11 @@ npm run dev
 ```
 
 The app will run on `localhost:3000` by default.
+
+### Running Load Tests
+
+Stanza responds to load by rate limiting requests in a prioritized way. To see stanza rate limit requests while your app is running, open a separate terminal and run
+
+```
+npx artillery run ./load-test.yml
+```

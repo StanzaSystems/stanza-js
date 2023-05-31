@@ -1,0 +1,11 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 90
+      arrivalRate: 30
+ 
+scenarios:
+  - name: "Test stripe guard"
+    flow:
+      - get:
+          url: "/api/products/featured"

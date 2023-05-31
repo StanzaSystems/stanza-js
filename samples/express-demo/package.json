@@ -23,11 +23,11 @@
     "node": ">=16"
   },
   "dependencies": {
+    "@getstanza/node": "*",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "4.18.2",
-    "zod": "^3.21.4",
-    "@getstanza/node": "*"
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.2",
@@ -36,6 +36,7 @@
     "@types/node-fetch": "^2.6.2",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "@typescript-eslint/parser": "^5.53.0",
+    "artillery": "^2.0.0-32",
     "eslint": "^8.34.0",
     "nodemon": "2.0.20",
     "semver": "^7.3.8",

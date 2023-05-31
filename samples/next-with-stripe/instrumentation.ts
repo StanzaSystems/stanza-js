@@ -10,11 +10,12 @@ export async function register () {
     const { init } = require('@getstanza/node')
     console.log(`Stanza URL for instrumentation: ${process.env.NEXT_PUBLIC_STANZA_API}`)
     await init({
-      hubUrl: process.env.NEXT_PUBLIC_STANZA_API ?? 'https://hub.demo.getstanza.io',
+      hubUrl: (process.env.NEXT_PUBLIC_STANZA_API ?? 'https://hub.demo.getstanza.io'),
       apiKey: key,
       serviceName: 'DemoCommerce',
       serviceRelease: '1',
-      environment: process.env.NEXT_PUBLIC_STANZA_ENVIRONMENT ?? 'local'
+      environment: process.env.NEXT_PUBLIC_STANZA_ENVIRONMENT ?? 'local',
+      useRestHubApi: true
     })
   }
 }

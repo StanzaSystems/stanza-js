@@ -18,8 +18,7 @@ app.use(express.json())
 
 app.use('/ping', (req, res, next) => {
   void stanzaDecorator({
-    decorator: 'Stripe_Products_API',
-    priorityBoost: 2
+    decorator: 'Stripe_Products_API'
   }).call(next).catch(next)
 })
 
