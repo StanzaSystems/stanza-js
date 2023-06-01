@@ -355,11 +355,20 @@ describe('createRestHubService', async () => {
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/quota/token?s.decoratorName=test-decorator&s.featureName=test-feature&s.environment=test&clientId=test-client-id&priorityBoost=5'),
+        new URL('https://url.to.hub/v1/quota/token'),
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
           },
+          body: JSON.stringify({
+            selector: {
+              decoratorName: 'test-decorator',
+              featureName: 'test-feature',
+              environment: 'test'
+            },
+            clientId: 'test-client-id',
+            priorityBoost: 5
+          }),
           method: 'POST'
         }
       )
@@ -441,11 +450,20 @@ describe('createRestHubService', async () => {
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/quota/lease?s.decoratorName=test-decorator&s.featureName=test-feature&s.environment=test&clientId=test-client-id&priorityBoost=5'),
+        new URL('https://url.to.hub/v1/quota/lease'),
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
           },
+          body: JSON.stringify({
+            selector: {
+              decoratorName: 'test-decorator',
+              featureName: 'test-feature',
+              environment: 'test'
+            },
+            clientId: 'test-client-id',
+            priorityBoost: 5
+          }),
           method: 'POST'
         }
       )
@@ -543,10 +561,12 @@ describe('createRestHubService', async () => {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
           },
-          body: JSON.stringify([{
-            token: 'test-token',
-            decorator: 'test-decorator'
-          }]),
+          body: JSON.stringify({
+            tokens: [{
+              token: 'test-token',
+              decorator: 'test-decorator'
+            }]
+          }),
           method: 'POST'
         }
       )
@@ -634,11 +654,14 @@ describe('createRestHubService', async () => {
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/quota/consumed?tokens=test-token-one&tokens=test-token-two'),
+        new URL('https://url.to.hub/v1/quota/consumed'),
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
           },
+          body: JSON.stringify({
+            tokens: ['test-token-one', 'test-token-two']
+          }),
           method: 'POST'
         }
       )

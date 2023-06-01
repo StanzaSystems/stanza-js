@@ -67,24 +67,28 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
     getToken: async ({ decorator, feature, priorityBoost }) => {
       return hubRequest('v1/quota/token', {
         method: 'POST',
-        searchParams: {
-          's.decoratorName': decorator,
-          's.featureName': feature,
-          's.environment': environment,
+        body: {
+          selector: {
+            decoratorName: decorator,
+            featureName: feature,
+            environment
+          },
           clientId,
-          priorityBoost: priorityBoost?.toFixed(0)
+          priorityBoost
         }
       }, stanzaTokenResponse)
     },
     getTokenLease: async ({ decorator, feature, priorityBoost }) => {
       const response = await hubRequest('v1/quota/lease', {
         method: 'POST',
-        searchParams: {
-          's.decoratorName': decorator,
-          's.featureName': feature,
-          's.environment': environment,
+        body: {
+          selector: {
+            decoratorName: decorator,
+            featureName: feature,
+            environment
+          },
           clientId,
-          priorityBoost: priorityBoost?.toFixed(0)
+          priorityBoost
         }
       }, stanzaTokenLeaseResponse)
       const now = Date.now()
@@ -110,17 +114,19 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
     validateToken: async ({ token, decorator }) => {
       const response = await hubRequest('v1/quota/validatetoken', {
         method: 'POST',
-        body: [{
-          token,
-          decorator
-        }]
+        body: {
+          tokens: [{
+            token,
+            decorator
+          }]
+        }
       }, stanzaValidateTokenResponse)
       return response?.tokensValid?.[0] ?? null
     },
     markTokensAsConsumed: async ({ tokens }) => {
       const response = await hubRequest('v1/quota/consumed', {
         method: 'POST',
-        searchParams: {
+        body: {
           tokens
         }
       }, stanzaMarkTokensAsConsumedResponse)
