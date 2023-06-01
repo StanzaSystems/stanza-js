@@ -7,13 +7,9 @@ import { GetTokenLeaseRequest, GetTokenLeaseResponse, GetTokenRequest, GetTokenR
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
- * The Quota service definition. This service is used by the Stanza SDK and Browser to determine whether
- * quota is available to use services which are subject to centralised ratelimiting.
+ * The Quota service definition. This service is used by the Stanza and Browser SDKs to determine whether quota is available to use services which are subject to centralised ratelimiting.
  * "Keys" are not included in API and should be sent via a X-Stanza-Key header.
- * Customer IDs are determined based on the X-Stanza-Key header (each key is associated
- * with one and only one customer).
- * However, env must always be specified when requesting a token - stanza keys do not have to be
- * specific to an environment, so we cannot infer the env from the key.
+ * Customer IDs are determined based on the X-Stanza-Key header (each key is associated with one and only one customer). However, environment must always be specified when requesting a token - Stanza keys do not have to be specific to an environment, so we cannot infer that from the key alone.
  *
  * @generated from service stanza.hub.v1.QuotaService
  */
@@ -21,8 +17,6 @@ export const QuotaService = {
   typeName: "stanza.hub.v1.QuotaService",
   methods: {
     /**
-     * Required for V0. Issue: https://github.com/StanzaSystems/stanza-hub/issues/25
-     *
      * @generated from rpc stanza.hub.v1.QuotaService.GetToken
      */
     getToken: {
@@ -32,8 +26,6 @@ export const QuotaService = {
       kind: MethodKind.Unary,
     },
     /**
-     * All rpcs below this required for V1. Issue: https://github.com/StanzaSystems/stanza-hub/issues/120
-     *
      * @generated from rpc stanza.hub.v1.QuotaService.GetTokenLease
      */
     getTokenLease: {
