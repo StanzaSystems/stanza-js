@@ -21,12 +21,15 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
     getServiceMetadata: () => ({ serviceName, environment, clientId }),
     fetchServiceConfig: async ({ lastVersionSeen } = {}) => {
       const serviceConfigResult = await hubRequest('v1/config/service', {
-        searchParams: {
-          'service.name': serviceName,
-          'service.release': serviceRelease,
-          'service.environment': environment,
-          versionSeen: lastVersionSeen
-        }
+        body: {
+          versionSeen: lastVersionSeen,
+          service: {
+            name: serviceName,
+            release: serviceRelease,
+            environment
+          }
+        },
+        method: 'POST'
       }, serviceConfigResponse)
 
       if (serviceConfigResult === null || !serviceConfigResult.configDataSent) {
@@ -40,13 +43,16 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
     },
     fetchDecoratorConfig: async ({ decorator, lastVersionSeen }) => {
       const decoratorConfigResult = await hubRequest('v1/config/decorator', {
-        searchParams: {
-          's.decoratorName': decorator,
-          's.serviceName': serviceName,
-          's.serviceRelease': serviceRelease,
-          's.environment': environment,
-          versionSeen: lastVersionSeen
-        }
+        body: {
+          versionSeen: lastVersionSeen,
+          selector: {
+            decoratorName: decorator,
+            serviceName,
+            serviceRelease,
+            environment
+          }
+        },
+        method: 'POST'
       }, decoratorConfigResponse)
 
       if (decoratorConfigResult === null || !decoratorConfigResult.configDataSent) {

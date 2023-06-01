@@ -60,12 +60,19 @@ describe('createRestHubService', async () => {
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/config/service?service.name=TestService&service.release=1&service.environment=test'),
+        new URL('https://url.to.hub/v1/config/service'),
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
           },
-          method: 'GET'
+          body: JSON.stringify({
+            service: {
+              name: 'TestService',
+              release: '1',
+              environment: 'test'
+            }
+          }),
+          method: 'POST'
         }
       )
     })
@@ -77,12 +84,20 @@ describe('createRestHubService', async () => {
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/config/service?service.name=TestService&service.release=1&service.environment=test&versionSeen=123'),
+        new URL('https://url.to.hub/v1/config/service'),
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
           },
-          method: 'GET'
+          body: JSON.stringify({
+            versionSeen: '123',
+            service: {
+              name: 'TestService',
+              release: '1',
+              environment: 'test'
+            }
+          }),
+          method: 'POST'
         }
       )
     })
@@ -197,12 +212,20 @@ describe('createRestHubService', async () => {
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/config/decorator?s.decoratorName=test-decorator&s.serviceName=TestService&s.serviceRelease=1&s.environment=test'),
+        new URL('https://url.to.hub/v1/config/decorator'),
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
           },
-          method: 'GET'
+          body: JSON.stringify({
+            selector: {
+              decoratorName: 'test-decorator',
+              serviceName: 'TestService',
+              serviceRelease: '1',
+              environment: 'test'
+            }
+          }),
+          method: 'POST'
         }
       )
     })
@@ -215,12 +238,21 @@ describe('createRestHubService', async () => {
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/config/decorator?s.decoratorName=test-decorator&s.serviceName=TestService&s.serviceRelease=1&s.environment=test&versionSeen=123'),
+        new URL('https://url.to.hub/v1/config/decorator'),
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
           },
-          method: 'GET'
+          body: JSON.stringify({
+            versionSeen: '123',
+            selector: {
+              decoratorName: 'test-decorator',
+              serviceName: 'TestService',
+              serviceRelease: '1',
+              environment: 'test'
+            }
+          }),
+          method: 'POST'
         }
       )
     })
