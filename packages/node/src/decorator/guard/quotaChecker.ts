@@ -1,12 +1,13 @@
 import { getDecoratorConfig } from '../../global/decoratorConfig'
 import { getQuota } from '../../quota/getQuota'
 import { StanzaDecoratorError } from '../stanzaDecoratorError'
+import { type Tag } from '../model'
 
 export interface QuotaCheckerOptions {
   decorator: string
   feature?: string
   priorityBoost?: number
-  tags?: string[]
+  tags?: Tag[]
 }
 
 export const initQuotaChecker = (options: QuotaCheckerOptions) => {

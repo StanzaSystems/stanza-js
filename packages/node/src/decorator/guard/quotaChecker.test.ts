@@ -49,7 +49,12 @@ describe('quotaChecker', () => {
     it('should send tag to get token lease', () => {
       const { checkQuota } = initQuotaChecker({
         decorator: 'testDecorator',
-        tags: ['validQuotaTag']
+        tags: [
+          {
+            key: 'validQuotaTag',
+            value: 'valid quota tag value'
+          }
+        ]
       })
 
       updateDecoratorConfig('testDecorator', {
@@ -65,14 +70,28 @@ describe('quotaChecker', () => {
       expect(mockHubService.getToken).toHaveBeenCalledOnce()
       expect(mockHubService.getToken).toHaveBeenCalledWith({
         decorator: 'testDecorator',
-        tags: ['validQuotaTag']
+        tags: [
+          {
+            key: 'validQuotaTag',
+            value: 'valid quota tag value'
+          }
+        ]
       })
     })
 
     it('should send multiple tags to get token lease', () => {
       const { checkQuota } = initQuotaChecker({
         decorator: 'testDecorator',
-        tags: ['validQuotaTag', 'anotherValidQuotaTag']
+        tags: [
+          {
+            key: 'validQuotaTag',
+            value: 'valid quota tag value'
+          },
+          {
+            key: 'anotherValidQuotaTag',
+            value: 'another valid quota tag value'
+          }
+        ]
       })
 
       updateDecoratorConfig('testDecorator', {
@@ -88,14 +107,32 @@ describe('quotaChecker', () => {
       expect(mockHubService.getToken).toHaveBeenCalledOnce()
       expect(mockHubService.getToken).toHaveBeenCalledWith({
         decorator: 'testDecorator',
-        tags: ['validQuotaTag', 'anotherValidQuotaTag']
+        tags: [
+          {
+            key: 'validQuotaTag',
+            value: 'valid quota tag value'
+          },
+          {
+            key: 'anotherValidQuotaTag',
+            value: 'another valid quota tag value'
+          }
+        ]
       })
     })
 
     it('should send only valid tag to get token lease', () => {
       const { checkQuota } = initQuotaChecker({
         decorator: 'testDecorator',
-        tags: ['validQuotaTag', 'invalidQuotaTag']
+        tags: [
+          {
+            key: 'validQuotaTag',
+            value: 'valid quota tag value'
+          },
+          {
+            key: 'invalidQuotaTag',
+            value: 'invalid quota tag value'
+          }
+        ]
       })
 
       updateDecoratorConfig('testDecorator', {
@@ -111,7 +148,12 @@ describe('quotaChecker', () => {
       expect(mockHubService.getToken).toHaveBeenCalledOnce()
       expect(mockHubService.getToken).toHaveBeenCalledWith({
         decorator: 'testDecorator',
-        tags: ['validQuotaTag']
+        tags: [
+          {
+            key: 'validQuotaTag',
+            value: 'valid quota tag value'
+          }
+        ]
       })
     })
 
@@ -120,7 +162,20 @@ describe('quotaChecker', () => {
 
       const { checkQuota } = initQuotaChecker({
         decorator: 'testDecorator',
-        tags: ['validQuotaTag', 'invalidQuotaTag', 'anotherInvalidQuotaTag']
+        tags: [
+          {
+            key: 'validQuotaTag',
+            value: 'valid quota tag value'
+          },
+          {
+            key: 'invalidQuotaTag',
+            value: 'invalid quota tag value'
+          },
+          {
+            key: 'anotherInvalidQuotaTag',
+            value: 'another invalid quota tag value'
+          }
+        ]
       })
 
       updateDecoratorConfig('testDecorator', {
@@ -134,7 +189,7 @@ describe('quotaChecker', () => {
       void checkQuota()
 
       expect(infoSpy).toHaveBeenCalledOnce()
-      expect(infoSpy).toHaveBeenCalledWith('Unused tags in decorator "testDecorator". Tags: "invalidQuotaTag", "anotherInvalidQuotaTag"')
+      expect(infoSpy).toHaveBeenCalledWith('Unused tags in decorator \'testDecorator\'. Tags: \'invalidQuotaTag\', \'anotherInvalidQuotaTag\'')
     })
 
     it('should NOT log if all tags are valid', () => {
@@ -142,7 +197,16 @@ describe('quotaChecker', () => {
 
       const { checkQuota } = initQuotaChecker({
         decorator: 'testDecorator',
-        tags: ['validQuotaTag', 'anotherValidQuotaTag']
+        tags: [
+          {
+            key: 'validQuotaTag',
+            value: 'valid quota tag value'
+          },
+          {
+            key: 'anotherValidQuotaTag',
+            value: 'another valid quota tag value'
+          }
+        ]
       })
 
       updateDecoratorConfig('testDecorator', {

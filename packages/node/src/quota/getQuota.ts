@@ -4,6 +4,7 @@ import { tokenStore } from '../global/tokenStore'
 import { hubService } from '../global/hubService'
 import { getDecoratorConfig } from '../global/decoratorConfig'
 import { logger } from '../global/logger'
+import { type Tag } from '../decorator/model'
 
 const CHECK_QUOTA_TIMEOUT = 1000
 
@@ -11,7 +12,7 @@ interface GetQuotaOptions {
   decorator: string
   feature?: string
   priorityBoost?: number
-  tags?: string[]
+  tags?: Tag[]
 }
 
 export const getQuota = async (options: GetQuotaOptions): Promise<StanzaToken | null> => {
@@ -32,11 +33,11 @@ const getQuotaInternal = async (options: GetQuotaOptions): Promise<StanzaToken |
   const incomingQuotaTags = options.tags ?? []
   const decoratorConfig = getDecoratorConfig(options.decorator)
   const validDecoratorQuotaTags = decoratorConfig?.config.quotaTags ?? []
-  const validQuotaTags = incomingQuotaTags.filter(incomingTag => validDecoratorQuotaTags.includes(incomingTag))
-  const invalidQuotaTags = incomingQuotaTags.filter(incomingTag => !validDecoratorQuotaTags.includes(incomingTag))
+  const validQuotaTags = incomingQuotaTags.filter(incomingTag => validDecoratorQuotaTags.includes(incomingTag.key))
+  const invalidQuotaTags = incomingQuotaTags.filter(incomingTag => !validDecoratorQuotaTags.includes(incomingTag.key))
 
   if (invalidQuotaTags.length > 0) {
-    logger.info(`Unused tags in decorator "${options.decorator}". Tags: ${invalidQuotaTags.map(t => `"${t}"`).join(', ')}`)
+    logger.info(`Unused tags in decorator '${options.decorator}'. Tags: ${invalidQuotaTags.map(t => `'${t.key}'`).join(', ')}`)
   }
 
   if (validQuotaTags.length > 0) {

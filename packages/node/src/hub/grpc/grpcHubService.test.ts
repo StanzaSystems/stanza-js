@@ -349,6 +349,47 @@ describe('createGrpcHubService', async () => {
       )
     })
 
+    it('should call fetch with proper params - including tags', async () => {
+      await getToken({
+        decorator: 'test-decorator',
+        feature: 'test-feature',
+        priorityBoost: 5,
+        tags: [
+          {
+            key: 'test-tag',
+            value: 'test tag value'
+          },
+          {
+            key: 'another-test-tag',
+            value: 'another test tag value'
+          }
+        ]
+      })
+
+      expect(quotaClientMock.getToken).toHaveBeenCalledOnce()
+      expect(quotaClientMock.getToken).toHaveBeenCalledWith(
+        {
+          clientId: 'test-client-id',
+          priorityBoost: 5,
+          s: {
+            decoratorName: 'test-decorator',
+            featureName: 'test-feature',
+            environment: 'test',
+            tags: [
+              {
+                key: 'test-tag',
+                value: 'test tag value'
+              },
+              {
+                key: 'another-test-tag',
+                value: 'another test tag value'
+              }
+            ]
+          }
+        }
+      )
+    })
+
     it('should call fetch with proper params - without feature and boost', async () => {
       await getToken({
         decorator: 'test-decorator'
@@ -445,6 +486,47 @@ describe('createGrpcHubService', async () => {
             decoratorName: 'test-decorator',
             featureName: 'test-feature',
             environment: 'test'
+          }
+        }
+      )
+    })
+
+    it('should call fetch with proper params - including tags', async () => {
+      await getTokenLease({
+        decorator: 'test-decorator',
+        feature: 'test-feature',
+        priorityBoost: 5,
+        tags: [
+          {
+            key: 'test-tag',
+            value: 'test tag value'
+          },
+          {
+            key: 'another-test-tag',
+            value: 'another test tag value'
+          }
+        ]
+      })
+
+      expect(quotaClientMock.getTokenLease).toHaveBeenCalledOnce()
+      expect(quotaClientMock.getTokenLease).toHaveBeenCalledWith(
+        {
+          clientId: 'test-client-id',
+          priorityBoost: 5,
+          s: {
+            decoratorName: 'test-decorator',
+            featureName: 'test-feature',
+            environment: 'test',
+            tags: [
+              {
+                key: 'test-tag',
+                value: 'test tag value'
+              },
+              {
+                key: 'another-test-tag',
+                value: 'another test tag value'
+              }
+            ]
           }
         }
       )
