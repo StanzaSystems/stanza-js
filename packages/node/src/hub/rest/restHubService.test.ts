@@ -60,12 +60,19 @@ describe('createRestHubService', async () => {
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/config/service?service.name=TestService&service.release=1&service.environment=test'),
+        new URL('https://url.to.hub/v1/config/service'),
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
           },
-          method: 'GET'
+          body: JSON.stringify({
+            service: {
+              name: 'TestService',
+              release: '1',
+              environment: 'test'
+            }
+          }),
+          method: 'POST'
         }
       )
     })
@@ -77,12 +84,20 @@ describe('createRestHubService', async () => {
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/config/service?service.name=TestService&service.release=1&service.environment=test&versionSeen=123'),
+        new URL('https://url.to.hub/v1/config/service'),
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
           },
-          method: 'GET'
+          body: JSON.stringify({
+            versionSeen: '123',
+            service: {
+              name: 'TestService',
+              release: '1',
+              environment: 'test'
+            }
+          }),
+          method: 'POST'
         }
       )
     })
@@ -197,12 +212,20 @@ describe('createRestHubService', async () => {
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/config/decorator?s.decoratorName=test-decorator&s.serviceName=TestService&s.serviceRelease=1&s.environment=test'),
+        new URL('https://url.to.hub/v1/config/decorator'),
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
           },
-          method: 'GET'
+          body: JSON.stringify({
+            selector: {
+              decoratorName: 'test-decorator',
+              serviceName: 'TestService',
+              serviceRelease: '1',
+              environment: 'test'
+            }
+          }),
+          method: 'POST'
         }
       )
     })
@@ -215,12 +238,21 @@ describe('createRestHubService', async () => {
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/config/decorator?s.decoratorName=test-decorator&s.serviceName=TestService&s.serviceRelease=1&s.environment=test&versionSeen=123'),
+        new URL('https://url.to.hub/v1/config/decorator'),
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
           },
-          method: 'GET'
+          body: JSON.stringify({
+            versionSeen: '123',
+            selector: {
+              decoratorName: 'test-decorator',
+              serviceName: 'TestService',
+              serviceRelease: '1',
+              environment: 'test'
+            }
+          }),
+          method: 'POST'
         }
       )
     })
@@ -323,11 +355,68 @@ describe('createRestHubService', async () => {
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/quota/token?s.decoratorName=test-decorator&s.featureName=test-feature&s.environment=test&clientId=test-client-id&priorityBoost=5'),
+        new URL('https://url.to.hub/v1/quota/token'),
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
           },
+          body: JSON.stringify({
+            selector: {
+              decoratorName: 'test-decorator',
+              featureName: 'test-feature',
+              environment: 'test'
+            },
+            clientId: 'test-client-id',
+            priorityBoost: 5
+          }),
+          method: 'POST'
+        }
+      )
+    })
+
+    it('should call fetch with proper params - including tags', async () => {
+      await getToken({
+        decorator: 'test-decorator',
+        feature: 'test-feature',
+        priorityBoost: 5,
+        tags: [
+          {
+            key: 'test-tag',
+            value: 'test tag value'
+          },
+          {
+            key: 'another-test-tag',
+            value: 'another test tag value'
+          }
+        ]
+      })
+
+      expect(fetchMock).toHaveBeenCalledOnce()
+      expect(fetchMock).toHaveBeenCalledWith(
+        new URL('https://url.to.hub/v1/quota/token'),
+        {
+          headers: {
+            'X-Stanza-Key': 'valid-api-key'
+          },
+          body: JSON.stringify({
+            selector: {
+              decoratorName: 'test-decorator',
+              featureName: 'test-feature',
+              environment: 'test',
+              tags: [
+                {
+                  key: 'test-tag',
+                  value: 'test tag value'
+                },
+                {
+                  key: 'another-test-tag',
+                  value: 'another test tag value'
+                }
+              ]
+            },
+            clientId: 'test-client-id',
+            priorityBoost: 5
+          }),
           method: 'POST'
         }
       )
@@ -409,11 +498,68 @@ describe('createRestHubService', async () => {
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/quota/lease?s.decoratorName=test-decorator&s.featureName=test-feature&s.environment=test&clientId=test-client-id&priorityBoost=5'),
+        new URL('https://url.to.hub/v1/quota/lease'),
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
           },
+          body: JSON.stringify({
+            selector: {
+              decoratorName: 'test-decorator',
+              featureName: 'test-feature',
+              environment: 'test'
+            },
+            clientId: 'test-client-id',
+            priorityBoost: 5
+          }),
+          method: 'POST'
+        }
+      )
+    })
+
+    it('should call fetch with proper params - including tags', async () => {
+      await getTokenLease({
+        decorator: 'test-decorator',
+        feature: 'test-feature',
+        priorityBoost: 5,
+        tags: [
+          {
+            key: 'test-tag',
+            value: 'test tag value'
+          },
+          {
+            key: 'another-test-tag',
+            value: 'another test tag value'
+          }
+        ]
+      })
+
+      expect(fetchMock).toHaveBeenCalledOnce()
+      expect(fetchMock).toHaveBeenCalledWith(
+        new URL('https://url.to.hub/v1/quota/lease'),
+        {
+          headers: {
+            'X-Stanza-Key': 'valid-api-key'
+          },
+          body: JSON.stringify({
+            selector: {
+              decoratorName: 'test-decorator',
+              featureName: 'test-feature',
+              environment: 'test',
+              tags: [
+                {
+                  key: 'test-tag',
+                  value: 'test tag value'
+                },
+                {
+                  key: 'another-test-tag',
+                  value: 'another test tag value'
+                }
+              ]
+            },
+            clientId: 'test-client-id',
+            priorityBoost: 5
+          }),
           method: 'POST'
         }
       )
@@ -511,10 +657,12 @@ describe('createRestHubService', async () => {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
           },
-          body: JSON.stringify([{
-            token: 'test-token',
-            decorator: 'test-decorator'
-          }]),
+          body: JSON.stringify({
+            tokens: [{
+              token: 'test-token',
+              decorator: 'test-decorator'
+            }]
+          }),
           method: 'POST'
         }
       )
@@ -602,11 +750,14 @@ describe('createRestHubService', async () => {
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/quota/consumed?tokens=test-token-one&tokens=test-token-two'),
+        new URL('https://url.to.hub/v1/quota/consumed'),
         {
           headers: {
             'X-Stanza-Key': 'valid-api-key'
           },
+          body: JSON.stringify({
+            tokens: ['test-token-one', 'test-token-two']
+          }),
           method: 'POST'
         }
       )

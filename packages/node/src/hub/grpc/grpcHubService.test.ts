@@ -213,7 +213,7 @@ describe('createGrpcHubService', async () => {
       expect(configClientMock.getDecoratorConfig).toHaveBeenCalledOnce()
       expect(configClientMock.getDecoratorConfig).toHaveBeenCalledWith(
         {
-          s: {
+          selector: {
             decoratorName: 'test-decorator',
             serviceName: 'TestService',
             serviceRelease: '1',
@@ -232,7 +232,7 @@ describe('createGrpcHubService', async () => {
       expect(configClientMock.getDecoratorConfig).toHaveBeenCalledOnce()
       expect(configClientMock.getDecoratorConfig).toHaveBeenCalledWith(
         {
-          s: {
+          selector: {
             decoratorName: 'test-decorator',
             serviceName: 'TestService',
             serviceRelease: '1',
@@ -340,7 +340,7 @@ describe('createGrpcHubService', async () => {
         {
           clientId: 'test-client-id',
           priorityBoost: 5,
-          s: {
+          selector: {
             decoratorName: 'test-decorator',
             featureName: 'test-feature',
             environment: 'test'
@@ -371,7 +371,7 @@ describe('createGrpcHubService', async () => {
         {
           clientId: 'test-client-id',
           priorityBoost: 5,
-          s: {
+          selector: {
             decoratorName: 'test-decorator',
             featureName: 'test-feature',
             environment: 'test',
@@ -399,7 +399,7 @@ describe('createGrpcHubService', async () => {
       expect(quotaClientMock.getToken).toHaveBeenCalledWith(
         {
           clientId: 'test-client-id',
-          s: {
+          selector: {
             decoratorName: 'test-decorator',
             environment: 'test'
           }
@@ -482,7 +482,7 @@ describe('createGrpcHubService', async () => {
         {
           clientId: 'test-client-id',
           priorityBoost: 5,
-          s: {
+          selector: {
             decoratorName: 'test-decorator',
             featureName: 'test-feature',
             environment: 'test'
@@ -513,7 +513,7 @@ describe('createGrpcHubService', async () => {
         {
           clientId: 'test-client-id',
           priorityBoost: 5,
-          s: {
+          selector: {
             decoratorName: 'test-decorator',
             featureName: 'test-feature',
             environment: 'test',
@@ -541,7 +541,7 @@ describe('createGrpcHubService', async () => {
       expect(quotaClientMock.getTokenLease).toHaveBeenCalledWith(
         {
           clientId: 'test-client-id',
-          s: {
+          selector: {
             decoratorName: 'test-decorator',
             environment: 'test'
           }

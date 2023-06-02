@@ -21,12 +21,15 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
     getServiceMetadata: () => ({ serviceName, environment, clientId }),
     fetchServiceConfig: async ({ lastVersionSeen } = {}) => {
       const serviceConfigResult = await hubRequest('v1/config/service', {
-        searchParams: {
-          'service.name': serviceName,
-          'service.release': serviceRelease,
-          'service.environment': environment,
-          versionSeen: lastVersionSeen
-        }
+        body: {
+          versionSeen: lastVersionSeen,
+          service: {
+            name: serviceName,
+            release: serviceRelease,
+            environment
+          }
+        },
+        method: 'POST'
       }, serviceConfigResponse)
 
       if (serviceConfigResult === null || !serviceConfigResult.configDataSent) {
@@ -40,13 +43,16 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
     },
     fetchDecoratorConfig: async ({ decorator, lastVersionSeen }) => {
       const decoratorConfigResult = await hubRequest('v1/config/decorator', {
-        searchParams: {
-          's.decoratorName': decorator,
-          's.serviceName': serviceName,
-          's.serviceRelease': serviceRelease,
-          's.environment': environment,
-          versionSeen: lastVersionSeen
-        }
+        body: {
+          versionSeen: lastVersionSeen,
+          selector: {
+            decoratorName: decorator,
+            serviceName,
+            serviceRelease,
+            environment
+          }
+        },
+        method: 'POST'
       }, decoratorConfigResponse)
 
       if (decoratorConfigResult === null || !decoratorConfigResult.configDataSent) {
@@ -58,27 +64,33 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
         version: decoratorConfigResult.version
       }
     },
-    getToken: async ({ decorator, feature, priorityBoost }) => {
+    getToken: async ({ decorator, feature, priorityBoost, tags }) => {
       return hubRequest('v1/quota/token', {
         method: 'POST',
-        searchParams: {
-          's.decoratorName': decorator,
-          's.featureName': feature,
-          's.environment': environment,
+        body: {
+          selector: {
+            decoratorName: decorator,
+            featureName: feature,
+            environment,
+            tags
+          },
           clientId,
-          priorityBoost: priorityBoost?.toFixed(0)
+          priorityBoost
         }
       }, stanzaTokenResponse)
     },
-    getTokenLease: async ({ decorator, feature, priorityBoost }) => {
+    getTokenLease: async ({ decorator, feature, priorityBoost, tags }) => {
       const response = await hubRequest('v1/quota/lease', {
         method: 'POST',
-        searchParams: {
-          's.decoratorName': decorator,
-          's.featureName': feature,
-          's.environment': environment,
+        body: {
+          selector: {
+            decoratorName: decorator,
+            featureName: feature,
+            environment,
+            tags
+          },
           clientId,
-          priorityBoost: priorityBoost?.toFixed(0)
+          priorityBoost
         }
       }, stanzaTokenLeaseResponse)
       const now = Date.now()
@@ -104,17 +116,19 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
     validateToken: async ({ token, decorator }) => {
       const response = await hubRequest('v1/quota/validatetoken', {
         method: 'POST',
-        body: [{
-          token,
-          decorator
-        }]
+        body: {
+          tokens: [{
+            token,
+            decorator
+          }]
+        }
       }, stanzaValidateTokenResponse)
       return response?.tokensValid?.[0] ?? null
     },
     markTokensAsConsumed: async ({ tokens }) => {
       const response = await hubRequest('v1/quota/consumed', {
         method: 'POST',
-        searchParams: {
+        body: {
           tokens
         }
       }, stanzaMarkTokensAsConsumedResponse)
