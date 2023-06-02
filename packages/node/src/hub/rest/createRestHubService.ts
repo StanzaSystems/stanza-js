@@ -64,28 +64,30 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
         version: decoratorConfigResult.version
       }
     },
-    getToken: async ({ decorator, feature, priorityBoost }) => {
+    getToken: async ({ decorator, feature, priorityBoost, tags }) => {
       return hubRequest('v1/quota/token', {
         method: 'POST',
         body: {
           selector: {
             decoratorName: decorator,
             featureName: feature,
-            environment
+            environment,
+            tags
           },
           clientId,
           priorityBoost
         }
       }, stanzaTokenResponse)
     },
-    getTokenLease: async ({ decorator, feature, priorityBoost }) => {
+    getTokenLease: async ({ decorator, feature, priorityBoost, tags }) => {
       const response = await hubRequest('v1/quota/lease', {
         method: 'POST',
         body: {
           selector: {
             decoratorName: decorator,
             featureName: feature,
-            environment
+            environment,
+            tags
           },
           clientId,
           priorityBoost

@@ -374,6 +374,54 @@ describe('createRestHubService', async () => {
       )
     })
 
+    it('should call fetch with proper params - including tags', async () => {
+      await getToken({
+        decorator: 'test-decorator',
+        feature: 'test-feature',
+        priorityBoost: 5,
+        tags: [
+          {
+            key: 'test-tag',
+            value: 'test tag value'
+          },
+          {
+            key: 'another-test-tag',
+            value: 'another test tag value'
+          }
+        ]
+      })
+
+      expect(fetchMock).toHaveBeenCalledOnce()
+      expect(fetchMock).toHaveBeenCalledWith(
+        new URL('https://url.to.hub/v1/quota/token'),
+        {
+          headers: {
+            'X-Stanza-Key': 'valid-api-key'
+          },
+          body: JSON.stringify({
+            selector: {
+              decoratorName: 'test-decorator',
+              featureName: 'test-feature',
+              environment: 'test',
+              tags: [
+                {
+                  key: 'test-tag',
+                  value: 'test tag value'
+                },
+                {
+                  key: 'another-test-tag',
+                  value: 'another test tag value'
+                }
+              ]
+            },
+            clientId: 'test-client-id',
+            priorityBoost: 5
+          }),
+          method: 'POST'
+        }
+      )
+    })
+
     it('should return null if invalid data returned', async () => {
       const result = await getToken({ decorator: 'test-decorator' })
 
@@ -460,6 +508,54 @@ describe('createRestHubService', async () => {
               decoratorName: 'test-decorator',
               featureName: 'test-feature',
               environment: 'test'
+            },
+            clientId: 'test-client-id',
+            priorityBoost: 5
+          }),
+          method: 'POST'
+        }
+      )
+    })
+
+    it('should call fetch with proper params - including tags', async () => {
+      await getTokenLease({
+        decorator: 'test-decorator',
+        feature: 'test-feature',
+        priorityBoost: 5,
+        tags: [
+          {
+            key: 'test-tag',
+            value: 'test tag value'
+          },
+          {
+            key: 'another-test-tag',
+            value: 'another test tag value'
+          }
+        ]
+      })
+
+      expect(fetchMock).toHaveBeenCalledOnce()
+      expect(fetchMock).toHaveBeenCalledWith(
+        new URL('https://url.to.hub/v1/quota/lease'),
+        {
+          headers: {
+            'X-Stanza-Key': 'valid-api-key'
+          },
+          body: JSON.stringify({
+            selector: {
+              decoratorName: 'test-decorator',
+              featureName: 'test-feature',
+              environment: 'test',
+              tags: [
+                {
+                  key: 'test-tag',
+                  value: 'test tag value'
+                },
+                {
+                  key: 'another-test-tag',
+                  value: 'another test tag value'
+                }
+              ]
             },
             clientId: 'test-client-id',
             priorityBoost: 5

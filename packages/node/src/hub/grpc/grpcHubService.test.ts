@@ -371,7 +371,7 @@ describe('createGrpcHubService', async () => {
         {
           clientId: 'test-client-id',
           priorityBoost: 5,
-          s: {
+          selector: {
             decoratorName: 'test-decorator',
             featureName: 'test-feature',
             environment: 'test',
@@ -513,7 +513,7 @@ describe('createGrpcHubService', async () => {
         {
           clientId: 'test-client-id',
           priorityBoost: 5,
-          s: {
+          selector: {
             decoratorName: 'test-decorator',
             featureName: 'test-feature',
             environment: 'test',
