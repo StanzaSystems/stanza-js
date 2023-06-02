@@ -53,12 +53,13 @@ const featuresStatic = [
 ]
 let count = 0
 export const handlers = [
-  rest.get('https://hub.dev.getstanza.dev/v1/context/browser', async (req, res, ctx) => {
+  rest.post('https://hub.dev.getstanza.dev/v1/context/browser', async (req, res, ctx) => {
     // adding artificial delay to respond
     await new Promise(resolve => setTimeout(resolve, 500))
     count++
-    const features = req.url.searchParams.getAll('feature.names')
-    const environment = req.url.searchParams.get('feature.environment')
+    const reqJson = await req.json()
+    const features = reqJson.feature.names
+    const environment = reqJson.feature.environment
     if (environment == null) {
       return res(
         ctx.status(400)

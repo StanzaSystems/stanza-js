@@ -46,7 +46,7 @@ app.get('/ping', (req, res) => {
   res.status(200).send('pong')
 })
 
-app.get('/v1/context/browser', (_req, res) => {
+app.post('/v1/context/browser', (_req, res) => {
   res.status(200).send({
     featureConfigs: Array.from(featureConfigs.values())
   } satisfies ApiFeaturesResponse)
