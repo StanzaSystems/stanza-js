@@ -17,13 +17,23 @@ const browserFeaturesCache: ApiFeatureStateCache = new Map()
 
 export async function fetchApiFeaturesStates (features: string[]): Promise<ApiFeatureState[]> {
   const { stanzaApiKey } = getConfig()
-  const browserFeaturesUrl = getBrowserFeaturesUrl(features)
-  const existingETag = browserFeaturesCache.get(browserFeaturesUrl)?.eTag
+  const { url, environment } = getConfig()
+  const browserFeaturesUrl = `${url}/v1/context/browser`
+  const body = JSON.stringify({
+    feature: {
+      environment,
+      names: features
+    }
+  })
+  const cacheKey = body
+  const existingETag = browserFeaturesCache.get(cacheKey)?.eTag
   const response = await fetch(browserFeaturesUrl, {
     headers: {
       'X-Stanza-Key': stanzaApiKey,
       ...(existingETag !== undefined ? { 'If-None-Match': existingETag } : {})
-    }
+    },
+    body,
+    method: 'POST'
   }).catch((e) => {
     console.log(e)
   })
@@ -32,25 +42,15 @@ export async function fetchApiFeaturesStates (features: string[]): Promise<ApiFe
     return []
   }
   if (response.status === 304) {
-    return browserFeaturesCache.get(browserFeaturesUrl)?.featureStates ?? []
+    return browserFeaturesCache.get(cacheKey)?.featureStates ?? []
   }
   if (response.status === 200) {
     const data: ApiFeaturesResponse = await response?.json()
     const featureStates = (data?.featureConfigs ?? [])
     const responseETag = response.headers.get('ETag') ?? undefined
-    browserFeaturesCache.set(browserFeaturesUrl, { featureStates, eTag: responseETag })
+    browserFeaturesCache.set(cacheKey, { featureStates, eTag: responseETag })
     return featureStates
   }
   // TODO: should we throw we receive unexpected status code?
   return []
-}
-
-function getBrowserFeaturesUrl (features: string[]): string {
-  const { url, environment } = getConfig()
-  const params = new URLSearchParams()
-  features.forEach(s => {
-    params.append('feature.names', s)
-  })
-  params.append('feature.environment', environment)
-  return `${url}/v1/context/browser?${params.toString()}`
 }

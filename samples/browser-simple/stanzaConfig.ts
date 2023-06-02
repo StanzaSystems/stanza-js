@@ -1,7 +1,7 @@
 import type { StanzaCoreConfig } from '@getstanza/core'
 
 const config: StanzaCoreConfig = {
-  url: 'https://hub.dev.getstanza.dev',
+  url: process.env.STANZA_HUB_ADDRESS ?? 'http://localhost:9010',
   environment: 'local',
   stanzaApiKey: 'valid-api-key',
   contextConfigs: [
@@ -11,7 +11,7 @@ const config: StanzaCoreConfig = {
     },
     {
       name: 'details',
-      features: ['productSummary', 'pricing', 'shipping', 'checkout']
+      features: ['productSummary', 'shipping', 'checkout']
     }
   ],
   refreshSeconds: 3
