@@ -9,16 +9,23 @@ export interface FetchDecoratorConfigOptions {
   lastVersionSeen?: string
 }
 
+export interface Tag {
+  key: string
+  value: string
+}
+
 interface GetTokenOptions {
   decorator: string
   feature?: string
   priorityBoost?: number
+  tags?: Tag[]
 }
 
 interface GetTokenLeaseOptions {
   decorator: string
   feature?: string
   priorityBoost?: number
+  tags?: Tag[]
 }
 
 interface ValidateTokenOptions {

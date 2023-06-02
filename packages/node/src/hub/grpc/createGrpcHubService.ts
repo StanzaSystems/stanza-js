@@ -85,7 +85,8 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
         s: {
           featureName: options.feature,
           decoratorName: options.decorator,
-          environment
+          environment,
+          tags: options.tags
         }
       }), stanzaTokenResponse)
     },
@@ -96,7 +97,8 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
         s: {
           featureName: options.feature,
           decoratorName: options.decorator,
-          environment
+          environment,
+          tags: options.tags
         }
       }), stanzaTokenLeaseResponse)
 
