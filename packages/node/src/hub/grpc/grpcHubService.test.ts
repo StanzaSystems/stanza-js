@@ -182,7 +182,7 @@ describe('createGrpcHubService', async () => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(1000)
+      await vi.advanceTimersByTimeAsync(2000)
       expect.assertions(1)
 
       vi.useRealTimers()
@@ -303,7 +303,7 @@ describe('createGrpcHubService', async () => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(1000)
+      await vi.advanceTimersByTimeAsync(2000)
       expect.assertions(1)
 
       vi.useRealTimers()
@@ -445,7 +445,7 @@ describe('createGrpcHubService', async () => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(1000)
+      await vi.advanceTimersByTimeAsync(2000)
       expect.assertions(1)
 
       vi.useRealTimers()
@@ -607,7 +607,7 @@ describe('createGrpcHubService', async () => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(1000)
+      await vi.advanceTimersByTimeAsync(2000)
       expect.assertions(1)
 
       vi.useRealTimers()
@@ -694,7 +694,7 @@ describe('createGrpcHubService', async () => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(1000)
+      await vi.advanceTimersByTimeAsync(2000)
       expect.assertions(1)
 
       vi.useRealTimers()
@@ -762,7 +762,7 @@ describe('createGrpcHubService', async () => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(1000)
+      await vi.advanceTimersByTimeAsync(2000)
       expect.assertions(1)
 
       vi.useRealTimers()
