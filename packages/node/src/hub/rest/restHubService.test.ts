@@ -132,13 +132,11 @@ describe('createRestHubService', async () => {
             config: {
               traceConfig: {
                 collectorUrl: 'https://url.to.trace.collector',
-                collectorKey: 'trace-collector-key',
                 overrides: [],
                 sampleRateDefault: 0.5
               },
               metricConfig: {
-                collectorUrl: 'https://url.to.metric.collector',
-                collectorKey: 'metric-collector-key'
+                collectorUrl: 'https://url.to.metric.collector'
               },
               sentinelConfig: {
                 circuitbreakerRulesJson: 'circuitbreakerRulesJson',
@@ -158,13 +156,11 @@ describe('createRestHubService', async () => {
         config: {
           traceConfig: {
             collectorUrl: 'https://url.to.trace.collector',
-            collectorKey: 'trace-collector-key',
             overrides: [],
             sampleRateDefault: 0.5
           },
           metricConfig: {
-            collectorUrl: 'https://url.to.metric.collector',
-            collectorKey: 'metric-collector-key'
+            collectorUrl: 'https://url.to.metric.collector'
           },
           sentinelConfig: {
             circuitbreakerRulesJson: 'circuitbreakerRulesJson',
@@ -290,7 +286,6 @@ describe('createRestHubService', async () => {
               validateIngressTokens: false,
               traceConfig: {
                 collectorUrl: 'https://url.to.trace.collector',
-                collectorKey: 'trace-collector-key',
                 overrides: [],
                 sampleRateDefault: 0.5
               }
@@ -309,7 +304,6 @@ describe('createRestHubService', async () => {
           validateIngressTokens: false,
           traceConfig: {
             collectorUrl: 'https://url.to.trace.collector',
-            collectorKey: 'trace-collector-key',
             overrides: [],
             sampleRateDefault: 0.5
           }

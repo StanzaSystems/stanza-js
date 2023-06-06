@@ -39,7 +39,6 @@ const mockServiceConfig = {
   config: {
     traceConfig: {
       collectorUrl: 'https://test.collector',
-      collectorKey: 'test-collector-key',
       sampleRateDefault: 1,
       overrides: []
     }
@@ -51,7 +50,6 @@ const secondMockServiceConfig = {
   config: {
     traceConfig: {
       collectorUrl: 'https://test2.collector',
-      collectorKey: 'test2-collector-key',
       sampleRateDefault: 0.9,
       overrides: []
     }
@@ -63,7 +61,6 @@ const mockDecoratorConfig = {
   config: {
     traceConfig: {
       collectorUrl: 'https://test.decorator.collector',
-      collectorKey: 'test-decorator-collector-key',
       sampleRateDefault: 0.1,
       overrides: []
     }

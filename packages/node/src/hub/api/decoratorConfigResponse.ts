@@ -3,7 +3,6 @@ import { z } from 'zod'
 const zNonStrictObject = z.object({}).nonstrict()
 const zTraceConfig = z.object({
   collectorUrl: z.string(),
-  collectorKey: z.string(),
   sampleRateDefault: z.number(),
   overrides: z.array(zNonStrictObject)
 })
