@@ -1,5 +1,5 @@
 config:
-  target: "http://localhost:3000"
+  target: "https://stanza-js-next-with-stripe-git-main-stanza.vercel.app"
   phases:
     - duration: 90
       arrivalRate: 30

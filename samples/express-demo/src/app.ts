@@ -1,13 +1,17 @@
-import './addInstrumentation'
-import { stanzaDecorator, StanzaDecoratorError, stanzaPriorityBoost } from '@getstanza/node'
 
-import express, { type ErrorRequestHandler, type NextFunction, type Request, type Response } from 'express'
+import { stanzaDecorator, StanzaDecoratorError } from '@getstanza/node'
+
+import express, { type ErrorRequestHandler } from 'express'
 import * as dotenv from 'dotenv'
 import cors from 'cors'
 import fetch from 'node-fetch'
 
-const app = express()
 dotenv.config()
+// must come after dotenv
+// eslint-disable-next-line import/first
+import './addInstrumentation'
+
+const app = express()
 
 const corsOptions = {
   origin: '*'
@@ -16,21 +20,31 @@ const corsOptions = {
 app.use(cors(corsOptions))
 app.use(express.json())
 
-app.use('/ping', (req, res, next) => {
-  void stanzaDecorator({
-    decorator: 'Stripe_Products_API'
-  }).call(next).catch(next)
-})
+// app.use('/account', (req, res, next) => {
+//   void stanzaDecorator({
+//     decorator: 'github_guard'
+//   }).call(next).catch(next)
+// })
 
-app.get('/ping', (req, res, next) => {
+app.get('/account/:username', (req, res, next) => {
   void (async () => {
-    console.log('Incoming headers: ping')
-    console.log(JSON.stringify(req.headers, undefined, 2))
-
-    await stanzaPriorityBoost(-1).call(async () => {
-      await fetch('http://localhost:3002/pong')
+    await stanzaDecorator({
+      decorator: 'github_guard'
+    }).call(async () => {
+      const { username } = req.params
+      try {
+        const userResponse = await fetch(`https://api.github.com/users/${username}`, {
+          headers: {
+            Authorization: `Bearer ${process.env.GITHUB_PAT}`
+          }
+        })
+        console.log(userResponse.status)
+        const user = await userResponse.json()
+        return res.status(200).send(user)
+      } catch (e) {
+        return res.status(500)
+      }
     })
-    res.status(200).send('pong')
   })().catch(next)
 })
 
