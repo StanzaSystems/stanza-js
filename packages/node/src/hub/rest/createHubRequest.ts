@@ -44,7 +44,7 @@ export const createHubRequest = ({ apiKey, hubUrl }: HubRequestInitOptions): Hub
     const parsedResult = validateRequest.safeParse(data)
 
     if (!parsedResult.success) {
-      logger.info(`request to hub failed ${JSON.stringify(parsedResult)}`, parsedResult)
+      logger.debug(`request to hub failed ${JSON.stringify(parsedResult)}`, parsedResult)
       return null
     }
 
