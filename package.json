@@ -36,6 +36,7 @@
     "samples/*"
   ],
   "dependencies": {
+    "artillery": "^2.0.0-32",
     "zod": "^3.21.4"
   }
 }

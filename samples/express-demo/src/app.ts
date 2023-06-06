@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 
 import { stanzaDecorator, StanzaDecoratorError } from '@getstanza/node'
 
-import express, { type ErrorRequestHandler } from 'express'
+import express, { type Request, type ErrorRequestHandler, type Response, type NextFunction } from 'express'
 import * as dotenv from 'dotenv'
 import cors from 'cors'
 import fetch from 'node-fetch'
@@ -20,32 +21,28 @@ const corsOptions = {
 app.use(cors(corsOptions))
 app.use(express.json())
 
-// app.use('/account', (req, res, next) => {
-//   void stanzaDecorator({
-//     decorator: 'github_guard'
-//   }).call(next).catch(next)
-// })
+app.use('/account/:username', (req: Request, res: Response, next: NextFunction) => {
+  console.log('express middleware')
+  void stanzaDecorator({
+    decorator: 'github_guard'
+  }).call(next).catch(next)
+})
 
-app.get('/account/:username', (req, res, next) => {
-  void (async () => {
-    await stanzaDecorator({
-      decorator: 'github_guard'
-    }).call(async () => {
-      const { username } = req.params
-      try {
-        const userResponse = await fetch(`https://api.github.com/users/${username}`, {
-          headers: {
-            Authorization: `Bearer ${process.env.GITHUB_PAT}`
-          }
-        })
-        console.log(userResponse.status)
-        const user = await userResponse.json()
-        return res.status(200).send(user)
-      } catch (e) {
-        return res.status(500)
-      }
+app.get('/account/:username', async (req: Request, res: Response, next: NextFunction) => {
+  const { username } = req.params
+  try {
+    const userResponse = await fetch(`https://api.github.com/users/${username}`, {
+      // headers: {
+      //   Authorization: `Bearer ${process.env.GITHUB_PAT}`
+      // }
     })
-  })().catch(next)
+    console.log(userResponse.status)
+    const user = await userResponse.json()
+    res.status(200).send(user)
+  } catch (e) {
+    res.status(500)
+    next()
+  }
 })
 
 app.get('/pong', (req, res) => {

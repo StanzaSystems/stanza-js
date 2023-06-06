@@ -23,7 +23,7 @@
     "node": ">=16"
   },
   "dependencies": {
-    "@getstanza/node": "*",
+    "@getstanza/node": "^0.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.1.3",
     "express": "4.18.2",

@@ -7,7 +7,7 @@ import { withTimeout } from '../../utils/withTimeout'
 import { hubService } from '../../global/hubService'
 import { logger } from '../../global/logger'
 
-const VALIDATE_QUOTA_TIMEOUT = 1000
+const VALIDATE_QUOTA_TIMEOUT = 2000
 
 export interface IngressTokenValidatorOptions {
   decorator: string
