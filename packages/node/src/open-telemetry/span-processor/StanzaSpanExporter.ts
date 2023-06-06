@@ -7,7 +7,6 @@ import { hubService } from '../../global/hubService'
 export class StanzaSpanExporter extends OTLPTraceExporter {
   constructor (traceConfig: ServiceConfig['config']['traceConfig']) {
     const metadata = new Metadata()
-    metadata.set('x-stanza-key', traceConfig.collectorKey)
     super({
       url: traceConfig.collectorUrl,
       metadata

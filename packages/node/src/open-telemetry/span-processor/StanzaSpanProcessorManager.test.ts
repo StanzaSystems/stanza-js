@@ -76,7 +76,6 @@ const mockServiceConfig = {
   config: {
     traceConfig: {
       collectorUrl: 'https://test.collector',
-      collectorKey: 'test-collector-key',
       sampleRateDefault: 1,
       overrides: []
     }
@@ -88,7 +87,6 @@ const secondMockServiceConfig = {
   config: {
     traceConfig: {
       collectorUrl: 'https://test2.collector',
-      collectorKey: 'test2-collector-key',
       sampleRateDefault: 0.9,
       overrides: []
     }
@@ -100,7 +98,6 @@ const mockDecoratorConfig = {
   config: {
     traceConfig: {
       collectorUrl: 'https://test.decorator.collector',
-      collectorKey: 'test-decorator-collector-key',
       sampleRateDefault: 0.1,
       overrides: []
     }
@@ -132,7 +129,6 @@ describe('StanzaSpanProcessorManager', function () {
       expect(spanProcessor).toBeInstanceOf(BatchSpanProcessor)
       expect((spanProcessor as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test.collector',
-        collectorKey: 'test-collector-key',
         sampleRateDefault: 1,
         overrides: []
       })))
@@ -147,7 +143,6 @@ describe('StanzaSpanProcessorManager', function () {
       expect(spanProcessor).toBeInstanceOf(BatchSpanProcessor)
       expect((spanProcessor as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test.collector',
-        collectorKey: 'test-collector-key',
         sampleRateDefault: 1,
         overrides: []
       })))
@@ -162,7 +157,6 @@ describe('StanzaSpanProcessorManager', function () {
       expect(spanProcessor1).toBeInstanceOf(BatchSpanProcessor)
       expect((spanProcessor1 as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test.collector',
-        collectorKey: 'test-collector-key',
         sampleRateDefault: 1,
         overrides: []
       })))
@@ -173,7 +167,6 @@ describe('StanzaSpanProcessorManager', function () {
       expect(spanProcessor2).toBeInstanceOf(BatchSpanProcessor)
       expect((spanProcessor2 as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test2.collector',
-        collectorKey: 'test2-collector-key',
         sampleRateDefault: 0.9,
         overrides: []
       })))
@@ -196,7 +189,6 @@ describe('StanzaSpanProcessorManager', function () {
       expect(spanProcessor).toBeInstanceOf(BatchSpanProcessor)
       expect((spanProcessor as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test.collector',
-        collectorKey: 'test-collector-key',
         sampleRateDefault: 1,
         overrides: []
       })))
@@ -213,7 +205,6 @@ describe('StanzaSpanProcessorManager', function () {
       expect(spanProcessor).toBeInstanceOf(BatchSpanProcessor)
       expect((spanProcessor as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test.decorator.collector',
-        collectorKey: 'test-decorator-collector-key',
         sampleRateDefault: 0.1,
         overrides: []
       })))
@@ -229,7 +220,6 @@ describe('StanzaSpanProcessorManager', function () {
       expect(spanProcessor1).toBeInstanceOf(BatchSpanProcessor)
       expect((spanProcessor1 as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test.collector',
-        collectorKey: 'test-collector-key',
         sampleRateDefault: 1,
         overrides: []
       })))
@@ -240,7 +230,6 @@ describe('StanzaSpanProcessorManager', function () {
       expect(spanProcessor2).toBeInstanceOf(BatchSpanProcessor)
       expect((spanProcessor2 as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test.decorator.collector',
-        collectorKey: 'test-decorator-collector-key',
         sampleRateDefault: 0.1,
         overrides: []
       })))
@@ -258,7 +247,6 @@ describe('StanzaSpanProcessorManager', function () {
       expect(spanProcessor1).toBeInstanceOf(BatchSpanProcessor)
       expect((spanProcessor1 as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test.decorator.collector',
-        collectorKey: 'test-decorator-collector-key',
         sampleRateDefault: 0.1,
         overrides: []
       })))
@@ -269,7 +257,6 @@ describe('StanzaSpanProcessorManager', function () {
       expect(spanProcessor2).toBeInstanceOf(BatchSpanProcessor)
       expect((spanProcessor2 as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test.decorator.collector',
-        collectorKey: 'test-decorator-collector-key',
         sampleRateDefault: 0.1,
         overrides: []
       })))

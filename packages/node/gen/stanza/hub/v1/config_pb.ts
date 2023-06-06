@@ -8,9 +8,7 @@ import { Message, proto3 } from "@bufbuild/protobuf";
 import { DecoratorServiceSelector, FeatureSelector, ServiceSelector } from "./common_pb.js";
 
 /**
- * GetDecoratorConfigRequest is the request from Backend SDKs to Hub for an decorator's config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen/. Configurations may be large; we will not re-send them unless they have changed. Decorator configurations may vary between envs. Decorator configurations are SHARED between Services, but may be overridden for specific Services.
- *
- * Required Header: X-Stanza-Key
+ * Request from Backend SDKs for a Decorator Config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed. Decorator configurations may vary between environments but are SHARED between Services.
  *
  * @generated from message stanza.hub.v1.GetDecoratorConfigRequest
  */
@@ -59,9 +57,7 @@ export class GetDecoratorConfigRequest extends Message<GetDecoratorConfigRequest
 }
 
 /**
- * GetDecoratorConfigResponse is the response from Hub to Backend SDKs.
- * Note that `config_data_sent` will be false and `config` will be empty if we did not have a newer config
- * version than `version_seen`.
+ * The response from Hub to Backend SDKs. Note that `config_data_sent` will be false and `config` will be empty if we did not have a newer config version than `version_seen`.
  *
  * @generated from message stanza.hub.v1.GetDecoratorConfigResponse
  */
@@ -188,19 +184,13 @@ export class DecoratorConfig extends Message<DecoratorConfig> {
 }
 
 /**
- * GetBrowserContextRequest is the request from Browser SDKs to Hub for a browser config.
- * SDKs are expected to periodically poll, giving the version of the most recent configuration seen.
- * Configurations may be large; we will not re-send them unless they have changed.
- * If no feature_names are specified, all Features belonging to the organisation will be returned.
- *
- * Required Header: X-Stanza-Key
- * Optional Header: etag
+ * The request from Browser SDKs for a Browser Context. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed.
  *
  * @generated from message stanza.hub.v1.GetBrowserContextRequest
  */
 export class GetBrowserContextRequest extends Message<GetBrowserContextRequest> {
   /**
-   * Information required to select and return the most recent BrowserContext version. If Feature names is nil, will return all Features in the organisation associated with the bearer token/API key, otherwise only information related to the named Features will be returned.
+   * Information required to select and return the most recent BrowserContext version. If Feature names is nil, will return all Features in the organization associated with the bearer token/API key, otherwise only information related to the named Features will be returned.
    *
    * @generated from field: stanza.hub.v1.FeatureSelector feature = 1;
    */
@@ -235,11 +225,7 @@ export class GetBrowserContextRequest extends Message<GetBrowserContextRequest> 
 }
 
 /**
- * GetBrowserConfigResponse is the response from Hub to Browser SDKs. It is designed to be cacheable for short periods. It is also designed to be shareable between multiple clients (e.g. in case of SSR or use of CDN etc).
- *
- * Returns etag header.
- *
- * May return 304 Not Modified with etag header and empty payload.
+ * The response to Browser SDKs is designed to be cacheable for short periods. It is also designed to be shareable between multiple clients (e.g. in case of SSR or use of CDN etc). May return 304 Not Modified with ETag header and empty payload.
  *
  * @generated from message stanza.hub.v1.GetBrowserContextResponse
  */
@@ -395,9 +381,7 @@ export class BrowserConfig extends Message<BrowserConfig> {
 }
 
 /**
- * GetServiceConfigRequest is the request from Backend SDKs to Hub for a service config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed.
- *
- * Required Header: X-Stanza-Key
+ * The request from Backend SDKs for a Service Config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed.
  *
  * @generated from message stanza.hub.v1.GetServiceConfigRequest
  */
@@ -446,7 +430,7 @@ export class GetServiceConfigRequest extends Message<GetServiceConfigRequest> {
 }
 
 /**
- * GetServiceConfigResponse is the response from Hub to Backend SDKs. Note that `config_data_sent` will be false and `config` will be empty if we did not have a newer config version than `version_seen`.
+ * The response to Backend SDKs. Note that `config_data_sent` will be false and `config` will be empty if we did not have a newer config version than `version_seen`.
  *
  * @generated from message stanza.hub.v1.GetServiceConfigResponse
  */
@@ -552,18 +536,11 @@ export class ServiceConfig extends Message<ServiceConfig> {
  */
 export class TraceConfig extends Message<TraceConfig> {
   /**
-   * url of OTEL collector - grpc
+   * URL of OTEL trace collector. If URL begins with http or https it will be treated as an HTTP collector, otherwise it will be treated as a gRPC collector.
    *
    * @generated from field: optional string collector_url = 1;
    */
   collectorUrl?: string;
-
-  /**
-   * send as x-stanza-key header
-   *
-   * @generated from field: optional string collector_key = 2;
-   */
-  collectorKey?: string;
 
   /**
    * default base sampling rate
@@ -593,13 +570,6 @@ export class TraceConfig extends Message<TraceConfig> {
    */
   paramSampleConfigs: ParamTraceConfig[] = [];
 
-  /**
-   * url of OTEL collector - HTTP
-   *
-   * @generated from field: optional string collector_url_http = 7;
-   */
-  collectorUrlHttp?: string;
-
   constructor(data?: PartialMessage<TraceConfig>) {
     super();
     proto3.util.initPartial(data, this);
@@ -609,12 +579,10 @@ export class TraceConfig extends Message<TraceConfig> {
   static readonly typeName = "stanza.hub.v1.TraceConfig";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "collector_url", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 2, name: "collector_key", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
     { no: 3, name: "sample_rate_default", kind: "scalar", T: 2 /* ScalarType.FLOAT */, opt: true },
     { no: 4, name: "overrides", kind: "message", T: TraceConfigOverride, repeated: true },
     { no: 5, name: "header_sample_configs", kind: "message", T: HeaderTraceConfig, repeated: true },
     { no: 6, name: "param_sample_configs", kind: "message", T: ParamTraceConfig, repeated: true },
-    { no: 7, name: "collector_url_http", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TraceConfig {
@@ -639,25 +607,11 @@ export class TraceConfig extends Message<TraceConfig> {
  */
 export class MetricConfig extends Message<MetricConfig> {
   /**
-   * url of OTEL collector - grpc
+   * URL of OTEL metric collector. If URL begins with http or https it will be treated as an HTTP collector, otherwise it will be treated as a gRPC collector.
    *
    * @generated from field: optional string collector_url = 1;
    */
   collectorUrl?: string;
-
-  /**
-   * send as x-stanza-key header
-   *
-   * @generated from field: optional string collector_key = 2;
-   */
-  collectorKey?: string;
-
-  /**
-   * url of OTEL collector - HTTP
-   *
-   * @generated from field: optional string collector_url_http = 3;
-   */
-  collectorUrlHttp?: string;
 
   constructor(data?: PartialMessage<MetricConfig>) {
     super();
@@ -668,8 +622,6 @@ export class MetricConfig extends Message<MetricConfig> {
   static readonly typeName = "stanza.hub.v1.MetricConfig";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "collector_url", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 2, name: "collector_key", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 3, name: "collector_url_http", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MetricConfig {

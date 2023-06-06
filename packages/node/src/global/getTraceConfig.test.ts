@@ -20,7 +20,6 @@ describe('getTraceConfig', function () {
   it('should get empty trace config when it is not available yet', function () {
     expect(getTraceConfig()).toEqual({
       sampleRateDefault: 0,
-      collectorKey: '',
       collectorUrl: '',
       overrides: []
     } satisfies TraceConfig)
@@ -32,7 +31,6 @@ describe('getTraceConfig', function () {
         config: {
           traceConfig: {
             collectorUrl: 'https://test.collector',
-            collectorKey: 'test-key',
             sampleRateDefault: 0.05,
             overrides: []
           },
@@ -44,7 +42,6 @@ describe('getTraceConfig', function () {
 
     expect(getTraceConfig()).toEqual({
       collectorUrl: 'https://test.collector',
-      collectorKey: 'test-key',
       sampleRateDefault: 0.05,
       overrides: []
     } satisfies TraceConfig)
