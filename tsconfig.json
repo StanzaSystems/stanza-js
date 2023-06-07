@@ -1,20 +1,34 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "jsx": "react",
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "lib": ["ESNext", "DOM"],
-    "moduleResolution": "Node",
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "noEmit": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "skipLibCheck": true
+    "noFallthroughCasesInSwitch": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@getstanza/browser": ["packages/browser/index.ts"],
+      "@getstanza/core": ["packages/core/index.ts"],
+      "@getstanza/next": ["packages/next/index.ts"],
+      "@getstanza/next-node": ["packages/next-node/index.ts"],
+      "@getstanza/node": ["packages/node/index.ts"],
+      "@getstanza/react": ["packages/stanza-react/index.ts"]
+    }
   },
-  "include": ["samples", "packages", "mocks"]
+  "exclude": ["node_modules", "tmp"]
 }

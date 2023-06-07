@@ -1,39 +1,32 @@
-import { resolve } from 'path'
-import { defineConfig } from 'vitest/config'
-import eslint from 'vite-plugin-eslint'
-import dts from 'vite-plugin-dts'
-import { builtinModules } from "module"
+/// <reference types="vitest" />
+import { defineConfig } from 'vite'
+
+import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
-  plugins: [eslint(), dts()],
-  build: {
-    target: 'es2020',
-    lib: {
-      // Could also be a dictionary or array of multiple entry points
-      entry: resolve(__dirname, 'index.ts'),
-      name: '@getstanza/next-node',
-      // the proper extensions will be added
-      fileName: 'getstanza-next-node'
-    },
-    sourcemap: true,
-    rollupOptions: {
-      external: [
-        ...builtinModules,
-        ...builtinModules.map(m => `node:${m}`),
-        /^@getstanza\/.*/,
-      ],
-      output: {
-        globals: builtinModules.reduce((g, m) => {
-          g[`node:${m}`] = m
-          return g
-        }, {} as Record<string, string>)
-      }
-    }
-  },
+  cacheDir: '../../node_modules/.vite/next-node',
+
+  plugins: [
+    viteTsConfigPaths({
+      root: '../../'
+    })
+  ],
+
+  // Uncomment this if you are using workers.
+  // worker: {
+  //  plugins: [
+  //    viteTsConfigPaths({
+  //      root: '../../',
+  //    }),
+  //  ],
+  // },
+
   test: {
-    coverage: {
-      reporter: [['lcov', {'projectRoot': '../..'}]],
-      reportsDirectory: '../../coverage/packages/next-node'
+    globals: true,
+    cache: {
+      dir: '../../node_modules/.vitest'
     },
+    environment: 'jsdom',
+    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}']
   }
 })

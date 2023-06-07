@@ -59,7 +59,7 @@ export class StanzaInstrumentation extends InstrumentationBase {
     this.initTelemetryMetrics()
   }
 
-  protected _updateMetricInstruments () {
+  protected override _updateMetricInstruments () {
     this.metrics = {
       request: this.updateRequestMetrics(),
       config: this.updateConfigMetrics(),

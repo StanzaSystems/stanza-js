@@ -9,7 +9,7 @@ export const init = async (options: Partial<StanzaInitOptions> = {}) => {
     if (e instanceof TypeError) {
       logger.warn(e.message)
     } else {
-      logger.warn('Failed to init the Stanza SDK:', e instanceof Error ? e.message : e)
+      logger.warn('Failed to init the Stanza SDK:' + (e instanceof Error ? e.message : e))
     }
   }
   logger.info('Stanza initialized')

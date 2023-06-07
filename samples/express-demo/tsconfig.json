@@ -1,18 +1,16 @@
 {
-  "extends": "@tsconfig/recommended/tsconfig.json",
+  "extends": "../../tsconfig.json",
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ],
   "compilerOptions": {
-    "sourceMap": true,
-    "outDir": "dist",
-    "strict": true,
-    "lib": ["esnext"],
-    "strictFunctionTypes": true,
-    "noImplicitThis": true,
-    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
-  },
-  "include": ["src", "prisma"],
-  "exclude": ["node_modules"],
-  "ts-node": {
-    "transpileOnly": true
   }
 }

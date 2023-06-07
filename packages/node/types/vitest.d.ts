@@ -7,7 +7,7 @@ interface CustomMatchers {
 }
 
 declare global {
-  namespace Vi {
+  namespace Chai {
     interface Assertion extends CustomMatchers {
     }
 

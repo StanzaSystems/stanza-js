@@ -1,7 +1,8 @@
 export async function register () {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { init } = require('@getstanza/node')
+    const { init } = await import('@getstanza/node')
+
     console.log(`Stanza URL for instrumentation: ${process.env.NEXT_PUBLIC_STANZA_API}`)
     await init({
       hubUrl: process.env.NEXT_PUBLIC_STANZA_API ?? 'https://hub.demo.getstanza.io',
