@@ -52,13 +52,13 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
           environment
         }
       }
-      logger.debug(`fetching decorator config with body ${JSON.stringify(body)}`)
+      logger.debug('fetching decorator config with body %o', body)
       const decoratorConfigResult = await hubRequest('v1/config/decorator', {
         body,
         method: 'POST'
       }, decoratorConfigResponse)
 
-      logger.debug(`fetched decorator config result ${JSON.stringify(decoratorConfigResult)}`)
+      logger.debug('fetched decorator config result: %o', decoratorConfigResult)
 
       if (decoratorConfigResult === null || !decoratorConfigResult.configDataSent) {
         return null

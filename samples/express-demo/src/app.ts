@@ -5,12 +5,13 @@ import { stanzaDecorator, StanzaDecoratorError } from '@getstanza/node'
 import express, { type Request, type ErrorRequestHandler, type Response, type NextFunction } from 'express'
 import * as dotenv from 'dotenv'
 import cors from 'cors'
-import fetch from 'node-fetch'
 
 dotenv.config()
 // must come after dotenv
 // eslint-disable-next-line import/first
 import './addInstrumentation'
+// eslint-disable-next-line import/first
+import fetch from 'node-fetch'
 
 const app = express()
 
@@ -32,11 +33,11 @@ app.get('/account/:username', async (req: Request, res: Response, next: NextFunc
   const { username } = req.params
   try {
     const userResponse = await fetch(`https://api.github.com/users/${username}`, {
-      // headers: {
-      //   Authorization: `Bearer ${process.env.GITHUB_PAT}`
-      // }
+      headers: {
+        Authorization: `Bearer ${process.env.GITHUB_PAT}`
+      }
     })
-    console.log(userResponse.status)
+
     const user = await userResponse.json()
     res.status(200).send(user)
   } catch (e) {

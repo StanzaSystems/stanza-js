@@ -4,7 +4,7 @@ import { initDecoratorGuard } from './guard'
 import { logger } from '../global/logger'
 
 export const initDecorator = (options: StanzaDecoratorOptions) => {
-  logger.info('intializing decorator with options', options)
+  logger.info('intializing decorator with options: %o', options)
   startPollingDecoratorConfig(options.decorator)
 
   return initDecoratorGuard(options)
