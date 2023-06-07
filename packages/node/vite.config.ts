@@ -29,7 +29,7 @@ export default defineConfig({
     environment: 'jsdom',
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     coverage: {
-      reporter: [['lcov', { projectRoot: '../..' }]],
+      reporter: [['lcov', { projectRoot: '.' }]],
       reportsDirectory: '../../coverage/packages/node',
       exclude: [
         'src/gen/**',
