@@ -1,29 +1,9 @@
 {
   "name": "browser-simple",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
-  "main": "src/main.ts",
-  "scripts": {
-    "dev": "vite",
-    "lint": "eslint .",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/StanzaSystems/stanza-js.git"
-  },
-  "author": "",
+  "author": "Stanza",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/StanzaSystems/stanza-js/issues"
-  },
-  "homepage": "https://github.com/StanzaSystems/stanza-js#readme",
-  "dependencies": {
-    "json-server": "^0.17.1",
-    "@getstanza/browser": "*",
-    "@getstanza/core": "*"
-  },
   "msw": {
     "workerDirectory": "public"
   }
