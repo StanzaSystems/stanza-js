@@ -8,7 +8,7 @@
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
-    "project": ["./**/tsconfig.lib.json", "./**/tsconfig.spec.json"]
+    "project": ["./**/tsconfig.app.json", "./**/tsconfig.lib.json", "./**/tsconfig.spec.json"]
   },
   "overrides": [
     {
@@ -51,13 +51,9 @@
       "rules": {
         "@typescript-eslint/restrict-template-expressions": ["error", { "allowNullish": true, "allowNumber": true }],
         "@typescript-eslint/return-await": ["error", "in-try-catch"],
-        "@typescript-eslint/explicit-function-return-type": 0
-      }
-    },
-    {
-      "files": ["*.test.ts", "*.test.tsx"],
-      "rules": {
-        "@typescript-eslint/no-explicit-any": 0
+        "@typescript-eslint/explicit-function-return-type": 0,
+        "@typescript-eslint/no-explicit-any": 0,
+        "@typescript-eslint/no-empty-function": 0
       }
     }
   ]

@@ -18,8 +18,7 @@
         "@next/next/no-html-link-for-pages": [
           "error",
           "samples/next-with-stripe/pages"
-        ],
-        "@typescript-eslint/no-empty-function": 0
+        ]
       }
     },
     {
