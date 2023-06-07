@@ -1,0 +1,72 @@
+{
+  "name": "react-simple",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "samples/react-simple/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/samples/react-simple"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "react-simple:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "react-simple:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "react-simple:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "preview": {
+      "executor": "@nx/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "react-simple:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "react-simple:build:development"
+        },
+        "production": {
+          "buildTarget": "react-simple:build:production"
+        }
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["coverage/samples/react-simple"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/samples/react-simple"
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["samples/react-simple/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": []
+}

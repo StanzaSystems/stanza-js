@@ -42,10 +42,18 @@
   "generators": {
     "@nx/react": {
       "application": {
+        "style": "css",
+        "linter": "eslint",
+        "bundler": "vite",
         "babel": true
       },
       "library": {
+        "style": "css",
+        "linter": "eslint",
         "unitTestRunner": "jest"
+      },
+      "component": {
+        "style": "css"
       }
     },
     "@nx/next": {
