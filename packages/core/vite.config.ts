@@ -1,5 +1,4 @@
-/// <reference types="vitest" />
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
@@ -28,6 +27,10 @@ export default defineConfig({
       dir: '../../node_modules/.vitest'
     },
     environment: 'jsdom',
-    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}']
+    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    coverage: {
+      reporter: [['lcov', { projectRoot: '../..' }]],
+      reportsDirectory: '../../coverage/packages/core'
+    }
   }
 })

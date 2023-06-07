@@ -92,7 +92,7 @@ describe('Stanza init', function () {
 
       await init()
 
-      expect(warnSpy).not.toHaveBeenCalledOnce()
+      expect(warnSpy).not.toHaveBeenCalledWith('Provided options are invalid')
     })
   })
 })
