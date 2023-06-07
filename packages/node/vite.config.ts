@@ -32,7 +32,7 @@ export default defineConfig({
       reporter: [['lcov', { projectRoot: '.' }]],
       reportsDirectory: '../../coverage/packages/node',
       exclude: [
-        'src/gen/**',
+        'packages/node/gen/**',
         'coverage/**',
         'dist/**',
         'packages/*/test{,s}/**',
