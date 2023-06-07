@@ -5,13 +5,17 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/next",
         "main": "packages/next/index.ts",
         "tsConfig": "packages/next/tsconfig.lib.json",
-        "assets": ["packages/next/*.md"]
+        "assets": ["packages/next/*.md"],
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "packages": "external"
+        }
       }
     },
     "publish": {

@@ -5,13 +5,17 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/browser",
         "main": "packages/browser/index.ts",
         "tsConfig": "packages/browser/tsconfig.lib.json",
-        "assets": ["packages/browser/*.md"]
+        "assets": ["packages/browser/*.md"],
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "packages": "external"
+        }
       }
     },
     "publish": {

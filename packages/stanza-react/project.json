@@ -6,13 +6,17 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/stanza-react",
-        "main": "packages/stanza-react/src/index.ts",
+        "main": "packages/stanza-react/index.ts",
         "tsConfig": "packages/stanza-react/tsconfig.lib.json",
-        "assets": ["packages/stanza-react/*.md"]
+        "assets": ["packages/stanza-react/*.md"],
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "packages": "external"
+        }
       }
     },
     "publish": {

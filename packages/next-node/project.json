@@ -12,7 +12,10 @@
         "main": "packages/next-node/index.ts",
         "tsConfig": "packages/next-node/tsconfig.lib.json",
         "assets": ["packages/next-node/*.md"],
-        "generatePackageJson": true
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "packages": "external"
+        }
       }
     },
     "publish": {
