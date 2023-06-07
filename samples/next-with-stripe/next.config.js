@@ -1,38 +1,21 @@
+//@ts-check
 /** @type {import('next').NextConfig} */
+
+const { composePlugins, withNx } = require('@nx/next');
+
 const COOKIE_PREFIX = process.env.NODE_ENV === 'development' ? '__Dev-' : '__Host-'
-
-module.exports = ({
-  reactStrictMode: true,
-  publicRuntimeConfig: {
-    stanzaEnablementNumberCookieName: `${COOKIE_PREFIX}stanza-enablement-number`,
-  },
-  experimental: {
-    instrumentationHook: true
-  },
-  transpilePackages: [
-    '@getstanza/react',
-    '@getstanza/next',
-    '@getstanza/node'
-  ],
-  webpack: (config) => {
-    config.resolve = {
-      ...config.resolve,
-      extensionAlias: {
-        '.js': ['.ts', '.js'],
-      },
-    };
-
-    return config
-  },
-})
-
 
 // Injected content via Sentry wizard below
 
 const { withSentryConfig } = require("@sentry/nextjs");
 
-module.exports = withSentryConfig(
-  module.exports,
+
+/**
+ * @param {import('next').NextConfig} config
+ * @return {any}
+ */
+const withSentryConfigPlugin = (config) => withSentryConfig(
+  config,
   {
     // For all available options, see:
     // https://github.com/getsentry/sentry-webpack-plugin#options
@@ -64,27 +47,43 @@ module.exports = withSentryConfig(
   }
 );
 
-// TODO: figure out how to integrate Nx config with our custom config above
+/**
+ * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
+ **/
+const nextConfig = {
+  nx: {
+    // Set this to true if you would like to to use SVGR
+    // See: https://github.com/gregberge/svgr
+    svgr: false,
+  },
+  reactStrictMode: true,
+  publicRuntimeConfig: {
+    stanzaEnablementNumberCookieName: `${COOKIE_PREFIX}stanza-enablement-number`,
+  },
+  experimental: {
+    instrumentationHook: true
+  },
+  transpilePackages: [
+    '@getstanza/react',
+    '@getstanza/next',
+    '@getstanza/node'
+  ],
+  webpack: (config) => {
+    config.resolve = {
+      ...config.resolve,
+      extensionAlias: {
+        '.js': ['.ts', '.js'],
+      },
+    };
 
-// //@ts-check
-//
-// // eslint-disable-next-line @typescript-eslint/no-var-requires
-// const { composePlugins, withNx } = require('@nx/next');
-//
-// /**
-//  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
-//  **/
-// const nextConfig = {
-//   nx: {
-//     // Set this to true if you would like to to use SVGR
-//     // See: https://github.com/gregberge/svgr
-//     svgr: false,
-//   },
-// };
-//
-// const plugins = [
-//   // Add more Next.js plugins to this list if needed.
-//   withNx,
-// ];
-//
-// module.exports = composePlugins(...plugins)(nextConfig);
+    return config
+  },
+};
+
+const plugins = [
+  // Add more Next.js plugins to this list if needed.
+  withNx,
+  withSentryConfigPlugin
+];
+
+module.exports = composePlugins(...plugins)(nextConfig);
