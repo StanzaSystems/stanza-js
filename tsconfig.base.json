@@ -27,7 +27,10 @@
       "@getstanza/next": ["packages/next/index.ts"],
       "@getstanza/next-node": ["packages/next-node/index.ts"],
       "@getstanza/node": ["packages/node/index.ts"],
-      "@getstanza/react": ["packages/stanza-react/index.ts"]
+      "@getstanza/react": ["packages/stanza-react/index.ts"],
+      "@getstanza/mocks-browser": ["packages/mocks/browser/src/index.ts"],
+      "@getstanza/mocks-handlers": ["packages/mocks/handlers/src/index.ts"],
+      "@getstanza/mocks-server": ["packages/mocks/server/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

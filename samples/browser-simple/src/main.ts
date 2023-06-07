@@ -2,12 +2,12 @@
 import './style.css'
 import StanzaBrowser from '@getstanza/browser'
 import { initState, updateState } from './stanzaState'
-// import { worker } from '../../../mocks/browser'
+import { worker } from '@getstanza/mocks-browser'
 
 let loadPromise: Promise<any>
 
 if (import.meta.env.MODE === 'development') {
-  loadPromise = Promise.resolve() // worker.start()
+  loadPromise = worker.start()
 } else {
   loadPromise = Promise.resolve()
 }

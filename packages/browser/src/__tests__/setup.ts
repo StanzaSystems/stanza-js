@@ -5,9 +5,7 @@ import {
 } from 'vitest'
 import { fetch } from 'cross-fetch'
 import 'vitest-localstorage-mock'
-
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import { server } from '../../../../mocks/server'
+import { server } from '@getstanza/mocks-server'
 
 // Add `fetch` polyfill.
 global.fetch = fetch

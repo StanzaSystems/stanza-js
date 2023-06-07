@@ -1,0 +1,26 @@
+{
+  "name": "mocks-browser",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/mocks/browser/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/mocks/browser",
+        "main": "packages/mocks/browser/src/index.ts",
+        "tsConfig": "packages/mocks/browser/tsconfig.lib.json",
+        "assets": ["packages/mocks/browser/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/mocks/browser/**/*.ts"]
+      }
+    }
+  },
+  "tags": []
+}

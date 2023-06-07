@@ -1,0 +1,26 @@
+{
+  "name": "mocks-server",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/mocks/server/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/mocks/server",
+        "main": "packages/mocks/server/src/index.ts",
+        "tsConfig": "packages/mocks/server/tsconfig.lib.json",
+        "assets": ["packages/mocks/server/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/mocks/server/**/*.ts"]
+      }
+    }
+  },
+  "tags": []
+}
