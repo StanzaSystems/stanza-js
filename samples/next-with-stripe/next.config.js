@@ -1,4 +1,4 @@
-//@ts-check
+// @ts-check
 /** @type {import('next').NextConfig} */
 
 const { composePlugins, withNx } = require('@nx/next');
@@ -8,7 +8,6 @@ const COOKIE_PREFIX = process.env.NODE_ENV === 'development' ? '__Dev-' : '__Hos
 // Injected content via Sentry wizard below
 
 const { withSentryConfig } = require("@sentry/nextjs");
-
 
 /**
  * @param {import('next').NextConfig} config
