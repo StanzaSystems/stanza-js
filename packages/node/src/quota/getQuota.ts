@@ -6,7 +6,7 @@ import { getDecoratorConfig } from '../global/decoratorConfig'
 import { logger } from '../global/logger'
 import { type Tag } from '../decorator/model'
 
-const CHECK_QUOTA_TIMEOUT = 1000
+const CHECK_QUOTA_TIMEOUT = 2000
 
 interface GetQuotaOptions {
   decorator: string

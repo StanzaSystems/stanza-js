@@ -1,0 +1,11 @@
+config:
+  target: "https://stanza-js-next-with-stripe-git-main-stanza.vercel.app"
+  phases:
+    - duration: 90
+      arrivalRate: 30
+ 
+scenarios:
+  - name: "Test stripe guard"
+    flow:
+      - get:
+          url: "/api/products/featured"

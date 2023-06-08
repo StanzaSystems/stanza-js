@@ -23,11 +23,11 @@
     "node": ">=16"
   },
   "dependencies": {
+    "@getstanza/node": "^0.0.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
+    "dotenv": "^16.1.3",
     "express": "4.18.2",
-    "zod": "^3.21.4",
-    "@getstanza/node": "*"
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.2",

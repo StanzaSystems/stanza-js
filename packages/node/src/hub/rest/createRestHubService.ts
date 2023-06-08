@@ -7,6 +7,7 @@ import { type HubService } from '../hubService'
 import { stanzaMarkTokensAsConsumedResponse } from '../api/stanzaMarkTokensAsConsumedResponse'
 import { type HubRequest } from '../hubRequest'
 import { wrapHubServiceWithMetrics } from '../wrapHubServiceWithMetrics'
+import { logger } from '../../global/logger'
 
 interface HubServiceInitOptions {
   serviceName: string
@@ -42,18 +43,22 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
       }
     },
     fetchDecoratorConfig: async ({ decorator, lastVersionSeen }) => {
+      const body = {
+        versionSeen: lastVersionSeen,
+        selector: {
+          decoratorName: decorator,
+          serviceName,
+          serviceRelease,
+          environment
+        }
+      }
+      logger.debug('fetching decorator config with body %o', body)
       const decoratorConfigResult = await hubRequest('v1/config/decorator', {
-        body: {
-          versionSeen: lastVersionSeen,
-          selector: {
-            decoratorName: decorator,
-            serviceName,
-            serviceRelease,
-            environment
-          }
-        },
+        body,
         method: 'POST'
       }, decoratorConfigResponse)
+
+      logger.debug('fetched decorator config result: %o', decoratorConfigResult)
 
       if (decoratorConfigResult === null || !decoratorConfigResult.configDataSent) {
         return null
