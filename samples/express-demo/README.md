@@ -32,7 +32,9 @@ npm run dev
 
 ## To call
 ```
-curl localhost:3002/account/maggiepint
+curl localhost:3002/account/maggiepint // regular priority
+curl --header "x-user-plan: free" localhost:3002/account/maggiepint // low priority
+curl --header "x-user-plan: enterprise" localhost:3002/account/maggiepint // high priority
 ```
 
 ## To run load test

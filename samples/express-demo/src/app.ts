@@ -23,9 +23,11 @@ app.use(cors(corsOptions))
 app.use(express.json())
 
 app.use('/account/:username', (req: Request, res: Response, next: NextFunction) => {
-  console.log('express middleware')
+  const plan = req.get('x-user-plan')
+  const priorityBoost = (plan === 'free') ? -1 : (plan === 'enterprise') ? 1 : 0
   void stanzaDecorator({
-    decorator: 'github_guard'
+    decorator: 'github_guard',
+    priorityBoost
   }).call(next).catch(next)
 })
 

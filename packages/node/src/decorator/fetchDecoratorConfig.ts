@@ -8,7 +8,7 @@ export async function fetchDecoratorConfig (options: FetchDecoratorConfigOptions
   const response = await hubService.fetchDecoratorConfig(options)
 
   if (response !== null) {
-    logger.debug(`fetched decorator config ${JSON.stringify(response)}`)
+    logger.debug('fetched decorator config %o', response)
     updateDecoratorConfig(options.decorator, response)
   }
 
