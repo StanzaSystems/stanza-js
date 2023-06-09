@@ -2,12 +2,12 @@
 import './style.css'
 import StanzaBrowser from '@getstanza/browser'
 import { initState, updateState } from './stanzaState'
-// import { worker } from '../../../mocks/browser'
+import { worker } from '@getstanza/mocks-browser'
 
 let loadPromise: Promise<any>
 
 if (import.meta.env.MODE === 'development') {
-  loadPromise = Promise.resolve()// worker.start()
+  loadPromise = worker.start()
 } else {
   loadPromise = Promise.resolve()
 }
@@ -32,6 +32,8 @@ StanzaBrowser.contextChanges.addChangeListener(async function (change) {
   const context = change
   // TODO: FIX - this seems to trigger the request to hub instead of just using cached values
   // const context = await StanzaBrowser.getContext('main')
+
+  console.log('change', change)
   const text = context.features.search.message ?? ''
   await updateState(document.querySelector<HTMLDivElement>('#stanzaState')!, text)
   void new Notification('Status Notifications', { body: text })

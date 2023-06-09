@@ -1,35 +1,9 @@
 {
   "name": "@getstanza/browser",
-  "version": "1.0.0",
-  "description": "",
-  "type": "module",
-  "files": [
-    "dist"
-  ],
-  "main": "./dist/getstanza-browser.umd.cjs",
-  "module": "./dist/getstanza-browser.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/getstanza-browser.js",
-      "require": "./dist/getstanza-browser.umd.cjs"
-    }
-  },
-  "scripts": {
-    "build": "tsc && vite build",
-    "dev": "vite build --mode development --watch",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "lint": "eslint ."
-  },
+  "private": true,
+  "version": "0.0.0",
+  "type": "commonjs",
+  "description": "Stanza browser integration features",
   "author": "Stanza",
-  "license": "MIT",
-  "dependencies": {
-    "@getstanza/core": "*"
-  },
-  "devDependencies": {
-    "cross-fetch": "^3.1.5",
-    "vitest-localstorage-mock": "^0.0.1"
-  }
+  "license": "MIT"
 }

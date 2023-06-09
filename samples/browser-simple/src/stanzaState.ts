@@ -1,5 +1,5 @@
 import Stanza from '@getstanza/browser'
-import { config } from '../stanzaConfig'
+import { config } from './stanzaConfig'
 
 export async function initState (element: HTMLDivElement): Promise<void> {
   Stanza.init(config)

@@ -22,7 +22,7 @@ export function formatAmountForStripe (
     currencyDisplay: 'symbol'
   })
   const parts = numberFormat.formatToParts(amount)
-  let zeroDecimalCurrency: boolean = true
+  let zeroDecimalCurrency = true
   for (const part of parts) {
     if (part.type === 'decimal') {
       zeroDecimalCurrency = false
@@ -41,7 +41,7 @@ export function formatAmountFromStripe (
     currencyDisplay: 'symbol'
   })
   const parts = numberFormat.formatToParts(amount)
-  let zeroDecimalCurrency: boolean = true
+  let zeroDecimalCurrency = true
   for (const part of parts) {
     if (part.type === 'decimal') {
       zeroDecimalCurrency = false

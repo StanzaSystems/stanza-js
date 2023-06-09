@@ -2,31 +2,8 @@
   "name": "@getstanza/core",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
-  "files": [
-    "dist"
-  ],
-  "main": "./dist/getstanza-core.umd.cjs",
-  "module": "./dist/getstanza-core.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/getstanza-core.js",
-      "require": "./dist/getstanza-core.umd.cjs"
-    }
-  },
-  "scripts": {
-    "build": "tsc && vite build",
-    "dev": "vite build --mode development --watch",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "lint": "eslint ."
-  },
-  "devDependencies": {
-    "cross-fetch": "^3.1.5"
-  },
-  "description": "stanza core JS features",
+  "type": "commonjs",
+  "description": "Stanza core JS features",
   "author": "Stanza",
   "license": "MIT"
 }
