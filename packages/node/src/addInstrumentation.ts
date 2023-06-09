@@ -3,7 +3,6 @@ import { StanzaApiKeyPropagator } from './propagation/StanzaApiKeyPropagator'
 import { StanzaBaggagePropagator } from './propagation/StanzaBaggagePropagator'
 import { StanzaPriorityBoostPropagator } from './propagation/StanzaPriorityBoostPropagator'
 import { StanzaTokenPropagator } from './propagation/StanzaTokenPropagator'
-import { type SpanProcessor } from '@opentelemetry/sdk-trace-base';
 
 export const addInstrumentation = async (serviceName: string) => {
   /* eslint-disable @typescript-eslint/no-var-requires */
@@ -27,7 +26,7 @@ export const addInstrumentation = async (serviceName: string) => {
     spanProcessor: new StanzaSpanProcessor() as any, // TODO: fix any cast
     resource: new Resource({
       [SemanticResourceAttributes.SERVICE_NAME]: serviceName
-    }) as any,// TODO: fix any cast
+    }) as any, // TODO: fix any cast
     textMapPropagator:
       new CompositePropagator({
         propagators: [

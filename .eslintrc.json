@@ -2,14 +2,6 @@
   "root": true,
   "ignorePatterns": ["**/*"],
   "plugins": ["@nx"],
-  "extends": [
-    "standard-with-typescript"
-  ],
-  "parserOptions": {
-    "ecmaVersion": "latest",
-    "sourceType": "module",
-    "project": ["./**/tsconfig.app.json", "./**/tsconfig.lib.json", "./**/tsconfig.spec.json"]
-  },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -31,8 +23,22 @@
     },
     {
       "files": ["*.ts", "*.tsx"],
-      "extends": ["plugin:@nx/typescript"],
-      "rules": {}
+      "extends": [
+        "plugin:@nx/typescript",
+        "standard-with-typescript"
+      ],
+      "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "project": ["./**/tsconfig.app.json", "./**/tsconfig.lib.json", "./**/tsconfig.spec.json"]
+      },
+      "rules": {
+        "@typescript-eslint/restrict-template-expressions": ["error", { "allowNullish": true, "allowNumber": true }],
+        "@typescript-eslint/return-await": ["error", "in-try-catch"],
+        "@typescript-eslint/explicit-function-return-type": 0,
+        "@typescript-eslint/no-explicit-any": 0,
+        "@typescript-eslint/no-empty-function": 0
+      }
     },
     {
       "files": ["*.js", "*.jsx"],
@@ -45,16 +51,6 @@
         "jest": true
       },
       "rules": {}
-    },
-    {
-      "files": ["*.ts", "*.tsx"],
-      "rules": {
-        "@typescript-eslint/restrict-template-expressions": ["error", { "allowNullish": true, "allowNumber": true }],
-        "@typescript-eslint/return-await": ["error", "in-try-catch"],
-        "@typescript-eslint/explicit-function-return-type": 0,
-        "@typescript-eslint/no-explicit-any": 0,
-        "@typescript-eslint/no-empty-function": 0
-      }
     }
   ]
 }

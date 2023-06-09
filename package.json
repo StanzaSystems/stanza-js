@@ -3,9 +3,6 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "nx run-many --target build",
-    "lint": "nx run-many --target lint",
-    "test": "nx run-many --target test",
     "generate-hub-api": "buf generate https://github.com/StanzaSystems/apis.git --path stanza/hub"
   },
   "private": true,
