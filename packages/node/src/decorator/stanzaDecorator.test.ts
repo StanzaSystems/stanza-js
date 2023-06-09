@@ -498,7 +498,7 @@ describe('stanzaDecorator', function () {
       vi.useRealTimers()
     })
 
-    it('should proceed execution if validating token takes more than 1000ms', async function () {
+    it('should proceed execution if validating token takes more than 2000ms', async function () {
       vi.useFakeTimers()
 
       mockHubService.validateToken.mockImplementationDeferred()
@@ -513,7 +513,7 @@ describe('stanzaDecorator', function () {
       const decoratedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), decoratedDoStuff)
 
       expect(doStuff).not.toHaveBeenCalled()
-      await vi.advanceTimersByTimeAsync(1000)
+      await vi.advanceTimersByTimeAsync(2000)
 
       await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
 

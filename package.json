@@ -1,8 +1,11 @@
 {
-  "name": "@stanza-js/source",
+  "name": "@getstanza/source",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "build": "nx run-many --target build",
+    "lint": "nx run-many --target lint",
+    "test": "nx run-many --target test",
     "generate-hub-api": "buf generate https://github.com/StanzaSystems/apis.git --path stanza/hub"
   },
   "private": true,
@@ -36,6 +39,7 @@
     "@vitejs/plugin-react": "^3.0.0",
     "@vitest/coverage-c8": "^0.31.0",
     "@vitest/ui": "^0.31.0",
+    "artillery": "^2.0.0-33",
     "autoprefixer": "^10.4.14",
     "babel-jest": "^29.4.1",
     "cross-fetch": "^3.1.6",

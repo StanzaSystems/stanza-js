@@ -2,8 +2,9 @@ import { type z, type ZodType } from 'zod'
 import { withTimeout } from '../../utils/withTimeout'
 import { fetch } from '../../fetchImplementation'
 import { type HubApiPath, type HubRequest } from '../hubRequest'
+import { logger } from '../../global/logger'
 
-const HUB_REQUEST_TIMEOUT = 1000
+const HUB_REQUEST_TIMEOUT = 2000
 
 export interface HubRequestInitOptions {
   hubUrl: string
@@ -43,6 +44,7 @@ export const createHubRequest = ({ apiKey, hubUrl }: HubRequestInitOptions): Hub
     const parsedResult = validateRequest.safeParse(data)
 
     if (!parsedResult.success) {
+      logger.debug('request to hub failed %o', parsedResult)
       return null
     }
 

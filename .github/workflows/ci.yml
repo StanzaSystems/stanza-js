@@ -12,6 +12,8 @@ jobs:
   build:
     name: Build - node ${{ matrix.nodeVersion }}
     runs-on: 'ubuntu-latest'
+    env:
+      NEXT_PUBLIC_STANZA_BROWSER_KEY: ci-only-dummy-key
     timeout-minutes: 12
     strategy:
       matrix:

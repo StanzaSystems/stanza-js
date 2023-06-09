@@ -1,13 +1,19 @@
-import './addInstrumentation'
-import { stanzaDecorator, StanzaDecoratorError, stanzaPriorityBoost } from '@getstanza/node'
+/* eslint-disable @typescript-eslint/no-misused-promises */
 
-import express, { type ErrorRequestHandler, type NextFunction, type Request, type Response } from 'express'
+import { stanzaDecorator, StanzaDecoratorError } from '@getstanza/node'
+
+import express, { type Request, type ErrorRequestHandler, type Response, type NextFunction } from 'express'
 import * as dotenv from 'dotenv'
 import cors from 'cors'
+
+dotenv.config()
+// must come after dotenv
+// eslint-disable-next-line import/first
+import './addInstrumentation'
+// eslint-disable-next-line import/first
 import fetch from 'node-fetch'
 
 const app = express()
-dotenv.config()
 
 const corsOptions = {
   origin: '*'
@@ -16,23 +22,30 @@ const corsOptions = {
 app.use(cors(corsOptions))
 app.use(express.json())
 
-app.use('/ping', (req, res, next) => {
+app.use('/account/:username', (req: Request, res: Response, next: NextFunction) => {
+  const plan = req.get('x-user-plan')
+  const priorityBoost = (plan === 'free') ? -1 : (plan === 'enterprise') ? 1 : 0
   void stanzaDecorator({
-    decorator: 'Stripe_Products_API',
-    priorityBoost: 2
+    decorator: 'github_guard',
+    priorityBoost
   }).call(next).catch(next)
 })
 
-app.get('/ping', (req, res, next) => {
-  void (async () => {
-    console.log('Incoming headers: ping')
-    console.log(JSON.stringify(req.headers, undefined, 2))
-
-    await stanzaPriorityBoost(-1).call(async () => {
-      await fetch('http://localhost:3002/pong')
+app.get('/account/:username', async (req: Request, res: Response, next: NextFunction) => {
+  const { username } = req.params
+  try {
+    const userResponse = await fetch(`https://api.github.com/users/${username}`, {
+      headers: {
+        Authorization: `Bearer ${process.env.GITHUB_PAT}`
+      }
     })
-    res.status(200).send('pong')
-  })().catch(next)
+
+    const user = await userResponse.json()
+    res.status(200).send(user)
+  } catch (e) {
+    res.status(500)
+    next()
+  }
 })
 
 app.get('/pong', (req, res) => {

@@ -1,0 +1,11 @@
+config:
+  target: "http://localhost:3002"
+  phases:
+    - duration: 30
+      arrivalRate: 10
+ 
+scenarios:
+  - name: "Test github guard"
+    flow:
+      - get:
+          url: "/account/maggiepint"
