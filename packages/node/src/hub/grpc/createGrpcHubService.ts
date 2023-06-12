@@ -14,7 +14,7 @@ import { type z, type ZodType } from 'zod'
 import { withTimeout } from '../../utils/withTimeout'
 import { wrapHubServiceWithMetrics } from '../wrapHubServiceWithMetrics'
 
-const HUB_REQUEST_TIMEOUT = 2000
+const HUB_REQUEST_TIMEOUT = 1000
 
 interface GrpcHubServiceInitOptions {
   serviceName: string

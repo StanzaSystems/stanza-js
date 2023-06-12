@@ -108,6 +108,7 @@ export const createTokenState = (): TokenState => {
     }, [[], []])
 
     tokenLeases = validTokenLeases
+    expiredTokenLeases.length > 0 && console.log(`🧹 🧹 🧹 🧹 🧹 \t clearing expired tokens: ${expiredTokenLeases.length} \t🧹 🧹 🧹 🧹 🧹`)
     tokensUsed.push(...expiredTokenLeases)
   }
 

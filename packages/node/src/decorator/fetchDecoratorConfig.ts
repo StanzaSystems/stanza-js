@@ -4,7 +4,7 @@ import { type FetchDecoratorConfigOptions } from '../hub/hubService'
 import { logger } from '../global/logger'
 
 export async function fetchDecoratorConfig (options: FetchDecoratorConfigOptions) {
-  logger.debug(`fetching config for ${JSON.stringify(options)}`)
+  logger.debug('fetching config for %o', options)
   const response = await hubService.fetchDecoratorConfig(options)
 
   if (response !== null) {

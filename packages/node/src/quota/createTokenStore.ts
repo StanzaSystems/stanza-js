@@ -29,6 +29,7 @@ export const createTokenStore = (): TokenStore => {
             tokensConsumed = []
             tokensConsumedTimeout = undefined
 
+            console.log(`🍽 🍽 🍽 🍽 🍽️\t tokens consumed: ${tokensToConsume.length} \t\t🍽 🍽 🍽 🍽 🍽`)
             await hubService.markTokensAsConsumed({ tokens: tokensToConsume })
           })().catch()
         }, MARK_TOKENS_AS_CONSUMED_DELAY)
@@ -52,11 +53,14 @@ function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
     }
   })
 
+  let waitingForTokensCount = 0
+
   return { fetchTokensIfNecessary }
 
   async function fetchTokensIfNecessary (query: TokenQuery): Promise<StanzaToken | null> {
     const tokenInState = state.popToken(query)
     if (tokenInState !== null) {
+      console.log('📤📤📤📤📤\t getting token from cache 🥳 \t📤📤📤📤📤')
       return {
         granted: true,
         token: tokenInState.token
@@ -66,7 +70,11 @@ function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
     if (getTokenLeaseInProgress === undefined) {
       getTokenLeaseInProgress = requestTokenLease(query)
     } else {
+      waitingForTokensCount++
+      console.log(`⌛  ⌛  ⌛  ⌛  ⌛  \t START waiting for tokens: ${waitingForTokensCount.toFixed(0)} \t⌛  ⌛  ⌛  ⌛  ⌛ `)
       getTokenLeaseInProgress = getTokenLeaseInProgress.then(async (result) => {
+        waitingForTokensCount--
+        console.log(`▶️ ▶️ ▶️ ▶️ ▶️ \t END waiting for tokens: ${waitingForTokensCount.toFixed(0)} \t▶️ ▶️ ▶️ ▶️ ▶️ `)
         if (result?.granted === false) {
           return { granted: false }
         }
@@ -78,6 +86,7 @@ function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
   }
 
   async function fetchMoreTokenLeases (query: TokenQuery = {}) {
+    console.log('🏃 🏃 🏃 🏃 🏃 \t fetching more tokens \t🏃 🏃 🏃 🏃 🏃')
     const tokenLeases = await hubService.getTokenLease({
       ...query,
       decorator
@@ -85,6 +94,7 @@ function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
     getTokenLeaseInProgress = undefined
 
     if (tokenLeases?.granted === true) {
+      console.log(`📥 📥 📥 📥 📥 \t adding tokens ${tokenLeases.leases.length} \t\t📥 📥 📥 📥 📥`)
       state.addTokens(tokenLeases.leases)
     }
     return tokenLeases

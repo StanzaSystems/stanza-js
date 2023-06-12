@@ -7,4 +7,6 @@ interface StanzaLoggerGlobal {
 }
 const stanzaLoggerGlobal = globalThis as unknown as StanzaLoggerGlobal
 
-export const logger = stanzaLoggerGlobal[STANZA_LOGGER_SYMBOL] = stanzaLoggerGlobal[STANZA_LOGGER_SYMBOL] ?? pino()
+export const logger = stanzaLoggerGlobal[STANZA_LOGGER_SYMBOL] = stanzaLoggerGlobal[STANZA_LOGGER_SYMBOL] ?? pino({
+  level: 'warn'
+})

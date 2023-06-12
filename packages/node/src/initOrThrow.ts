@@ -7,8 +7,10 @@ import { startPollingServiceConfig } from './service/startPollingConfigService'
 import { createGrpcHubService } from './hub/grpc/createGrpcHubService'
 import { createHubRequest } from './hub/rest/createHubRequest'
 import { createRestHubService } from './hub/rest/createRestHubService'
+import { logger } from './global/logger'
 
 export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
+  logger.debug('initOrThrow called with options %o', options)
   const parseResult = stanzaInitOptions.safeParse({
     ...getEnvInitOptions(),
     ...options
