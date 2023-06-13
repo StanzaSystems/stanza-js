@@ -1,11 +1,30 @@
 config:
   target: "http://localhost:3002"
+  processor: './load-test-utils.js'
   phases:
     - duration: 30
-      arrivalRate: 10
- 
+      arrivalRate: 3
 scenarios:
-  - name: "Test github guard"
+  - name: "Send pro requests"
+    afterResponse: "trackRateLimits"
     flow:
       - get:
           url: "/account/maggiepint"
+    weight: 1
+  - name: "Send free requests"
+    afterResponse: "trackRateLimits"
+    flow:
+      - get:
+          url: "/account/maggiepint"
+          headers:
+            x-user-plan: "free"
+    weight: 1
+  - name: "Send enterprise requests"
+    afterResponse: "trackRateLimits"
+    flow:
+      - get:
+          url: "/account/maggiepint"
+          headers:
+            x-user-plan: "enterprise"
+    weight: 1
+
