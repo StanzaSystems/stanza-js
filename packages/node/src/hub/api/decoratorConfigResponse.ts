@@ -3,7 +3,6 @@ import { z } from 'zod'
 const zNonStrictObject = z.object({}).nonstrict()
 const zTraceConfig = z.object({
   collectorUrl: z.string(),
-  collectorKey: z.string(),
   sampleRateDefault: z.number(),
   overrides: z.array(zNonStrictObject)
 })
@@ -17,10 +16,7 @@ const decoratorConfigWithData = z.object({
   version: z.string(),
   configDataSent: z.literal(true),
   config: z.object({
-    decorator: z.string().optional(),
-    environment: z.string().optional(),
     checkQuota: z.boolean(),
-    strictSynchronousQuota: z.boolean(),
     quotaTags: z.array(z.string()),
     validateIngressTokens: z.boolean(),
     traceConfig: zTraceConfig.optional()

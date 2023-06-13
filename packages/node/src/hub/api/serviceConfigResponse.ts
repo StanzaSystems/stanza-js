@@ -3,13 +3,11 @@ import { z } from 'zod'
 const zNonStrictObject = z.object({}).nonstrict()
 const zTraceConfig = z.object({
   collectorUrl: z.string(),
-  collectorKey: z.string(),
   sampleRateDefault: z.number(),
   overrides: z.array(zNonStrictObject)
 })
 const zMetricConfig = z.object({
-  collectorUrl: z.string(),
-  collectorKey: z.string()
+  collectorUrl: z.string()
 })
 const zSentinelConfig = z.object({
   circuitbreakerRulesJson: z.string(),

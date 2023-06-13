@@ -12,6 +12,8 @@ jobs:
   build:
     name: Build - node ${{ matrix.nodeVersion }}
     runs-on: 'ubuntu-latest'
+    env:
+      NEXT_PUBLIC_STANZA_BROWSER_KEY: ci-only-dummy-key
     timeout-minutes: 12
     strategy:
       matrix:
@@ -75,7 +77,7 @@ jobs:
           cache: 'npm'
       - uses: nrwl/nx-set-shas@v3
       - run: npm ci
-      - run: npx nx run-many --target=test:coverage --parallel=3
+      - run: npx nx run-many --target=test --parallel=3 --coverage
 
       - name: Install lcov
         run: sudo apt-get install lcov

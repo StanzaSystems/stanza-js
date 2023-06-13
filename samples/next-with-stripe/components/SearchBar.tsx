@@ -15,7 +15,7 @@ const SearchBar = ({ onSearch = () => {} }: { onSearch?: (searchValue: string) =
     event.preventDefault()
     setSearchValue('')
     onSearch(searchValue)
-  }, [searchValue])
+  }, [searchValue, onSearch])
 
   return <form style={{ display: 'flex', gap: '1rem' }} onSubmit={(evt) => {
     handleSearch(evt, searchValue)

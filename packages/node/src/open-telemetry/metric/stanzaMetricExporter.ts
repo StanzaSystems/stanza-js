@@ -6,6 +6,7 @@ import { type ServiceConfig } from '../../hub/model'
 import { type ExportResult, ExportResultCode } from '@opentelemetry/core'
 import { eventBus, events } from '../../global/eventBus'
 import { hubService } from '../../global/hubService'
+import { logger } from '../../global/logger'
 
 export class StanzaMetricExporter implements PushMetricExporter {
   private exporter: InMemoryMetricExporter | OTLPMetricExporter = new InMemoryMetricExporter(AggregationTemporality.CUMULATIVE)
@@ -22,15 +23,14 @@ export class StanzaMetricExporter implements PushMetricExporter {
 
   private updateExporter ({ config: { metricConfig } }: ServiceConfig) {
     const metadata = new Metadata()
-    metadata.add('x-stanza-key', metricConfig.collectorKey)
     const prevExporter = this.exporter
     this.exporter = new OTLPMetricExporter({
       url: metricConfig.collectorUrl,
       metadata
     })
-    this.collectorUrl = metricConfig.collectorKey
+    this.collectorUrl = metricConfig.collectorUrl
     prevExporter.shutdown().catch(err => {
-      console.log('Failed to shutdown a metric exporter:\n', err)
+      logger.info('Failed to shutdown a metric exporter:\n', err)
     })
   }
 

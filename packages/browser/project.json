@@ -1,0 +1,42 @@
+{
+  "name": "browser",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/browser/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/browser",
+        "main": "packages/browser/index.ts",
+        "tsConfig": "packages/browser/tsconfig.lib.json",
+        "assets": ["packages/browser/*.md"],
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "packages": "external"
+        }
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs browser {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/browser/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["coverage/packages/browser"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/browser"
+      }
+    }
+  },
+  "tags": []
+}

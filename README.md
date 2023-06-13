@@ -4,29 +4,48 @@ This is the monorepo containing all Stanza JavaScript packages. A brief overview
 
 - `packages/core` contains the core types and constructs Stanza uses in JS
 - `packages/browser` contains browser-based primitives for using Stanza features
-- `packages/react` contains Stanza react components
+- `packages/stanza-react` contains Stanza react components
+- `packages/next` contains Stanza NextJS components
+- `packages/node` contains Stanza Node SDK
+- `packages/next-node` contains Stanza Node SDK adapter for NextJS
 
 ## Getting started
 ```
 npm install
-npm run build
+npx nx run-many --target build
 ```
 
 ## Toolchain
-Stanza uses Vite to build, eslint, and typescript.
+Stanza uses Nx manage a workspace, esbuild to build, eslint, and typescript.
+
+## Running a sample
+
+To run one of the sample apps you can use Nx command
+
+```shell
+# npx nx serve {name of the app}
+# eg
+npx nx serve next-with-stripe
+```
 
 ## Workspaces and packages
-Add new workspaces using 
-```
-npm init -w ./packages/{your package name} //packages
-npm init -w ./samples/{your sample name} //samples
+Add new package using
+```shell
+npx nx generate @nx/js:library {your package name} --publishable --importPath @getstanza/{your package name}
 ```
 
-as far as I can tell, the best way to install dependencies is from the root of the project, with workspace specificed. For example
+To add a sample app you can use one of the available Nx [packages](https://nx.dev/packages) to generate an app
+
+examples:
+
+```shell
+npx nx generate @nx/next:app {your app name}
+npx nx generate @nx/web:app {your app name}
+npx nx generate @nx/react:app {your app name}
 ```
-npm install react -w packages/stanza-react
-```
-will install react into just the stanza-react package
+
+
+Because we manage the repository as a monorepo with NX all dependencies should be installed in the root of the project
 
 ## Support
 Stanza supports evergreen browsers, and Node releases [in current, active or maintenance context](https://github.com/nodejs/release#release-schedule)

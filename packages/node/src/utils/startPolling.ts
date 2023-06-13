@@ -1,3 +1,5 @@
+import { logger } from '../global/logger'
+
 type AsyncFunction<T> = (prevResult: T | null) => Promise<T | null>
 const DEFAULT_POLL_INTERVAL = 1000
 
@@ -18,7 +20,7 @@ export const startPolling = <T = unknown>(fn: AsyncFunction<T>, options: { pollI
         if (options.onError !== undefined) {
           options.onError(e)
         } else {
-          console.warn('Error occurred while polling:', e instanceof Error ? e.message : e)
+          logger.warn('Error occurred while polling:' + (e instanceof Error ? e.message : JSON.stringify(e)))
         }
       }
       await waitTime(options.pollInterval)

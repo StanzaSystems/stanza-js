@@ -1,9 +1,23 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": ["src/**/*", "index.ts"],
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    // package-specific options
-    "esModuleInterop": true,
-    "jsx": "react"
-  }
+    "module": "commonjs",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "types": ["vitest"]
+  },
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "./tsconfig.lib.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
 }

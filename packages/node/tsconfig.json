@@ -1,8 +1,15 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": ["src/**/*", "index.ts", "types/*.d.ts"],
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "typeRoots": ["./types"]
-    // package-specific options
-  }
+  },
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "./tsconfig.lib.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
 }

@@ -1,0 +1,26 @@
+{
+  "name": "mocks-handlers",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/mocks/handlers/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/mocks/handlers",
+        "main": "packages/mocks/handlers/src/index.ts",
+        "tsConfig": "packages/mocks/handlers/tsconfig.lib.json",
+        "assets": ["packages/mocks/handlers/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/mocks/handlers/**/*.ts"]
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,56 +1,46 @@
+// @ts-check
 /** @type {import('next').NextConfig} */
-const withTM = require('next-transpile-modules')([
-  '@getstanza/react',
-  '@getstanza/next',
-  '@getstanza/node',
-])
+
+const { composePlugins, withNx } = require('@nx/next');
 
 const COOKIE_PREFIX = process.env.NODE_ENV === 'development' ? '__Dev-' : '__Host-'
 
-module.exports = withTM({
+/**
+ * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
+ **/
+const nextConfig = {
+  nx: {
+    // Set this to true if you would like to to use SVGR
+    // See: https://github.com/gregberge/svgr
+    svgr: false,
+  },
   reactStrictMode: true,
   publicRuntimeConfig: {
     stanzaEnablementNumberCookieName: `${COOKIE_PREFIX}stanza-enablement-number`,
   },
   experimental: {
     instrumentationHook: true
-  }
-})
-
-
-// Injected content via Sentry wizard below
-
-const { withSentryConfig } = require("@sentry/nextjs");
-
-module.exports = withSentryConfig(
-  module.exports,
-  {
-    // For all available options, see:
-    // https://github.com/getsentry/sentry-webpack-plugin#options
-
-    // Suppresses source map uploading logs during build
-    silent: true,
-
-    org: "stanza",
-    project: "stanza-next-commerce-demo",
   },
-  {
-    // For all available options, see:
-    // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
+  transpilePackages: [
+    '@getstanza/react',
+    '@getstanza/next',
+    '@getstanza/node'
+  ],
+  webpack: (config) => {
+    config.resolve = {
+      ...config.resolve,
+      extensionAlias: {
+        '.js': ['.ts', '.js'],
+      },
+    };
 
-    // Upload a larger set of source maps for prettier stack traces (increases build time)
-    widenClientFileUpload: true,
+    return config
+  },
+};
 
-    // Transpiles SDK to be compatible with IE11 (increases bundle size)
-    transpileClientSDK: true,
+const plugins = [
+  // Add more Next.js plugins to this list if needed.
+  withNx,
+];
 
-    // Routes browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers (increases server load)
-    tunnelRoute: "/monitoring",
-
-    // Hides source maps from generated client bundles
-    hideSourceMaps: true,
-
-    // Automatically tree-shake Sentry logger statements to reduce bundle size
-    disableLogger: true,
-  }
-);
+module.exports = composePlugins(...plugins)(nextConfig);

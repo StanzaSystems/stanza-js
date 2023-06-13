@@ -7,14 +7,13 @@ import { hubService } from '../../global/hubService'
 export class StanzaSpanExporter extends OTLPTraceExporter {
   constructor (traceConfig: ServiceConfig['config']['traceConfig']) {
     const metadata = new Metadata()
-    metadata.set('x-stanza-key', traceConfig.collectorKey)
     super({
       url: traceConfig.collectorUrl,
       metadata
     })
   }
 
-  send (...[objects, onSuccess, onError]: Parameters<OTLPTraceExporter['send']>) {
+  override send (...[objects, onSuccess, onError]: Parameters<OTLPTraceExporter['send']>) {
     const stanzaOnSuccess: typeof onSuccess = () => {
       void eventBus.emit(events.telemetry.sendOk, {
         ...hubService.getServiceMetadata(),

@@ -1,0 +1,42 @@
+{
+  "name": "stanza-react",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/stanza-react/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/stanza-react",
+        "main": "packages/stanza-react/index.ts",
+        "tsConfig": "packages/stanza-react/tsconfig.lib.json",
+        "assets": ["packages/stanza-react/*.md"],
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "packages": "external"
+        }
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs next {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/stanza-react/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["coverage/packages/next-node"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/next-node"
+      }
+    }
+  }
+}

@@ -1,36 +1,35 @@
-import { resolve } from 'path'
 import { defineConfig } from 'vitest/config'
-import eslint from 'vite-plugin-eslint'
-import dts from 'vite-plugin-dts'
+
+import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
-  plugins: [eslint(), dts()],
-  build: {
-    lib: {
-      // Could also be a dictionary or array of multiple entry points
-      entry: resolve(__dirname, 'index.ts'),
-      name: '@getstanza/next',
-      // the proper extensions will be added
-      fileName: 'getstanza-next'
-    },
-    sourcemap: true,
-    rollupOptions: {
-      // make sure to externalize deps that shouldn't be bundled
-      // into your library
-      external: ['react', '@getstanza/core', '@getstanza/browser'],
-      output: {
-        // Provide global variables to use in the UMD build
-        // for externalized deps
-        globals: {
-          react: 'React'
-        }
-      }
-    }
-  },
+  cacheDir: '../../node_modules/.vite/next',
+
+  plugins: [
+    viteTsConfigPaths({
+      root: '../../'
+    })
+  ],
+
+  // Uncomment this if you are using workers.
+  // worker: {
+  //  plugins: [
+  //    viteTsConfigPaths({
+  //      root: '../../',
+  //    }),
+  //  ],
+  // },
+
   test: {
     setupFiles: ['./src/__tests__/setup.ts'],
+    globals: true,
+    cache: {
+      dir: '../../node_modules/.vitest'
+    },
+    environment: 'jsdom',
+    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     coverage: {
-      reporter: [['lcov', {'projectRoot': '../..'}]],
+      reporter: [['lcov', { projectRoot: '.' }]],
       reportsDirectory: '../../coverage/packages/next'
     }
   }
