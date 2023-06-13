@@ -3,6 +3,7 @@ import { hubService } from '../global/hubService'
 import { createTokenState } from './createTokenState'
 import { type TokenQuery } from './tokenState'
 import { type StanzaToken } from '../hub/model'
+import { logger } from '../global/logger'
 
 const MARK_TOKENS_AS_CONSUMED_DELAY = 100
 
@@ -29,7 +30,7 @@ export const createTokenStore = (): TokenStore => {
             tokensConsumed = []
             tokensConsumedTimeout = undefined
 
-            console.log(`🍽 🍽 🍽 🍽 🍽️\t tokens consumed: ${tokensToConsume.length} \t\t🍽 🍽 🍽 🍽 🍽`)
+            logger.trace(`🍽 🍽 🍽 🍽 🍽️\t tokens consumed: ${tokensToConsume.length} \t\t🍽 🍽 🍽 🍽 🍽`)
             await hubService.markTokensAsConsumed({ tokens: tokensToConsume })
           })().catch()
         }, MARK_TOKENS_AS_CONSUMED_DELAY)
@@ -43,13 +44,26 @@ export const createTokenStore = (): TokenStore => {
   }
 }
 
+type TokenLeaseState<T extends string, O= Record<never, never>> = {
+  readonly type: T
+} & O
+
+type TokenLeaseInProgressState = TokenLeaseState<'idle'> | TokenLeaseState<'pending'> | TokenLeaseState<'value', {
+  value: StanzaToken | null
+}>
+
 function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
   const state = createTokenState()
-  let getTokenLeaseInProgress: Promise<StanzaToken | null> | undefined
+  let getTokenLeaseInProgress: Promise<TokenLeaseInProgressState> = Promise.resolve<TokenLeaseInProgressState>({ type: 'idle' })
 
   state.onTokensAvailableRatioChange(2000, (ratio) => {
-    if (ratio <= 0.2 && getTokenLeaseInProgress === undefined) {
-      getTokenLeaseInProgress = fetchMoreTokenLeases().then(() => null)
+    if (ratio <= 0.2) {
+      getTokenLeaseInProgress = getTokenLeaseInProgress.then(async result => {
+        if (result.type === 'idle') {
+          return fetchMoreTokenLeases().then(() => ({ type: 'value', value: null }))
+        }
+        return result
+      })
     }
   })
 
@@ -60,43 +74,60 @@ function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
   async function fetchTokensIfNecessary (query: TokenQuery): Promise<StanzaToken | null> {
     const tokenInState = state.popToken(query)
     if (tokenInState !== null) {
-      console.log('📤📤📤📤📤\t getting token from cache 🥳 \t📤📤📤📤📤')
+      logger.trace('📤📤📤📤📤\t getting token from cache 🥳 \t📤📤📤📤📤')
       return {
         granted: true,
         token: tokenInState.token
       }
     }
 
-    if (getTokenLeaseInProgress === undefined) {
-      getTokenLeaseInProgress = requestTokenLease(query)
-    } else {
-      waitingForTokensCount++
-      console.log(`⌛  ⌛  ⌛  ⌛  ⌛  \t START waiting for tokens: ${waitingForTokensCount.toFixed(0)} \t⌛  ⌛  ⌛  ⌛  ⌛ `)
-      getTokenLeaseInProgress = getTokenLeaseInProgress.then(async (result) => {
-        waitingForTokensCount--
-        console.log(`▶️ ▶️ ▶️ ▶️ ▶️ \t END waiting for tokens: ${waitingForTokensCount.toFixed(0)} \t▶️ ▶️ ▶️ ▶️ ▶️ `)
-        if (result?.granted === false) {
-          return { granted: false }
+    getTokenLeaseInProgress = getTokenLeaseInProgress.then(async (tokenInProgressState): Promise<TokenLeaseInProgressState> => {
+      if (tokenInProgressState.type === 'idle') {
+        return requestTokenLease(query).then(value => ({ type: 'value', value }))
+      } else {
+        waitingForTokensCount++
+        logger.trace('⌛ ⌛ ⌛ ⌛ ⌛ \t waiting for tokens: %d \t⌛ ⌛ ⌛ ⌛ ⌛ ', waitingForTokensCount)
+        if (tokenInProgressState.type === 'value') {
+          waitingForTokensCount--
+          logger.trace('▶️  ▶️  ▶️  ▶️  ▶️  \t finished waiting for tokens: %d \t▶️  ▶️  ▶️  ▶️  ▶️ ', waitingForTokensCount)
+          if (tokenInProgressState.value?.granted === false) {
+            logger.trace('❌ ❌ ❌ ❌ ❌ \t not granted \t ❌ ❌ ❌ ❌ ❌')
+            return {
+              type: 'value',
+              value: {
+                granted: false
+              }
+            }
+          }
+          const tokenInState = state.popToken(query)
+          const value = tokenInState !== null ? { granted: true, token: tokenInState.token } : await requestTokenLease(query)
+          return { type: 'value', value }
         }
-        const tokenInState = state.popToken(query)
-        return tokenInState !== null ? { granted: true, token: tokenInState.token } : requestTokenLease(query)
-      })
-    }
-    return getTokenLeaseInProgress ?? null
+        const value = await requestTokenLease(query)
+        return { type: 'value', value }
+      }
+    })
+
+    const result = await getTokenLeaseInProgress ?? null
+
+    return result?.type === 'value' ? result.value : null
   }
 
   async function fetchMoreTokenLeases (query: TokenQuery = {}) {
-    console.log('🏃 🏃 🏃 🏃 🏃 \t fetching more tokens \t🏃 🏃 🏃 🏃 🏃')
+    logger.trace('🏃 🏃 🏃 🏃 🏃 \t fetching more tokens \t🏃 🏃 🏃 🏃 🏃')
     const tokenLeases = await hubService.getTokenLease({
       ...query,
       decorator
     }).catch(() => null)
-    getTokenLeaseInProgress = undefined
+    logger.trace('‼️  ‼️  ‼️  ‼️  ‼️ ️\t clearing getTokenLeaseInProgress \t\t‼️  ‼️  ‼️  ‼️  ‼️ ')
+
+    getTokenLeaseInProgress = getTokenLeaseInProgress.then(() => ({ type: 'idle' }))
 
     if (tokenLeases?.granted === true) {
-      console.log(`📥 📥 📥 📥 📥 \t adding tokens ${tokenLeases.leases.length} \t\t📥 📥 📥 📥 📥`)
+      logger.trace(`📥 📥 📥 📥 📥 \t adding tokens ${tokenLeases.leases.length} \t\t📥 📥 📥 📥 📥`)
       state.addTokens(tokenLeases.leases)
     }
+    tokenLeases?.granted !== true && logger.trace('leases: %o', tokenLeases)
     return tokenLeases
   }
 

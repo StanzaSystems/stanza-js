@@ -48,9 +48,9 @@ export const createHubRequest = ({ apiKey, hubUrl }: HubRequestInitOptions): Hub
       return null
     }
 
-    await new Promise((resolve) => {
-      setTimeout(resolve, 200)
-    })
+    // await new Promise((resolve) => {
+    //   setTimeout(resolve, 200)
+    // })
 
     return parsedResult.data
   }

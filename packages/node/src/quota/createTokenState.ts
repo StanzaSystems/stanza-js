@@ -1,5 +1,6 @@
 import { type StanzaTokenLease } from '../hub/model'
 import { type AvailableRatioListenerFn, type AvailableRatioListener, type TokenQuery, type TokenState } from './tokenState'
+import { logger } from '../global/logger'
 
 const isTokenValidAfter = (expirationTime: number) => ({ expiresAt }: StanzaTokenLease) => expiresAt > expirationTime
 
@@ -108,7 +109,7 @@ export const createTokenState = (): TokenState => {
     }, [[], []])
 
     tokenLeases = validTokenLeases
-    expiredTokenLeases.length > 0 && console.log(`🧹 🧹 🧹 🧹 🧹 \t clearing expired tokens: ${expiredTokenLeases.length} \t🧹 🧹 🧹 🧹 🧹`)
+    expiredTokenLeases.length > 0 && logger.trace(`🧹 🧹 🧹 🧹 🧹 \t clearing expired tokens: ${expiredTokenLeases.length} \t🧹 🧹 🧹 🧹 🧹`)
     tokensUsed.push(...expiredTokenLeases)
   }
 
