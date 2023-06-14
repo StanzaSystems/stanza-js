@@ -3,6 +3,6 @@
   "version": "0.0.0",
   "scripts": {
     "loadTest": "artillery run --output js-load.json ./load-test.yml && summarizeLoadTest",
-    "summarizeLoadTest": "./load-test-summarize.js"
+    "summarizeLoadTest": "node ./load-test-summarize.js"
   }
 }

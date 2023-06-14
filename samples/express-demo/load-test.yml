@@ -2,7 +2,7 @@ config:
   target: "http://localhost:3002"
   processor: './load-test-utils.js'
   phases:
-    - duration: 30
+    - duration: 90
       arrivalRate: 3
 scenarios:
   - name: "Send pro requests"
