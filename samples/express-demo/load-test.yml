@@ -2,15 +2,15 @@ config:
   target: "http://localhost:3002"
   processor: './load-test-utils.js'
   phases:
-    - duration: 90
-      arrivalRate: 3
+    - duration: 30
+      arrivalRate: 5
 scenarios:
-  - name: "Send pro requests"
-    afterResponse: "trackRateLimits"
-    flow:
-      - get:
-          url: "/account/maggiepint"
-    weight: 1
+  # - name: "Send pro requests"
+  #   afterResponse: "trackRateLimits"
+  #   flow:
+  #     - get:
+  #         url: "/account/maggiepint"
+  #   weight: 1
   - name: "Send free requests"
     afterResponse: "trackRateLimits"
     flow:

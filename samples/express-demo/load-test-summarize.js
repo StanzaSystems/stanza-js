@@ -7,12 +7,12 @@ function summarizeLastRun() {
     limited: runData.aggregate.counters['stanza.enterprise_429'],
   }
 
-  const pro = {
-    type: 'pro',
-    total: runData.aggregate.counters['stanza.pro'],
-    success: runData.aggregate.counters['stanza.pro_200'],
-    limited: runData.aggregate.counters['stanza.pro_429'],
-  }
+  // const pro = {
+  //   type: 'pro',
+  //   total: runData.aggregate.counters['stanza.pro'],
+  //   success: runData.aggregate.counters['stanza.pro_200'],
+  //   limited: runData.aggregate.counters['stanza.pro_429'],
+  // }
 
   const free = {
     type: 'free',
@@ -22,10 +22,10 @@ function summarizeLastRun() {
   }
 
   enterprise.successPct = enterprise.success/enterprise.total;
-  pro.successPct = pro.success/pro.total;
+ // pro.successPct = pro.success/pro.total;
   free.successPct = free.success/free.total;
 
-  console.table([enterprise, pro, free])
+  console.table([enterprise,  free])
 }
 
 summarizeLastRun()
