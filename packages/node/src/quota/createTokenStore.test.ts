@@ -31,6 +31,8 @@ describe('tokenStore', () => {
         decorator: 'testDecorator'
       })
 
+      await vi.advanceTimersByTimeAsync(0)
+
       expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
     })
 
@@ -43,6 +45,8 @@ describe('tokenStore', () => {
       const getTokenFromStorePromise = tokenStore.getToken({
         decorator: 'testDecorator'
       })
+
+      await vi.advanceTimersByTimeAsync(0)
 
       expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
 
@@ -68,6 +72,8 @@ describe('tokenStore', () => {
       void tokenStore.getToken({
         decorator: 'testDecorator'
       })
+
+      await vi.advanceTimersByTimeAsync(0)
 
       expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
 
@@ -107,6 +113,8 @@ describe('tokenStore', () => {
         decorator: 'testDecorator'
       })
 
+      await vi.advanceTimersByTimeAsync(0)
+
       expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
 
       resolveTokenLeases({
@@ -130,6 +138,8 @@ describe('tokenStore', () => {
         decorator: 'testDecorator',
         feature: 'anotherFeature'
       })
+
+      await vi.advanceTimersByTimeAsync(0)
 
       expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
 
@@ -163,6 +173,8 @@ describe('tokenStore', () => {
       const getTokenFromStorePromiseSecond = tokenStore.getToken({
         decorator: 'testDecorator'
       })
+
+      await vi.advanceTimersByTimeAsync(0)
 
       expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
 
@@ -202,6 +214,8 @@ describe('tokenStore', () => {
         decorator: 'anotherTestDecorator'
       })
 
+      await vi.advanceTimersByTimeAsync(0)
+
       expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
 
       resolveFirstTokenLeases({
@@ -238,6 +252,8 @@ describe('tokenStore', () => {
         .map(async () => tokenStore.getToken({
           decorator: 'testDecorator'
         }))
+
+      await vi.advanceTimersByTimeAsync(0)
 
       expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
 
@@ -317,6 +333,139 @@ describe('tokenStore', () => {
       await expect(getTokenFromStorePromises[6]).resolves.toEqual({ granted: true, token: 'testToken6' })
     })
 
+    it('should queue token request batches and keep only one active quota request at all time', async () => {
+      const resolveTokenLeases: Array<(config: StanzaTokenLeasesResult | null) => void> = []
+      mockHubService.getTokenLease.mockImplementation(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
+        resolveTokenLeases.push(resolve)
+      }))
+
+      const getTokenFromStorePromisesFirstBatch = [
+        tokenStore.getToken({
+          decorator: 'testDecorator'
+        }),
+        tokenStore.getToken({
+          decorator: 'testDecorator'
+        }),
+        tokenStore.getToken({
+          decorator: 'testDecorator'
+        }),
+        tokenStore.getToken({
+          decorator: 'testDecorator'
+        })
+      ]
+
+      await vi.advanceTimersByTimeAsync(0)
+
+      expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
+
+      resolveTokenLeases[0]({
+        granted: true,
+        leases: [{
+          token: 'testToken0',
+          feature: 'testFeature',
+          expiresAt: 300,
+          priorityBoost: 0
+        },
+        {
+          token: 'testToken1',
+          feature: 'testFeature',
+          expiresAt: 300,
+          priorityBoost: 0
+        }]
+      })
+
+      await expect(getTokenFromStorePromisesFirstBatch[0]).resolves.toEqual({ granted: true, token: 'testToken0' })
+      await expect(getTokenFromStorePromisesFirstBatch[1]).resolves.toEqual({ granted: true, token: 'testToken1' })
+      await expect(Promise.race([getTokenFromStorePromisesFirstBatch[2], 'pending'])).resolves.toBe('pending')
+      await expect(Promise.race([getTokenFromStorePromisesFirstBatch[3], 'pending'])).resolves.toBe('pending')
+
+      expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
+
+      const getTokenFromStorePromisesSecondBatch = [
+        tokenStore.getToken({
+          decorator: 'testDecorator'
+        }),
+        tokenStore.getToken({
+          decorator: 'testDecorator'
+        }),
+        tokenStore.getToken({
+          decorator: 'testDecorator'
+        }),
+        tokenStore.getToken({
+          decorator: 'testDecorator'
+        })
+      ]
+
+      expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
+
+      resolveTokenLeases[1](
+        {
+          granted: true,
+          leases: [{
+            token: 'testToken2',
+            feature: 'testFeature',
+            expiresAt: 300,
+            priorityBoost: 0
+          }, {
+            token: 'testToken3',
+            feature: 'testFeature',
+            expiresAt: 300,
+            priorityBoost: 0
+          }]
+        })
+
+      await expect(getTokenFromStorePromisesFirstBatch[2]).resolves.toEqual({ granted: true, token: 'testToken2' })
+      await expect(getTokenFromStorePromisesFirstBatch[3]).resolves.toEqual({ granted: true, token: 'testToken3' })
+      await expect(Promise.race([getTokenFromStorePromisesSecondBatch[0], 'pending'])).resolves.toBe('pending')
+      await expect(Promise.race([getTokenFromStorePromisesSecondBatch[1], 'pending'])).resolves.toBe('pending')
+      await expect(Promise.race([getTokenFromStorePromisesSecondBatch[2], 'pending'])).resolves.toBe('pending')
+      await expect(Promise.race([getTokenFromStorePromisesSecondBatch[3], 'pending'])).resolves.toBe('pending')
+
+      expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(3)
+
+      resolveTokenLeases[2](
+        {
+          granted: true,
+          leases: [{
+            token: 'testToken3',
+            feature: 'testFeature',
+            expiresAt: 300,
+            priorityBoost: 0
+          }, {
+            token: 'testToken4',
+            feature: 'testFeature',
+            expiresAt: 300,
+            priorityBoost: 0
+          }]
+        })
+
+      await expect(getTokenFromStorePromisesSecondBatch[0]).resolves.toEqual({ granted: true, token: 'testToken3' })
+      await expect(getTokenFromStorePromisesSecondBatch[1]).resolves.toEqual({ granted: true, token: 'testToken4' })
+      await expect(Promise.race([getTokenFromStorePromisesSecondBatch[2], 'pending'])).resolves.toBe('pending')
+      await expect(Promise.race([getTokenFromStorePromisesSecondBatch[3], 'pending'])).resolves.toBe('pending')
+
+      expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(4)
+
+      resolveTokenLeases[3](
+        {
+          granted: true,
+          leases: [{
+            token: 'testToken5',
+            feature: 'testFeature',
+            expiresAt: 300,
+            priorityBoost: 0
+          }, {
+            token: 'testToken6',
+            feature: 'testFeature',
+            expiresAt: 300,
+            priorityBoost: 0
+          }]
+        })
+
+      await expect(getTokenFromStorePromisesSecondBatch[2]).resolves.toEqual({ granted: true, token: 'testToken5' })
+      await expect(getTokenFromStorePromisesSecondBatch[3]).resolves.toEqual({ granted: true, token: 'testToken6' })
+    })
+
     it('should fail the getToken if token batch is not granted', async () => {
       let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {}
       mockHubService.getTokenLease.mockImplementation(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
@@ -326,6 +475,8 @@ describe('tokenStore', () => {
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
         decorator: 'testDecorator'
       })
+
+      await vi.advanceTimersByTimeAsync(0)
 
       resolveTokenLeases({
         granted: false
@@ -348,6 +499,8 @@ describe('tokenStore', () => {
       const getTokenFromStorePromiseSecond = tokenStore.getToken({
         decorator: 'testDecorator'
       })
+
+      await vi.advanceTimersByTimeAsync(0)
 
       resolveTokenLeases({
         granted: false
@@ -375,6 +528,8 @@ describe('tokenStore', () => {
         decorator: 'testDecorator'
       })
 
+      await vi.advanceTimersByTimeAsync(0)
+
       resolveTokenLeases({
         granted: false
       })
@@ -385,6 +540,8 @@ describe('tokenStore', () => {
       const getTokenFromStorePromiseThird = tokenStore.getToken({
         decorator: 'testDecorator'
       })
+
+      await vi.advanceTimersByTimeAsync(0)
 
       resolveTokenLeases({
         granted: true,
@@ -412,6 +569,8 @@ describe('tokenStore', () => {
         decorator: 'testDecorator'
       })
 
+      await vi.advanceTimersByTimeAsync(0)
+
       resolveTokenLeases(null)
 
       await expect(getTokenFromStorePromiseFirst).resolves.toEqual(null)
@@ -426,6 +585,8 @@ describe('tokenStore', () => {
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
         decorator: 'testDecorator'
       })
+
+      await vi.advanceTimersByTimeAsync(0)
 
       rejectTokenLeases(new Error('An error'))
 
