@@ -72,33 +72,37 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
       }
     },
     getToken: async ({ decorator, feature, priorityBoost, tags }) => {
+      const body = {
+        selector: {
+          decoratorName: decorator,
+          featureName: feature,
+          environment,
+          tags
+        },
+        clientId,
+        priorityBoost
+      }
+      logger.debug('fetching token with body %o', body)
       return hubRequest('v1/quota/token', {
         method: 'POST',
-        body: {
-          selector: {
-            decoratorName: decorator,
-            featureName: feature,
-            environment,
-            tags
-          },
-          clientId,
-          priorityBoost
-        }
+        body
       }, stanzaTokenResponse)
     },
     getTokenLease: async ({ decorator, feature, priorityBoost, tags }) => {
+      const body = {
+        selector: {
+          decoratorName: decorator,
+          featureName: feature,
+          environment,
+          tags
+        },
+        clientId,
+        priorityBoost
+      }
+      logger.debug('fetching token lease with body %o', body)
       const response = await hubRequest('v1/quota/lease', {
         method: 'POST',
-        body: {
-          selector: {
-            decoratorName: decorator,
-            featureName: feature,
-            environment,
-            tags
-          },
-          clientId,
-          priorityBoost
-        }
+        body
       }, stanzaTokenLeaseResponse)
       const now = Date.now()
 

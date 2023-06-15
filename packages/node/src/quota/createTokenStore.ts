@@ -3,6 +3,7 @@ import { hubService } from '../global/hubService'
 import { createTokenState } from './createTokenState'
 import { type TokenQuery } from './tokenState'
 import { type StanzaToken } from '../hub/model'
+import { logger } from '../global/logger'
 
 const MARK_TOKENS_AS_CONSUMED_DELAY = 100
 const TOKEN_EXPIRE_OFFSET = 2000
@@ -59,6 +60,7 @@ function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
 
   state.onTokensAvailableRatioChange(TOKEN_EXPIRE_OFFSET, (ratio) => {
     if (ratio <= 0.2) {
+      logger.debug('tokens depleted below ratio, getting new lease for decorator: %o', decorator)
       getTokenLeaseInProgress = getTokenLeaseInProgress.then(async result =>
         result.type === 'idle'
           ? fetchMoreTokenLeases().then(() => ({ type: 'value', value: null }))
@@ -70,6 +72,7 @@ function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
   return { fetchTokensIfNecessary }
 
   async function fetchTokensIfNecessary (query: TokenQuery): Promise<StanzaToken | null> {
+    logger.debug('fetching tokens for query: %o', query)
     const tokenInState = state.popToken(query)
     if (tokenInState !== null) {
       return {
@@ -94,6 +97,10 @@ function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
   }
 
   async function fetchMoreTokenLeases (query: TokenQuery = {}) {
+    logger.debug('fetching more leases for values: %o', {
+      ...query,
+      decorator
+    })
     const tokenLeases = await hubService.getTokenLease({
       ...query,
       decorator
@@ -107,6 +114,7 @@ function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
   }
 
   async function requestTokenLease (query: TokenQuery): Promise<StanzaToken | null> {
+    logger.debug('requesting lease for query: %o', query)
     const tokenLeases = await fetchMoreTokenLeases(query)
 
     if (tokenLeases === null) {
