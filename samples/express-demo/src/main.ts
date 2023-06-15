@@ -68,6 +68,6 @@ app.use(((err, req, res, next) => {
   }
 }) satisfies ErrorRequestHandler)
 
-app.listen(3003, () => {
+app.listen(3002, () => {
   console.debug('🚀 Server ready at: http://localhost:3002')
 })

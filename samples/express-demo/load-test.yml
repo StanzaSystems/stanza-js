@@ -1,5 +1,5 @@
 config:
-  target: "http://localhost:3003"
+  target: "http://localhost:3002"
   processor: './load-test-utils.js'
   phases:
     - duration: 20
