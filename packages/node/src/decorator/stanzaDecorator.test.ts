@@ -9,6 +9,7 @@ import { type DecoratorConfig } from '../hub/model'
 import { stanzaDecorator } from './stanzaDecorator'
 import { StanzaDecoratorError } from './stanzaDecoratorError'
 import type * as getQuotaModule from '../quota/getQuota'
+import { decoratorStore } from '../global/decoratorStore'
 
 type GetQuotaModule = typeof getQuotaModule
 
@@ -49,6 +50,7 @@ beforeEach(() => {
   getQuotaMock.mockReset()
   getQuotaMock.mockImplementation(async () => { throw Error('not implemented') })
   mockHubService.reset()
+  decoratorStore.clear()
 })
 
 beforeAll(() => {
@@ -116,6 +118,27 @@ describe('stanzaDecorator', function () {
       version: 'test',
       config: {} as any
     }))
+
+    stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      doStuff()
+    })
+
+    expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledOnce()
+  })
+
+  it('should fetch decorator config only once upon initialization of the same decorator multiple times', async function () {
+    mockHubService.fetchServiceConfig.mockImplementation(async () => Promise.resolve({
+      version: 'test',
+      config: {} as any
+    }))
+
+    stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      doStuff()
+    })
+
+    stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      doStuff()
+    })
 
     stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
       doStuff()

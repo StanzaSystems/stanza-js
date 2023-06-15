@@ -7,31 +7,14 @@ import { createStanzaWrapper } from '../utils/createStanzaWrapper'
 import { type Fn } from '../utils/fn'
 import { isTruthy } from '../utils/isTruthy'
 import { type Promisify } from '../utils/promisify'
-import { initDecorator } from './initStanzaDecorator'
+import { initOrGetDecorator } from './initOrGetDecorator'
 import { type StanzaDecoratorOptions } from './model'
 import { eventBus, events } from '../global/eventBus'
 import { wrapEventsAsync } from '../utils/wrapEventsAsync'
 import { hubService } from '../global/hubService'
 
 export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDecoratorOptions) => {
-  const initializedDecorator = initDecorator(options)
-  const guard = wrapEventsAsync(initializedDecorator.guard, {
-    success: () => {
-      void eventBus.emit(events.request.allowed, {
-        ...hubService.getServiceMetadata(),
-        featureName: options.feature ?? '',
-        decoratorName: options.decorator
-      })
-    },
-    failure: () => {
-      void eventBus.emit(events.request.blocked, {
-        ...hubService.getServiceMetadata(),
-        featureName: options.feature ?? '',
-        decoratorName: options.decorator,
-        reason: 'quota'
-      })
-    }
-  })
+  const { guard } = createStanzaDecorator(options)
 
   return createStanzaWrapper<TArgs, TReturn, Promisify<TReturn>>((fn) => {
     const resultFn = async function (...args: Parameters<typeof fn>) {
@@ -75,4 +58,28 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
       }
     }) as Fn<TArgs, Promisify<TReturn>>
   })
+}
+
+const createStanzaDecorator = (options: StanzaDecoratorOptions) => {
+  const initializedDecorator = initOrGetDecorator(options)
+  return {
+    ...initializedDecorator,
+    guard: wrapEventsAsync(initializedDecorator.guard, {
+      success: () => {
+        void eventBus.emit(events.request.allowed, {
+          ...hubService.getServiceMetadata(),
+          featureName: options.feature ?? '',
+          decoratorName: options.decorator
+        })
+      },
+      failure: () => {
+        void eventBus.emit(events.request.blocked, {
+          ...hubService.getServiceMetadata(),
+          featureName: options.feature ?? '',
+          decoratorName: options.decorator,
+          reason: 'quota'
+        })
+      }
+    })
+  }
 }
