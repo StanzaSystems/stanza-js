@@ -105,7 +105,7 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
         body
       }, stanzaTokenLeaseResponse)
       const now = Date.now()
-
+      logger.debug('token leases granted: %o', response?.leases)
       if (response?.leases === undefined) {
         return null
       }
@@ -113,7 +113,6 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
       if (response.leases.length === 0) {
         return { granted: false }
       }
-
       return {
         granted: true,
         leases: response.leases.map(lease => ({

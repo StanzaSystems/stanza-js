@@ -47,7 +47,6 @@ export const createHubRequest = ({ apiKey, hubUrl }: HubRequestInitOptions): Hub
       logger.debug('raw response: %o', data)
       return null
     }
-
     return parsedResult.data
   }
 }
