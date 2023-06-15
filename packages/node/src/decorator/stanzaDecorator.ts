@@ -7,7 +7,7 @@ import { createStanzaWrapper } from '../utils/createStanzaWrapper'
 import { type Fn } from '../utils/fn'
 import { isTruthy } from '../utils/isTruthy'
 import { type Promisify } from '../utils/promisify'
-import { initStanzaDecorator } from './initStanzaDecorator'
+import { initOrGetDecorator } from './initOrGetDecorator'
 import { type StanzaDecoratorOptions } from './model'
 import { eventBus, events } from '../global/eventBus'
 import { wrapEventsAsync } from '../utils/wrapEventsAsync'
@@ -61,7 +61,7 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
 }
 
 const createStanzaDecorator = (options: StanzaDecoratorOptions) => {
-  const initializedDecorator = initStanzaDecorator(options)
+  const initializedDecorator = initOrGetDecorator(options)
   return {
     ...initializedDecorator,
     guard: wrapEventsAsync(initializedDecorator.guard, {
