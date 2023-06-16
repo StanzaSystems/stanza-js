@@ -2,8 +2,8 @@ config:
   target: "https://hub.dev.getstanza.dev:9010"
   processor: './load-test-utils.js'
   phases:
-    - duration: 30
-      arrivalRate: 6
+    - duration: 20
+      arrivalRate: 8
 scenarios:
   # - name: "Send pro requests"
   #   afterResponse: "trackRateLimits"
@@ -12,7 +12,7 @@ scenarios:
   #         url: "/account/maggiepint"
   #   weight: 1
   - name: "Send free requests"
-    afterResponse: "trackRateLimits"
+    afterResponse: "trackRateLimitsFromHub"
     flow:
       - post:
           url: '/v1/quota/token'
@@ -26,7 +26,7 @@ scenarios:
               decoratorName: github_guard
     weight: 1
   - name: "Send enterprise requests"
-    afterResponse: "trackRateLimits"
+    afterResponse: "trackRateLimitsFromHub"
     flow:
       - post:
           url: '/v1/quota/token'

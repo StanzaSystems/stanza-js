@@ -49,8 +49,7 @@ app.get('/account/:username', async (req: Request, res: Response, next: NextFunc
     const user = (plan === 'free') ? await getGitHubProfileFree(username) : await getGitHubProfilePaid(username)
     res.status(200).send(user)
   } catch (e) {
-    res.status(500)
-    next()
+    next(e)
   }
 })
 
