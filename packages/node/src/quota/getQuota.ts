@@ -6,6 +6,7 @@ import { getDecoratorConfig } from '../global/decoratorConfig'
 import { logger } from '../global/logger'
 import { type Tag } from '../decorator/model'
 import { STANZA_REQUEST_TIMEOUT } from '../global/requestTimeout'
+import { STANZA_SKIP_TOKEN_CACHE } from '../global/skipTokenCache'
 
 interface GetQuotaOptions {
   decorator: string
@@ -45,7 +46,9 @@ const getQuotaInternal = async (options: GetQuotaOptions): Promise<StanzaToken |
       tags: validQuotaTags
     })
   }
-  const tokenInfo = await tokenStore.getToken(options)
+  const tokenInfo = STANZA_SKIP_TOKEN_CACHE
+    ? await hubService.getToken(options)
+    : await tokenStore.getToken(options)
   if (tokenInfo?.granted === true) {
     tokenStore.markTokenAsConsumed(tokenInfo.token)
   }

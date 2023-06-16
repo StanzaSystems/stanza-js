@@ -7,6 +7,7 @@ export const stanzaInitOptions = z.object({
   serviceRelease: z.string(),
   environment: z.string(),
   useRestHubApi: z.boolean().optional().default(false),
+  skipTokenCache: z.boolean().optional().default(false),
   requestTimeout: z.number().int().optional().default(1000)
 })
 

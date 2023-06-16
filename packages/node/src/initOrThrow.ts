@@ -8,6 +8,7 @@ import { createGrpcHubService } from './hub/grpc/createGrpcHubService'
 import { createHubRequest } from './hub/rest/createHubRequest'
 import { createRestHubService } from './hub/rest/createRestHubService'
 import { setRequestTimeout } from './global/requestTimeout'
+import { setSkipTokenCache } from './global/skipTokenCache'
 
 export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
   const parseResult = stanzaInitOptions.safeParse({
@@ -22,6 +23,7 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
   const clientId = generateClientId()
 
   setRequestTimeout(initOptions.requestTimeout)
+  setSkipTokenCache(initOptions.skipTokenCache)
 
   await addInstrumentation(initOptions.serviceName)
 
