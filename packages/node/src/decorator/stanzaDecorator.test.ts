@@ -9,6 +9,7 @@ import { type DecoratorConfig } from '../hub/model'
 import { stanzaDecorator } from './stanzaDecorator'
 import { StanzaDecoratorError } from './stanzaDecoratorError'
 import type * as getQuotaModule from '../quota/getQuota'
+import { decoratorStore } from '../global/decoratorStore'
 
 type GetQuotaModule = typeof getQuotaModule
 
@@ -49,6 +50,7 @@ beforeEach(() => {
   getQuotaMock.mockReset()
   getQuotaMock.mockImplementation(async () => { throw Error('not implemented') })
   mockHubService.reset()
+  decoratorStore.clear()
 })
 
 beforeAll(() => {
@@ -122,6 +124,83 @@ describe('stanzaDecorator', function () {
     })
 
     expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledOnce()
+  })
+
+  it('should fetch decorator config only once upon initialization of the same decorator multiple times', async function () {
+    mockHubService.fetchServiceConfig.mockImplementation(async () => Promise.resolve({
+      version: 'test',
+      config: {} as any
+    }))
+
+    stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      doStuff()
+    })
+
+    stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      doStuff()
+    })
+
+    stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      doStuff()
+    })
+
+    expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledOnce()
+    expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledWith({ decorator: 'testDecorator' })
+  })
+
+  it('should fetch decorator config only once upon initialization of the same decorator multiple times - with different features, priority boosts', async function () {
+    mockHubService.fetchServiceConfig.mockImplementation(async () => Promise.resolve({
+      version: 'test',
+      config: {} as any
+    }))
+
+    stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      doStuff()
+    })
+
+    stanzaDecorator({ decorator: 'testDecorator', priorityBoost: 1 }).bind(() => {
+      doStuff()
+    })
+
+    stanzaDecorator({ decorator: 'testDecorator', priorityBoost: -1 }).bind(() => {
+      doStuff()
+    })
+
+    stanzaDecorator({ decorator: 'testDecorator', feature: 'testFeature' }).bind(() => {
+      doStuff()
+    })
+
+    stanzaDecorator({
+      decorator: 'testDecorator',
+      tags: [{
+        key: 'testTag',
+        value: 'testTagValue'
+      }]
+    }).bind(() => {
+      doStuff()
+    })
+
+    expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledOnce()
+    expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledWith({ decorator: 'testDecorator' })
+  })
+
+  it('should fetch decorator config only once per different decorator', async function () {
+    mockHubService.fetchServiceConfig.mockImplementation(async () => Promise.resolve({
+      version: 'test',
+      config: {} as any
+    }))
+
+    stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      doStuff()
+    })
+
+    stanzaDecorator({ decorator: 'anotherTestDecorator' }).bind(() => {
+      doStuff()
+    })
+
+    expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledTimes(2)
+    expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledWith({ decorator: 'testDecorator' })
+    expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledWith({ decorator: 'anotherTestDecorator' })
   })
 
   describe('check quota', () => {
