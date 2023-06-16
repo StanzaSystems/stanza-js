@@ -1,5 +1,6 @@
 import { createGlobal } from './createGlobal'
 import pino from 'pino'
+import { getEnvInitOptions } from '../getEnvInitOptions'
 
 const loggerWrapper = {
   wrap: <T>({ prefix, level = 'debug' }: { prefix?: string, level?: pino.Level }, obj: T) => {
@@ -24,7 +25,9 @@ const loggerWrapper = {
 }
 
 export const logger: pino.Logger & typeof loggerWrapper = createGlobal(Symbol.for('[Stanza SDK Internal] Logger'), () => {
-  const pinoLogger = pino()
+  const pinoLogger = pino({
+    level: getEnvInitOptions().logLevel ?? 'info'
+  })
 
   return Object.assign(
     pinoLogger,

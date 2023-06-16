@@ -23,7 +23,7 @@ export const getQuota = async (options: GetQuotaOptions): Promise<StanzaToken | 
       getQuotaInternal(options)
     )
   } catch (e) {
-    logger.warn('Failed to fetch the token:', e instanceof Error ? e.message : e)
+    logger.warn('Failed to fetch the token: %o', e instanceof Error ? e.message : e)
   }
 
   return null

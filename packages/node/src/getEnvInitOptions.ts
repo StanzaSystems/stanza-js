@@ -1,5 +1,10 @@
 import { type StanzaInitOptions } from './stanzaInitOptions'
-import { type CoerceFn, coerceStringToBoolean, coerceStringToInteger } from './coerceStanzaInitOptions'
+import {
+  type CoerceFn,
+  coerceStringToBoolean,
+  coerceStringToInteger,
+  coerceStringToLogLevel
+} from './coerceStanzaInitOptions'
 import { identity } from '@getstanza/core'
 
 type StanzaInitOptionsFromEnv = Exclude<keyof StanzaInitOptions, 'useRestHubApi'>
@@ -13,7 +18,8 @@ const stanzaEnvOptionsMap: {
   serviceRelease: ['STANZA_SERVICE_RELEASE', identity],
   environment: ['STANZA_ENVIRONMENT', identity],
   skipTokenCache: ['STANZA_SKIP_TOKEN_CACHE', coerceStringToBoolean],
-  requestTimeout: ['STANZA_REQUEST_TIMEOUT', coerceStringToInteger]
+  requestTimeout: ['STANZA_REQUEST_TIMEOUT', coerceStringToInteger],
+  logLevel: ['STANZA_LOG_LEVEL', coerceStringToLogLevel]
 }
 export const getEnvInitOptions = (): Partial<StanzaInitOptions> => {
   return (Object.entries(stanzaEnvOptionsMap) as Array<[StanzaInitOptionsFromEnv, [string, CoerceFn<any>]]>).reduce<Partial<StanzaInitOptions>>((resultOptions, [optionKey, [envKey, coerceFn]]) => {

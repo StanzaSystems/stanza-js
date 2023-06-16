@@ -36,7 +36,7 @@ export const initIngressTokenValidator = (options: IngressTokenValidatorOptions)
           token
         }))
     } catch (e) {
-      logger.warn('Failed to validate the token:', e instanceof Error ? e.message : e)
+      logger.warn('Failed to validate the token: %o', e instanceof Error ? e.message : e)
     }
 
     if (validatedToken === null) {
