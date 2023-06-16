@@ -6,8 +6,7 @@ import { type ValidatedToken } from '../../hub/model'
 import { withTimeout } from '../../utils/withTimeout'
 import { hubService } from '../../global/hubService'
 import { logger } from '../../global/logger'
-
-const VALIDATE_QUOTA_TIMEOUT = 2000
+import { STANZA_REQUEST_TIMEOUT } from '../../global/requestTimeout'
 
 export interface IngressTokenValidatorOptions {
   decorator: string
@@ -30,7 +29,7 @@ export const initIngressTokenValidator = (options: IngressTokenValidatorOptions)
     let validatedToken: ValidatedToken | null = null
     try {
       validatedToken = await withTimeout(
-        VALIDATE_QUOTA_TIMEOUT,
+        STANZA_REQUEST_TIMEOUT,
         'Validate token timed out',
         hubService.validateToken({
           decorator: options.decorator,

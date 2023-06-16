@@ -12,7 +12,7 @@ const stanzaEnvOptionsMap: {
   serviceName: ['STANZA_SERVICE_NAME', identity],
   serviceRelease: ['STANZA_SERVICE_RELEASE', identity],
   environment: ['STANZA_ENVIRONMENT', identity],
-  hubRequestTimeout: ['STANZA_HUB_REQUEST_TIMEOUT', coerceStringToInteger]
+  requestTimeout: ['STANZA_REQUEST_TIMEOUT', coerceStringToInteger]
 }
 export const getEnvInitOptions = (): Partial<StanzaInitOptions> => {
   return (Object.entries(stanzaEnvOptionsMap) as Array<[StanzaInitOptionsFromEnv, [string, CoerceFn<any>]]>).reduce<Partial<StanzaInitOptions>>((resultOptions, [optionKey, [envKey, coerceFn]]) => {

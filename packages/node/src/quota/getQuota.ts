@@ -5,8 +5,7 @@ import { hubService } from '../global/hubService'
 import { getDecoratorConfig } from '../global/decoratorConfig'
 import { logger } from '../global/logger'
 import { type Tag } from '../decorator/model'
-
-const CHECK_QUOTA_TIMEOUT = 2000
+import { STANZA_REQUEST_TIMEOUT } from '../global/requestTimeout'
 
 interface GetQuotaOptions {
   decorator: string
@@ -18,7 +17,7 @@ interface GetQuotaOptions {
 export const getQuota = async (options: GetQuotaOptions): Promise<StanzaToken | null> => {
   try {
     return await withTimeout(
-      CHECK_QUOTA_TIMEOUT,
+      STANZA_REQUEST_TIMEOUT,
       'Check quota timed out',
       getQuotaInternal(options)
     )
