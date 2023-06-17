@@ -5,6 +5,7 @@ import { type TokenQuery } from './tokenState'
 import { type StanzaToken } from '../hub/model'
 
 const MARK_TOKENS_AS_CONSUMED_DELAY = 100
+const TOKEN_EXPIRE_OFFSET = 2000
 
 interface DecoratorTokenStore {
   fetchTokensIfNecessary: (query: TokenQuery) => Promise<StanzaToken | null>
@@ -56,7 +57,7 @@ function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
   const state = createTokenState()
   let getTokenLeaseInProgress: Promise<TokenLeaseInProgressState> = Promise.resolve<TokenLeaseInProgressState>({ type: 'idle' })
 
-  state.onTokensAvailableRatioChange(2000, (ratio) => {
+  state.onTokensAvailableRatioChange(TOKEN_EXPIRE_OFFSET, (ratio) => {
     if (ratio <= 0.2) {
       getTokenLeaseInProgress = getTokenLeaseInProgress.then(async result =>
         result.type === 'idle'

@@ -12,6 +12,27 @@ describe('getEnvInitOptions', () => {
     vi.stubEnv('STANZA_SERVICE_NAME', 'dummyStanzaService')
     vi.stubEnv('STANZA_SERVICE_RELEASE', 'dummyStanzaRelease')
     vi.stubEnv('STANZA_ENVIRONMENT', 'testEnvironment')
+    vi.stubEnv('STANZA_REQUEST_TIMEOUT', '1234')
+
+    expect(getEnvInitOptions()).toEqual({
+      hubUrl: 'https://url.to.stanza.hub',
+      apiKey: 'dummyAPIKey',
+      serviceName: 'dummyStanzaService',
+      serviceRelease: 'dummyStanzaRelease',
+      environment: 'testEnvironment',
+      requestTimeout: 1234
+    })
+
+    vi.unstubAllEnvs()
+  })
+
+  it('should skip requestTimeout from options object if env variable is not valid', () => {
+    vi.stubEnv('STANZA_HUB_ADDRESS', 'https://url.to.stanza.hub')
+    vi.stubEnv('STANZA_API_KEY', 'dummyAPIKey')
+    vi.stubEnv('STANZA_SERVICE_NAME', 'dummyStanzaService')
+    vi.stubEnv('STANZA_SERVICE_RELEASE', 'dummyStanzaRelease')
+    vi.stubEnv('STANZA_ENVIRONMENT', 'testEnvironment')
+    vi.stubEnv('STANZA_REQUEST_TIMEOUT', 'invalid_number')
 
     expect(getEnvInitOptions()).toEqual({
       hubUrl: 'https://url.to.stanza.hub',

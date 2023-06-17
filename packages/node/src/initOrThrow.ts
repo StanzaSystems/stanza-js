@@ -7,6 +7,7 @@ import { startPollingServiceConfig } from './service/startPollingConfigService'
 import { createGrpcHubService } from './hub/grpc/createGrpcHubService'
 import { createHubRequest } from './hub/rest/createHubRequest'
 import { createRestHubService } from './hub/rest/createRestHubService'
+import { setRequestTimeout } from './global/requestTimeout'
 
 export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
   const parseResult = stanzaInitOptions.safeParse({
@@ -19,6 +20,8 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
   }
   const initOptions = parseResult.data
   const clientId = generateClientId()
+
+  setRequestTimeout(initOptions.requestTimeout)
 
   await addInstrumentation(initOptions.serviceName)
 

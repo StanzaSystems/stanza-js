@@ -6,7 +6,8 @@ export const stanzaInitOptions = z.object({
   serviceName: z.string(),
   serviceRelease: z.string(),
   environment: z.string(),
-  useRestHubApi: z.boolean().optional().default(false)
+  useRestHubApi: z.boolean().optional().default(false),
+  requestTimeout: z.number().int().optional().default(1000)
 })
 
 export type StanzaInitOptions = z.infer<typeof stanzaInitOptions>
