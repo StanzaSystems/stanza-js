@@ -7,5 +7,6 @@ void init({
   serviceRelease: process.env.STANZA_SERVICE_RELEASE,
   environment: process.env.STANZA_ENVIRONMENT,
   useRestHubApi: true,
-  requestTimeout: 2000
+  requestTimeout: 2000,
+  skipTokenCache: true
 })
