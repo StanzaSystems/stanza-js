@@ -18,6 +18,18 @@ vi.mock('./fetchImplementation', () => {
   }
 })
 
+vi.mock('./global/logger', async () => {
+  const pino = (await import('pino')).pino
+  return {
+    logger: Object.assign(
+      pino({}),
+      {
+        wrap: <T>(_: unknown, v: T) => v
+      }
+    )
+  }
+})
+
 const createGrpcHubServiceMock = vi.spyOn(createGrpcHubServiceModule, 'createGrpcHubService')
 const createRestHubServiceMock = vi.spyOn(createRestHubServiceModule, 'createRestHubService')
 
