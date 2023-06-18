@@ -30,7 +30,7 @@ export class StanzaMetricExporter implements PushMetricExporter {
     })
     this.collectorUrl = metricConfig.collectorUrl
     prevExporter.shutdown().catch(err => {
-      logger.info('Failed to shutdown a metric exporter:\n', err)
+      logger.warn('Failed to shutdown a metric exporter: %o', err)
     })
   }
 
