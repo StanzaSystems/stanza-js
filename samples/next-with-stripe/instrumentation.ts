@@ -16,7 +16,8 @@ export async function register () {
       serviceName: 'DemoCommerce',
       serviceRelease: '1',
       environment: process.env.NEXT_PUBLIC_STANZA_ENVIRONMENT ?? 'local',
-      useRestHubApi: true
+      useRestHubApi: true,
+      requestTimeout: 2000
     })
   }
 }

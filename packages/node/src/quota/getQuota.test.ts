@@ -42,7 +42,7 @@ describe('getQuota', function () {
 
     it('should return null if getting quota times out', async function () {
       const getQuotaPromise = getQuota({ decorator: 'testDecorator' })
-      await vi.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(1000)
       await expect(getQuotaPromise).resolves.toEqual(null)
     })
 

@@ -13,8 +13,8 @@ import { stanzaMarkTokensAsConsumedResponse } from '../api/stanzaMarkTokensAsCon
 import { type z, type ZodType } from 'zod'
 import { withTimeout } from '../../utils/withTimeout'
 import { wrapHubServiceWithMetrics } from '../wrapHubServiceWithMetrics'
-
-const HUB_REQUEST_TIMEOUT = 1000
+import { STANZA_REQUEST_TIMEOUT } from '../../global/requestTimeout'
+import { logger } from '../../global/logger'
 
 interface GrpcHubServiceInitOptions {
   serviceName: string
@@ -37,7 +37,9 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
   const configClient = createPromiseClient(ConfigService, transport)
   const quotaClient = createPromiseClient(QuotaService, transport)
 
-  return wrapHubServiceWithMetrics({
+  return wrapHubServiceWithMetrics(logger.wrap({
+    prefix: '[gRPC Hub Service] '
+  }, {
     getServiceMetadata: () => ({ serviceName, environment, clientId }),
     fetchServiceConfig: async (options): Promise<ServiceConfig | null> => {
       const data = await grpcRequest(async () => configClient.getServiceConfig({
@@ -144,12 +146,12 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
 
       return data === null ? null : { ok: true }
     }
-  })
+  }))
 }
 
 const grpcRequest = async <T extends ZodType>(req: () => Promise<unknown>, validateResult: T): Promise<z.infer<T> | null> => {
   const response = await withTimeout(
-    HUB_REQUEST_TIMEOUT,
+    STANZA_REQUEST_TIMEOUT,
     'Hub request timed out',
     req()
   )

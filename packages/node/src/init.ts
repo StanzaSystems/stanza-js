@@ -12,5 +12,5 @@ export const init = async (options: Partial<StanzaInitOptions> = {}) => {
       logger.warn('Failed to init the Stanza SDK: %o', e instanceof Error ? e.message : e)
     }
   }
-  logger.info('Stanza initialized')
+  logger.debug('Stanza initialized')
 }

@@ -7,6 +7,8 @@ import { startPollingServiceConfig } from './service/startPollingConfigService'
 import { createGrpcHubService } from './hub/grpc/createGrpcHubService'
 import { createHubRequest } from './hub/rest/createHubRequest'
 import { createRestHubService } from './hub/rest/createRestHubService'
+import { setRequestTimeout } from './global/requestTimeout'
+import { setSkipTokenCache } from './global/skipTokenCache'
 import { logger } from './global/logger'
 
 export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
@@ -21,6 +23,12 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
   }
   const initOptions = parseResult.data
   const clientId = generateClientId()
+
+  setRequestTimeout(initOptions.requestTimeout)
+  setSkipTokenCache(initOptions.skipTokenCache)
+  if (initOptions.logLevel !== undefined) {
+    logger.level = initOptions.logLevel
+  }
 
   await addInstrumentation(initOptions.serviceName)
 

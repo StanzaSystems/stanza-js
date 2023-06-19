@@ -3,8 +3,7 @@ import { withTimeout } from '../../utils/withTimeout'
 import { fetch } from '../../fetchImplementation'
 import { type HubApiPath, type HubRequest } from '../hubRequest'
 import { logger } from '../../global/logger'
-
-const HUB_REQUEST_TIMEOUT = 1000
+import { STANZA_REQUEST_TIMEOUT } from '../../global/requestTimeout'
 
 export interface HubRequestInitOptions {
   hubUrl: string
@@ -29,7 +28,7 @@ export const createHubRequest = ({ apiKey, hubUrl }: HubRequestInitOptions): Hub
       })
 
     const response = await withTimeout(
-      HUB_REQUEST_TIMEOUT,
+      STANZA_REQUEST_TIMEOUT,
       'Hub request timed out',
       fetch(requestUrl, {
         headers: {
@@ -44,7 +43,8 @@ export const createHubRequest = ({ apiKey, hubUrl }: HubRequestInitOptions): Hub
     const parsedResult = validateRequest.safeParse(data)
 
     if (!parsedResult.success) {
-      logger.debug('request to hub failed %o', parsedResult)
+      logger.debug('request to hub (%s) failed %o', requestUrl, parsedResult)
+      logger.debug('raw response: %o', data)
       return null
     }
 
