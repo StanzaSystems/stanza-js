@@ -31,7 +31,7 @@ export const createTokenStore = (): TokenStore => {
             tokensConsumedTimeout = undefined
 
             await hubService.markTokensAsConsumed({ tokens: tokensToConsume })
-          })().catch()
+          })().catch(() => null)
         }, MARK_TOKENS_AS_CONSUMED_DELAY)
       }
     }

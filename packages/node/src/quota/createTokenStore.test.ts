@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, assert, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createTokenStore } from './createTokenStore'
 import { type TokenStore } from './tokenStore'
 import { mockHubService } from '../__tests__/mocks/mockHubService'
@@ -619,6 +619,56 @@ describe('tokenStore', () => {
 
       expect(mockHubService.markTokensAsConsumed).toHaveBeenCalledOnce()
       expect(mockHubService.markTokensAsConsumed).toHaveBeenCalledWith({ tokens: ['aToken'] })
+    })
+
+    it('should NOT leak exception if hubService\'s markTokensAsResolved rejects', async () => {
+      mockHubService.markTokensAsConsumed.mockImplementation(async () => {
+        await new Promise(resolve => setTimeout(resolve, 100))
+        return Promise.reject(new Error('kaboom'))
+      })
+
+      tokenStore.markTokenAsConsumed('aToken')
+
+      await vi.advanceTimersByTimeAsync(MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY)
+
+      expect(mockHubService.markTokensAsConsumed).toHaveBeenCalledOnce()
+
+      await vi.advanceTimersByTimeAsync(100)
+
+      assert.ok('should not catch unhandled rejection or rejections')
+    })
+
+    it('should NOT leak exception if hubService\'s markTokensAsResolved throws', async () => {
+      mockHubService.markTokensAsConsumed.mockImplementation(async () => {
+        await new Promise(resolve => setTimeout(resolve, 100))
+        throw new Error('kaboom')
+      })
+
+      tokenStore.markTokenAsConsumed('aToken')
+
+      await vi.advanceTimersByTimeAsync(MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY)
+
+      expect(mockHubService.markTokensAsConsumed).toHaveBeenCalledOnce()
+
+      await vi.advanceTimersByTimeAsync(100)
+
+      assert.ok('should not catch unhandled exceptions or rejections')
+    })
+
+    it('should NOT leak exception if hubService\'s markTokensAsResolved throws synchronously', async () => {
+      mockHubService.markTokensAsConsumed.mockImplementation(() => {
+        throw new Error('kaboom')
+      })
+
+      tokenStore.markTokenAsConsumed('aToken')
+
+      await vi.advanceTimersByTimeAsync(MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY)
+
+      expect(mockHubService.markTokensAsConsumed).toHaveBeenCalledOnce()
+
+      await vi.advanceTimersByTimeAsync(0)
+
+      assert.ok('should not catch unhandled exceptions or rejections')
     })
 
     it(`should call hubService's markTokensAsResolved after ${MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY}ms with all the tokens provided during that time`, async () => {
