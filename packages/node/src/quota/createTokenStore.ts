@@ -22,16 +22,15 @@ export const createTokenStore = (): TokenStore => {
     },
     markTokenAsConsumed: (token) => {
       tokensConsumed.push(token)
-
       if (tokensConsumedTimeout === undefined) {
         tokensConsumedTimeout = setTimeout(() => {
-          void (async () => {
+          (async () => {
             const tokensToConsume = tokensConsumed
             tokensConsumed = []
             tokensConsumedTimeout = undefined
 
             await hubService.markTokensAsConsumed({ tokens: tokensToConsume })
-          })().catch()
+          })().catch(() => null)
         }, MARK_TOKENS_AS_CONSUMED_DELAY)
       }
     }
