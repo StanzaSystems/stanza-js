@@ -22,10 +22,9 @@ export const createTokenStore = (): TokenStore => {
     },
     markTokenAsConsumed: (token) => {
       tokensConsumed.push(token)
-
       if (tokensConsumedTimeout === undefined) {
         tokensConsumedTimeout = setTimeout(() => {
-          void (async () => {
+          (async () => {
             const tokensToConsume = tokensConsumed
             tokensConsumed = []
             tokensConsumedTimeout = undefined
