@@ -1,8 +1,9 @@
 import { type ApiFeatureState } from '../api/featureState'
 import { fetchApiFeaturesStates } from '../api/fetchApiFeaturesStates'
-import { groupBy, identity } from '../index'
 import { createFeatureState } from '../models/createFeatureState'
 import { type FeatureState } from '../models/featureState'
+import { groupBy } from '../groupBy'
+import { identity } from '../identity'
 
 const apiFeatureStateToFeatureState = (refreshTime: number) => (api: ApiFeatureState): FeatureState => ({
   featureName: api.name,

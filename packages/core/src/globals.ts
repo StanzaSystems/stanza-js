@@ -1,5 +1,5 @@
 import { StanzaChangeTarget } from './eventEmitter'
-import { groupBy } from './index'
+import { groupBy } from './groupBy'
 import { type FeatureState } from './models/featureState'
 import { type LocalStateProvider } from './models/localStateProvider'
 import { type StanzaCoreConfig } from './models/stanzaCoreConfig'

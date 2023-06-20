@@ -1,5 +1,16 @@
 import { init } from './init'
 import { assert } from 'vitest'
+import type * as globalsModule from './globals'
+
+type GlobalsModule = typeof globalsModule
+
+vi.mock('./globals', async (importOriginal) => {
+  const original = await importOriginal<GlobalsModule>()
+  return {
+    ...original,
+    init: () => {}
+  } satisfies GlobalsModule
+})
 
 describe('init', () => {
   it('should init Stanza core properly', async () => {
