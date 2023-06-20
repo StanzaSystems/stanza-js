@@ -34,22 +34,22 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
     }
 
     return wrapEventsAsync(resultFn, {
-      success: () => {
-        void eventBus.emit(events.request.succeeded, {
+      success: async () => {
+        return eventBus.emit(events.request.succeeded, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
           decoratorName: options.decorator
         })
       },
-      failure: () => {
-        void eventBus.emit(events.request.failed, {
+      failure: async () => {
+        return eventBus.emit(events.request.failed, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
           decoratorName: options.decorator
         })
       },
-      latency: (...[latency]) => {
-        void eventBus.emit(events.request.latency, {
+      latency: async (...[latency]) => {
+        return eventBus.emit(events.request.latency, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
           decoratorName: options.decorator,
@@ -65,15 +65,15 @@ const createStanzaDecorator = (options: StanzaDecoratorOptions) => {
   return {
     ...initializedDecorator,
     guard: wrapEventsAsync(initializedDecorator.guard, {
-      success: () => {
-        void eventBus.emit(events.request.allowed, {
+      success: async () => {
+        return eventBus.emit(events.request.allowed, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
           decoratorName: options.decorator
         })
       },
-      failure: () => {
-        void eventBus.emit(events.request.blocked, {
+      failure: async () => {
+        return eventBus.emit(events.request.blocked, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
           decoratorName: options.decorator,

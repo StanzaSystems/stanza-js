@@ -1,6 +1,6 @@
 import { init } from '@getstanza/node'
 
-void init({
+init({
   hubUrl: process.env.STANZA_HUB_ADDRESS ?? 'https://hub.dev.getstanza.dev:9010',
   apiKey: process.env.STANZA_API_KEY,
   serviceName: process.env.STANZA_SERVICE_NAME,
@@ -9,4 +9,4 @@ void init({
   useRestHubApi: true,
   requestTimeout: 2000,
   skipTokenCache: true
-})
+}).catch(() => {})
