@@ -42,27 +42,12 @@ export const createTokenStore = (): TokenStore => {
   }
 }
 
-type TokenLeaseState<T extends string, O = Record<never, never>> = {
-  readonly type: T
-} & O
-
-type TokenLeaseIdleState = TokenLeaseState<'idle'>
-type TokenLeaseValueState = TokenLeaseState<'value', {
-  value: StanzaToken | null
-}>
-type TokenLeaseInProgressState = TokenLeaseIdleState | TokenLeaseValueState
-
 function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
   const state = createTokenState()
-  let getTokenLeaseInProgress: Promise<TokenLeaseInProgressState> = Promise.resolve<TokenLeaseInProgressState>({ type: 'idle' })
-
+  let tokenLeaseInProgressCount = 0
   state.onTokensAvailableRatioChange(TOKEN_EXPIRE_OFFSET, (ratio) => {
-    if (ratio <= 0.2) {
-      getTokenLeaseInProgress = getTokenLeaseInProgress.then(async result =>
-        result.type === 'idle'
-          ? fetchMoreTokenLeases().then(() => ({ type: 'value', value: null }))
-          : result
-      )
+    if (ratio <= 0.2 && tokenLeaseInProgressCount === 0) {
+      refillTokenStoreCache().catch(() => {})
     }
   })
 
@@ -76,28 +61,11 @@ function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
         token: tokenInState.token
       }
     }
-
-    const getTokenLeaseValuePromise = getTokenLeaseInProgress.then(async (tokenInProgressState): Promise<TokenLeaseValueState> => {
-      if (tokenInProgressState.type === 'value' && tokenInProgressState.value?.granted === false) {
-        return tokenInProgressState
-      }
-      const tokenInState = state.popToken(query)
-      const value = tokenInState !== null ? { granted: true, token: tokenInState.token } : await requestTokenLease(query)
-      return { type: 'value', value }
-    })
-
-    getTokenLeaseInProgress = getTokenLeaseValuePromise
-
-    const { value } = await getTokenLeaseValuePromise
-    return value
+    return requestTokenLease(query)
   }
 
-  async function fetchMoreTokenLeases (query: TokenQuery = {}) {
-    const tokenLeases = await hubService.getTokenLease({
-      ...query,
-      decorator
-    }).catch(() => null)
-    getTokenLeaseInProgress = getTokenLeaseInProgress.then(() => ({ type: 'idle' }))
+  async function refillTokenStoreCache () {
+    const tokenLeases = await fetchMoreTokenLeases()
 
     if (tokenLeases?.granted === true) {
       state.addTokens(tokenLeases.leases)
@@ -105,14 +73,42 @@ function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
     return tokenLeases
   }
 
-  async function requestTokenLease (query: TokenQuery): Promise<StanzaToken | null> {
+  async function getTokenLease (query: TokenQuery = {}): Promise<StanzaToken | null> {
     const tokenLeases = await fetchMoreTokenLeases(query)
 
     if (tokenLeases === null) {
       return null
     }
 
-    const tokenInState = state.popToken(query)
-    return tokenInState !== null ? { granted: true, token: tokenInState.token } : { granted: false }
+    if (!tokenLeases.granted || tokenLeases.leases.length === 0) {
+      return { granted: false }
+    }
+
+    const [firstToken, ...additionalTokenLeases] = tokenLeases.leases
+
+    if (additionalTokenLeases.length > 0) {
+      state.addTokens(additionalTokenLeases)
+    }
+    return { granted: true, token: firstToken.token }
+  }
+
+  async function fetchMoreTokenLeases (query: TokenQuery = {}) {
+    tokenLeaseInProgressCount++
+    return hubService.getTokenLease({
+      ...query,
+      decorator
+    }).finally(() => {
+      tokenLeaseInProgressCount--
+    }).catch(() => null)
+  }
+
+  async function requestTokenLease (query: TokenQuery): Promise<StanzaToken | null> {
+    const tokenLease = await getTokenLease(query)
+
+    if (tokenLease === null) {
+      return null
+    }
+
+    return tokenLease
   }
 }
