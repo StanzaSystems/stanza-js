@@ -37,7 +37,7 @@ export class StanzaMetricExporter implements PushMetricExporter {
   export (...[metrics, originalCallback, ...restArgs]: Parameters<PushMetricExporter['export']>): void {
     const oTelAddress = this.collectorUrl
     const callback = (result: ExportResult): void => {
-      void eventBus.emit(
+      eventBus.emit(
         result.code === ExportResultCode.SUCCESS
           ? events.telemetry.sendOk
           : events.telemetry.sendFailed,
@@ -45,7 +45,7 @@ export class StanzaMetricExporter implements PushMetricExporter {
           ...hubService.getServiceMetadata(),
           oTelAddress
         }
-      )
+      ).catch(() => {})
       originalCallback(result)
     }
 

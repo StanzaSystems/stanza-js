@@ -5,8 +5,8 @@ const DEFAULT_POLL_INTERVAL = 1000
 
 export const startPolling = <T = unknown>(fn: AsyncFunction<T>, options: { pollInterval: number, onError?: (e: unknown) => void } = { pollInterval: DEFAULT_POLL_INTERVAL }) => {
   let shouldStop = false
-  let prevResult: T | null = null
-  void (async () => {
+  let prevResult: T | null = null;
+  (async () => {
     while (true) {
       if (shouldStop) {
         break
@@ -25,7 +25,7 @@ export const startPolling = <T = unknown>(fn: AsyncFunction<T>, options: { pollI
       }
       await waitTime(options.pollInterval)
     }
-  })()
+  })().catch(() => {})
 
   return {
     stopPolling: () => {

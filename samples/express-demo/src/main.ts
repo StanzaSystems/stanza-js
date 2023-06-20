@@ -25,7 +25,7 @@ app.use(express.json())
 app.use('/account/:username', (req: Request, res: Response, next: NextFunction) => {
   const plan = req.get('x-user-plan')
   const priorityBoost = (plan === 'free') ? -1 : (plan === 'enterprise') ? 1 : 0
-  void stanzaDecorator({
+  stanzaDecorator({
     decorator: 'github_guard',
     priorityBoost
   }).call(next).catch(next)

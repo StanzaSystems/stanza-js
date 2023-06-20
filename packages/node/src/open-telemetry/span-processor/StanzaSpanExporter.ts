@@ -15,18 +15,18 @@ export class StanzaSpanExporter extends OTLPTraceExporter {
 
   override send (...[objects, onSuccess, onError]: Parameters<OTLPTraceExporter['send']>) {
     const stanzaOnSuccess: typeof onSuccess = () => {
-      void eventBus.emit(events.telemetry.sendOk, {
+      eventBus.emit(events.telemetry.sendOk, {
         ...hubService.getServiceMetadata(),
         oTelAddress: this.url
-      })
+      }).catch(() => {})
       onSuccess()
     }
 
     const stanzaOnError: typeof onError = (error) => {
-      void eventBus.emit(events.telemetry.sendFailed, {
+      eventBus.emit(events.telemetry.sendFailed, {
         ...hubService.getServiceMetadata(),
         oTelAddress: this.url
-      })
+      }).catch(() => {})
       onError(error)
     }
 

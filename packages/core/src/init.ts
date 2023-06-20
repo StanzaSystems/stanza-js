@@ -13,5 +13,7 @@ export const init = (config: StanzaCoreConfig, provider?: LocalStateProvider): v
   globalsInit(config, provider ?? createInMemoryLocalStateProvider())
 
   const pollDelay = config.pollDelay ?? Promise.resolve()
-  void pollDelay.then(startPollingFeatureStateUpdates)
+  pollDelay.then(startPollingFeatureStateUpdates).catch(e => {
+    console.warn('Error while polling feature state updates', e)
+  })
 }
