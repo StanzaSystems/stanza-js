@@ -161,10 +161,10 @@ describe('tokenStore', () => {
       await expect(getSecondTokenFromStorePromise).resolves.toEqual({ granted: true, token: 'testToken3' })
     })
 
-    it('should call getTokenLeases only once if waiting for multiple tokens', async () => {
-      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {}
-      mockHubService.getTokenLease.mockImplementationOnce(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
-        resolveTokenLeases = resolve
+    it('should call getTokenLeases only for each request if not matching tokens in cache', async () => {
+      const resolveTokenLeases: Array<(config: StanzaTokenLeasesResult | null) => void> = []
+      mockHubService.getTokenLease.mockImplementation(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
+        resolveTokenLeases.push(resolve)
       }))
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
@@ -176,16 +176,20 @@ describe('tokenStore', () => {
 
       await vi.advanceTimersByTimeAsync(0)
 
-      expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
+      expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
 
-      resolveTokenLeases({
+      resolveTokenLeases[0]({
         granted: true,
         leases: [{
           token: 'testToken1',
           feature: 'testFeature',
           expiresAt: 300,
           priorityBoost: 0
-        }, {
+        }]
+      })
+      resolveTokenLeases[1]({
+        granted: true,
+        leases: [{
           token: 'testToken2',
           feature: 'testFeature',
           expiresAt: 300,
@@ -242,22 +246,26 @@ describe('tokenStore', () => {
       await expect(getTokenFromStorePromiseSecond).resolves.toEqual({ granted: true, token: 'testToken2' })
     })
 
-    it('should queue get tokens until current get token leases resolves', async () => {
-      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {}
+    it('should cache tokens from first batch to be used by next requests', async () => {
+      const resolveTokenLeases: Array<(config: StanzaTokenLeasesResult | null) => void> = []
       mockHubService.getTokenLease.mockImplementation(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
-        resolveTokenLeases = resolve
+        resolveTokenLeases.push(resolve)
       }))
 
-      const getTokenFromStorePromises = Array(7).fill(0)
-        .map(async () => tokenStore.getToken({
+      const getTokenFromStoreBatchFirst = [
+        tokenStore.getToken({
           decorator: 'testDecorator'
-        }))
+        }),
+        tokenStore.getToken({
+          decorator: 'testDecorator'
+        })
+      ]
 
       await vi.advanceTimersByTimeAsync(0)
 
-      expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
+      expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
 
-      resolveTokenLeases({
+      resolveTokenLeases[0]({
         granted: true,
         leases: [{
           token: 'testToken0',
@@ -272,34 +280,49 @@ describe('tokenStore', () => {
           priorityBoost: 0
         }]
       })
+      resolveTokenLeases[1]({
+        granted: true,
+        leases: [{
+          token: 'testToken2',
+          feature: 'testFeature',
+          expiresAt: 300,
+          priorityBoost: 0
+        },
+        {
+          token: 'testToken3',
+          feature: 'testFeature',
+          expiresAt: 300,
+          priorityBoost: 0
+        }]
+      })
 
-      await expect(getTokenFromStorePromises[0]).resolves.toEqual({ granted: true, token: 'testToken0' })
-      await expect(getTokenFromStorePromises[1]).resolves.toEqual({ granted: true, token: 'testToken1' })
+      await expect(getTokenFromStoreBatchFirst[0]).resolves.toEqual({ granted: true, token: 'testToken0' })
+      await expect(getTokenFromStoreBatchFirst[1]).resolves.toEqual({ granted: true, token: 'testToken2' })
 
       expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
 
-      resolveTokenLeases(
-        {
-          granted: true,
-          leases: [{
-            token: 'testToken2',
-            feature: 'testFeature',
-            expiresAt: 300,
-            priorityBoost: 0
-          }, {
-            token: 'testToken3',
-            feature: 'testFeature',
-            expiresAt: 300,
-            priorityBoost: 0
-          }]
+      const getTokenFromStoreBatchSecond = [
+        tokenStore.getToken({
+          decorator: 'testDecorator'
+        }),
+        tokenStore.getToken({
+          decorator: 'testDecorator'
         })
+      ]
 
-      await expect(getTokenFromStorePromises[2]).resolves.toEqual({ granted: true, token: 'testToken2' })
-      await expect(getTokenFromStorePromises[3]).resolves.toEqual({ granted: true, token: 'testToken3' })
+      expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
 
+      await expect(getTokenFromStoreBatchSecond[0]).resolves.toEqual({ granted: true, token: 'testToken1' })
+      await expect(getTokenFromStoreBatchSecond[1]).resolves.toEqual({ granted: true, token: 'testToken3' })
+
+      const getTokenFromStoreBatchThird = [
+        tokenStore.getToken({
+          decorator: 'testDecorator'
+        })
+      ]
       expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(3)
 
-      resolveTokenLeases({
+      resolveTokenLeases[2]({
         granted: true,
         leases: [{
           token: 'testToken4',
@@ -328,24 +351,9 @@ describe('tokenStore', () => {
         ]
       })
 
-      await expect(getTokenFromStorePromises[4]).resolves.toEqual({ granted: true, token: 'testToken4' })
-      await expect(getTokenFromStorePromises[5]).resolves.toEqual({ granted: true, token: 'testToken5' })
-      await expect(getTokenFromStorePromises[6]).resolves.toEqual({ granted: true, token: 'testToken6' })
-    })
+      await expect(getTokenFromStoreBatchThird[0]).resolves.toEqual({ granted: true, token: 'testToken4' })
 
-    it('should queue token request batches and keep only one active quota request at all time', async () => {
-      const resolveTokenLeases: Array<(config: StanzaTokenLeasesResult | null) => void> = []
-      mockHubService.getTokenLease.mockImplementation(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
-        resolveTokenLeases.push(resolve)
-      }))
-
-      const getTokenFromStorePromisesFirstBatch = [
-        tokenStore.getToken({
-          decorator: 'testDecorator'
-        }),
-        tokenStore.getToken({
-          decorator: 'testDecorator'
-        }),
+      const getTokenFromStoreBatchForth = [
         tokenStore.getToken({
           decorator: 'testDecorator'
         }),
@@ -354,116 +362,8 @@ describe('tokenStore', () => {
         })
       ]
 
-      await vi.advanceTimersByTimeAsync(0)
-
-      expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
-
-      resolveTokenLeases[0]({
-        granted: true,
-        leases: [{
-          token: 'testToken0',
-          feature: 'testFeature',
-          expiresAt: 300,
-          priorityBoost: 0
-        },
-        {
-          token: 'testToken1',
-          feature: 'testFeature',
-          expiresAt: 300,
-          priorityBoost: 0
-        }]
-      })
-
-      await expect(getTokenFromStorePromisesFirstBatch[0]).resolves.toEqual({ granted: true, token: 'testToken0' })
-      await expect(getTokenFromStorePromisesFirstBatch[1]).resolves.toEqual({ granted: true, token: 'testToken1' })
-      await expect(Promise.race([getTokenFromStorePromisesFirstBatch[2], 'pending'])).resolves.toBe('pending')
-      await expect(Promise.race([getTokenFromStorePromisesFirstBatch[3], 'pending'])).resolves.toBe('pending')
-
-      expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
-
-      const getTokenFromStorePromisesSecondBatch = [
-        tokenStore.getToken({
-          decorator: 'testDecorator'
-        }),
-        tokenStore.getToken({
-          decorator: 'testDecorator'
-        }),
-        tokenStore.getToken({
-          decorator: 'testDecorator'
-        }),
-        tokenStore.getToken({
-          decorator: 'testDecorator'
-        })
-      ]
-
-      expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
-
-      resolveTokenLeases[1](
-        {
-          granted: true,
-          leases: [{
-            token: 'testToken2',
-            feature: 'testFeature',
-            expiresAt: 300,
-            priorityBoost: 0
-          }, {
-            token: 'testToken3',
-            feature: 'testFeature',
-            expiresAt: 300,
-            priorityBoost: 0
-          }]
-        })
-
-      await expect(getTokenFromStorePromisesFirstBatch[2]).resolves.toEqual({ granted: true, token: 'testToken2' })
-      await expect(getTokenFromStorePromisesFirstBatch[3]).resolves.toEqual({ granted: true, token: 'testToken3' })
-      await expect(Promise.race([getTokenFromStorePromisesSecondBatch[0], 'pending'])).resolves.toBe('pending')
-      await expect(Promise.race([getTokenFromStorePromisesSecondBatch[1], 'pending'])).resolves.toBe('pending')
-      await expect(Promise.race([getTokenFromStorePromisesSecondBatch[2], 'pending'])).resolves.toBe('pending')
-      await expect(Promise.race([getTokenFromStorePromisesSecondBatch[3], 'pending'])).resolves.toBe('pending')
-
-      expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(3)
-
-      resolveTokenLeases[2](
-        {
-          granted: true,
-          leases: [{
-            token: 'testToken3',
-            feature: 'testFeature',
-            expiresAt: 300,
-            priorityBoost: 0
-          }, {
-            token: 'testToken4',
-            feature: 'testFeature',
-            expiresAt: 300,
-            priorityBoost: 0
-          }]
-        })
-
-      await expect(getTokenFromStorePromisesSecondBatch[0]).resolves.toEqual({ granted: true, token: 'testToken3' })
-      await expect(getTokenFromStorePromisesSecondBatch[1]).resolves.toEqual({ granted: true, token: 'testToken4' })
-      await expect(Promise.race([getTokenFromStorePromisesSecondBatch[2], 'pending'])).resolves.toBe('pending')
-      await expect(Promise.race([getTokenFromStorePromisesSecondBatch[3], 'pending'])).resolves.toBe('pending')
-
-      expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(4)
-
-      resolveTokenLeases[3](
-        {
-          granted: true,
-          leases: [{
-            token: 'testToken5',
-            feature: 'testFeature',
-            expiresAt: 300,
-            priorityBoost: 0
-          }, {
-            token: 'testToken6',
-            feature: 'testFeature',
-            expiresAt: 300,
-            priorityBoost: 0
-          }]
-        })
-
-      await expect(getTokenFromStorePromisesSecondBatch[2]).resolves.toEqual({ granted: true, token: 'testToken5' })
-      await expect(getTokenFromStorePromisesSecondBatch[3]).resolves.toEqual({ granted: true, token: 'testToken6' })
+      await expect(getTokenFromStoreBatchForth[0]).resolves.toEqual({ granted: true, token: 'testToken5' })
+      await expect(getTokenFromStoreBatchForth[1]).resolves.toEqual({ granted: true, token: 'testToken6' })
     })
 
     it('should fail the getToken if token batch is not granted', async () => {
@@ -488,9 +388,9 @@ describe('tokenStore', () => {
     })
 
     it('should fail all current getToken if token batch is not granted', async () => {
-      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {}
+      const resolveTokenLeases: Array<(config: StanzaTokenLeasesResult | null) => void> = []
       mockHubService.getTokenLease.mockImplementation(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
-        resolveTokenLeases = resolve
+        resolveTokenLeases.push(resolve)
       }))
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
@@ -502,7 +402,10 @@ describe('tokenStore', () => {
 
       await vi.advanceTimersByTimeAsync(0)
 
-      resolveTokenLeases({
+      resolveTokenLeases[0]({
+        granted: false
+      })
+      resolveTokenLeases[1]({
         granted: false
       })
 
@@ -516,9 +419,9 @@ describe('tokenStore', () => {
     })
 
     it('should fetch tokens again after one getToken rejection', async () => {
-      let resolveTokenLeases: (config: StanzaTokenLeasesResult | null) => void = () => {}
+      const resolveTokenLeases: Array<(config: StanzaTokenLeasesResult | null) => void> = []
       mockHubService.getTokenLease.mockImplementation(async () => new Promise<StanzaTokenLeasesResult | null>((resolve) => {
-        resolveTokenLeases = resolve
+        resolveTokenLeases.push(resolve)
       }))
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
@@ -530,7 +433,10 @@ describe('tokenStore', () => {
 
       await vi.advanceTimersByTimeAsync(0)
 
-      resolveTokenLeases({
+      resolveTokenLeases[0]({
+        granted: false
+      })
+      resolveTokenLeases[1]({
         granted: false
       })
 
@@ -543,7 +449,7 @@ describe('tokenStore', () => {
 
       await vi.advanceTimersByTimeAsync(0)
 
-      resolveTokenLeases({
+      resolveTokenLeases[2]({
         granted: true,
         leases: [{
           token: 'testToken',
@@ -737,7 +643,7 @@ describe('tokenStore', () => {
       mockHubService.getTokenLease.mockImplementationOnce(async () => {
         return {
           granted: true,
-          leases: Array(10).fill(0).map((_, index) => ({
+          leases: Array(11).fill(0).map((_, index) => ({
             token: `aToken${index}`,
             priorityBoost: 0,
             feature: '',
@@ -757,16 +663,23 @@ describe('tokenStore', () => {
         }
       })
 
-      for (let i = 0; i < 7; i++) {
+      // token 0 returned immediately, 10 added to cache
+      await tokenStore.getToken({ decorator: 'aDecorator' })
+
+      for (let i = 1; i < 8; i++) {
+        // use 7 out of 10 tokens from cache
         await tokenStore.getToken({ decorator: 'aDecorator' })
       }
 
+      // still no need to fetch more tokens
       expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
 
+      // using token 8 out of 10 tokens from cache
       await tokenStore.getToken({ decorator: 'aDecorator' })
 
       await vi.advanceTimersByTimeAsync(0)
 
+      // need more tokens as only 2 left out of 10
       expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
     })
 
@@ -774,11 +687,11 @@ describe('tokenStore', () => {
       mockHubService.getTokenLease.mockImplementationOnce(async () => {
         return {
           granted: true,
-          leases: Array(10).fill(0).map((_, index) => ({
+          leases: Array(11).fill(0).map((_, index) => ({
             token: `aToken${index}`,
             priorityBoost: 0,
             feature: '',
-            expiresAt: index < 8 ? 3000 : 5000
+            expiresAt: index < 9 ? 3000 : 5000
           }))
         }
       })
@@ -796,13 +709,13 @@ describe('tokenStore', () => {
 
       await tokenStore.getToken({ decorator: 'aDecorator' })
 
-      // token 0 is used
+      // token 0 is used, 10 in cache
 
       expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
 
       await vi.advanceTimersByTimeAsync(1000)
 
-      // tokens 1-7 will expire in 2 seconds
+      // tokens 1-8 will expire in 2 seconds, 2 out of 10 will be valid after 2 seconds
 
       expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
     })
@@ -811,7 +724,7 @@ describe('tokenStore', () => {
       mockHubService.getTokenLease.mockImplementationOnce(async () => {
         return {
           granted: true,
-          leases: Array(10).fill(0).map((_, index) => ({
+          leases: Array(11).fill(0).map((_, index) => ({
             token: `aToken${index}`,
             priorityBoost: 0,
             feature: '',
@@ -835,21 +748,28 @@ describe('tokenStore', () => {
         }
       })
 
-      await tokenStore.getToken({ decorator: 'aDecorator' })
+      await expect(tokenStore.getToken({ decorator: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken0' })
 
-      // token 0 is used
+      // token 0 is used, 10 tokens added to cache
       expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
 
       await vi.advanceTimersByTimeAsync(2500)
 
       // tokens 1-3 expired
 
-      await tokenStore.getToken({ decorator: 'aDecorator' })
-      await tokenStore.getToken({ decorator: 'aDecorator' })
-      await tokenStore.getToken({ decorator: 'aDecorator' })
-      await tokenStore.getToken({ decorator: 'aDecorator' })
+      await expect(tokenStore.getToken({ decorator: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken4' })
+      await expect(tokenStore.getToken({ decorator: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken5' })
+      await expect(tokenStore.getToken({ decorator: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken6' })
+      await expect(tokenStore.getToken({ decorator: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken7' })
 
-      // tokens 4-7 are used
+      // tokens 4-7 are used, 3 remaining in cache - no need to fetch more yet
+
+      await vi.advanceTimersByTimeAsync(0)
+      expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(1)
+
+      await expect(tokenStore.getToken({ decorator: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken8' })
+
+      // tokens 4-8 are used, 2 remaining in cache - need more tokens
 
       await vi.advanceTimersByTimeAsync(0)
 
@@ -860,13 +780,13 @@ describe('tokenStore', () => {
       mockHubService.getTokenLease.mockImplementationOnce(async () => {
         return {
           granted: true,
-          leases: Array(10).fill(0).map((_, index) => ({
+          leases: Array(11).fill(0).map((_, index) => ({
             token: `aToken${index}`,
             priorityBoost: 0,
             feature: '',
             expiresAt: index < 4
               ? 2500
-              : index < 8
+              : index < 9
                 ? 4500
                 : 5000
           }))
@@ -884,7 +804,9 @@ describe('tokenStore', () => {
         }
       })
 
+      // token 0 is used immediately and not added to cache, 10 tokens left in cache
       await tokenStore.getToken({ decorator: 'aDecorator' })
+      // getting tokens 1-3 from cache
       await tokenStore.getToken({ decorator: 'aDecorator' })
       await tokenStore.getToken({ decorator: 'aDecorator' })
       await tokenStore.getToken({ decorator: 'aDecorator' })
@@ -894,12 +816,12 @@ describe('tokenStore', () => {
 
       await vi.advanceTimersByTimeAsync(2000)
 
-      // still 2.5 seconds till tokens 4-7 expire
+      // still 2.5 seconds till tokens 4-8 expire
       expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
 
       await vi.advanceTimersByTimeAsync(500)
 
-      // tokens 4-7 will expire in 2 seconds
+      // tokens 4-8 will expire in 2 seconds
       expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(2)
     })
   })
