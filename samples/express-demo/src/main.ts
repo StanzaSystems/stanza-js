@@ -15,7 +15,9 @@ void init({
   serviceName: process.env.STANZA_SERVICE_NAME,
   serviceRelease: process.env.STANZA_SERVICE_RELEASE,
   environment: process.env.STANZA_ENVIRONMENT,
-  useRestHubApi: true
+  useRestHubApi: true,
+  requestTimeout: 3000,
+  skipTokenCache: true
 })
 
 // eslint-disable-next-line import/first
@@ -32,7 +34,7 @@ app.use(express.json())
 
 const gitHubGuard = (req: Request, res: Response, next: NextFunction) => {
   const plan = req.get('x-user-plan')
-  const priorityBoost = (plan === 'free') ? -1 : 0
+  const priorityBoost = (plan === 'free') ? -1 : 1
   console.log(`plan ${plan} boost ${priorityBoost}`)
   void stanzaDecorator({
     decorator: 'github_guard',
