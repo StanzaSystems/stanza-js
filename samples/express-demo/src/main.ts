@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
-import { stanzaDecorator, StanzaDecoratorError, init } from '@getstanza/node'
+import { stanzaDecorator, StanzaDecoratorError } from '@getstanza/node'
 
 import express, { type Request, type ErrorRequestHandler, type Response, type NextFunction } from 'express'
 import * as dotenv from 'dotenv'
@@ -8,17 +8,8 @@ import cors from 'cors'
 
 dotenv.config()
 // must come after dotenv
-
-void init({
-  hubUrl: process.env.STANZA_HUB_ADDRESS ?? 'https://hub.dev.getstanza.dev:9010',
-  apiKey: process.env.STANZA_API_KEY,
-  serviceName: process.env.STANZA_SERVICE_NAME,
-  serviceRelease: process.env.STANZA_SERVICE_RELEASE,
-  environment: process.env.STANZA_ENVIRONMENT,
-  useRestHubApi: true,
-  requestTimeout: 3000,
-  skipTokenCache: true
-})
+// eslint-disable-next-line import/first
+import './addInstrumentation'
 
 // eslint-disable-next-line import/first
 import fetch from 'node-fetch'
