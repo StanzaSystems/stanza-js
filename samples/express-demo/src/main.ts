@@ -22,16 +22,17 @@ const corsOptions = {
 app.use(cors(corsOptions))
 app.use(express.json())
 
-app.use('/account/:username', (req: Request, res: Response, next: NextFunction) => {
+const gitHubGuard = (req: Request, res: Response, next: NextFunction) => {
   const plan = req.get('x-user-plan')
   const priorityBoost = (plan === 'free') ? -1 : (plan === 'enterprise') ? 1 : 0
-  stanzaDecorator({
+  console.log(`plan ${plan} boost ${priorityBoost}`)
+  void stanzaDecorator({
     decorator: 'github_guard',
     priorityBoost
   }).call(next).catch(next)
-})
+}
 
-app.get('/account/:username', async (req: Request, res: Response, next: NextFunction) => {
+app.get('/account/:username', gitHubGuard, async (req: Request, res: Response, next: NextFunction) => {
   const { username } = req.params
   try {
     const userResponse = await fetch(`https://api.github.com/users/${username}`, {
@@ -46,12 +47,6 @@ app.get('/account/:username', async (req: Request, res: Response, next: NextFunc
     res.status(500)
     next()
   }
-})
-
-app.get('/pong', (req, res) => {
-  console.log('Incoming headers: pong')
-  console.log(JSON.stringify(req.headers, undefined, 2))
-  res.status(200).send('ok')
 })
 
 app.use(((err, req, res, next) => {
