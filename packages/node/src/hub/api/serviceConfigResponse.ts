@@ -25,8 +25,8 @@ const zTraceConfig = z.object({
   collectorUrl: z.string(),
   sampleRateDefault: z.number(),
   overrides: z.array(zTraceConfigOverride),
-  headerSampleConfig: z.array(zHeaderTraceConfig),
-  paramSampleConfig: z.array(zParamTraceConfig)
+  headerSampleConfig: z.array(zHeaderTraceConfig).optional().default([]),
+  paramSampleConfig: z.array(zParamTraceConfig).optional().default([])
 })
 
 const zMetricConfig = z.object({

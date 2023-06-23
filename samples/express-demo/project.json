@@ -44,7 +44,8 @@
       },
       "configurations": {
         "development": {
-          "buildTarget": "express-demo:build:development"
+          "buildTarget": "express-demo:build:development",
+          "inspect": true
         },
         "production": {
           "buildTarget": "express-demo:build:production"

@@ -1,9 +1,17 @@
-import { type SpanProcessor } from '@opentelemetry/sdk-trace-node'
-import { ManagedSpanProcessor } from './ManagedSpanProcessor'
-import { StanzaSpanProcessorManager } from './StanzaSpanProcessorManager'
+import { BatchSpanProcessor, type Span } from '@opentelemetry/sdk-trace-node'
+import { type Context } from '@opentelemetry/api'
 
-export class StanzaSpanProcessor extends ManagedSpanProcessor implements SpanProcessor {
-  constructor () {
-    super(new StanzaSpanProcessorManager())
+type SpanEnhancer = (span: Span, context: Context) => void
+
+export class StanzaSpanProcessor extends BatchSpanProcessor {
+  constructor (private readonly spanEnhancers: SpanEnhancer[], ...batchSpanProcessorArgs: ConstructorParameters<typeof BatchSpanProcessor>) {
+    super(...batchSpanProcessorArgs)
+  }
+
+  override onStart (...args: Parameters<BatchSpanProcessor['onStart']>) {
+    this.spanEnhancers.forEach(enhancer => {
+      enhancer(...args)
+    })
+    super.onStart(...args)
   }
 }

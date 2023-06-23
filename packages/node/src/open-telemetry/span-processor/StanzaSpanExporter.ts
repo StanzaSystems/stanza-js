@@ -4,7 +4,7 @@ import { eventBus, events } from '../../global/eventBus'
 import { hubService } from '../../global/hubService'
 
 export class StanzaSpanExporter extends OTLPTraceExporter {
-  constructor (traceConfig: { collectorKey: string, collectorUrl: string }) {
+  constructor (traceConfig: { collectorUrl: string }) {
     const metadata = new Metadata()
     super({
       url: traceConfig.collectorUrl,
