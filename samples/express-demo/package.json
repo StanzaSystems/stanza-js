@@ -2,8 +2,7 @@
   "name": "express-demo",
   "version": "0.0.0",
   "scripts": {
-    "loadTest": "artillery run --output js-load.json ./load-test.yml",
-    "loadTestHub": "artillery run --output js-load.json ./token-test.yml",
-    "summarizeLoadTest": "node ./load-test-summarize.js"
+    "loadTest": "artillery run --output js-load.json ./load-test.yml && node ./load-test-summarize",
+    "loadTestHub": "artillery run --output js-load.json ./token-test.yml && node ./load-test-summarize"
   }
 }

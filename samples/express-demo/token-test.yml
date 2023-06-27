@@ -5,12 +5,6 @@ config:
     - duration: 20
       arrivalRate: 8
 scenarios:
-  # - name: "Send pro requests"
-  #   afterResponse: "trackRateLimits"
-  #   flow:
-  #     - get:
-  #         url: "/account/maggiepint"
-  #   weight: 1
   - name: "Send free requests"
     afterResponse: "trackRateLimitsFromHub"
     flow:
