@@ -3,13 +3,14 @@ import type { StanzaCoreConfig } from '@getstanza/core'
 const key = process.env.NEXT_PUBLIC_STANZA_BROWSER_KEY
 
 if (typeof key !== 'string') {
-  throw new Error('NEXT_PUBLIC_STANZA_BROWSER_KEY is a required environment variable')
+  const s = 'The NEXT_PUBLIC_STANZA_BROWSER_KEY environment variable has not been set. It must be set to a valid key at build time for the next-with-stripe sample to work correctly.'
+  console.error('- \x1b[31;1merror\x1b[0m ' + s) // Ansi code for red+bold to fit with NX log styling. (Alternatively, could use chalk library.)
 }
 
 export const config: StanzaCoreConfig = {
   url: process.env.NEXT_PUBLIC_STANZA_API ?? 'https://hub.demo.getstanza.io',
   environment: process.env.NEXT_PUBLIC_STANZA_ENVIRONMENT ?? 'local',
-  stanzaApiKey: key,
+  stanzaApiKey: key ?? '',
   contextConfigs: [
     {
       name: 'main',
