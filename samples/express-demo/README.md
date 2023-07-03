@@ -84,13 +84,17 @@ curl --header "x-user-plan: enterprise" localhost:3002/account/octocat
 
 ## Load Testing
 
-To better understand the benefit of using Stanza, make sure the demo app has been started and then run a load test.
+To better understand the benefit of using Stanza, make sure the demo app has been started and then run a load test (from the `samples/express-demo` directory).
 
 ```sh
 npm run loadTest
 ```
 
-This will use [Artillery](https://www.artillery.io/) to send randomized requests to the demo app.  You'll see Artillery's statistics along the way, and a summary output at the end, such as the following:
+This will use [Artillery](https://www.artillery.io/) to send randomized requests to the demo app.
+
+_Note: The first time you run this, there may be a delay while Artillery is installed._
+
+You'll see Artillery's statistics along the way, and a summary output at the end, such as the following:
 
 ```
 ┌─────────┬──────────────┬───────┬─────────┬─────────┬────────────┐

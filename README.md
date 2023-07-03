@@ -53,7 +53,11 @@ Install all dependencies for the monorepo:
 npm install
 ```
 
-Then you can build all of the packages and sample applications:
+_If you get deprecation or vulnerability warnings, they are likely from our development dependencies only, and unrelated to Stanza packages.
+To be certain, you can run `npm audit --omit=dev` which should find 0 vulnerabilities.  If this is not the case, please
+[open an issue](https://github.com/StanzaSystems/stanza-js/issues)._
+
+After everything is installed, you can build all of the packages and sample applications:
 
 ```sh
 npx nx run-many --target build
