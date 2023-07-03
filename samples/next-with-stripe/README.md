@@ -1,7 +1,5 @@
 # Stanza Example using Stripe with TypeScript and react-stripe-js
 ## This Sample is adapted from the official [Next.js + Stripe Sample](https://github.com/vercel/next.js/tree/canary/examples/with-stripe-typescript)
-# Stanza Example using Stripe with TypeScript and react-stripe-js
-## This Sample is adapted from the official [Next.js + Stripe Sample](https://github.com/vercel/next.js/tree/canary/examples/with-stripe-typescript)
 
 This is a full-stack TypeScript example using:
 
