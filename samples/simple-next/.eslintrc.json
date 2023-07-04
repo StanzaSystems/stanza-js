@@ -6,9 +6,7 @@
     "../../.eslintrc.json"
   ],
   "parserOptions": {
-    "ecmaVersion": "latest",
-    "sourceType": "module",
-    "project": ["samples/simple-next/tsconfig.json", "samples/simple-next/tsconfig.spec.json"]
+    "project": ["samples/simple-next/tsconfig*.json"]
   },
   "ignorePatterns": ["!**/*", ".next/**/*"],
   "overrides": [
