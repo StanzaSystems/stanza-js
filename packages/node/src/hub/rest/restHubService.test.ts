@@ -34,7 +34,7 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'valid-api-key'
+        apiKey: 'testApiKey'
       })
     })
 
@@ -51,7 +51,7 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'valid-api-key'
+        apiKey: 'testApiKey'
       })
     })
 
@@ -63,7 +63,7 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/config/service'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             service: {
@@ -87,7 +87,7 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/config/service'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             versionSeen: '123',
@@ -197,7 +197,7 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'valid-api-key'
+        apiKey: 'testApiKey'
       })
     })
 
@@ -211,7 +211,7 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/config/decorator'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             selector: {
@@ -237,7 +237,7 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/config/decorator'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             versionSeen: '123',
@@ -336,7 +336,7 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'valid-api-key'
+        apiKey: 'testApiKey'
       })
     })
 
@@ -352,7 +352,7 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/token'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             selector: {
@@ -390,7 +390,7 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/token'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             selector: {
@@ -479,7 +479,7 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'valid-api-key'
+        apiKey: 'testApiKey'
       })
     })
 
@@ -495,7 +495,7 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/lease'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             selector: {
@@ -533,7 +533,7 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/lease'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             selector: {
@@ -634,7 +634,7 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'valid-api-key'
+        apiKey: 'testApiKey'
       })
     })
 
@@ -649,7 +649,7 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/validatetoken'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             tokens: [{
@@ -733,7 +733,7 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'valid-api-key'
+        apiKey: 'testApiKey'
       })
     })
 
@@ -747,7 +747,7 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/consumed'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             tokens: ['test-token-one', 'test-token-two']
