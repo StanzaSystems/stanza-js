@@ -11,7 +11,7 @@ scenarios:
       - post:
           url: '/v1/quota/token'
           headers:
-            X-Stanza-Key: 'valid-api-key'
+            X-Stanza-Key: "{{ $processEnvironment.STANZA_API_KEY }}"
             x-user-plan: "free"
           json:
             priorityBoost: -1
@@ -25,7 +25,7 @@ scenarios:
       - post:
           url: '/v1/quota/token'
           headers:
-            X-Stanza-Key: 'valid-api-key'
+            X-Stanza-Key: "{{ $processEnvironment.STANZA_API_KEY }}"
             x-user-plan: "enterprise"
           json:
             priorityBoost: 0

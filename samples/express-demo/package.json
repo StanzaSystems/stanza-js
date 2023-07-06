@@ -3,6 +3,6 @@
   "version": "0.0.0",
   "scripts": {
     "loadTest": "npx artillery run --output js-load.json ./load-test.yml && node ./load-test-summarize",
-    "loadTestHub": "npx artillery run --output js-load.json ./token-test.yml && node ./load-test-summarize"
+    "loadTestHub": "npx artillery run --dotenv .env --output js-load.json ./token-test.yml && node ./load-test-summarize"
   }
 }
