@@ -1,31 +1,28 @@
-function summarizeLastRun() {
-  let runData = require('./js-load.json')
-  const enterprise = {
-    type: 'enterprise',
-    total: runData.aggregate.counters['stanza.enterprise'],
-    success: runData.aggregate.counters['stanza.enterprise_200'] || 0,
-    limited: runData.aggregate.counters['stanza.enterprise_429'] || 0,
-  }
+const runData = require('./js-load.json');
 
-  const pro = {
-    type: 'pro',
-    total: runData.aggregate.counters['stanza.pro'],
-    success: runData.aggregate.counters['stanza.pro_200'] || 0,
-    limited: runData.aggregate.counters['stanza.pro_429'] || 0,
-  }
+function summarize(type) {
+  const total = runData.aggregate.counters[`stanza.${type}`];
+  if (!total) return;
 
-  const free = {
-    type: 'free',
-    total: runData.aggregate.counters['stanza.free'],
-    success: runData.aggregate.counters['stanza.free_200'] || 0,
-    limited: runData.aggregate.counters['stanza.free_429'] || 0,
-  }
-
-  enterprise.successPct = Math.round((enterprise.success/enterprise.total) * 100);
-  pro.successPct = Math.round((pro.success/pro.total) * 100);
-  free.successPct = Math.round((free.success/free.total) * 100);
-
-  console.table([enterprise, pro, free])
+  const success = runData.aggregate.counters[`stanza.${type}_200`] || 0;
+  const limited = runData.aggregate.counters[`stanza.${type}_429`] || 0;
+  const successPct = Math.round((success/total) * 100);
+  return { type, total, success, limited, successPct };
 }
 
-summarizeLastRun()
+const types = Object.keys(runData.aggregate.counters)
+  .map(key => key.match(/^stanza\.([^_]+)$/))
+  .filter(match => !!match)
+  .map(match => match[1]);
+
+const results = [];
+types.forEach(type => {
+  const summary = summarize(type);
+  if (summary) {
+    results.push(summary);
+  }
+});
+
+results.sort((a, b) => b.successPct - a.successPct);
+
+console.table(results);
