@@ -9,9 +9,9 @@ export async function register () {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { init } = await import('@getstanza/node')
 
-    console.log(`Stanza URL for instrumentation: ${process.env.NEXT_PUBLIC_STANZA_API}`)
+    console.log(`Stanza URL for instrumentation: ${process.env.NEXT_PUBLIC_STANZA_HUB_ADDRESS}`)
     await init({
-      hubUrl: (process.env.NEXT_PUBLIC_STANZA_API ?? 'https://hub.demo.getstanza.io'),
+      hubUrl: (process.env.NEXT_PUBLIC_STANZA_HUB_ADDRESS ?? 'https://hub.demo.getstanza.io'),
       apiKey: key,
       serviceName: 'DemoCommerce',
       serviceRelease: '1',

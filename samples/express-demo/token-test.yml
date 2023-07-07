@@ -1,5 +1,5 @@
 config:
-  target: "https://hub.dev.getstanza.dev"
+  target: "https://hub.demo.getstanza.io"
   processor: './load-test-utils.js'
   phases:
     - duration: 20
