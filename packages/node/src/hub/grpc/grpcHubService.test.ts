@@ -59,7 +59,7 @@ describe('createGrpcHubService', async () => {
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
-      apiKey: 'valid-api-key'
+      apiKey: 'testApiKey'
     })
 
     it('should return service metadata', () => {
@@ -76,7 +76,7 @@ describe('createGrpcHubService', async () => {
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
-      apiKey: 'valid-api-key'
+      apiKey: 'testApiKey'
     })
 
     it('should call fetch with proper params', async () => {
@@ -198,7 +198,7 @@ describe('createGrpcHubService', async () => {
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
-      apiKey: 'valid-api-key'
+      apiKey: 'testApiKey'
     })
 
     it('should call fetch with proper params', async () => {
@@ -319,7 +319,7 @@ describe('createGrpcHubService', async () => {
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
-      apiKey: 'valid-api-key'
+      apiKey: 'testApiKey'
     })
 
     it('should call fetch with proper params', async () => {
@@ -461,7 +461,7 @@ describe('createGrpcHubService', async () => {
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
-      apiKey: 'valid-api-key'
+      apiKey: 'testApiKey'
     })
 
     it('should call fetch with proper params', async () => {
@@ -623,7 +623,7 @@ describe('createGrpcHubService', async () => {
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
-      apiKey: 'valid-api-key'
+      apiKey: 'testApiKey'
     })
 
     it('should call fetch with proper params', async () => {
@@ -710,7 +710,7 @@ describe('createGrpcHubService', async () => {
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
-      apiKey: 'valid-api-key'
+      apiKey: 'testApiKey'
     })
 
     it('should call fetch with proper params', async () => {

@@ -1,5 +1,5 @@
 config:
-  target: "https://hub.dev.getstanza.dev"
+  target: "https://hub.demo.getstanza.io"
   processor: './load-test-utils.js'
   phases:
     - duration: 20
@@ -11,7 +11,7 @@ scenarios:
       - post:
           url: '/v1/quota/token'
           headers:
-            X-Stanza-Key: 'valid-api-key'
+            X-Stanza-Key: "{{ $processEnvironment.STANZA_API_KEY }}"
             x-user-plan: "free"
           json:
             priorityBoost: -1
@@ -25,7 +25,7 @@ scenarios:
       - post:
           url: '/v1/quota/token'
           headers:
-            X-Stanza-Key: 'valid-api-key'
+            X-Stanza-Key: "{{ $processEnvironment.STANZA_API_KEY }}"
             x-user-plan: "enterprise"
           json:
             priorityBoost: 0

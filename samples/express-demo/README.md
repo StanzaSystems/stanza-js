@@ -4,7 +4,7 @@ An extremely simple demo app that illustrates how Stanza can be used to rate lim
 
 ## Setup
 
-1. Copy the `.env.sample` environment variables into a local `.env` file.
+1. Copy the `.env.example` file and rename it to `.env`.
 2. In the `.env` file, set `STANZA_API_KEY` to a [browser key](https://ui.demo.getstanza.io/admin?tab=keys) for your local environment.
 3. In the `.env` file, set `GITHUB_PAT` to a [GitHub Personal Access Token](https://github.com/settings/tokens).  It does not require any particular scopes.
 4. In the [Stanza UI](https://ui.demo.getstanza.io/decorators), create a decorator:
