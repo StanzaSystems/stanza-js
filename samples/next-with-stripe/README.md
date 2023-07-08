@@ -69,17 +69,17 @@ NEXT_PUBLIC_STANZA_BROWSER_KEY= {{your stanza key for local environment}}
 ### Running the App
 
 ```
-npm install
+npm install (from root of repository)
 
-npm run dev
+npx nx serve next-with-stripe (from root of repository)
 ```
 
-The app will run on `localhost:3000` by default.
+The app will run on `localhost:4200` by default.
 
 ### Running Load Tests
 
 Stanza responds to load by rate limiting requests in a prioritized way. To see stanza rate limit requests while your app is running, open a separate terminal and run
 
 ```
-npx artillery run ./load-test.yml
+npx artillery run ./load-test.yml (from this directory)
 ```

@@ -1,6 +1,12 @@
 ## Express demo app
 
-An extremely simple demo app that illustrates how Stanza can be used to rate limit a service's incoming requests.
+An extremely simple demo app that illustrates how Stanza can be used to rate limit a service's incoming requests. 
+
+This demo has an endpoint that requests a user profile based on a GitHub username. 
+
+It also has a middleware that parses the user's plan (Enterprise, free, or pro) from the request header, assigns requests a priority based on user plan, and passes them to a Stanza decorator.
+
+Requests for higher paying users are prioritized under load.
 
 ## Setup
 
@@ -35,7 +41,7 @@ Note that this configuration is useful for demonstration purposes only.  In a re
 Boolean value that determines whether the decorator is enabled.
 
 - When enabled, traffic flowing through this decorator is guarded based on the active configuration.
-- When disabled, all traffic is allowed to flow through the decorator without being guarded - as if the decorator were not there.
+- When disabled, all traffic is allowed to flow through the decorator without being guarded - the decorator still emits telemetry.
 
 #### `refillRate`
 
@@ -46,13 +52,11 @@ the maximum number of queries per second allowed to access the service through t
 
 #### `burst`
 
-The number of calls per second that are allowed to exceed the refill rate.
-
-_TODO: Explain this better._
+Your Decorator users will be able to temporarily make this many requests, but they will be held on average to Rate over a longer time window. Burst must be greater than or equal to Rate.
 
 #### `strictSynchronous`
 
-_TODO: Explain what this does._
+If this is true then we will never locally cache tokens, every request will go through stanza. Use this if you may see very rapid and unpredictable spikes in traffic (ramping up faster than a period of 2 seconds), and if it is critical that you should never exceed your configured rates, even briefly.
 
 ## Starting the Express Demo
 
