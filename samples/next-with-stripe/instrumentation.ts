@@ -11,7 +11,7 @@ export async function register () {
 
     console.log(`Stanza URL for instrumentation: ${process.env.NEXT_PUBLIC_STANZA_HUB_ADDRESS}`)
     await init({
-      hubUrl: (process.env.NEXT_PUBLIC_STANZA_HUB_ADDRESS ?? 'https://hub.demo.getstanza.io'),
+      hubUrl: (process.env.NEXT_PUBLIC_STANZA_HUB_ADDRESS ?? 'https://hub.stanzasys.co'),
       apiKey: key,
       serviceName: 'DemoCommerce',
       serviceRelease: '1',

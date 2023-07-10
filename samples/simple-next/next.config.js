@@ -9,7 +9,7 @@ const rewrites = async () => {
   return [
     {
       source: '/api/hub/:path*',
-      destination: 'https://hub.demo.getstanza.io/:path*'
+      destination: 'https://hub.stanzasys.co/:path*'
     }
   ];
 };

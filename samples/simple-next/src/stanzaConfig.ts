@@ -8,7 +8,7 @@ if (typeof stanzaKey !== 'string') {
 }
 
 const config: StanzaCoreConfig = {
-  url: process.env.NEXT_PUBLIC_STANZA_HUB_ADDRESS ?? 'https://hub.demo.getstanza.io',
+  url: process.env.NEXT_PUBLIC_STANZA_HUB_ADDRESS ?? 'https://hub.stanzasys.co',
   environment: process.env.NEXT_PUBLIC_STANZA_ENVIRONMENT ?? 'local',
   stanzaApiKey: stanzaKey ?? '',
   contextConfigs: [

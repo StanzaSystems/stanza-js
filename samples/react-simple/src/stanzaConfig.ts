@@ -8,7 +8,7 @@ if (typeof stanzaKey !== 'string') {
 }
 
 const config: StanzaCoreConfig = {
-  url: import.meta.env.VITE_STANZA_HUB_ADDRESS ?? 'https://hub.demo.getstanza.io',
+  url: import.meta.env.VITE_STANZA_HUB_ADDRESS ?? 'https://hub.stanzasys.co',
   environment: import.meta.env.VITE_STANZA_ENVIRONMENT ?? 'local',
   stanzaApiKey: stanzaKey ?? '',
   contextConfigs: [
