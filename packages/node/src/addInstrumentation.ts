@@ -5,17 +5,11 @@ import { StanzaPriorityBoostPropagator } from './propagation/StanzaPriorityBoost
 import { StanzaTokenPropagator } from './propagation/StanzaTokenPropagator'
 import { Span } from '@opentelemetry/sdk-trace-node'
 import { logger } from './global/logger'
+import { RequestHeadersToSpanPropagator } from './propagation/RequestHeadersToSpanPropagator'
 
 export const addInstrumentation = async (serviceName: string) => {
   const { HttpInstrumentation } = await import('@opentelemetry/instrumentation-http')
-  const httpInstrumentation = new HttpInstrumentation({
-    applyCustomAttributesOnSpan: (span, _request, _response) => {
-      if (span instanceof Span) {
-        logger.warn('It is readable span')
-        logger.warn('Span: %o', span)
-      }
-    }
-  })
+  const httpInstrumentation = new HttpInstrumentation()
   // NOTE: @opentelemetry/sdk-node needs to be required after we create the instrumentation.
   // Otherwise, the instrumentation fails to work
   const { NodeSDK } = await import('@opentelemetry/sdk-node')
@@ -40,7 +34,8 @@ export const addInstrumentation = async (serviceName: string) => {
           new StanzaBaggagePropagator(),
           new StanzaPriorityBoostPropagator(),
           new StanzaApiKeyPropagator(),
-          new StanzaTokenPropagator()
+          new StanzaTokenPropagator(),
+          new RequestHeadersToSpanPropagator()
         ]
       }),
     metricReader: new PeriodicExportingMetricReader({
