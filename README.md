@@ -4,7 +4,7 @@ This is the monorepo containing all Stanza JavaScript packages and samples.
 
 ## Documentation
 
-Refer to the `README.md` file linked to each sample, and the [Stanza Docs](https://stanza-docs-git-main-stanza.vercel.app/).
+Refer to the `README.md` file linked to each sample, and the [Stanza Docs](https://docs.dev.getstanza.dev/).
 
 ## Sample Applications
 
