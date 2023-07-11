@@ -4,7 +4,7 @@
 // @ts-nocheck
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3 } from "@bufbuild/protobuf";
+import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 import { DecoratorFeatureSelector, DecoratorSelector } from "./common_pb.js";
 
 /**
@@ -130,14 +130,14 @@ export class GetTokenResponse extends Message<GetTokenResponse> {
   granted = false;
 
   /**
-   * @generated from field: string token = 2;
+   * @generated from field: optional string token = 2;
    */
-  token = "";
+  token?: string;
 
   /**
-   * @generated from field: stanza.hub.v1.Reason reason = 3;
+   * @generated from field: optional stanza.hub.v1.Reason reason = 3;
    */
-  reason = Reason.UNSPECIFIED;
+  reason?: Reason;
 
   constructor(data?: PartialMessage<GetTokenResponse>) {
     super();
@@ -148,8 +148,8 @@ export class GetTokenResponse extends Message<GetTokenResponse> {
   static readonly typeName = "stanza.hub.v1.GetTokenResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "granted", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 2, name: "token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "reason", kind: "enum", T: proto3.getEnumType(Reason) },
+    { no: 2, name: "token", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 3, name: "reason", kind: "enum", T: proto3.getEnumType(Reason), opt: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetTokenResponse {
@@ -243,7 +243,12 @@ export class GetTokenLeaseRequest extends Message<GetTokenLeaseRequest> {
  */
 export class GetTokenLeaseResponse extends Message<GetTokenLeaseResponse> {
   /**
-   * @generated from field: repeated stanza.hub.v1.TokenLease leases = 1;
+   * @generated from field: bool granted = 1;
+   */
+  granted = false;
+
+  /**
+   * @generated from field: repeated stanza.hub.v1.TokenLease leases = 2;
    */
   leases: TokenLease[] = [];
 
@@ -255,7 +260,8 @@ export class GetTokenLeaseResponse extends Message<GetTokenLeaseResponse> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "stanza.hub.v1.GetTokenLeaseResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "leases", kind: "message", T: TokenLease, repeated: true },
+    { no: 1, name: "granted", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 2, name: "leases", kind: "message", T: TokenLease, repeated: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetTokenLeaseResponse {
@@ -280,6 +286,8 @@ export class GetTokenLeaseResponse extends Message<GetTokenLeaseResponse> {
  */
 export class TokenLease extends Message<TokenLease> {
   /**
+   * How long until lease expires, in milliseconds
+   *
    * @generated from field: int32 duration_msec = 1;
    */
   durationMsec = 0;
@@ -309,6 +317,13 @@ export class TokenLease extends Message<TokenLease> {
    */
   reason = Reason.UNSPECIFIED;
 
+  /**
+   * If nil expiration should be calculated as time you received the lease + duration_msec
+   *
+   * @generated from field: optional google.protobuf.Timestamp expires_at = 7;
+   */
+  expiresAt?: Timestamp;
+
   constructor(data?: PartialMessage<TokenLease>) {
     super();
     proto3.util.initPartial(data, this);
@@ -323,6 +338,7 @@ export class TokenLease extends Message<TokenLease> {
     { no: 4, name: "priority_boost", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 5, name: "weight", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
     { no: 6, name: "reason", kind: "enum", T: proto3.getEnumType(Reason) },
+    { no: 7, name: "expires_at", kind: "message", T: Timestamp, opt: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TokenLease {

@@ -8,6 +8,7 @@ import { stanzaMarkTokensAsConsumedResponse } from '../api/stanzaMarkTokensAsCon
 import { type HubRequest } from '../hubRequest'
 import { wrapHubServiceWithMetrics } from '../wrapHubServiceWithMetrics'
 import { logger } from '../../global/logger'
+import { stanzaAuthTokenResponse } from '../api/stanzaAuthTokenResponse'
 
 interface HubServiceInitOptions {
   serviceName: string
@@ -141,6 +142,13 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
       }, stanzaMarkTokensAsConsumedResponse)
 
       return response !== null ? { ok: true } : null
+    },
+    getAuthToken: async () => {
+      const response = await hubRequest('v1/auth/token', {
+        method: 'GET'
+      }, stanzaAuthTokenResponse)
+
+      return response !== null ? response.bearerToken : null
     }
   }))
 }
