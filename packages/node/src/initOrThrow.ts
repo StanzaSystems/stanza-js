@@ -10,6 +10,7 @@ import { createRestHubService } from './hub/rest/createRestHubService'
 import { setRequestTimeout } from './global/requestTimeout'
 import { setSkipTokenCache } from './global/skipTokenCache'
 import { logger } from './global/logger'
+import { startPollingAuthToken } from './authentication/startPollingAuthToken'
 
 export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
   const parseResult = stanzaInitOptions.safeParse({
@@ -53,4 +54,5 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
       }))
 
   startPollingServiceConfig()
+  startPollingAuthToken()
 }
