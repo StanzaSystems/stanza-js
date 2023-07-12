@@ -16,7 +16,7 @@ Please note we have a code of conduct, please follow it in all your interactions
 ## Code of Conduct
 
 This project and everyone participating in it is governed by the
-[contributing.md Code of Conduct](blob/master/CODE_OF_CONDUCT.md).
+[contributing.md Code of Conduct](blob/master/code_of_conduct.md).
 By participating, you are expected to uphold this code. Please report unacceptable behavior
 to <coc@stanza.systems>.
 
