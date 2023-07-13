@@ -4,8 +4,9 @@ import { getEnvInitOptions } from '../getEnvInitOptions'
 
 const loggerWrapper = {
   wrap: <T>({ prefix, level = 'debug' }: { prefix?: string, level?: pino.Level }, obj: T) => {
+    const prefixTrimmed = prefix?.trim()
     const childLogger = logger.child({}, {
-      msgPrefix: prefix
+      msgPrefix: prefixTrimmed !== undefined && prefixTrimmed !== '' ? prefixTrimmed + ' ' : undefined
     })
 
     if (typeof obj !== 'object' || obj === null) {
@@ -16,7 +17,20 @@ const loggerWrapper = {
       if (typeof value === 'function') {
         res[key] = (function (this: unknown, ...args: unknown[]) {
           childLogger[level]('%s called with %o', key, args)
-          return value.call(this, ...args)
+          const result = value.call(this, ...args)
+
+          if (result instanceof Promise) {
+            childLogger[level]('%s returned with a promise...', key)
+            result.then((data) => {
+              childLogger[level]('%s resolved with: %o', key, data)
+            }, (err) => {
+              childLogger[level]('%s errored with: %o', key, err)
+            })
+          } else {
+            childLogger[level]('%s returned with: %o', key, result)
+          }
+
+          return result
         }) as any
       }
       return res

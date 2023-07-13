@@ -41,7 +41,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
   const authClient = createPromiseClient(AuthService, transport)
 
   return wrapHubServiceWithMetrics(logger.wrap({
-    prefix: '[gRPC Hub Service] '
+    prefix: '[gRPC Hub Service]'
   }, {
     getServiceMetadata: () => ({ serviceName, environment, clientId }),
     fetchServiceConfig: async (options): Promise<ServiceConfig | null> => {

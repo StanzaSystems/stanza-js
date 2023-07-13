@@ -20,7 +20,7 @@ interface HubServiceInitOptions {
 
 export const createRestHubService = ({ serviceName, serviceRelease, environment, clientId, hubRequest }: HubServiceInitOptions): HubService => {
   return wrapHubServiceWithMetrics(logger.wrap({
-    prefix: '[REST Hub Service] '
+    prefix: '[REST Hub Service]'
   }, {
     getServiceMetadata: () => ({ serviceName, environment, clientId }),
     fetchServiceConfig: async ({ lastVersionSeen } = {}) => {

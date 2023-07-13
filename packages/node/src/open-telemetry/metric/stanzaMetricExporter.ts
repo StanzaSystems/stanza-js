@@ -34,15 +34,12 @@ export class StanzaMetricExporter implements PushMetricExporter {
 
   private updateExporter ({ config: { metricConfig } }: ServiceConfig, authToken: string) {
     const metadata = new Metadata()
+    metadata.add('Authorization', `bearer ${authToken}`)
     const prevExporter = this.exporter
-    const exporter = new OTLPMetricExporter({
+    this.exporter = new OTLPMetricExporter({
       url: metricConfig.collectorUrl,
-      metadata,
-      headers: {
-        Authorization: `bearer ${authToken}`
-      }
+      metadata
     })
-    this.exporter = exporter
     this.collectorUrl = metricConfig.collectorUrl
     prevExporter.shutdown().catch(err => {
       logger.warn('Failed to shutdown a metric exporter: %o', err)
