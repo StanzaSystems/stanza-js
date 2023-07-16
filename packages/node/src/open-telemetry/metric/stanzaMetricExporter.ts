@@ -8,6 +8,7 @@ import { eventBus, events } from '../../global/eventBus'
 import { hubService } from '../../global/hubService'
 import { logger } from '../../global/logger'
 import { addAuthTokenListener, getStanzaAuthToken } from '../../global/authToken'
+import { isTokenInvalidError } from '../../grpc/isTokenInvalidError'
 
 export class StanzaMetricExporter implements PushMetricExporter {
   private exporter: InMemoryMetricExporter | OTLPMetricExporter = new InMemoryMetricExporter(AggregationTemporality.CUMULATIVE)
@@ -49,6 +50,9 @@ export class StanzaMetricExporter implements PushMetricExporter {
   export (...[metrics, originalCallback, ...restArgs]: Parameters<PushMetricExporter['export']>): void {
     const oTelAddress = this.collectorUrl
     const callback = (result: ExportResult): void => {
+      if (result.code === ExportResultCode.FAILED && isTokenInvalidError(result.error)) {
+        eventBus.emit(events.auth.tokenInvalid).catch(() => {})
+      }
       eventBus.emit(
         result.code === ExportResultCode.SUCCESS
           ? events.telemetry.sendOk

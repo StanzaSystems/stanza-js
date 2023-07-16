@@ -27,6 +27,8 @@ const quotaValidateLatency = Symbol('stanza.quota.validate_latency')
 const telemetrySendOk = Symbol('stanza.telemetry.send_ok')
 const telemetrySendFailed = Symbol('stanza.telemetry.send_failed')
 
+const authTokenInvalid = Symbol('stanza.auth.token_invalid')
+
 const eventBusEvents = {
   request: {
     allowed: requestAllowedEvent,
@@ -58,6 +60,9 @@ const eventBusEvents = {
   telemetry: {
     sendOk: telemetrySendOk,
     sendFailed: telemetrySendFailed
+  },
+  auth: {
+    tokenInvalid: authTokenInvalid
   }
 } as const
 
@@ -118,6 +123,7 @@ type StanzaEventBus = EventBus<{
   [quotaValidateLatency]: DefaultContextData & LatencyData
   [telemetrySendOk]: DefaultContextData & { oTelAddress: string }
   [telemetrySendFailed]: DefaultContextData & { oTelAddress: string }
+  [authTokenInvalid]: undefined
 }>
 
 interface EventBusGlobal {
