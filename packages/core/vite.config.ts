@@ -1,3 +1,4 @@
+import packageJson from './package.json'
 import { defineConfig } from 'vitest/config'
 
 import viteTsConfigPaths from 'vite-tsconfig-paths'
@@ -9,7 +10,7 @@ export default defineConfig({
 
   plugins: [
     dts({
-      entryRoot: 'src',
+      entryRoot: '',
       tsConfigFilePath: joinPathFragments(__dirname, 'tsconfig.lib.json'),
       skipDiagnostics: true,
       rollupTypes: true
@@ -33,7 +34,7 @@ export default defineConfig({
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points.
-      entry: 'src/index.ts',
+      entry: 'index.ts',
       name: 'core',
       fileName: 'index',
       // Change this to the formats you want to support.
@@ -42,7 +43,7 @@ export default defineConfig({
     },
     rollupOptions: {
       // External packages that should not be bundled into your library.
-      external: ['*']
+      external: [...Object.keys(packageJson.dependencies)]
     }
   },
 

@@ -5,17 +5,10 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/esbuild:esbuild",
+      "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/node",
-        "main": "packages/node/index.ts",
-        "tsConfig": "packages/node/tsconfig.lib.json",
-        "assets": ["packages/node/*.md"],
-        "generatePackageJson": true,
-        "esbuildOptions": {
-          "packages": "external"
-        }
+        "outputPath": "dist/packages/node"
       }
     },
     "publish": {
@@ -26,7 +19,10 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/node/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/node/**/*.ts",
+          "packages/node/package.json"
+        ]
       }
     },
     "test": {
