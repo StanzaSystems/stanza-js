@@ -1,9 +1,19 @@
 {
   "name": "@getstanza/core",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1-beta",
   "type": "commonjs",
   "description": "Stanza core JS features",
   "author": "Stanza",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "cross-fetch": "^4.0.0"
+  },
+  "devDependencies": {
+    "@nx/devkit": "16.5.2",
+    "msw": "^1.2.2",
+    "vitest": "0.33.0",
+    "vite-tsconfig-paths": "^4.2.0",
+    "vite-plugin-dts": "~2.3.0"
+  }
 }

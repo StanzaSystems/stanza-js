@@ -1,11 +1,19 @@
 import { defineConfig } from 'vitest/config'
 
 import viteTsConfigPaths from 'vite-tsconfig-paths'
+import dts from 'vite-plugin-dts'
+import { joinPathFragments } from '@nx/devkit'
 
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/browser',
 
   plugins: [
+    dts({
+      entryRoot: 'src',
+      tsConfigFilePath: joinPathFragments(__dirname, 'tsconfig.lib.json'),
+      skipDiagnostics: true,
+      rollupTypes: true
+    }),
     viteTsConfigPaths({
       root: '../../'
     })
@@ -19,6 +27,24 @@ export default defineConfig({
   //    }),
   //  ],
   // },
+
+  // Configuration for building your library.
+  // See: https://vitejs.dev/guide/build.html#library-mode
+  build: {
+    lib: {
+      // Could also be a dictionary or array of multiple entry points.
+      entry: 'src/index.ts',
+      name: 'browser',
+      fileName: 'index',
+      // Change this to the formats you want to support.
+      // Don't forget to update your package.json as well.
+      formats: ['es', 'cjs']
+    },
+    rollupOptions: {
+      // External packages that should not be bundled into your library.
+      external: ['@getstanza/*']
+    }
+  },
 
   test: {
     setupFiles: ['./src/__tests__/setup.ts'],
