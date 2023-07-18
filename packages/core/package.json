@@ -1,8 +1,10 @@
 {
   "name": "@getstanza/core",
-  "private": true,
   "version": "0.0.1-beta",
-  "type": "commonjs",
+  "type": "module",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "types": "./index.d.ts",
   "description": "Stanza core JS features",
   "author": "Stanza",
   "license": "MIT",

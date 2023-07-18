@@ -1,5 +1,5 @@
 {
   "name": "@getstanza/mocks-handlers",
   "version": "0.0.1-beta",
-  "type": "commonjs"
+  "type": "module"
 }

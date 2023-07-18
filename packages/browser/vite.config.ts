@@ -3,7 +3,8 @@ import { defineConfig } from 'vitest/config'
 
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 import dts from 'vite-plugin-dts'
-import { joinPathFragments } from '@nx/devkit'
+import nxDevkit from '@nx/devkit'
+const { joinPathFragments } = nxDevkit
 
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/browser',

@@ -1,8 +1,10 @@
 {
   "name": "@getstanza/react",
-  "private": true,
   "version": "0.0.1-beta",
-  "type": "commonjs",
+  "type": "module",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "types": "./index.d.ts",
   "description": "Stanza React components",
   "author": "Stanza",
   "license": "MIT",

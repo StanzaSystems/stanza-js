@@ -1,7 +1,10 @@
 {
   "name": "@getstanza/next-node",
   "version": "0.0.1-beta",
-  "type": "commonjs",
+  "type": "module",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "types": "./index.d.ts",
   "description": "Stanza Node SDK adapter for NextJS",
   "author": "Stanza",
   "license": "MIT",

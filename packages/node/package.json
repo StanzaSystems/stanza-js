@@ -1,7 +1,9 @@
 {
   "name": "@getstanza/node",
-  "private": true,
-  "type": "commonjs",
+  "type": "module",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "types": "./index.d.ts",
   "version": "0.0.1-beta",
   "description": "Stanza Node SDK",
   "author": "Stanza",
