@@ -1,21 +1,22 @@
 {
   "name": "node",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/node/src",
+  "sourceRoot": "packages/node",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/esbuild:esbuild",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/node",
         "main": "packages/node/index.ts",
         "tsConfig": "packages/node/tsconfig.lib.json",
-        "assets": ["packages/node/*.md"],
-        "generatePackageJson": true,
-        "esbuildOptions": {
-          "packages": "external"
-        }
+        "assets": ["packages/node/README.md"],
+        "project": "packages/node/package.json",
+        "format": ["esm", "cjs"],
+        "compiler": "babel",
+        "external": "all",
+        "updateBuildableProjectDepsInPackageJson": false
       }
     },
     "publish": {
@@ -26,7 +27,10 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/node/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/node/**/*.ts",
+          "packages/node/package.json"
+        ]
       }
     },
     "test": {

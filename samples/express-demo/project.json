@@ -11,8 +11,8 @@
       "options": {
         "platform": "node",
         "outputPath": "dist/samples/express-demo",
-        "format": ["esm"],
-        "bundle": true,
+        "format": ["cjs"],
+        "bundle": false,
         "main": "samples/express-demo/src/main.ts",
         "tsConfig": "samples/express-demo/tsconfig.app.json",
         "assets": ["samples/express-demo/src/assets"],

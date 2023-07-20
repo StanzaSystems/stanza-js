@@ -1,9 +1,16 @@
 {
   "name": "@getstanza/next",
-  "private": true,
-  "version": "0.0.1",
+  "version": "0.0.1-beta",
   "type": "commonjs",
   "description": "Stanza Next components",
   "author": "Stanza",
-  "license": "MIT"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "cookie": "^0.5.0",
+    "next": "13.4.1"
+  },
+  "devDependencies": {
+    "vitest": "0.33.0",
+    "vite-tsconfig-paths": "^4.2.0"
+  }
 }

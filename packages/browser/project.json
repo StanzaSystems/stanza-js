@@ -1,21 +1,22 @@
 {
   "name": "browser",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/browser/src",
+  "sourceRoot": "packages/browser",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/esbuild:esbuild",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/browser",
         "main": "packages/browser/index.ts",
         "tsConfig": "packages/browser/tsconfig.lib.json",
-        "assets": ["packages/browser/*.md"],
-        "generatePackageJson": true,
-        "esbuildOptions": {
-          "packages": "external"
-        }
+        "assets": ["packages/browser/README.md"],
+        "project": "packages/browser/package.json",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "external": "all",
+        "updateBuildableProjectDepsInPackageJson": false
       }
     },
     "publish": {
@@ -26,7 +27,10 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/browser/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/browser/**/*.ts",
+          "packages/browser/package.json"
+        ]
       }
     },
     "test": {

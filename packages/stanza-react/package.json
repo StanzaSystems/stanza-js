@@ -1,9 +1,17 @@
 {
   "name": "@getstanza/react",
-  "private": true,
-  "version": "0.0.1",
+  "version": "0.0.1-beta",
   "type": "commonjs",
   "description": "Stanza React components",
   "author": "Stanza",
-  "license": "MIT"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@getstanza/browser": "0.0.1-beta",
+    "@getstanza/core": "0.0.1-beta",
+    "react": "18.2.0"
+  },
+  "devDependencies": {
+    "vitest": "0.33.0",
+    "vite-tsconfig-paths": "^4.2.0"
+  }
 }

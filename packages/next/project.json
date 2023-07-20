@@ -1,21 +1,22 @@
 {
   "name": "next",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/next/src",
+  "sourceRoot": "packages/next",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/esbuild:esbuild",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/next",
         "main": "packages/next/index.ts",
         "tsConfig": "packages/next/tsconfig.lib.json",
-        "assets": ["packages/next/*.md"],
-        "generatePackageJson": true,
-        "esbuildOptions": {
-          "packages": "external"
-        }
+        "assets": ["packages/next/README.md"],
+        "project": "packages/next/package.json",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "external": "all",
+        "updateBuildableProjectDepsInPackageJson": false
       }
     },
     "publish": {
@@ -26,7 +27,10 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/next/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/next/**/*.ts",
+          "packages/next/package.json"
+        ]
       }
     },
     "test": {

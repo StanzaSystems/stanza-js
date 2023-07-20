@@ -5,7 +5,6 @@ import { StanzaPriorityBoostPropagator } from './propagation/StanzaPriorityBoost
 import { StanzaTokenPropagator } from './propagation/StanzaTokenPropagator'
 
 export const addInstrumentation = async (serviceName: string) => {
-  /* eslint-disable @typescript-eslint/no-var-requires */
   const { HttpInstrumentation } = await import('@opentelemetry/instrumentation-http')
 
   const httpInstrumentation = new HttpInstrumentation()
@@ -20,7 +19,6 @@ export const addInstrumentation = async (serviceName: string) => {
   const { StanzaMetricExporter } = await import('./open-telemetry/metric/stanzaMetricExporter')
   const { StanzaInstrumentation } = await import('./open-telemetry/instrumentation/stanzaInstrumentation')
 
-  /* eslint-enable @typescript-eslint/no-var-requires */
   const sdk = new NodeSDK({
     sampler: new StanzaSampler(),
     spanProcessor: new StanzaSpanProcessor() as any, // TODO: fix any cast

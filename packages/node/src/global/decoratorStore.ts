@@ -1,4 +1,3 @@
-
 const STANZA_DECORATOR_STORE_SYMBOL = Symbol.for('[Stanza SDK Internal] Decorator store')
 
 interface Decorator {
