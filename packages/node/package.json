@@ -1,14 +1,6 @@
 {
   "name": "@getstanza/node",
-  "type": "module",
-  "main": "./index.cjs",
-  "module": "./index.js",
-  "exports": {
-    ".": {
-      "import": "./index.js",
-      "require": "./index.cjs"
-    }
-  },
+  "type": "commonjs",
   "version": "0.0.1-beta",
   "description": "Stanza Node SDK",
   "author": "Stanza",
@@ -37,9 +29,7 @@
   },
   "devDependencies": {
     "@vitest/expect": "0.33.0",
-    "@nx/devkit": "16.5.2",
     "vitest": "0.33.0",
-    "vite-tsconfig-paths": "^4.2.0",
-    "vite-plugin-dts": "~2.3.0"
+    "vite-tsconfig-paths": "^4.2.0"
   }
 }

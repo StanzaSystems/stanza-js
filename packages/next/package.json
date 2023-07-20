@@ -1,15 +1,7 @@
 {
   "name": "@getstanza/next",
   "version": "0.0.1-beta",
-  "type": "module",
-  "main": "./index.cjs",
-  "module": "./index.js",
-  "exports": {
-    ".": {
-      "import": "./index.js",
-      "require": "./index.cjs"
-    }
-  },
+  "type": "commonjs",
   "description": "Stanza Next components",
   "author": "Stanza",
   "license": "Apache-2.0",
@@ -19,8 +11,6 @@
   },
   "devDependencies": {
     "vitest": "0.33.0",
-    "@nx/devkit": "16.5.2",
-    "vite-tsconfig-paths": "^4.2.0",
-    "vite-plugin-dts": "~2.3.0"
+    "vite-tsconfig-paths": "^4.2.0"
   }
 }

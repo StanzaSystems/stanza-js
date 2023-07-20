@@ -5,10 +5,18 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/vite:build",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/browser"
+        "outputPath": "dist/packages/browser",
+        "main": "packages/browser/index.ts",
+        "tsConfig": "packages/browser/tsconfig.lib.json",
+        "assets": ["packages/browser/README.md"],
+        "project": "packages/browser/package.json",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "external": "all",
+        "updateBuildableProjectDepsInPackageJson": false
       }
     },
     "publish": {

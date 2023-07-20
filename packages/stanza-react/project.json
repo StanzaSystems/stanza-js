@@ -6,10 +6,18 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/vite:build",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/stanza-react"
+        "outputPath": "dist/packages/stanza-react",
+        "main": "packages/stanza-react/index.ts",
+        "tsConfig": "packages/stanza-react/tsconfig.lib.json",
+        "assets": ["packages/stanza-react/README.md"],
+        "project": "packages/stanza-react/package.json",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "external": "all",
+        "updateBuildableProjectDepsInPackageJson": false
       }
     },
     "publish": {

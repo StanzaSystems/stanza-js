@@ -1,15 +1,7 @@
 {
   "name": "@getstanza/browser",
   "version": "0.0.1-beta",
-  "type": "module",
-  "main": "./index.cjs",
-  "module": "./index.js",
-  "exports": {
-    ".": {
-      "import": "./index.js",
-      "require": "./index.cjs"
-    }
-  },
+  "type": "commonjs",
   "description": "Stanza browser integration features",
   "author": "Stanza",
   "license": "Apache-2.0",
@@ -21,8 +13,6 @@
     "vitest": "0.33.0",
     "vitest-localstorage-mock": "^0.0.1",
     "@getstanza/mocks-server": "0.0.1-beta",
-    "vite-tsconfig-paths": "^4.2.0",
-    "vite-plugin-dts": "~2.3.0",
-    "@nx/devkit": "16.5.2"
+    "vite-tsconfig-paths": "^4.2.0"
   }
 }

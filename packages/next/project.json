@@ -5,10 +5,18 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/vite:build",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/next"
+        "outputPath": "dist/packages/next",
+        "main": "packages/next/index.ts",
+        "tsConfig": "packages/next/tsconfig.lib.json",
+        "assets": ["packages/next/README.md"],
+        "project": "packages/next/package.json",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "external": "all",
+        "updateBuildableProjectDepsInPackageJson": false
       }
     },
     "publish": {
