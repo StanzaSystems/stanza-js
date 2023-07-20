@@ -23,3 +23,7 @@ export interface ValidatedToken {
   token: string
   valid: boolean
 }
+
+export interface AuthTokenResult {
+  bearerToken: string
+}

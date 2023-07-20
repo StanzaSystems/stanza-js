@@ -487,6 +487,11 @@ export class GetServiceConfigResponse extends Message<GetServiceConfigResponse> 
  */
 export class ServiceConfig extends Message<ServiceConfig> {
   /**
+   * @generated from field: optional string customer_id = 1;
+   */
+  customerId?: string;
+
+  /**
    * @generated from field: optional stanza.hub.v1.TraceConfig trace_config = 3;
    */
   traceConfig?: TraceConfig;
@@ -509,6 +514,7 @@ export class ServiceConfig extends Message<ServiceConfig> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "stanza.hub.v1.ServiceConfig";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "customer_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
     { no: 3, name: "trace_config", kind: "message", T: TraceConfig, opt: true },
     { no: 4, name: "metric_config", kind: "message", T: MetricConfig, opt: true },
     { no: 5, name: "sentinel_config", kind: "message", T: SentinelConfig, opt: true },

@@ -15,6 +15,8 @@ import { withTimeout } from '../../utils/withTimeout'
 import { wrapHubServiceWithMetrics } from '../wrapHubServiceWithMetrics'
 import { STANZA_REQUEST_TIMEOUT } from '../../global/requestTimeout'
 import { logger } from '../../global/logger'
+import { AuthService } from '../../../gen/stanza/hub/v1/auth_connect'
+import { stanzaAuthTokenResponse } from '../api/stanzaAuthTokenResponse'
 
 interface GrpcHubServiceInitOptions {
   serviceName: string
@@ -36,9 +38,10 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
   })
   const configClient = createPromiseClient(ConfigService, transport)
   const quotaClient = createPromiseClient(QuotaService, transport)
+  const authClient = createPromiseClient(AuthService, transport)
 
   return wrapHubServiceWithMetrics(logger.wrap({
-    prefix: '[gRPC Hub Service] '
+    prefix: '[gRPC Hub Service]'
   }, {
     getServiceMetadata: () => ({ serviceName, environment, clientId }),
     fetchServiceConfig: async (options): Promise<ServiceConfig | null> => {
@@ -145,6 +148,13 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
       )
 
       return data === null ? null : { ok: true }
+    },
+    getAuthToken: async () => {
+      const data = await grpcRequest(async () => authClient.getBearerToken({}),
+        stanzaAuthTokenResponse
+      )
+
+      return data === null ? null : data.bearerToken
     }
   }))
 }
