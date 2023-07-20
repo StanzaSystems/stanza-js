@@ -1,7 +1,7 @@
 {
   "name": "node",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/node/src",
+  "sourceRoot": "packages/node",
   "projectType": "library",
   "targets": {
     "build": {

@@ -1,7 +1,7 @@
 {
   "name": "next-node",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/next-node/src",
+  "sourceRoot": "packages/next-node",
   "projectType": "library",
   "targets": {
     "build": {

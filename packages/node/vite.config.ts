@@ -4,6 +4,7 @@ import { defineConfig } from 'vitest/config'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 import dts from 'vite-plugin-dts'
 import nxDevkit from '@nx/devkit'
+import { builtinModules } from 'module'
 const { joinPathFragments } = nxDevkit
 
 export default defineConfig({
@@ -44,7 +45,10 @@ export default defineConfig({
     },
     rollupOptions: {
       // External packages that should not be bundled into your library.
-      external: [...Object.keys(packageJson.dependencies)]
+      external: [
+        ...builtinModules,
+        ...builtinModules.map(m => `node:${m}`),
+        ...Object.keys(packageJson.dependencies)]
     }
   },
 

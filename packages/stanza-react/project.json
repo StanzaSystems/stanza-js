@@ -1,7 +1,7 @@
 {
   "name": "stanza-react",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/stanza-react/src",
+  "sourceRoot": "packages/stanza-react",
   "projectType": "library",
   "tags": [],
   "targets": {

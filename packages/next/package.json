@@ -4,10 +4,15 @@
   "type": "module",
   "main": "./index.cjs",
   "module": "./index.js",
-  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.cjs"
+    }
+  },
   "description": "Stanza Next components",
   "author": "Stanza",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "cookie": "^0.5.0",
     "next": "13.4.1"
