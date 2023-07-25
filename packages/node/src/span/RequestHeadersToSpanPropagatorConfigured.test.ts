@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { RequestHeadersToSpanPropagatorConfigured } from './RequestHeadersToSpanPropagatorConfigured'
+import { HeadersSpanEnhancerConfigured } from './HeadersSpanEnhancerConfigured'
 import { ROOT_CONTEXT, type TextMapGetter } from '@opentelemetry/api'
 import { stanzaHeadersToSpanContextKey } from '../context/stanzaHeadersToSpanContextKey'
 
@@ -10,7 +10,7 @@ const recordGetter: TextMapGetter<Record<string, string>> = {
 
 describe('RequestHeadersToSpanPropagatorConfigured', () => {
   describe('with empty config', () => {
-    const propagator = new RequestHeadersToSpanPropagatorConfigured([])
+    const propagator = new HeadersSpanEnhancerConfigured([])
     it('should return empty fields', () => {
       expect(propagator.fields()).toEqual([])
     })
@@ -27,7 +27,7 @@ describe('RequestHeadersToSpanPropagatorConfigured', () => {
   })
 
   describe('with non empty config and distinct headers', () => {
-    const propagator = new RequestHeadersToSpanPropagatorConfigured([{
+    const propagator = new HeadersSpanEnhancerConfigured([{
       requestHeaderName: ['first-header-request'],
       responseHeaderName: ['first-header-response'],
       spanSelectors: []
@@ -66,7 +66,7 @@ describe('RequestHeadersToSpanPropagatorConfigured', () => {
   })
 
   describe('with non empty config and non distinct headers', () => {
-    const propagator = new RequestHeadersToSpanPropagatorConfigured([{
+    const propagator = new HeadersSpanEnhancerConfigured([{
       requestHeaderName: ['first-header-request', 'common-header'],
       responseHeaderName: ['first-header-response', 'common-header'],
       spanSelectors: []
@@ -113,7 +113,7 @@ describe('RequestHeadersToSpanPropagatorConfigured', () => {
   })
 
   describe('with multiple non empty configs', () => {
-    const propagator = new RequestHeadersToSpanPropagatorConfigured([{
+    const propagator = new HeadersSpanEnhancerConfigured([{
       requestHeaderName: ['first-header-request', 'common-header'],
       responseHeaderName: ['first-header-response', 'common-header'],
       spanSelectors: []

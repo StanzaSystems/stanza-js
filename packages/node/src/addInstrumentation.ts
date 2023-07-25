@@ -3,11 +3,38 @@ import { StanzaApiKeyPropagator } from './propagation/StanzaApiKeyPropagator'
 import { StanzaBaggagePropagator } from './propagation/StanzaBaggagePropagator'
 import { StanzaPriorityBoostPropagator } from './propagation/StanzaPriorityBoostPropagator'
 import { StanzaTokenPropagator } from './propagation/StanzaTokenPropagator'
-import { RequestHeadersToSpanPropagator } from './propagation/RequestHeadersToSpanPropagator'
+import { IncomingMessage } from 'http'
 
 export const addInstrumentation = async (serviceName: string) => {
+  const { Span } = await import('@opentelemetry/sdk-trace-node')
+
   const { HttpInstrumentation } = await import('@opentelemetry/instrumentation-http')
-  const httpInstrumentation = new HttpInstrumentation()
+  const httpInstrumentation = new HttpInstrumentation({
+    requestHook: (span, request) => {
+      if (span instanceof Span) {
+        console.log('request is span class')
+      } else {
+        console.log('span', span.isRecording(), span)
+      }
+      if (request instanceof IncomingMessage) {
+        console.log('incoming message headers (request)', request.headers)
+      } else {
+        console.log('client request headers', request.getHeaders())
+      }
+    },
+    responseHook: (span, response) => {
+      if (span instanceof Span) {
+        console.log('response is span class')
+      } else {
+        console.log('span', span.isRecording(), span)
+      }
+      if (response instanceof IncomingMessage) {
+        console.log('incoming message headers (response)', response.headers)
+      } else {
+        console.log('server response headers', response.getHeaders())
+      }
+    }
+  })
   // NOTE: @opentelemetry/sdk-node needs to be required after we create the instrumentation.
   // Otherwise, the instrumentation fails to work
   const { NodeSDK } = await import('@opentelemetry/sdk-node')
@@ -32,8 +59,7 @@ export const addInstrumentation = async (serviceName: string) => {
           new StanzaBaggagePropagator(),
           new StanzaPriorityBoostPropagator(),
           new StanzaApiKeyPropagator(),
-          new StanzaTokenPropagator(),
-          new RequestHeadersToSpanPropagator()
+          new StanzaTokenPropagator()
         ]
       }),
     metricReader: new PeriodicExportingMetricReader({
