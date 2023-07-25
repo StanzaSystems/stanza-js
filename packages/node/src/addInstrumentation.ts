@@ -3,8 +3,6 @@ import { StanzaApiKeyPropagator } from './propagation/StanzaApiKeyPropagator'
 import { StanzaBaggagePropagator } from './propagation/StanzaBaggagePropagator'
 import { StanzaPriorityBoostPropagator } from './propagation/StanzaPriorityBoostPropagator'
 import { StanzaTokenPropagator } from './propagation/StanzaTokenPropagator'
-import { Span } from '@opentelemetry/sdk-trace-node'
-import { logger } from './global/logger'
 import { RequestHeadersToSpanPropagator } from './propagation/RequestHeadersToSpanPropagator'
 
 export const addInstrumentation = async (serviceName: string) => {
