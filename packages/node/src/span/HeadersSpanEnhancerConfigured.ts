@@ -1,11 +1,11 @@
 import { type Span } from '@opentelemetry/api'
-import { type ASpanEnhancer } from './ASpanEnhancer'
+import { type SpanEnhancer } from './SpanEnhancer'
 import { undefined } from 'zod'
 import { Span as SpanClass } from '@opentelemetry/sdk-trace-node'
 import { type ClientRequest, IncomingMessage, type ServerResponse } from 'http'
 import { isTruthy } from '../utils/isTruthy'
 
-export class HeadersSpanEnhancerConfigured implements ASpanEnhancer {
+export class HeadersSpanEnhancerConfigured implements SpanEnhancer {
   constructor (private readonly traceConfigs: Array<{
     requestHeaderName: string[]
     responseHeaderName: string[]

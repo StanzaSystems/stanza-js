@@ -4,10 +4,10 @@ import { HeadersSpanEnhancerConfigured } from './HeadersSpanEnhancerConfigured'
 import { type Span } from '@opentelemetry/sdk-trace-node'
 import { type ClientRequest, type IncomingMessage, type ServerResponse } from 'http'
 import { NoopSpanEnhancer } from './NoopSpanEnhancer'
-import { type ASpanEnhancer } from './ASpanEnhancer'
+import { type SpanEnhancer } from './SpanEnhancer'
 
-export class HeadersSpanEnhancer implements ASpanEnhancer {
-  private readonly headersSpanEnhancerConfiguredManager = new StanzaConfigEntityManager<ASpanEnhancer>({
+export class HeadersSpanEnhancer implements SpanEnhancer {
+  private readonly headersSpanEnhancerConfiguredManager = new StanzaConfigEntityManager<SpanEnhancer>({
     getInitial: () => new NoopSpanEnhancer(),
     createWithServiceConfig: ({ traceConfig }) => new HeadersSpanEnhancerConfigured(traceConfig.headerSampleConfig),
     cleanup: async () => {}

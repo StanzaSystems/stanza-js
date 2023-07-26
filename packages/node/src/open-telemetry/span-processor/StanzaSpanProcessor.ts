@@ -1,8 +1,8 @@
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-node'
-import { type ASpanEnhancer } from '../../span/ASpanEnhancer'
+import { type SpanEnhancer } from '../../span/SpanEnhancer'
 
 export class StanzaSpanProcessor extends BatchSpanProcessor {
-  constructor (private readonly spanEnhancers: ASpanEnhancer[], ...batchSpanProcessorArgs: ConstructorParameters<typeof BatchSpanProcessor>) {
+  constructor (private readonly spanEnhancers: SpanEnhancer[], ...batchSpanProcessorArgs: ConstructorParameters<typeof BatchSpanProcessor>) {
     super(...batchSpanProcessorArgs)
   }
 
