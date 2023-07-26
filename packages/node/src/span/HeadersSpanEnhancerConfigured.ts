@@ -15,46 +15,32 @@ export class HeadersSpanEnhancerConfigured implements SpanEnhancer {
   }>) {}
 
   enhanceWithRequest (span: Span, request: ClientRequest | IncomingMessage): void {
-    const getHeaderValue = (headerName: string): string[] | undefined => {
-      const normalizedHeader = headerName.toLowerCase()
-      const rawValue = request instanceof IncomingMessage ? request.headers[normalizedHeader] : request.getHeader(normalizedHeader)
-
-      return typeof rawValue === 'string'
-        ? [rawValue]
-        : typeof rawValue === 'number'
-          ? [rawValue.toString()]
-          : rawValue
-    }
-
-    const getAttributeKey = (headerName: string) => {
-      const otelNormalizedHeader = headerName.toLowerCase().replace(/-/g, '_')
-      return `http.request.header.${otelNormalizedHeader}`
-    }
-
-    this.enhance(span, { getAttributeKey, getHeaderValue })
+    this.enhance(span, {
+      getAttributeKey: (headerName) => {
+        const otelNormalizedHeader = headerName.toLowerCase().replace(/-/g, '_')
+        return `http.request.header.${otelNormalizedHeader}`
+      },
+      getHeaderValue: (headerName) => {
+        const normalizedHeader = headerName.toLowerCase()
+        return request instanceof IncomingMessage ? request.headers[normalizedHeader] : request.getHeader(normalizedHeader)
+      }
+    })
   }
 
   enhanceWithResponse (span: Span, response: ServerResponse | IncomingMessage): void {
-    const getHeaderValue = (headerName: string): string[] | undefined => {
-      const normalizedHeader = headerName.toLowerCase()
-      const rawValue = response instanceof IncomingMessage ? response.headers[normalizedHeader] : response.getHeader(normalizedHeader)
-
-      return typeof rawValue === 'string'
-        ? [rawValue]
-        : typeof rawValue === 'number'
-          ? [rawValue.toString()]
-          : rawValue
-    }
-
-    const getAttributeKey = (headerName: string) => {
-      const otelNormalizedHeader = headerName.toLowerCase().replace(/-/g, '_')
-      return `http.response.header.${otelNormalizedHeader}`
-    }
-
-    this.enhance(span, { getAttributeKey, getHeaderValue })
+    this.enhance(span, {
+      getAttributeKey: (headerName) => {
+        const otelNormalizedHeader = headerName.toLowerCase().replace(/-/g, '_')
+        return `http.response.header.${otelNormalizedHeader}`
+      },
+      getHeaderValue: (headerName) => {
+        const normalizedHeader = headerName.toLowerCase()
+        return response instanceof IncomingMessage ? response.headers[normalizedHeader] : response.getHeader(normalizedHeader)
+      }
+    })
   }
 
-  private enhance (span: Span, { getAttributeKey, getHeaderValue }: { getAttributeKey: (headerName: string) => string, getHeaderValue: (headerName: string) => string[] | undefined }) {
+  private enhance (span: Span, { getAttributeKey, getHeaderValue }: { getAttributeKey: (headerName: string) => string, getHeaderValue: (headerName: string) => string[] | string | number | undefined }) {
     const headersToAdd = this.traceConfigs.map(({ requestHeaderName, spanSelectors }): string[] | undefined => {
       const spanSelected = span instanceof SpanClass && spanSelectors.every(({ otelAttribute, value }) =>
         span.attributes[otelAttribute] === value
@@ -64,7 +50,13 @@ export class HeadersSpanEnhancerConfigured implements SpanEnhancer {
     }).filter(isTruthy).flat()
 
     headersToAdd.forEach(headerName => {
-      const value = getHeaderValue(headerName)
+      const rawValue = getHeaderValue(headerName)
+      const value = typeof rawValue === 'string'
+        ? [rawValue]
+        : typeof rawValue === 'number'
+          ? [rawValue.toString()]
+          : rawValue
+
       if (value === undefined) {
         return
       }
