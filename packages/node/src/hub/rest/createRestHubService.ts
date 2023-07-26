@@ -148,7 +148,7 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
         method: 'GET'
       }, stanzaAuthTokenResponse)
 
-      return response !== null ? response.bearerToken : null
+      return response !== null ? { token: response.bearerToken } : null
     }
   }))
 }

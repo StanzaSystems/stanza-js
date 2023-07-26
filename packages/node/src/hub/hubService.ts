@@ -55,5 +55,5 @@ export interface HubService {
   getTokenLease: (options: GetTokenLeaseOptions) => Promise<StanzaTokenLeasesResult | null>
   validateToken: (options: ValidateTokenOptions) => Promise<ValidatedToken | null>
   markTokensAsConsumed: (options: MarkTokensAsConsumedOptions) => Promise<{ ok: boolean } | null>
-  getAuthToken: () => Promise<string | null>
+  getAuthToken: () => Promise<{ token: string } | null>
 }

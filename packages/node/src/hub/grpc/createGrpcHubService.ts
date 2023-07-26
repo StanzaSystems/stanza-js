@@ -154,7 +154,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
         stanzaAuthTokenResponse
       )
 
-      return data === null ? null : data.bearerToken
+      return data === null ? null : { token: data.bearerToken }
     }
   }))
 }

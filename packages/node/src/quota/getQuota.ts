@@ -37,7 +37,7 @@ const getQuotaInternal = async (options: GetQuotaOptions): Promise<StanzaToken |
   const invalidQuotaTags = incomingQuotaTags.filter(incomingTag => !validDecoratorQuotaTags.includes(incomingTag.key))
 
   if (invalidQuotaTags.length > 0) {
-    logger.info(`Unused tags in decorator '${options.decorator}'. Tags: ${invalidQuotaTags.map(t => `'${t.key}'`).join(', ')}`)
+    logger.info('Unused tags in decorator \'%s\'. Tags: %o', options.decorator, invalidQuotaTags.map(t => t.key))
   }
 
   if (validQuotaTags.length > 0) {

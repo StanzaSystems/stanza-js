@@ -189,7 +189,7 @@ describe('quotaChecker', () => {
       void checkQuota()
 
       expect(infoSpy).toHaveBeenCalledOnce()
-      expect(infoSpy).toHaveBeenCalledWith('Unused tags in decorator \'testDecorator\'. Tags: \'invalidQuotaTag\', \'anotherInvalidQuotaTag\'')
+      expect(infoSpy).toHaveBeenCalledWith('Unused tags in decorator \'%s\'. Tags: %o', 'testDecorator', ['invalidQuotaTag', 'anotherInvalidQuotaTag'])
     })
 
     it('should NOT log if all tags are valid', () => {
