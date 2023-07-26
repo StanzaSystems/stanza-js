@@ -2,6 +2,7 @@ import { type Span } from '@opentelemetry/api'
 import { type HeaderGetter, type SpanEnhancer } from './SpanEnhancer'
 import { Span as SpanClass } from '@opentelemetry/sdk-trace-node'
 import { isTruthy } from '../utils/isTruthy'
+import { uniq } from 'ramda'
 
 export class HeadersSpanEnhancerConfigured implements SpanEnhancer {
   constructor (private readonly traceConfigs: Array<{
@@ -45,7 +46,7 @@ export class HeadersSpanEnhancerConfigured implements SpanEnhancer {
       return spanSelected ? headers : undefined
     }).filter(isTruthy).flat()
 
-    headersToAdd.forEach(headerName => {
+    uniq(headersToAdd).forEach(headerName => {
       const normalizedHeader = headerName.toLowerCase()
       const rawValue = getHeaderValue(normalizedHeader)
       const value = typeof rawValue === 'string'

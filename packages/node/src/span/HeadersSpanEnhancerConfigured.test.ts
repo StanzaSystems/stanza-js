@@ -20,14 +20,14 @@ describe('HeadersSpanEnhancerConfigured', () => {
   describe('with empty config', () => {
     const enhancer = new HeadersSpanEnhancerConfigured([])
 
-    it('should attach empty headers to context if carries has no headers', () => {
+    it('should not add span attributes if request has no headers', () => {
       const { span, setAttributeSpy } = createTestSpan()
 
       enhancer.enhanceWithRequest(span, getHeader({}))
       expect(setAttributeSpy).not.toHaveBeenCalled()
     })
 
-    it('should attach empty headers to context if carries has headers', () => {
+    it('should not add span attributes if request has headers', () => {
       const { span, setAttributeSpy } = createTestSpan()
 
       enhancer.enhanceWithRequest(span, getHeader({ testHeader: 'testHeaderValue' }))
@@ -42,14 +42,14 @@ describe('HeadersSpanEnhancerConfigured', () => {
       spanSelectors: []
     }])
 
-    it('should attach empty headers to context if carries has no headers', () => {
+    it('should not add span attributes if request has no headers', () => {
       const { span, setAttributeSpy } = createTestSpan()
 
       enhancer.enhanceWithRequest(span, getHeader({ }))
       expect(setAttributeSpy).not.toHaveBeenCalled()
     })
 
-    it('should attach headers to context if carries has request headers', () => {
+    it('should add span attributes if request has headers', () => {
       const { span, setAttributeSpy } = createTestSpan()
 
       enhancer.enhanceWithRequest(span, getHeader({
@@ -60,7 +60,7 @@ describe('HeadersSpanEnhancerConfigured', () => {
       expect(setAttributeSpy).toHaveBeenCalledWith('http.request.header.first_header_request', ['first-header-request-value'])
     })
 
-    it('should attach headers to context if carries has response headers', () => {
+    it('should add span attributes if response has headers', () => {
       const { span, setAttributeSpy } = createTestSpan()
 
       enhancer.enhanceWithResponse(span, getHeader({
@@ -72,110 +72,93 @@ describe('HeadersSpanEnhancerConfigured', () => {
     })
   })
 
-  // TODO
-  // describe('with non empty config and non distinct headers', () => {
-  //   const propagator = new HeadersSpanEnhancerConfigured([{
-  //     requestHeaderName: ['first-header-request', 'common-header'],
-  //     responseHeaderName: ['first-header-response', 'common-header'],
-  //     spanSelectors: []
-  //   }])
-  //
-  //   it('should return distinct fields', () => {
-  //     expect(propagator.fields()).toEqual(['first-header-request', 'common-header', 'first-header-response'])
-  //   })
-  //
-  //   it('should attach empty headers to context if carries has no headers', () => {
-  //     const propagatedContext = propagator.extract(ROOT_CONTEXT, {}, recordGetter)
-  //     expect(propagatedContext.getValue(stanzaHeadersToSpanContextKey)).toEqual([])
-  //   })
-  //
-  //   it('should attach headers to context if carries has request headers', () => {
-  //     const propagatedContext = propagator.extract(ROOT_CONTEXT, {
-  //       testHeader: 'testHeaderValue',
-  //       'first-header-request': 'first-header-request-value',
-  //       'common-header': 'common-header-request-value'
-  //     }, recordGetter)
-  //     expect(propagatedContext.getValue(stanzaHeadersToSpanContextKey)).toEqual([{
-  //       key: 'first-header-request',
-  //       value: 'first-header-request-value'
-  //     }, {
-  //       key: 'common-header',
-  //       value: 'common-header-request-value'
-  //     }])
-  //   })
-  //
-  //   it('should attach headers to context if carries has response headers', () => {
-  //     const propagatedContext = propagator.extract(ROOT_CONTEXT, {
-  //       testHeader: 'testHeaderValue',
-  //       'first-header-response': 'first-header-response-value',
-  //       'common-header': 'common-header-response-value'
-  //     }, recordGetter)
-  //     expect(propagatedContext.getValue(stanzaHeadersToSpanContextKey)).toEqual([{
-  //       key: 'common-header',
-  //       value: 'common-header-response-value'
-  //     }, {
-  //       key: 'first-header-response',
-  //       value: 'first-header-response-value'
-  //     }])
-  //   })
-  // })
-  //
-  // describe('with multiple non empty configs', () => {
-  //   const propagator = new HeadersSpanEnhancerConfigured([{
-  //     requestHeaderName: ['first-header-request', 'common-header'],
-  //     responseHeaderName: ['first-header-response', 'common-header'],
-  //     spanSelectors: []
-  //   }, {
-  //     requestHeaderName: ['second-header-request', 'common-header'],
-  //     responseHeaderName: ['second-header-response', 'common-header'],
-  //     spanSelectors: []
-  //   }])
-  //
-  //   it('should return distinct fields', () => {
-  //     expect(propagator.fields()).toEqual(['first-header-request', 'common-header', 'first-header-response', 'second-header-request', 'second-header-response'])
-  //   })
-  //
-  //   it('should attach empty headers to context if carries has no headers', () => {
-  //     const propagatedContext = propagator.extract(ROOT_CONTEXT, {}, recordGetter)
-  //     expect(propagatedContext.getValue(stanzaHeadersToSpanContextKey)).toEqual([])
-  //   })
-  //
-  //   it('should attach headers to context if carries has request headers', () => {
-  //     const propagatedContext = propagator.extract(ROOT_CONTEXT, {
-  //       testHeader: 'testHeaderValue',
-  //       'first-header-request': 'first-header-request-value',
-  //       'second-header-request': 'second-header-request-value',
-  //       'common-header': 'common-header-request-value'
-  //     }, recordGetter)
-  //     expect(propagatedContext.getValue(stanzaHeadersToSpanContextKey)).toEqual([{
-  //       key: 'first-header-request',
-  //       value: 'first-header-request-value'
-  //     }, {
-  //       key: 'common-header',
-  //       value: 'common-header-request-value'
-  //     }, {
-  //       key: 'second-header-request',
-  //       value: 'second-header-request-value'
-  //     }])
-  //   })
-  //
-  //   it('should attach headers to context if carries has response headers', () => {
-  //     const propagatedContext = propagator.extract(ROOT_CONTEXT, {
-  //       testHeader: 'testHeaderValue',
-  //       'first-header-response': 'first-header-response-value',
-  //       'second-header-response': 'second-header-response-value',
-  //       'common-header': 'common-header-response-value'
-  //     }, recordGetter)
-  //     expect(propagatedContext.getValue(stanzaHeadersToSpanContextKey)).toEqual([{
-  //       key: 'common-header',
-  //       value: 'common-header-response-value'
-  //     }, {
-  //       key: 'first-header-response',
-  //       value: 'first-header-response-value'
-  //     }, {
-  //       key: 'second-header-response',
-  //       value: 'second-header-response-value'
-  //     }])
-  //   })
-  // })
+  describe('with non empty config and non distinct headers', () => {
+    const enhancer = new HeadersSpanEnhancerConfigured([{
+      requestHeaderName: ['first-header-request', 'common-header'],
+      responseHeaderName: ['first-header-response', 'common-header'],
+      spanSelectors: []
+    }])
+
+    it('should not add span attributes if request has no headers', () => {
+      const { span, setAttributeSpy } = createTestSpan()
+
+      enhancer.enhanceWithRequest(span, getHeader({ }))
+      expect(setAttributeSpy).not.toHaveBeenCalled()
+    })
+
+    it('should add span attributes if request has headers', () => {
+      const { span, setAttributeSpy } = createTestSpan()
+
+      enhancer.enhanceWithRequest(span, getHeader({
+        testHeader: 'testHeaderValue',
+        'first-header-request': 'first-header-request-value',
+        'common-header': 'common-header-request-value'
+      }))
+      expect(setAttributeSpy).toHaveBeenCalledTimes(2)
+      expect(setAttributeSpy).toHaveBeenCalledWith('http.request.header.first_header_request', ['first-header-request-value'])
+      expect(setAttributeSpy).toHaveBeenCalledWith('http.request.header.common_header', ['common-header-request-value'])
+    })
+
+    it('should add span attributes if request has headers', () => {
+      const { span, setAttributeSpy } = createTestSpan()
+
+      enhancer.enhanceWithResponse(span, getHeader({
+        testHeader: 'testHeaderValue',
+        'first-header-response': 'first-header-response-value',
+        'common-header': 'common-header-response-value'
+      }))
+      expect(setAttributeSpy).toHaveBeenCalledTimes(2)
+      expect(setAttributeSpy).toHaveBeenCalledWith('http.response.header.first_header_response', ['first-header-response-value'])
+      expect(setAttributeSpy).toHaveBeenCalledWith('http.response.header.common_header', ['common-header-response-value'])
+    })
+  })
+
+  describe('with multiple non empty configs', () => {
+    const enhancer = new HeadersSpanEnhancerConfigured([{
+      requestHeaderName: ['first-header-request', 'common-header'],
+      responseHeaderName: ['first-header-response', 'common-header'],
+      spanSelectors: []
+    }, {
+      requestHeaderName: ['second-header-request', 'common-header'],
+      responseHeaderName: ['second-header-response', 'common-header'],
+      spanSelectors: []
+    }])
+
+    it('should not add span attributes if request has no headers', () => {
+      const { span, setAttributeSpy } = createTestSpan()
+
+      enhancer.enhanceWithRequest(span, getHeader({ }))
+      expect(setAttributeSpy).not.toHaveBeenCalled()
+    })
+
+    it('should add distinct span attributes if request has headers', () => {
+      const { span, setAttributeSpy } = createTestSpan()
+
+      enhancer.enhanceWithRequest(span, getHeader({
+        testHeader: 'testHeaderValue',
+        'first-header-request': 'first-header-request-value',
+        'second-header-request': 'second-header-request-value',
+        'common-header': 'common-header-request-value'
+      }))
+      expect(setAttributeSpy).toHaveBeenCalledTimes(3)
+      expect(setAttributeSpy).toHaveBeenCalledWith('http.request.header.first_header_request', ['first-header-request-value'])
+      expect(setAttributeSpy).toHaveBeenCalledWith('http.request.header.second_header_request', ['second-header-request-value'])
+      expect(setAttributeSpy).toHaveBeenCalledWith('http.request.header.common_header', ['common-header-request-value'])
+    })
+
+    it('should add distinct span attributes if response has headers', () => {
+      const { span, setAttributeSpy } = createTestSpan()
+
+      enhancer.enhanceWithResponse(span, getHeader({
+        testHeader: 'testHeaderValue',
+        'first-header-response': 'first-header-response-value',
+        'second-header-response': 'second-header-response-value',
+        'common-header': 'common-header-response-value'
+      }))
+      expect(setAttributeSpy).toHaveBeenCalledTimes(3)
+      expect(setAttributeSpy).toHaveBeenCalledWith('http.response.header.first_header_response', ['first-header-response-value'])
+      expect(setAttributeSpy).toHaveBeenCalledWith('http.response.header.second_header_response', ['second-header-response-value'])
+      expect(setAttributeSpy).toHaveBeenCalledWith('http.response.header.common_header', ['common-header-response-value'])
+    })
+  })
 })
