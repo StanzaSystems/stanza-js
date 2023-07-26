@@ -2,9 +2,8 @@ import { context } from '@opentelemetry/api'
 import { StanzaConfigEntityManager } from '../open-telemetry/StanzaConfigEntityManager'
 import { HeadersSpanEnhancerConfigured } from './HeadersSpanEnhancerConfigured'
 import { type Span } from '@opentelemetry/sdk-trace-node'
-import { type ClientRequest, type IncomingMessage, type ServerResponse } from 'http'
 import { NoopSpanEnhancer } from './NoopSpanEnhancer'
-import { type SpanEnhancer } from './SpanEnhancer'
+import { type HeaderGetter, type SpanEnhancer } from './SpanEnhancer'
 
 export class HeadersSpanEnhancer implements SpanEnhancer {
   private readonly headersSpanEnhancerConfiguredManager = new StanzaConfigEntityManager<SpanEnhancer>({
@@ -13,13 +12,13 @@ export class HeadersSpanEnhancer implements SpanEnhancer {
     cleanup: async () => {}
   })
 
-  enhanceWithRequest (span: Span, request: ClientRequest | IncomingMessage): void {
+  enhanceWithRequest (span: Span, getHeaderValue: HeaderGetter): void {
     const propagator = this.headersSpanEnhancerConfiguredManager.getEntity(context.active())
-    propagator.enhanceWithRequest(span, request)
+    propagator.enhanceWithRequest(span, getHeaderValue)
   }
 
-  enhanceWithResponse (span: Span, response: ServerResponse | IncomingMessage): void {
+  enhanceWithResponse (span: Span, getHeaderValue: HeaderGetter): void {
     const propagator = this.headersSpanEnhancerConfiguredManager.getEntity(context.active())
-    propagator.enhanceWithResponse(span, response)
+    propagator.enhanceWithResponse(span, getHeaderValue)
   }
 }
