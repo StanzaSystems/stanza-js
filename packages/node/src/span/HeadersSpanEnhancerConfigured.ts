@@ -1,7 +1,6 @@
 import { type Span } from '@opentelemetry/api'
-import { type SpanEnhancer } from './SpanEnhancer'
+import { type HeaderGetter, type SpanEnhancer } from './SpanEnhancer'
 import { Span as SpanClass } from '@opentelemetry/sdk-trace-node'
-import { type ClientRequest, IncomingMessage, type ServerResponse } from 'http'
 import { isTruthy } from '../utils/isTruthy'
 
 export class HeadersSpanEnhancerConfigured implements SpanEnhancer {
@@ -14,43 +13,41 @@ export class HeadersSpanEnhancerConfigured implements SpanEnhancer {
     }>
   }>) {}
 
-  enhanceWithRequest (span: Span, request: ClientRequest | IncomingMessage): void {
+  enhanceWithRequest (span: Span, getHeaderValue: HeaderGetter): void {
     this.enhance(span, {
       getAttributeKey: (headerName) => {
         const otelNormalizedHeader = headerName.toLowerCase().replace(/-/g, '_')
         return `http.request.header.${otelNormalizedHeader}`
       },
-      getHeaderValue: (headerName) => {
-        const normalizedHeader = headerName.toLowerCase()
-        return request instanceof IncomingMessage ? request.headers[normalizedHeader] : request.getHeader(normalizedHeader)
-      }
+      getHeaderValue,
+      type: 'request'
     })
   }
 
-  enhanceWithResponse (span: Span, response: ServerResponse | IncomingMessage): void {
+  enhanceWithResponse (span: Span, getHeaderValue: HeaderGetter): void {
     this.enhance(span, {
       getAttributeKey: (headerName) => {
         const otelNormalizedHeader = headerName.toLowerCase().replace(/-/g, '_')
         return `http.response.header.${otelNormalizedHeader}`
       },
-      getHeaderValue: (headerName) => {
-        const normalizedHeader = headerName.toLowerCase()
-        return response instanceof IncomingMessage ? response.headers[normalizedHeader] : response.getHeader(normalizedHeader)
-      }
+      getHeaderValue,
+      type: 'response'
     })
   }
 
-  private enhance (span: Span, { getAttributeKey, getHeaderValue }: { getAttributeKey: (headerName: string) => string, getHeaderValue: (headerName: string) => string[] | string | number | undefined }) {
-    const headersToAdd = this.traceConfigs.map(({ requestHeaderName, spanSelectors }): string[] | undefined => {
+  private enhance (span: Span, { getAttributeKey, getHeaderValue, type }: { getAttributeKey: (headerName: string) => string, getHeaderValue: HeaderGetter, type: 'response' | 'request' }) {
+    const headersToAdd = this.traceConfigs.map(({ requestHeaderName, responseHeaderName, spanSelectors }): string[] | undefined => {
+      const headers = type === 'request' ? requestHeaderName : responseHeaderName
       const spanSelected = span instanceof SpanClass && spanSelectors.every(({ otelAttribute, value }) =>
         span.attributes[otelAttribute] === value
       )
 
-      return spanSelected ? requestHeaderName : undefined
+      return spanSelected ? headers : undefined
     }).filter(isTruthy).flat()
 
     headersToAdd.forEach(headerName => {
-      const rawValue = getHeaderValue(headerName)
+      const normalizedHeader = headerName.toLowerCase()
+      const rawValue = getHeaderValue(normalizedHeader)
       const value = typeof rawValue === 'string'
         ? [rawValue]
         : typeof rawValue === 'number'

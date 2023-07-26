@@ -1,7 +1,8 @@
 import { type Span } from '@opentelemetry/sdk-trace-node'
-import { type ClientRequest, type IncomingMessage, type ServerResponse } from 'http'
+
+export type HeaderGetter = (headerName: string) => string | number | string[] | undefined
 
 export interface SpanEnhancer {
-  enhanceWithRequest: (span: Span, request: ClientRequest | IncomingMessage) => void
-  enhanceWithResponse: (span: Span, response: ServerResponse | IncomingMessage) => void
+  enhanceWithRequest: (span: Span, getHeaderValue: HeaderGetter) => void
+  enhanceWithResponse: (span: Span, getHeaderValue: HeaderGetter) => void
 }
