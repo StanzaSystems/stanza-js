@@ -40,7 +40,12 @@ const loggerWrapper = {
 
 export const logger: pino.Logger & typeof loggerWrapper = createGlobal(Symbol.for('[Stanza SDK Internal] Logger'), () => {
   const pinoLogger = pino({
-    level: getEnvInitOptions().logLevel ?? 'info'
+    level: getEnvInitOptions().logLevel ?? 'info',
+    redact: {
+      paths: ['token', '[*].tokens[*]', 'bearerToken'
+      ],
+      censor: (value) => `[Redacted ${typeof value}]`
+    }
   })
 
   return Object.assign(
