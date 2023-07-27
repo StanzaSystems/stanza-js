@@ -1,4 +1,4 @@
-import { type Span } from '@opentelemetry/sdk-trace-node'
+import { type Span } from '@opentelemetry/api'
 
 export type HeaderGetter = (headerName: string) => string | number | string[] | undefined
 

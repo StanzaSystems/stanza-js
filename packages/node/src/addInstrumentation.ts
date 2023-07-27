@@ -3,36 +3,18 @@ import { StanzaApiKeyPropagator } from './propagation/StanzaApiKeyPropagator'
 import { StanzaBaggagePropagator } from './propagation/StanzaBaggagePropagator'
 import { StanzaPriorityBoostPropagator } from './propagation/StanzaPriorityBoostPropagator'
 import { StanzaTokenPropagator } from './propagation/StanzaTokenPropagator'
-import { IncomingMessage } from 'http'
+import { HeadersSpanEnhancer } from './span/headers/HeadersSpanEnhancer'
+import { createHttpHeaderGetter } from './createHttpHeaderGetter'
 
 export const addInstrumentation = async (serviceName: string) => {
-  const { Span } = await import('@opentelemetry/sdk-trace-node')
-
   const { HttpInstrumentation } = await import('@opentelemetry/instrumentation-http')
+  const headersEnhancer = new HeadersSpanEnhancer()
   const httpInstrumentation = new HttpInstrumentation({
     requestHook: (span, request) => {
-      if (span instanceof Span) {
-        console.log('request is span class')
-      } else {
-        console.log('span', span.isRecording(), span)
-      }
-      if (request instanceof IncomingMessage) {
-        console.log('incoming message headers (request)', request.headers)
-      } else {
-        console.log('client request headers', request.getHeaders())
-      }
+      headersEnhancer.enhanceWithRequest(span, createHttpHeaderGetter(request))
     },
     responseHook: (span, response) => {
-      if (span instanceof Span) {
-        console.log('response is span class')
-      } else {
-        console.log('span', span.isRecording(), span)
-      }
-      if (response instanceof IncomingMessage) {
-        console.log('incoming message headers (response)', response.headers)
-      } else {
-        console.log('server response headers', response.getHeaders())
-      }
+      headersEnhancer.enhanceWithResponse(span, createHttpHeaderGetter(response))
     }
   })
   // NOTE: @opentelemetry/sdk-node needs to be required after we create the instrumentation.
