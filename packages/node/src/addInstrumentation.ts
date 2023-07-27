@@ -14,7 +14,14 @@ export const addInstrumentation = async (serviceName: string) => {
       headersEnhancer.enhanceWithRequest(span, createHttpHeaderGetter(request))
     },
     responseHook: (span, response) => {
-      headersEnhancer.enhanceWithResponse(span, createHttpHeaderGetter(response))
+      const responseHeaderGetter = createHttpHeaderGetter(response)
+      const enhanceResponse = () => {
+        headersEnhancer.enhanceWithResponse(span, responseHeaderGetter)
+      }
+
+      enhanceResponse()
+      response.prependListener('end', enhanceResponse)
+      response.prependListener('finish', enhanceResponse)
     }
   })
   // NOTE: @opentelemetry/sdk-node needs to be required after we create the instrumentation.
