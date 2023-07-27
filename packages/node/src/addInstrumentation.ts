@@ -42,13 +42,13 @@ export const addInstrumentation = async (serviceName: string) => {
   const { Resource } = await import('@opentelemetry/resources')
   const { SemanticResourceAttributes } = await import('@opentelemetry/semantic-conventions')
   const { PeriodicExportingMetricReader } = await import('@opentelemetry/sdk-metrics')
-  const { StanzaManagedSpanProcessor } = await import('./open-telemetry/span-processor/StanzaManagedSpanProcessor')
+  const { StanzaSpanProcessor } = await import('./open-telemetry/span-processor/StanzaSpanProcessor')
   const { StanzaMetricExporter } = await import('./open-telemetry/metric/stanzaMetricExporter')
   const { StanzaInstrumentation } = await import('./open-telemetry/instrumentation/stanzaInstrumentation')
 
   const sdk = new NodeSDK({
     sampler: new StanzaSampler(),
-    spanProcessor: new StanzaManagedSpanProcessor() as any, // TODO: fix any cast
+    spanProcessor: new StanzaSpanProcessor() as any, // TODO: fix any cast
     resource: new Resource({
       [SemanticResourceAttributes.SERVICE_NAME]: serviceName
     }) as any, // TODO: fix any cast
