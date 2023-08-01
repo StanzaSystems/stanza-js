@@ -50,6 +50,7 @@ const serviceConfigWithData = z.object({
   version: z.string(),
   configDataSent: z.literal(true),
   config: z.object({
+    customerId: z.string().optional(),
     traceConfig: zTraceConfig,
     metricConfig: zMetricConfig,
     sentinelConfig: zSentinelConfig
