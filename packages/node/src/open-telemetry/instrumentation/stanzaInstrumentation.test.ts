@@ -46,498 +46,1035 @@ describe('StanzaInstrumentation', () => {
     instrumentation.setMeterProvider(meterProvider)
   })
 
-  it.each([
-    {
-      given: {
-        event: events.request.allowed,
-        data: {
-          decoratorName: 'testDecorator',
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId'
+  describe('without customer id in service config', () => {
+    it.each([
+      {
+        given: {
+          event: events.request.allowed,
+          data: {
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId'
+          }
+        },
+        expected: {
+          metric: 'stanza.request.allowed',
+          data: [
+            1,
+            {
+              decorator: 'testDecorator',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId'
+            }],
+          metricType: 'counter'
         }
       },
-      expected: {
-        metric: 'stanza.request.allowed',
-        data: [
-          1,
-          {
-            decorator: 'testDecorator',
-            service: 'testService',
+      {
+        given: {
+          event: events.request.blocked,
+          data: {
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId'
-          }],
-        metricType: 'counter'
-      }
-    },
-    {
-      given: {
-        event: events.request.blocked,
-        data: {
-          decoratorName: 'testDecorator',
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId',
-          reason: 'quota'
-        }
-      },
-      expected: {
-        metric: 'stanza.request.blocked',
-        data: [
-          1,
-          {
-            decorator: 'testDecorator',
-            service: 'testService',
-            environment: 'testEnvironment',
-            client_id: 'testClientId',
+            clientId: 'testClientId',
             reason: 'quota'
-          }],
-        metricType: 'counter'
-      }
-    },
-    {
-      given: {
-        event: events.request.failed,
-        data: {
-          decoratorName: 'testDecorator',
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId'
+          }
+        },
+        expected: {
+          metric: 'stanza.request.blocked',
+          data: [
+            1,
+            {
+              decorator: 'testDecorator',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              reason: 'quota'
+            }],
+          metricType: 'counter'
         }
       },
-      expected: {
-        metric: 'stanza.request.failed',
-        data: [
-          1,
-          {
-            decorator: 'testDecorator',
-            service: 'testService',
+      {
+        given: {
+          event: events.request.failed,
+          data: {
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId'
-          }],
-        metricType: 'counter'
-      }
-    },
-    {
-      given: {
-        event: events.request.succeeded,
-        data: {
-          decoratorName: 'testDecorator',
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId'
+            clientId: 'testClientId'
+          }
+        },
+        expected: {
+          metric: 'stanza.request.failed',
+          data: [
+            1,
+            {
+              decorator: 'testDecorator',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId'
+            }],
+          metricType: 'counter'
         }
       },
-      expected: {
-        metric: 'stanza.request.succeeded',
-        data: [
-          1,
-          {
-            decorator: 'testDecorator',
-            service: 'testService',
+      {
+        given: {
+          event: events.request.succeeded,
+          data: {
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId'
-          }],
-        metricType: 'counter'
-      }
-    },
-    {
-      given: {
-        event: events.request.latency,
-        data: {
-          latency: 123.456,
-          decoratorName: 'testDecorator',
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId'
+            clientId: 'testClientId'
+          }
+        },
+        expected: {
+          metric: 'stanza.request.succeeded',
+          data: [
+            1,
+            {
+              decorator: 'testDecorator',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId'
+            }],
+          metricType: 'counter'
         }
       },
-      expected: {
-        metric: 'stanza.request.latency',
-        data: [
-          123.456,
-          {
-            decorator: 'testDecorator',
-            service: 'testService',
+      {
+        given: {
+          event: events.request.latency,
+          data: {
+            latency: 123.456,
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId'
-          }],
-        metricType: 'histogram'
+            clientId: 'testClientId'
+          }
+        },
+        expected: {
+          metric: 'stanza.request.latency',
+          data: [
+            123.456,
+            {
+              decorator: 'testDecorator',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId'
+            }],
+          metricType: 'histogram'
+        }
       }
-    }
-  ] as const)('should capture request metrics', async ({ given, expected }) => {
-    vi.useFakeTimers()
-    void eventBus.emit(given.event, given.data as any)
+    ] as const)('should capture request metrics', async ({ given, expected }) => {
+      vi.useFakeTimers()
+      void eventBus.emit(given.event, given.data as any)
 
-    await vi.advanceTimersByTimeAsync(10)
+      await vi.advanceTimersByTimeAsync(10)
 
-    const metricSpy = metricSpies[expected.metricType][expected.metric]
-    expect(metricSpy).toHaveBeenCalledOnce()
-    expect(metricSpy).toHaveBeenCalledWith(...expected.data)
+      const metricSpy = metricSpies[expected.metricType][expected.metric]
+      expect(metricSpy).toHaveBeenCalledOnce()
+      expect(metricSpy).toHaveBeenCalledWith(...expected.data)
 
-    vi.useRealTimers()
-  })
+      vi.useRealTimers()
+    })
 
-  it.each([
+    it.each([
     // service config events
-    {
-      given: {
-        event: events.config.service.fetchOk,
-        data: {
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId'
+      {
+        given: {
+          event: events.config.service.fetchOk,
+          data: {
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId'
+          }
+        },
+        expected: {
+          metric: 'stanza.config.service.fetch_ok',
+          data: [
+            1,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId'
+            }],
+          metricType: 'counter'
         }
       },
-      expected: {
-        metric: 'stanza.config.service.fetch_ok',
-        data: [
-          1,
-          {
-            service: 'testService',
+      {
+        given: {
+          event: events.config.service.fetchFailed,
+          data: {
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId'
-          }],
-        metricType: 'counter'
-      }
-    },
-    {
-      given: {
-        event: events.config.service.fetchFailed,
-        data: {
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId'
+            clientId: 'testClientId'
+          }
+        },
+        expected: {
+          metric: 'stanza.config.service.fetch_failed',
+          data: [
+            1,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId'
+            }],
+          metricType: 'counter'
         }
       },
-      expected: {
-        metric: 'stanza.config.service.fetch_failed',
-        data: [
-          1,
-          {
-            service: 'testService',
+      {
+        given: {
+          event: events.config.service.fetchLatency,
+          data: {
+            latency: 123.456,
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId'
-          }],
-        metricType: 'counter'
-      }
-    },
-    {
-      given: {
-        event: events.config.service.fetchLatency,
-        data: {
-          latency: 123.456,
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId'
+            clientId: 'testClientId'
+          }
+        },
+        expected: {
+          metric: 'stanza.config.service.fetch_latency',
+          data: [
+            123.456,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId'
+            }],
+          metricType: 'histogram'
         }
       },
-      expected: {
-        metric: 'stanza.config.service.fetch_latency',
-        data: [
-          123.456,
-          {
-            service: 'testService',
+      // decorator config events
+      {
+        given: {
+          event: events.config.decorator.fetchOk,
+          data: {
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId'
-          }],
-        metricType: 'histogram'
-      }
-    },
-    // decorator config events
-    {
-      given: {
-        event: events.config.decorator.fetchOk,
-        data: {
-          decoratorName: 'testDecorator',
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId'
+            clientId: 'testClientId'
+          }
+        },
+        expected: {
+          metric: 'stanza.config.decorator.fetch_ok',
+          data: [
+            1,
+            {
+              decorator: 'testDecorator',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId'
+            }],
+          metricType: 'counter'
         }
       },
-      expected: {
-        metric: 'stanza.config.decorator.fetch_ok',
-        data: [
-          1,
-          {
-            decorator: 'testDecorator',
-            service: 'testService',
+      {
+        given: {
+          event: events.config.decorator.fetchFailed,
+          data: {
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId'
-          }],
-        metricType: 'counter'
-      }
-    },
-    {
-      given: {
-        event: events.config.decorator.fetchFailed,
-        data: {
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId'
+            clientId: 'testClientId'
+          }
+        },
+        expected: {
+          metric: 'stanza.config.decorator.fetch_failed',
+          data: [
+            1,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId'
+            }],
+          metricType: 'counter'
         }
       },
-      expected: {
-        metric: 'stanza.config.decorator.fetch_failed',
-        data: [
-          1,
-          {
-            service: 'testService',
+      {
+        given: {
+          event: events.config.decorator.fetchLatency,
+          data: {
+            latency: 123.456,
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId'
-          }],
-        metricType: 'counter'
-      }
-    },
-    {
-      given: {
-        event: events.config.decorator.fetchLatency,
-        data: {
-          latency: 123.456,
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId'
+            clientId: 'testClientId'
+          }
+        },
+        expected: {
+          metric: 'stanza.config.decorator.fetch_latency',
+          data: [
+            123.456,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId'
+            }],
+          metricType: 'histogram'
         }
-      },
-      expected: {
-        metric: 'stanza.config.decorator.fetch_latency',
-        data: [
-          123.456,
-          {
-            service: 'testService',
-            environment: 'testEnvironment',
-            client_id: 'testClientId'
-          }],
-        metricType: 'histogram'
       }
-    }
-  ] as const)('should capture service config metrics', async ({ given, expected }) => {
-    vi.useFakeTimers()
-    void eventBus.emit(given.event, given.data)
+    ] as const)('should capture service config metrics', async ({ given, expected }) => {
+      vi.useFakeTimers()
+      void eventBus.emit(given.event, given.data)
 
-    await vi.advanceTimersByTimeAsync(10)
+      await vi.advanceTimersByTimeAsync(10)
 
-    const metricSpy = metricSpies[expected.metricType][expected.metric]
-    expect(metricSpy).toHaveBeenCalledOnce()
-    expect(metricSpy).toHaveBeenCalledWith(...expected.data)
+      const metricSpy = metricSpies[expected.metricType][expected.metric]
+      expect(metricSpy).toHaveBeenCalledOnce()
+      expect(metricSpy).toHaveBeenCalledWith(...expected.data)
 
-    vi.useRealTimers()
-  })
+      vi.useRealTimers()
+    })
 
-  it.each([
+    it.each([
     // quota fetch events
-    {
-      given: {
-        event: events.quota.fetchOk,
-        data: {
-          decoratorName: 'testDecorator',
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId',
-          endpoint: 'GetToken'
-        }
-      },
-      expected: {
-        metric: 'stanza.quota.fetch_ok',
-        data: [
-          1,
-          {
-            decorator: 'testDecorator',
-            service: 'testService',
+      {
+        given: {
+          event: events.quota.fetchOk,
+          data: {
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId',
+            clientId: 'testClientId',
             endpoint: 'GetToken'
-          }],
-        metricType: 'counter'
-      }
-    },
-    {
-      given: {
-        event: events.quota.fetchFailed,
-        data: {
-          decoratorName: 'testDecorator',
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId',
-          endpoint: 'GetToken'
+          }
+        },
+        expected: {
+          metric: 'stanza.quota.fetch_ok',
+          data: [
+            1,
+            {
+              decorator: 'testDecorator',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              endpoint: 'GetToken'
+            }],
+          metricType: 'counter'
         }
       },
-      expected: {
-        metric: 'stanza.quota.fetch_failed',
-        data: [
-          1,
-          {
-            service: 'testService',
+      {
+        given: {
+          event: events.quota.fetchFailed,
+          data: {
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId',
+            clientId: 'testClientId',
             endpoint: 'GetToken'
-          }],
-        metricType: 'counter'
-      }
-    },
-    {
-      given: {
-        event: events.quota.fetchLatency,
-        data: {
-          latency: 123.456,
-          decoratorName: 'testDecorator',
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId',
-          endpoint: 'GetToken'
+          }
+        },
+        expected: {
+          metric: 'stanza.quota.fetch_failed',
+          data: [
+            1,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              endpoint: 'GetToken'
+            }],
+          metricType: 'counter'
         }
       },
-      expected: {
-        metric: 'stanza.quota.fetch_latency',
-        data: [
-          123.456,
-          {
-            service: 'testService',
+      {
+        given: {
+          event: events.quota.fetchLatency,
+          data: {
+            latency: 123.456,
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId',
+            clientId: 'testClientId',
             endpoint: 'GetToken'
-          }],
-        metricType: 'histogram'
-      }
-    },
-    // quota validate events
-    {
-      given: {
-        event: events.quota.validateOk,
-        data: {
-          decoratorName: 'testDecorator',
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId'
+          }
+        },
+        expected: {
+          metric: 'stanza.quota.fetch_latency',
+          data: [
+            123.456,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              endpoint: 'GetToken'
+            }],
+          metricType: 'histogram'
         }
       },
-      expected: {
-        metric: 'stanza.quota.validate_ok',
-        data: [
-          1,
-          {
-            decorator: 'testDecorator',
-            service: 'testService',
+      // quota validate events
+      {
+        given: {
+          event: events.quota.validateOk,
+          data: {
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId'
-          }],
-        metricType: 'counter'
-      }
-    },
-    {
-      given: {
-        event: events.quota.validateFailed,
-        data: {
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId'
+            clientId: 'testClientId'
+          }
+        },
+        expected: {
+          metric: 'stanza.quota.validate_ok',
+          data: [
+            1,
+            {
+              decorator: 'testDecorator',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId'
+            }],
+          metricType: 'counter'
         }
       },
-      expected: {
-        metric: 'stanza.quota.validate_failed',
-        data: [
-          1,
-          {
-            service: 'testService',
+      {
+        given: {
+          event: events.quota.validateFailed,
+          data: {
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId'
-          }],
-        metricType: 'counter'
-      }
-    },
-    {
-      given: {
-        event: events.quota.validateLatency,
-        data: {
-          latency: 123.456,
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId'
+            clientId: 'testClientId'
+          }
+        },
+        expected: {
+          metric: 'stanza.quota.validate_failed',
+          data: [
+            1,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId'
+            }],
+          metricType: 'counter'
         }
       },
-      expected: {
-        metric: 'stanza.quota.validate_latency',
-        data: [
-          123.456,
-          {
-            service: 'testService',
+      {
+        given: {
+          event: events.quota.validateLatency,
+          data: {
+            latency: 123.456,
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId'
-          }],
-        metricType: 'histogram'
+            clientId: 'testClientId'
+          }
+        },
+        expected: {
+          metric: 'stanza.quota.validate_latency',
+          data: [
+            123.456,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId'
+            }],
+          metricType: 'histogram'
+        }
       }
-    }
 
-  ] as const)('should capture quota metrics', async ({ given, expected }) => {
-    vi.useFakeTimers()
-    void eventBus.emit(given.event, given.data)
+    ] as const)('should capture quota metrics', async ({ given, expected }) => {
+      vi.useFakeTimers()
+      void eventBus.emit(given.event, given.data)
 
-    await vi.advanceTimersByTimeAsync(10)
+      await vi.advanceTimersByTimeAsync(10)
 
-    const metricSpy = metricSpies[expected.metricType][expected.metric]
-    expect(metricSpy).toHaveBeenCalledOnce()
-    expect(metricSpy).toHaveBeenCalledWith(...expected.data)
+      const metricSpy = metricSpies[expected.metricType][expected.metric]
+      expect(metricSpy).toHaveBeenCalledOnce()
+      expect(metricSpy).toHaveBeenCalledWith(...expected.data)
 
-    vi.useRealTimers()
+      vi.useRealTimers()
+    })
+
+    it.each([
+      {
+        given: {
+          event: events.telemetry.sendOk,
+          data: {
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            oTelAddress: 'https://test.otel.address'
+          }
+        },
+        expected: {
+          metric: 'stanza.telemetry.send_ok',
+          data: [
+            1,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              otel_address: 'https://test.otel.address'
+            }],
+          metricType: 'counter'
+        }
+      },
+      {
+        given: {
+          event: events.telemetry.sendFailed,
+          data: {
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            oTelAddress: 'https://test.otel.address'
+          }
+        },
+        expected: {
+          metric: 'stanza.telemetry.send_failed',
+          data: [
+            1,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              otel_address: 'https://test.otel.address'
+            }],
+          metricType: 'counter'
+        }
+      }
+    ] as const)('should capture telemetry metrics', async ({ given, expected }) => {
+      vi.useFakeTimers()
+      void eventBus.emit(given.event, given.data)
+
+      await vi.advanceTimersByTimeAsync(10)
+
+      const metricSpy = metricSpies[expected.metricType][expected.metric]
+      expect(metricSpy).toHaveBeenCalledOnce()
+      expect(metricSpy).toHaveBeenCalledWith(...expected.data)
+
+      vi.useRealTimers()
+    })
   })
 
-  it.each([
-    {
-      given: {
-        event: events.telemetry.sendOk,
-        data: {
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId',
-          oTelAddress: 'https://test.otel.address'
+  describe('with customer id in service config', () => {
+    it.each([
+      {
+        given: {
+          event: events.request.allowed,
+          data: {
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId'
+          }
+        },
+        expected: {
+          metric: 'stanza.request.allowed',
+          data: [
+            1,
+            {
+              decorator: 'testDecorator',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId'
+            }],
+          metricType: 'counter'
         }
       },
-      expected: {
-        metric: 'stanza.telemetry.send_ok',
-        data: [
-          1,
-          {
-            service: 'testService',
+      {
+        given: {
+          event: events.request.blocked,
+          data: {
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId',
-            otel_address: 'https://test.otel.address'
-          }],
-        metricType: 'counter'
-      }
-    },
-    {
-      given: {
-        event: events.telemetry.sendFailed,
-        data: {
-          serviceName: 'testService',
-          environment: 'testEnvironment',
-          clientId: 'testClientId',
-          oTelAddress: 'https://test.otel.address'
+            clientId: 'testClientId',
+            customerId: 'testCustomerId',
+            reason: 'quota'
+          }
+        },
+        expected: {
+          metric: 'stanza.request.blocked',
+          data: [
+            1,
+            {
+              decorator: 'testDecorator',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId',
+              reason: 'quota'
+            }],
+          metricType: 'counter'
         }
       },
-      expected: {
-        metric: 'stanza.telemetry.send_failed',
-        data: [
-          1,
-          {
-            service: 'testService',
+      {
+        given: {
+          event: events.request.failed,
+          data: {
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
             environment: 'testEnvironment',
-            client_id: 'testClientId',
-            otel_address: 'https://test.otel.address'
-          }],
-        metricType: 'counter'
+            clientId: 'testClientId',
+            customerId: 'testCustomerId'
+          }
+        },
+        expected: {
+          metric: 'stanza.request.failed',
+          data: [
+            1,
+            {
+              decorator: 'testDecorator',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId'
+            }],
+          metricType: 'counter'
+        }
+      },
+      {
+        given: {
+          event: events.request.succeeded,
+          data: {
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId'
+          }
+        },
+        expected: {
+          metric: 'stanza.request.succeeded',
+          data: [
+            1,
+            {
+              decorator: 'testDecorator',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId'
+            }],
+          metricType: 'counter'
+        }
+      },
+      {
+        given: {
+          event: events.request.latency,
+          data: {
+            latency: 123.456,
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId'
+          }
+        },
+        expected: {
+          metric: 'stanza.request.latency',
+          data: [
+            123.456,
+            {
+              decorator: 'testDecorator',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId'
+            }],
+          metricType: 'histogram'
+        }
       }
-    }
-  ] as const)('should capture telemetry metrics', async ({ given, expected }) => {
-    vi.useFakeTimers()
-    void eventBus.emit(given.event, given.data)
+    ] as const)('should capture request metrics', async ({ given, expected }) => {
+      vi.useFakeTimers()
+      void eventBus.emit(given.event, given.data as any)
 
-    await vi.advanceTimersByTimeAsync(10)
+      await vi.advanceTimersByTimeAsync(10)
 
-    const metricSpy = metricSpies[expected.metricType][expected.metric]
-    expect(metricSpy).toHaveBeenCalledOnce()
-    expect(metricSpy).toHaveBeenCalledWith(...expected.data)
+      const metricSpy = metricSpies[expected.metricType][expected.metric]
+      expect(metricSpy).toHaveBeenCalledOnce()
+      expect(metricSpy).toHaveBeenCalledWith(...expected.data)
 
-    vi.useRealTimers()
+      vi.useRealTimers()
+    })
+
+    it.each([
+    // service config events
+      {
+        given: {
+          event: events.config.service.fetchOk,
+          data: {
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId'
+          }
+        },
+        expected: {
+          metric: 'stanza.config.service.fetch_ok',
+          data: [
+            1,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId'
+            }],
+          metricType: 'counter'
+        }
+      },
+      {
+        given: {
+          event: events.config.service.fetchFailed,
+          data: {
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId'
+          }
+        },
+        expected: {
+          metric: 'stanza.config.service.fetch_failed',
+          data: [
+            1,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId'
+            }],
+          metricType: 'counter'
+        }
+      },
+      {
+        given: {
+          event: events.config.service.fetchLatency,
+          data: {
+            latency: 123.456,
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId'
+          }
+        },
+        expected: {
+          metric: 'stanza.config.service.fetch_latency',
+          data: [
+            123.456,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId'
+            }],
+          metricType: 'histogram'
+        }
+      },
+      // decorator config events
+      {
+        given: {
+          event: events.config.decorator.fetchOk,
+          data: {
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId'
+          }
+        },
+        expected: {
+          metric: 'stanza.config.decorator.fetch_ok',
+          data: [
+            1,
+            {
+              decorator: 'testDecorator',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId'
+            }],
+          metricType: 'counter'
+        }
+      },
+      {
+        given: {
+          event: events.config.decorator.fetchFailed,
+          data: {
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId'
+          }
+        },
+        expected: {
+          metric: 'stanza.config.decorator.fetch_failed',
+          data: [
+            1,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId'
+            }],
+          metricType: 'counter'
+        }
+      },
+      {
+        given: {
+          event: events.config.decorator.fetchLatency,
+          data: {
+            latency: 123.456,
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId'
+          }
+        },
+        expected: {
+          metric: 'stanza.config.decorator.fetch_latency',
+          data: [
+            123.456,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId'
+            }],
+          metricType: 'histogram'
+        }
+      }
+    ] as const)('should capture service config metrics', async ({ given, expected }) => {
+      vi.useFakeTimers()
+      void eventBus.emit(given.event, given.data)
+
+      await vi.advanceTimersByTimeAsync(10)
+
+      const metricSpy = metricSpies[expected.metricType][expected.metric]
+      expect(metricSpy).toHaveBeenCalledOnce()
+      expect(metricSpy).toHaveBeenCalledWith(...expected.data)
+
+      vi.useRealTimers()
+    })
+
+    it.each([
+    // quota fetch events
+      {
+        given: {
+          event: events.quota.fetchOk,
+          data: {
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId',
+            endpoint: 'GetToken'
+          }
+        },
+        expected: {
+          metric: 'stanza.quota.fetch_ok',
+          data: [
+            1,
+            {
+              decorator: 'testDecorator',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId',
+              endpoint: 'GetToken'
+            }],
+          metricType: 'counter'
+        }
+      },
+      {
+        given: {
+          event: events.quota.fetchFailed,
+          data: {
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId',
+            endpoint: 'GetToken'
+          }
+        },
+        expected: {
+          metric: 'stanza.quota.fetch_failed',
+          data: [
+            1,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId',
+              endpoint: 'GetToken'
+            }],
+          metricType: 'counter'
+        }
+      },
+      {
+        given: {
+          event: events.quota.fetchLatency,
+          data: {
+            latency: 123.456,
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId',
+            endpoint: 'GetToken'
+          }
+        },
+        expected: {
+          metric: 'stanza.quota.fetch_latency',
+          data: [
+            123.456,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId',
+              endpoint: 'GetToken'
+            }],
+          metricType: 'histogram'
+        }
+      },
+      // quota validate events
+      {
+        given: {
+          event: events.quota.validateOk,
+          data: {
+            decoratorName: 'testDecorator',
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId'
+          }
+        },
+        expected: {
+          metric: 'stanza.quota.validate_ok',
+          data: [
+            1,
+            {
+              decorator: 'testDecorator',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId'
+            }],
+          metricType: 'counter'
+        }
+      },
+      {
+        given: {
+          event: events.quota.validateFailed,
+          data: {
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId'
+          }
+        },
+        expected: {
+          metric: 'stanza.quota.validate_failed',
+          data: [
+            1,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId'
+            }],
+          metricType: 'counter'
+        }
+      },
+      {
+        given: {
+          event: events.quota.validateLatency,
+          data: {
+            latency: 123.456,
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId'
+          }
+        },
+        expected: {
+          metric: 'stanza.quota.validate_latency',
+          data: [
+            123.456,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId'
+            }],
+          metricType: 'histogram'
+        }
+      }
+
+    ] as const)('should capture quota metrics', async ({ given, expected }) => {
+      vi.useFakeTimers()
+      void eventBus.emit(given.event, given.data)
+
+      await vi.advanceTimersByTimeAsync(10)
+
+      const metricSpy = metricSpies[expected.metricType][expected.metric]
+      expect(metricSpy).toHaveBeenCalledOnce()
+      expect(metricSpy).toHaveBeenCalledWith(...expected.data)
+
+      vi.useRealTimers()
+    })
+
+    it.each([
+      {
+        given: {
+          event: events.telemetry.sendOk,
+          data: {
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId',
+            oTelAddress: 'https://test.otel.address'
+          }
+        },
+        expected: {
+          metric: 'stanza.telemetry.send_ok',
+          data: [
+            1,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId',
+              otel_address: 'https://test.otel.address'
+            }],
+          metricType: 'counter'
+        }
+      },
+      {
+        given: {
+          event: events.telemetry.sendFailed,
+          data: {
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId',
+            oTelAddress: 'https://test.otel.address'
+          }
+        },
+        expected: {
+          metric: 'stanza.telemetry.send_failed',
+          data: [
+            1,
+            {
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId',
+              otel_address: 'https://test.otel.address'
+            }],
+          metricType: 'counter'
+        }
+      }
+    ] as const)('should capture telemetry metrics', async ({ given, expected }) => {
+      vi.useFakeTimers()
+      void eventBus.emit(given.event, given.data)
+
+      await vi.advanceTimersByTimeAsync(10)
+
+      const metricSpy = metricSpies[expected.metricType][expected.metric]
+      expect(metricSpy).toHaveBeenCalledOnce()
+      expect(metricSpy).toHaveBeenCalledWith(...expected.data)
+
+      vi.useRealTimers()
+    })
   })
 })

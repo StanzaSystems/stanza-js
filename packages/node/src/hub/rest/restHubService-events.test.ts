@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vite
 import { type DecoratorConfig, type ServiceConfig } from '../model'
 import { eventBus, events } from '../../global/eventBus'
 import { createRestHubService } from './createRestHubService'
+import { type ServiceConfigResponse } from '../api/serviceConfigResponse'
+import { updateServiceConfig } from '../../global/serviceConfig'
 
 const mockMessageBusEmit = vi.spyOn(eventBus, 'emit')
 const mockHubRequest = Object.assign(vi.fn(), {
@@ -56,6 +58,43 @@ describe('hubService', () => {
         })
       })
 
+      it('should emit stanza.config.service.fetch_ok when fetching succeeds - with customer id', async () => {
+        const deferred = mockHubRequest.mockImplementationDeferred()
+
+        const fetchServiceConfigPromise = hubService.fetchServiceConfig()
+
+        deferred.resolve({
+          configDataSent: true,
+          config: {
+            customerId: 'testCustomerId',
+            traceConfig: {
+              collectorUrl: 'https://url.to.trace.collector',
+              overrides: [],
+              sampleRateDefault: 0.5
+            },
+            metricConfig: {
+              collectorUrl: 'https://url.to.metric.collector'
+            },
+            sentinelConfig: {
+              circuitbreakerRulesJson: 'circuitbreakerRulesJson',
+              flowRulesJson: 'flowRulesJson',
+              isolationRulesJson: 'isolationRulesJson',
+              systemRulesJson: 'systemRulesJson'
+            }
+          },
+          version: 'testVersion'
+        } satisfies ServiceConfigResponse)
+
+        await expect(fetchServiceConfigPromise).resolves.toBeDefined()
+
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.service.fetchOk, {
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId',
+          customerId: 'testCustomerId'
+        })
+      })
+
       it('should emit stanza.config.service.fetch_failed when fetching fails', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
@@ -70,6 +109,47 @@ describe('hubService', () => {
           environment: 'testEnvironment',
           clientId: 'testClientId'
         })
+      })
+
+      it('should emit stanza.config.service.fetch_failed when fetching fails - with customer id', async () => {
+        updateServiceConfig({
+          version: 'testVersion',
+          config: {
+            customerId: 'testCustomerId',
+            traceConfig: {
+              collectorUrl: 'https://url.to.trace.collector',
+              overrides: [],
+              sampleRateDefault: 0.5
+            },
+            metricConfig: {
+              collectorUrl: 'https://url.to.metric.collector'
+            },
+            sentinelConfig: {
+              circuitbreakerRulesJson: 'circuitbreakerRulesJson',
+              flowRulesJson: 'flowRulesJson',
+              isolationRulesJson: 'isolationRulesJson',
+              systemRulesJson: 'systemRulesJson'
+            }
+          }
+        })
+
+        const deferred = mockHubRequest.mockImplementationDeferred()
+
+        const fetchServiceConfigPromise = hubService.fetchServiceConfig()
+
+        deferred.reject(new Error('kaboom'))
+
+        await expect(fetchServiceConfigPromise).rejects.toThrow('kaboom')
+
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.service.fetchFailed, {
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId',
+          customerId: 'testCustomerId'
+        })
+
+        // @ts-expect-error: reset service config
+        updateServiceConfig(undefined)
       })
 
       it('should emit stanza.config.service.latency event when fetching succeeds', async () => {
@@ -96,6 +176,59 @@ describe('hubService', () => {
           environment: 'testEnvironment',
           clientId: 'testClientId'
         })
+
+        vi.useRealTimers()
+      })
+
+      it('should emit stanza.config.service.latency event when fetching succeeds - with customer id', async () => {
+        vi.useFakeTimers({
+          now: 0
+        })
+
+        updateServiceConfig({
+          version: 'testVersion',
+          config: {
+            customerId: 'testCustomerId',
+            traceConfig: {
+              collectorUrl: 'https://url.to.trace.collector',
+              overrides: [],
+              sampleRateDefault: 0.5
+            },
+            metricConfig: {
+              collectorUrl: 'https://url.to.metric.collector'
+            },
+            sentinelConfig: {
+              circuitbreakerRulesJson: 'circuitbreakerRulesJson',
+              flowRulesJson: 'flowRulesJson',
+              isolationRulesJson: 'isolationRulesJson',
+              systemRulesJson: 'systemRulesJson'
+            }
+          }
+        })
+
+        const deferred = mockHubRequest.mockImplementationDeferred()
+
+        const fetchServiceConfigPromise = hubService.fetchServiceConfig()
+
+        await vi.advanceTimersByTimeAsync(123.456)
+
+        deferred.resolve({
+          config: {} satisfies Partial<DecoratorConfig['config']> as any,
+          version: 'testVersion'
+        })
+
+        await expect(fetchServiceConfigPromise).resolves.toBeDefined()
+
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.service.fetchLatency, {
+          latency: 123.456,
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId',
+          customerId: 'testCustomerId'
+        })
+
+        // @ts-expect-error: reset service config
+        updateServiceConfig(undefined)
 
         vi.useRealTimers()
       })
