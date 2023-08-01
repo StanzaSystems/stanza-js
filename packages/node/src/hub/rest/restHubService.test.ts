@@ -287,12 +287,7 @@ describe('createRestHubService', async () => {
             config: {
               checkQuota: true,
               quotaTags: [],
-              validateIngressTokens: false,
-              traceConfig: {
-                collectorUrl: 'https://url.to.trace.collector',
-                overrides: [],
-                sampleRateDefault: 0.5
-              }
+              validateIngressTokens: false
             }
           } satisfies DecoratorConfigResponse)
         }
@@ -305,12 +300,7 @@ describe('createRestHubService', async () => {
         config: {
           checkQuota: true,
           quotaTags: [],
-          validateIngressTokens: false,
-          traceConfig: {
-            collectorUrl: 'https://url.to.trace.collector',
-            overrides: [],
-            sampleRateDefault: 0.5
-          }
+          validateIngressTokens: false
         }
       })
     })

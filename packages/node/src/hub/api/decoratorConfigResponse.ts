@@ -18,8 +18,7 @@ const decoratorConfigWithData = z.object({
   config: z.object({
     checkQuota: z.boolean(),
     quotaTags: z.array(z.string()),
-    validateIngressTokens: z.boolean(),
-    traceConfig: zTraceConfig.optional()
+    validateIngressTokens: z.boolean()
   })
 })
 export const decoratorConfigResponse = z.union(
