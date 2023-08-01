@@ -26,8 +26,8 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
           customerId
         })
       },
-      latency: async (latency) => {
-        const customerId = getServiceConfig()?.config.customerId
+      latency: async (latency, result) => {
+        const customerId = result?.config.customerId ?? getServiceConfig()?.config.customerId
         return eventBus.emit(events.config.service.fetchLatency, {
           latency,
           serviceName,

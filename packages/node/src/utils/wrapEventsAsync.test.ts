@@ -1,5 +1,4 @@
 import { wrapEventsAsync } from './wrapEventsAsync'
-import { expect } from 'vitest'
 
 describe('wrapEventsAsync', () => {
   it('should call correct events on successful execution', async () => {
@@ -39,7 +38,7 @@ describe('wrapEventsAsync', () => {
     expect(successCallback).toHaveBeenCalledWith('aValue')
     expect(failureCallback).not.toHaveBeenCalled()
     expect(latencyCallback).toHaveBeenCalledOnce()
-    expect(latencyCallback).toHaveBeenCalledWith(123.456)
+    expect(latencyCallback).toHaveBeenCalledWith(123.456, 'aValue')
 
     await expect(wrappedFnResult).resolves.toBe('aValue')
 
@@ -84,7 +83,7 @@ describe('wrapEventsAsync', () => {
     expect(failureCallback).toHaveBeenCalledOnce()
     expect(failureCallback).toHaveBeenCalledWith(new Error('kaboom'))
     expect(latencyCallback).toHaveBeenCalledOnce()
-    expect(latencyCallback).toHaveBeenCalledWith(123.456)
+    expect(latencyCallback).toHaveBeenCalledWith(123.456, undefined)
 
     await wrappedFnResultExpectation
 
