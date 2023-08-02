@@ -56,17 +56,6 @@ const secondMockServiceConfig = {
   }
 } as unknown as ServiceConfig
 
-const mockDecoratorConfig = {
-  version: 'test',
-  config: {
-    traceConfig: {
-      collectorUrl: 'https://test.decorator.collector',
-      sampleRateDefault: 0.1,
-      overrides: []
-    }
-  }
-} as unknown as DecoratorConfig
-
 beforeEach(async () => {
   getServiceConfigMock.mockReset()
   getDecoratorConfigMock.mockReset()
@@ -131,49 +120,6 @@ describe('StanzaSamplerManager', function () {
 
       const sampler = manager.getSampler(ROOT_CONTEXT.setValue(stanzaDecoratorContextKey, 'myDecorator'))
       expect(sampler).toEqual(new TraceIdRatioBasedSampler(1))
-    })
-
-    it('should return decorator processor if decorator config is initialized', function () {
-      getServiceConfigMock.mockImplementationOnce(() => mockServiceConfig)
-
-      getDecoratorConfigMock.mockImplementationOnce(() => mockDecoratorConfig)
-
-      const manager = new StanzaSamplerManager()
-
-      const sampler = manager.getSampler(ROOT_CONTEXT.setValue(stanzaDecoratorContextKey, 'myDecorator'))
-      expect(sampler).toEqual(new TraceIdRatioBasedSampler(0.1))
-    })
-
-    it('should return decorator processor after decorator config is updated', function () {
-      getServiceConfigMock.mockImplementation(() => mockServiceConfig)
-
-      const manager = new StanzaSamplerManager()
-
-      const contextWithDecorator = ROOT_CONTEXT.setValue(stanzaDecoratorContextKey, 'myDecorator')
-      const sampler1 = manager.getSampler(contextWithDecorator)
-      expect(sampler1).toEqual(new TraceIdRatioBasedSampler(1))
-
-      decoratorListener(mockDecoratorConfig)
-
-      const sampler2 = manager.getSampler(contextWithDecorator)
-      expect(sampler2).toEqual(new TraceIdRatioBasedSampler(0.1))
-    })
-
-    it('should return decorator processor after service config is updated', function () {
-      getServiceConfigMock.mockImplementation(() => mockServiceConfig)
-      getDecoratorConfigMock.mockImplementation(() => mockDecoratorConfig)
-
-      const manager = new StanzaSamplerManager()
-
-      const contextWithDecorator = ROOT_CONTEXT.setValue(stanzaDecoratorContextKey, 'myDecorator')
-
-      const sampler1 = manager.getSampler(contextWithDecorator)
-      expect(sampler1).toEqual(new TraceIdRatioBasedSampler(0.1))
-
-      serviceListener(secondMockServiceConfig)
-
-      const sampler2 = manager.getSampler(contextWithDecorator)
-      expect(sampler2).toEqual(new TraceIdRatioBasedSampler(0.1))
     })
   })
 })

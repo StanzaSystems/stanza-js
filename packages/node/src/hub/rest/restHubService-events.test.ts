@@ -70,7 +70,9 @@ describe('hubService', () => {
             traceConfig: {
               collectorUrl: 'https://url.to.trace.collector',
               overrides: [],
-              sampleRateDefault: 0.5
+              sampleRateDefault: 0.5,
+              headerSampleConfig: [],
+              paramSampleConfig: []
             },
             metricConfig: {
               collectorUrl: 'https://url.to.metric.collector'
@@ -119,7 +121,9 @@ describe('hubService', () => {
             traceConfig: {
               collectorUrl: 'https://url.to.trace.collector',
               overrides: [],
-              sampleRateDefault: 0.5
+              sampleRateDefault: 0.5,
+              headerSampleConfig: [],
+              paramSampleConfig: []
             },
             metricConfig: {
               collectorUrl: 'https://url.to.metric.collector'
@@ -192,7 +196,9 @@ describe('hubService', () => {
             traceConfig: {
               collectorUrl: 'https://url.to.trace.collector',
               overrides: [],
-              sampleRateDefault: 0.5
+              sampleRateDefault: 0.5,
+              headerSampleConfig: [],
+              paramSampleConfig: []
             },
             metricConfig: {
               collectorUrl: 'https://url.to.metric.collector'
