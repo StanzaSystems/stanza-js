@@ -3,11 +3,27 @@ import { StanzaApiKeyPropagator } from './propagation/StanzaApiKeyPropagator'
 import { StanzaBaggagePropagator } from './propagation/StanzaBaggagePropagator'
 import { StanzaPriorityBoostPropagator } from './propagation/StanzaPriorityBoostPropagator'
 import { StanzaTokenPropagator } from './propagation/StanzaTokenPropagator'
+import { HeadersSpanEnhancer } from './span/headers/HeadersSpanEnhancer'
+import { createHttpHeaderGetter } from './createHttpHeaderGetter'
 
 export const addInstrumentation = async (serviceName: string) => {
   const { HttpInstrumentation } = await import('@opentelemetry/instrumentation-http')
+  const headersEnhancer = new HeadersSpanEnhancer()
+  const httpInstrumentation = new HttpInstrumentation({
+    requestHook: (span, request) => {
+      headersEnhancer.enhanceWithRequest(span, createHttpHeaderGetter(request))
+    },
+    responseHook: (span, response) => {
+      const responseHeaderGetter = createHttpHeaderGetter(response)
+      const enhanceResponse = () => {
+        headersEnhancer.enhanceWithResponse(span, responseHeaderGetter)
+      }
 
-  const httpInstrumentation = new HttpInstrumentation()
+      enhanceResponse()
+      response.prependListener('end', enhanceResponse)
+      response.prependListener('finish', enhanceResponse)
+    }
+  })
   // NOTE: @opentelemetry/sdk-node needs to be required after we create the instrumentation.
   // Otherwise, the instrumentation fails to work
   const { NodeSDK } = await import('@opentelemetry/sdk-node')

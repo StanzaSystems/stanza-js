@@ -19,7 +19,10 @@ const nextConfig = {
     stanzaEnablementNumberCookieName: `${COOKIE_PREFIX}stanza-enablement-number`,
   },
   experimental: {
-    instrumentationHook: true
+    instrumentationHook: true,
+    outputFileTracingExcludes: {
+      "*": ["**swc/core**"]
+    }
   },
   transpilePackages: [
     '@getstanza/react',

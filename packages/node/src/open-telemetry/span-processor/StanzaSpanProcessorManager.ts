@@ -2,13 +2,14 @@ import { type Context } from '@opentelemetry/api'
 import { BatchSpanProcessor, NoopSpanProcessor, type SpanProcessor } from '@opentelemetry/sdk-trace-node'
 import { createSpanExporter } from './createSpanExporter'
 import { type SpanProcessorManager } from './SpanProcessorManager'
-import { StanzaTraceConfigEntityManager } from '../StanzaTraceConfigEntityManager'
+import { StanzaConfigEntityManager } from '../StanzaConfigEntityManager'
 
 export class StanzaSpanProcessorManager implements SpanProcessorManager {
-  private readonly traceConfigManager = new StanzaTraceConfigEntityManager<SpanProcessor>(
+  private readonly traceConfigManager = new StanzaConfigEntityManager<SpanProcessor>(
     {
       getInitial: () => new NoopSpanProcessor(),
-      create: traceConfig => new BatchSpanProcessor(createSpanExporter(traceConfig)),
+      createWithServiceConfig: ({ traceConfig }) => new BatchSpanProcessor(createSpanExporter(traceConfig)),
+      createWithDecoratorConfig: ({ traceConfig }) => traceConfig !== undefined ? new BatchSpanProcessor(createSpanExporter(traceConfig)) : undefined,
       cleanup: async spanProcessor => spanProcessor.shutdown()
     })
 
