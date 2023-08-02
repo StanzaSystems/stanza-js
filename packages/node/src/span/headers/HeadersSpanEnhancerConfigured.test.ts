@@ -99,7 +99,7 @@ describe('HeadersSpanEnhancerConfigured', () => {
       expect(setAttributeSpy).toHaveBeenCalledWith('http.request.header.common_header', ['common-header-request-value'])
     })
 
-    it('should add span attributes if request has headers', () => {
+    it('should add span attributes if response has headers', () => {
       const { span, setAttributeSpy } = createTestSpan()
 
       enhancer.enhanceWithResponse(span, getHeader({
