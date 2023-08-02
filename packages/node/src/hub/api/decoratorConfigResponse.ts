@@ -1,11 +1,5 @@
 import { z } from 'zod'
 
-const zNonStrictObject = z.object({}).nonstrict()
-const zTraceConfig = z.object({
-  collectorUrl: z.string(),
-  sampleRateDefault: z.number(),
-  overrides: z.array(zNonStrictObject)
-})
 const decoratorConfigNoData = z.object({
   version: z.string(),
   configDataSent: z.literal(false),
