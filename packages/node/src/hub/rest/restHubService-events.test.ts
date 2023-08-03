@@ -38,6 +38,13 @@ beforeEach(() => {
 
 describe('hubService', () => {
   describe('events', () => {
+    afterEach(() => {
+      vi.useRealTimers()
+
+      // @ts-expect-error: reset service config
+      updateServiceConfig(undefined)
+    })
+
     describe('fetchServiceConfig', () => {
       it('should emit stanza.config.service.fetch_ok when fetching succeeds', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
@@ -151,9 +158,6 @@ describe('hubService', () => {
           clientId: 'testClientId',
           customerId: 'testCustomerId'
         })
-
-        // @ts-expect-error: reset service config
-        updateServiceConfig(undefined)
       })
 
       it('should emit stanza.config.service.latency event when fetching succeeds', async () => {
@@ -180,8 +184,6 @@ describe('hubService', () => {
           environment: 'testEnvironment',
           clientId: 'testClientId'
         })
-
-        vi.useRealTimers()
       })
 
       it('should emit stanza.config.service.latency event when fetching succeeds - with customer id', async () => {
@@ -232,11 +234,6 @@ describe('hubService', () => {
           clientId: 'testClientId',
           customerId: 'testCustomerId'
         })
-
-        // @ts-expect-error: reset service config
-        updateServiceConfig(undefined)
-
-        vi.useRealTimers()
       })
     })
 
@@ -307,8 +304,6 @@ describe('hubService', () => {
           environment: 'testEnvironment',
           clientId: 'testClientId'
         })
-
-        vi.useRealTimers()
       })
     })
 
@@ -388,8 +383,6 @@ describe('hubService', () => {
           clientId: 'testClientId',
           endpoint: 'GetToken'
         })
-
-        vi.useRealTimers()
       })
     })
 
@@ -398,10 +391,6 @@ describe('hubService', () => {
         vi.useFakeTimers({
           now: 0
         })
-      })
-
-      afterEach(() => {
-        vi.useRealTimers()
       })
 
       it('should emit stanza.quota.fetch_ok when fetching succeeds', async () => {
@@ -574,8 +563,6 @@ describe('hubService', () => {
           clientId: 'testClientId',
           endpoint: 'SetTokenLeaseConsumed'
         })
-
-        vi.useRealTimers()
       })
     })
 
@@ -690,8 +677,6 @@ describe('hubService', () => {
           environment: 'testEnvironment',
           clientId: 'testClientId'
         })
-
-        vi.useRealTimers()
       })
     })
   })
