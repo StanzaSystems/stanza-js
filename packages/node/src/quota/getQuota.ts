@@ -5,8 +5,8 @@ import { hubService } from '../global/hubService'
 import { getGuardConfig } from '../global/guardConfig'
 import { logger } from '../global/logger'
 import { type Tag } from '../guard/model'
-import { STANZA_REQUEST_TIMEOUT } from '../global/requestTimeout'
 import { STANZA_SKIP_TOKEN_CACHE } from '../global/skipTokenCache'
+import { eventBus, events } from '../global/eventBus'
 
 interface GetQuotaOptions {
   guard: string
@@ -17,12 +17,16 @@ interface GetQuotaOptions {
 
 export const getQuota = async (options: GetQuotaOptions): Promise<StanzaToken | null> => {
   try {
-    return await withTimeout(
-      STANZA_REQUEST_TIMEOUT,
+    const result = await withTimeout(
+      // STANZA_REQUEST_TIMEOUT,
+      300, // TODO: temporarily make timeout lower than STANZA_REQUEST_TIMEOUT
       'Check quota timed out',
       getQuotaInternal(options)
     )
+    eventBus.emit(events.internal.quota.succeeded).catch(() => {})
+    return result
   } catch (e) {
+    eventBus.emit(events.internal.quota.failed).catch(() => {})
     logger.warn('Failed to fetch the token: %o', e instanceof Error ? e.message : e)
   }
 
