@@ -9,7 +9,6 @@ export class StanzaSpanProcessorManager implements SpanProcessorManager {
     {
       getInitial: () => new NoopSpanProcessor(),
       createWithServiceConfig: ({ traceConfig }) => new BatchSpanProcessor(createSpanExporter(traceConfig)),
-      createWithDecoratorConfig: ({ traceConfig }) => traceConfig !== undefined ? new BatchSpanProcessor(createSpanExporter(traceConfig)) : undefined,
       cleanup: async spanProcessor => spanProcessor.shutdown()
     })
 

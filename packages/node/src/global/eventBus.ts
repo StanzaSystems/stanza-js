@@ -76,6 +76,7 @@ export interface DefaultContextData {
   serviceName: string
   environment: string
   clientId: string
+  customerId?: string
 }
 
 export interface FeatureData {

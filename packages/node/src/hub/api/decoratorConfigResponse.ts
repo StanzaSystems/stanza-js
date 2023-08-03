@@ -1,11 +1,5 @@
 import { z } from 'zod'
 
-const zNonStrictObject = z.object({}).nonstrict()
-const zTraceConfig = z.object({
-  collectorUrl: z.string(),
-  sampleRateDefault: z.number(),
-  overrides: z.array(zNonStrictObject)
-})
 const decoratorConfigNoData = z.object({
   version: z.string(),
   configDataSent: z.literal(false),
@@ -18,8 +12,7 @@ const decoratorConfigWithData = z.object({
   config: z.object({
     checkQuota: z.boolean(),
     quotaTags: z.array(z.string()),
-    validateIngressTokens: z.boolean(),
-    traceConfig: zTraceConfig.optional()
+    validateIngressTokens: z.boolean()
   })
 })
 export const decoratorConfigResponse = z.union(

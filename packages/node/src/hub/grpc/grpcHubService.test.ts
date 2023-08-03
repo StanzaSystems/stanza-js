@@ -268,13 +268,8 @@ describe('createGrpcHubService', async () => {
           config: {
             checkQuota: true,
             quotaTags: [],
-            validateIngressTokens: false,
-            traceConfig: {
-              collectorUrl: 'https://url.to.trace.collector',
-              overrides: [],
-              sampleRateDefault: 0.5
-            }
-          } as any
+            validateIngressTokens: false
+          }
         })
       })
 
@@ -285,12 +280,7 @@ describe('createGrpcHubService', async () => {
         config: {
           checkQuota: true,
           quotaTags: [],
-          validateIngressTokens: false,
-          traceConfig: {
-            collectorUrl: 'https://url.to.trace.collector',
-            overrides: [],
-            sampleRateDefault: 0.5
-          }
+          validateIngressTokens: false
         }
       })
     })

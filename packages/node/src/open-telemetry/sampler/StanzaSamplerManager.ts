@@ -7,7 +7,6 @@ export class StanzaSamplerManager implements SamplerManager {
   private readonly traceConfigManager = new StanzaConfigEntityManager<Sampler>({
     getInitial: () => new AlwaysOffSampler(),
     createWithServiceConfig: ({ traceConfig }) => new TraceIdRatioBasedSampler(traceConfig.sampleRateDefault),
-    createWithDecoratorConfig: ({ traceConfig }) => traceConfig !== undefined ? new TraceIdRatioBasedSampler(traceConfig.sampleRateDefault) : undefined,
     cleanup: async () => {}
   })
 

@@ -2,13 +2,12 @@ import { ROOT_CONTEXT } from '@opentelemetry/api'
 import { AlwaysOffSampler, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-node'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { stanzaDecoratorContextKey } from '../../context/stanzaDecoratorContextKey'
-import { type DecoratorConfigListener, type getDecoratorConfig } from '../../global/decoratorConfig'
+import { type getDecoratorConfig } from '../../global/decoratorConfig'
 import { type getServiceConfig, type ServiceConfigListener } from '../../global/serviceConfig'
-import { type DecoratorConfig, type ServiceConfig } from '../../hub/model'
+import { type ServiceConfig } from '../../hub/model'
 import { StanzaSamplerManager } from './StanzaSamplerManager'
 
 let serviceListener: ServiceConfigListener
-let decoratorListener: DecoratorConfigListener
 
 type GetServiceConfig = typeof getServiceConfig
 type GetDecoratorConfig = typeof getDecoratorConfig
@@ -19,17 +18,6 @@ vi.mock('../../global/serviceConfig', () => {
     getServiceConfig: ((...args) => getServiceConfigMock(...args)) satisfies GetServiceConfig,
     addServiceConfigListener: (newListener: ServiceConfigListener) => {
       serviceListener = newListener
-    }
-  }
-})
-vi.mock('../../global/decoratorConfig', async (importOriginal) => {
-  const original: any = await importOriginal()
-
-  return {
-    ...original,
-    getDecoratorConfig: ((...args) => getDecoratorConfigMock(...args)) satisfies GetDecoratorConfig,
-    addDecoratorConfigListener: (_decoratorName: string, newListener: DecoratorConfigListener) => {
-      decoratorListener = newListener
     }
   }
 })
@@ -55,17 +43,6 @@ const secondMockServiceConfig = {
     }
   }
 } as unknown as ServiceConfig
-
-const mockDecoratorConfig = {
-  version: 'test',
-  config: {
-    traceConfig: {
-      collectorUrl: 'https://test.decorator.collector',
-      sampleRateDefault: 0.1,
-      overrides: []
-    }
-  }
-} as unknown as DecoratorConfig
 
 beforeEach(async () => {
   getServiceConfigMock.mockReset()
@@ -131,49 +108,6 @@ describe('StanzaSamplerManager', function () {
 
       const sampler = manager.getSampler(ROOT_CONTEXT.setValue(stanzaDecoratorContextKey, 'myDecorator'))
       expect(sampler).toEqual(new TraceIdRatioBasedSampler(1))
-    })
-
-    it('should return decorator processor if decorator config is initialized', function () {
-      getServiceConfigMock.mockImplementationOnce(() => mockServiceConfig)
-
-      getDecoratorConfigMock.mockImplementationOnce(() => mockDecoratorConfig)
-
-      const manager = new StanzaSamplerManager()
-
-      const sampler = manager.getSampler(ROOT_CONTEXT.setValue(stanzaDecoratorContextKey, 'myDecorator'))
-      expect(sampler).toEqual(new TraceIdRatioBasedSampler(0.1))
-    })
-
-    it('should return decorator processor after decorator config is updated', function () {
-      getServiceConfigMock.mockImplementation(() => mockServiceConfig)
-
-      const manager = new StanzaSamplerManager()
-
-      const contextWithDecorator = ROOT_CONTEXT.setValue(stanzaDecoratorContextKey, 'myDecorator')
-      const sampler1 = manager.getSampler(contextWithDecorator)
-      expect(sampler1).toEqual(new TraceIdRatioBasedSampler(1))
-
-      decoratorListener(mockDecoratorConfig)
-
-      const sampler2 = manager.getSampler(contextWithDecorator)
-      expect(sampler2).toEqual(new TraceIdRatioBasedSampler(0.1))
-    })
-
-    it('should return decorator processor after service config is updated', function () {
-      getServiceConfigMock.mockImplementation(() => mockServiceConfig)
-      getDecoratorConfigMock.mockImplementation(() => mockDecoratorConfig)
-
-      const manager = new StanzaSamplerManager()
-
-      const contextWithDecorator = ROOT_CONTEXT.setValue(stanzaDecoratorContextKey, 'myDecorator')
-
-      const sampler1 = manager.getSampler(contextWithDecorator)
-      expect(sampler1).toEqual(new TraceIdRatioBasedSampler(0.1))
-
-      serviceListener(secondMockServiceConfig)
-
-      const sampler2 = manager.getSampler(contextWithDecorator)
-      expect(sampler2).toEqual(new TraceIdRatioBasedSampler(0.1))
     })
   })
 })

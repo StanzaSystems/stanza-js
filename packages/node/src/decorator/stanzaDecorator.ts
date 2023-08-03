@@ -12,6 +12,7 @@ import { type StanzaDecoratorOptions } from './model'
 import { eventBus, events } from '../global/eventBus'
 import { wrapEventsAsync } from '../utils/wrapEventsAsync'
 import { hubService } from '../global/hubService'
+import { getServiceConfig } from '../global/serviceConfig'
 
 export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDecoratorOptions) => {
   const { guard } = createStanzaDecorator(options)
@@ -35,24 +36,30 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
 
     return wrapEventsAsync(resultFn, {
       success: async () => {
+        const customerId = getServiceConfig()?.config.customerId
         return eventBus.emit(events.request.succeeded, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
-          decoratorName: options.decorator
+          decoratorName: options.decorator,
+          customerId
         })
       },
       failure: async () => {
+        const customerId = getServiceConfig()?.config.customerId
         return eventBus.emit(events.request.failed, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
-          decoratorName: options.decorator
+          decoratorName: options.decorator,
+          customerId
         })
       },
       latency: async (...[latency]) => {
+        const customerId = getServiceConfig()?.config.customerId
         return eventBus.emit(events.request.latency, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
           decoratorName: options.decorator,
+          customerId,
           latency
         })
       }
@@ -66,17 +73,21 @@ const createStanzaDecorator = (options: StanzaDecoratorOptions) => {
     ...initializedDecorator,
     guard: wrapEventsAsync(initializedDecorator.guard, {
       success: async () => {
+        const customerId = getServiceConfig()?.config.customerId
         return eventBus.emit(events.request.allowed, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
-          decoratorName: options.decorator
+          decoratorName: options.decorator,
+          customerId
         })
       },
       failure: async () => {
+        const customerId = getServiceConfig()?.config.customerId
         return eventBus.emit(events.request.blocked, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
           decoratorName: options.decorator,
+          customerId,
           reason: 'quota'
         })
       }
