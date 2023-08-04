@@ -1,9 +1,11 @@
 import { eventBus, events } from '../global/eventBus'
 
-export const backoffGetQuota = <Args extends any[], ReturnType>(getQuotaFn: (...args: Args) => Promise<ReturnType | null>): (...args: Args) => Promise<ReturnType | null> => {
+const rampUpSteps = [1, 5, 10, 25, 50, 100]
+
+export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args: Args) => Promise<RType | null>): (...args: Args) => Promise<RType | null> => {
   let successCount = 0
   let failureCount = 0
-  let enabled = true
+  let enabledPercent = 100
   eventBus.on(events.internal.quota.succeeded, () => {
     successCount++
   })
@@ -20,15 +22,26 @@ export const backoffGetQuota = <Args extends any[], ReturnType>(getQuotaFn: (...
 
     const ratio = failureCount / totalCount
     if (ratio > 0.1) {
-      enabled = false
+      enabledPercent = 0
+    } else {
+      enabledPercent = rampUpSteps.find(step => step > enabledPercent) ?? 100
     }
 
     successCount = 0
     failureCount = 0
   }, 1000)
-  // const tryRampUpEnabledPercent =
 
   return async (...args: Args) => {
-    return enabled ? getQuotaFn(...args) : Promise.resolve(null)
+    if (enabledPercent === 100) {
+      return getQuotaFn(...args)
+    }
+    if (enabledPercent === 0) {
+      return Promise.resolve(null)
+    }
+    const shouldEnable = (Math.random() * 100) <= enabledPercent
+
+    return shouldEnable
+      ? getQuotaFn(...args)
+      : Promise.resolve(null)
   }
 }
