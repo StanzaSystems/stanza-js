@@ -8,10 +8,12 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
   const tryRampUpEnabledPercentBackedOff = async () => backOff(tryRampUpEnabledPercent, {
     jitter: 'full',
     retry: () => {
+      logger.debug('[%d] retrying ramp up', Date.now())
       enabledPercent = 0
       return true
     },
-    startingDelay: 2000
+    // TODO: this feels a bit like a hack
+    startingDelay: enabledPercent < 5 ? 2000 : 1000
   })
 
   let successCount = 0
@@ -27,7 +29,7 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
   function intervalFunction () {
     tryRampUpEnabledPercentBackedOff()
       .then(() => {
-        logger.debug('[%d] scheduling interval function', Date.now())
+        logger.debug('[%d] scheduling interval function 2', Date.now())
         intervalFunction()
       })
       .catch(() => {})
@@ -37,7 +39,7 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
     const isFailing = areRequestsFailing()
     if (isFailing) {
       enabledPercent = 0
-      logger.debug('[%d] scheduling interval function', Date.now())
+      logger.debug('[%d] scheduling interval function 1', Date.now())
       setTimeout(intervalFunction, 1000)
     } else {
       intervalFunction()
