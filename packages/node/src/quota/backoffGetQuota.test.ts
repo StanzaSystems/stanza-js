@@ -1,5 +1,5 @@
 import { backoffGetQuota } from './backoffGetQuota'
-import { afterEach, expect } from 'vitest'
+import { afterEach, expect, vi } from 'vitest'
 import { eventBus, events } from '../global/eventBus'
 
 const emitTimes = async (count: number, emitFn: () => Promise<unknown>): Promise<void> => {
@@ -261,7 +261,7 @@ describe('backoffGetQuota', () => {
     getQuotaMock.mockClear()
   })
 
-  it.skip('should exponentially back off in case of repetitive failure', async () => {
+  it('should exponentially back off in case of repetitive failure', async () => {
     vi.useFakeTimers()
     const randomSpy = vi.spyOn(Math, 'random')
     randomSpy.mockReturnValue(0.99)
@@ -274,11 +274,13 @@ describe('backoffGetQuota', () => {
 
     await vi.advanceTimersByTimeAsync(1000)
 
+    // enabled percent 0 - start
+
     await emitTimes(100, getQuotaBackedOff)
 
     expect(getQuotaMock).not.toHaveBeenCalled()
 
-    // ramp up to 1%
+    // ramp up to 1% after 1 second
 
     await emitSuccesses(1)
 
@@ -294,23 +296,90 @@ describe('backoffGetQuota', () => {
 
     // fail again
 
-    await emitSuccesses(89)
-    await emitFailures(11)
+    await emitFailures(1)
 
     await vi.advanceTimersByTimeAsync(1000)
+
+    // enabled percent 0 - start
 
     await emitTimes(100, getQuotaBackedOff)
 
     expect(getQuotaMock).not.toHaveBeenCalled()
 
-    await emitSuccesses(1)
-
     await vi.advanceTimersByTimeAsync(1000)
+
+    // enabled percent 0 - after 1 sec
 
     randomSpy.mockReturnValueOnce(0)
 
     await emitTimes(100, getQuotaBackedOff)
 
     expect(getQuotaMock).not.toHaveBeenCalled()
+
+    randomSpy.mockReset()
+    randomSpy.mockReturnValue(0.99)
+
+    // ramp up to 1% after 2 seconds
+
+    await vi.advanceTimersByTimeAsync(1000)
+
+    randomSpy.mockReturnValueOnce(0.01)
+
+    await emitTimes(100, getQuotaBackedOff)
+
+    expect(getQuotaMock).toHaveBeenCalledOnce()
+
+    getQuotaMock.mockClear()
+
+    // fail again
+
+    await emitFailures(1)
+
+    await vi.advanceTimersByTimeAsync(1000)
+
+    // enabled percent 0 - start
+
+    randomSpy.mockReturnValue(0)
+
+    await emitTimes(100, getQuotaBackedOff)
+
+    expect(getQuotaMock).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(1000)
+
+    // enabled percent 0 - after 1 sec
+
+    await emitTimes(100, getQuotaBackedOff)
+
+    expect(getQuotaMock).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(1000)
+
+    // enabled percent 0 - after 2 sec
+
+    await emitTimes(100, getQuotaBackedOff)
+
+    expect(getQuotaMock).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(1000)
+
+    // enabled percent 0 - after 3 sec
+
+    await emitTimes(100, getQuotaBackedOff)
+
+    expect(getQuotaMock).not.toHaveBeenCalled()
+
+    randomSpy.mockReset()
+    randomSpy.mockReturnValue(0.99)
+
+    // ramp up to 1% after 4 seconds
+
+    await vi.advanceTimersByTimeAsync(1000)
+
+    randomSpy.mockReturnValueOnce(0.01)
+
+    await emitTimes(100, getQuotaBackedOff)
+
+    expect(getQuotaMock).toHaveBeenCalledOnce()
   })
 })
