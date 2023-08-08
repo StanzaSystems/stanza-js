@@ -72,6 +72,7 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
 
   async function tryRampUpEnabledPercent () {
     enabledPercent = rampUpSteps.find(step => step > enabledPercent) ?? 100
+    eventBus.emit(events.internal.quota.enabled, { enabledPercent }).catch(() => {})
     logger.debug('[%d] ramping up to %d%%', Date.now(), enabledPercent)
 
     await new Promise(resolve => {

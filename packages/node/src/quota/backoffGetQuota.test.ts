@@ -666,6 +666,55 @@ describe('backoffGetQuota', () => {
       expect(emitSpy).toHaveBeenCalledOnce()
       expect(emitSpy).toHaveBeenCalledWith(events.internal.quota.disabled)
     })
+
+    it('should emit quota enabled events when gradually re-enabling requests', async () => {
+      randomSpy.mockReturnValue(0.99)
+
+      await emitSuccesses(89)
+      await emitFailures(11)
+
+      await vi.advanceTimersByTimeAsync(1000)
+
+      await emitTimes(100, getQuotaBackedOff)
+
+      // ramp up to 1%
+
+      emitSpy.mockClear()
+
+      await rampUp()
+
+      expect(emitSpy).toHaveBeenLastCalledWith(events.internal.quota.enabled, { enabledPercent: 1 })
+
+      // ramp up to 5%
+
+      await rampUp()
+
+      expect(emitSpy).toHaveBeenLastCalledWith(events.internal.quota.enabled, { enabledPercent: 5 })
+
+      // ramp up to 10%
+
+      await rampUp()
+
+      expect(emitSpy).toHaveBeenLastCalledWith(events.internal.quota.enabled, { enabledPercent: 10 })
+
+      // ramp up to 25%
+
+      await rampUp()
+
+      expect(emitSpy).toHaveBeenLastCalledWith(events.internal.quota.enabled, { enabledPercent: 25 })
+
+      // ramp up to 50%
+
+      await rampUp()
+
+      expect(emitSpy).toHaveBeenLastCalledWith(events.internal.quota.enabled, { enabledPercent: 50 })
+
+      // ramp up to 100%
+
+      await rampUp()
+
+      expect(emitSpy).toHaveBeenLastCalledWith(events.internal.quota.enabled, { enabledPercent: 100 })
+    })
   })
 
   async function rampUp () {
