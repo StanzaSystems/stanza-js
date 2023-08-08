@@ -9,7 +9,7 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
     jitter: 'full',
     retry: () => {
       logger.debug('[%d] retrying ramp up', Date.now())
-      enabledPercent = 0
+      disable()
       return true
     },
     // TODO: this feels a bit like a hack
@@ -26,26 +26,6 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
   eventBus.on(events.internal.quota.failed, () => {
     failureCount++
   })
-  function intervalFunction () {
-    tryRampUpEnabledPercentBackedOff()
-      .then(() => {
-        logger.debug('[%d] scheduling interval function 2', Date.now())
-        intervalFunction()
-      })
-      .catch(() => {})
-  }
-
-  function checkRequestsStatus () {
-    const isFailing = areRequestsFailing()
-    if (isFailing) {
-      enabledPercent = 0
-      logger.debug('[%d] scheduling interval function 1', Date.now())
-      setTimeout(intervalFunction, 1000)
-    } else {
-      intervalFunction()
-    }
-    resetRequestsCount()
-  }
 
   logger.debug('[%d] scheduling check request status', Date.now())
   setTimeout(checkRequestsStatus, 1000)
@@ -62,6 +42,32 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
     return shouldEnable
       ? getQuotaFn(...args)
       : Promise.resolve(null)
+  }
+
+  function intervalFunction () {
+    tryRampUpEnabledPercentBackedOff()
+      .then(() => {
+        logger.debug('[%d] scheduling interval function 2', Date.now())
+        intervalFunction()
+      })
+      .catch(() => {})
+  }
+
+  function checkRequestsStatus () {
+    const isFailing = areRequestsFailing()
+    resetRequestsCount()
+    if (isFailing) {
+      disable()
+      logger.debug('[%d] scheduling interval function 1', Date.now())
+      setTimeout(intervalFunction, 1000)
+    } else {
+      intervalFunction()
+    }
+  }
+
+  function disable () {
+    enabledPercent = 0
+    eventBus.emit(events.internal.quota.disabled).catch(() => {})
   }
 
   async function tryRampUpEnabledPercent () {
