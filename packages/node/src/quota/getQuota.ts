@@ -7,6 +7,7 @@ import { logger } from '../global/logger'
 import { type Tag } from '../guard/model'
 import { STANZA_SKIP_TOKEN_CACHE } from '../global/skipTokenCache'
 import { eventBus, events } from '../global/eventBus'
+import { backoffGetQuota } from './backoffGetQuota'
 
 interface GetQuotaOptions {
   guard: string
@@ -15,7 +16,7 @@ interface GetQuotaOptions {
   tags?: Tag[]
 }
 
-export const getQuota = async (options: GetQuotaOptions): Promise<StanzaToken | null> => {
+export const getQuota = backoffGetQuota(async (options: GetQuotaOptions): Promise<StanzaToken | null> => {
   try {
     const result = await withTimeout(
       // STANZA_REQUEST_TIMEOUT,
@@ -31,7 +32,7 @@ export const getQuota = async (options: GetQuotaOptions): Promise<StanzaToken | 
   }
 
   return null
-}
+})
 
 const getQuotaInternal = async (options: GetQuotaOptions): Promise<StanzaToken | null> => {
   const incomingQuotaTags = options.tags ?? []

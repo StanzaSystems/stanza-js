@@ -68,12 +68,13 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
   function disable () {
     enabledPercent = 0
     eventBus.emit(events.internal.quota.disabled).catch(() => {})
+    logger.error('Failed to get more than 10% of get quota requests. Failing open')
   }
 
   async function tryRampUpEnabledPercent () {
     enabledPercent = rampUpSteps.find(step => step > enabledPercent) ?? 100
     eventBus.emit(events.internal.quota.enabled, { enabledPercent }).catch(() => {})
-    logger.debug('[%d] ramping up to %d%%', Date.now(), enabledPercent)
+    logger.info('Enabled %d%% of get quota requests', enabledPercent)
 
     await new Promise(resolve => {
       setTimeout(resolve, 1000)
