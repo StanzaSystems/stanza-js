@@ -22,11 +22,12 @@ describe('backoffGetQuota', () => {
   let emitSpy = vi.spyOn(eventBus, 'emit')
 
   beforeEach(() => {
-    vi.useFakeTimers()
+    vi.useFakeTimers({ now: 0 })
+    eventBus.clearListeners()
     randomSpy.mockReset()
     emitSpy.mockRestore()
     emitSpy = vi.spyOn(eventBus, 'emit')
-    getQuotaMock.mockReset()
+    getQuotaMock.mockRestore()
     getQuotaBackedOff = backoffGetQuota(getQuotaMock)
   })
 
@@ -78,11 +79,6 @@ describe('backoffGetQuota', () => {
     })
 
     it('should pass through if fail rate is consistently below 10%', async () => {
-      vi.useFakeTimers()
-
-      const getQuotaMock = vi.fn(async () => Promise.resolve('ok'))
-      const getQuotaBackedOff = backoffGetQuota(getQuotaMock)
-
       for (let secondCount = 0; secondCount < 5; secondCount++) {
         getQuotaMock.mockClear()
         await emitSuccesses(10)
@@ -114,11 +110,6 @@ describe('backoffGetQuota', () => {
     })
 
     it('should not pass through to original fn if fail rate goes above 10% after a second', async () => {
-      vi.useFakeTimers()
-
-      const getQuotaMock = vi.fn(async () => Promise.resolve('ok'))
-      const getQuotaBackedOff = backoffGetQuota(getQuotaMock)
-
       await emitSuccesses(95)
       await emitFailures(5)
 
@@ -730,6 +721,14 @@ describe('backoffGetQuota', () => {
       errorSpy = vi.spyOn(logger, 'error')
     })
 
+    it('should not log info initially when enabled level is 100%', async () => {
+      expect(infoSpy).not.toHaveBeenCalled()
+
+      await vi.advanceTimersByTimeAsync(1000)
+
+      expect(infoSpy).not.toHaveBeenCalled()
+    })
+
     it('should log error if fail rate is over 10%', async () => {
       emitSpy.mockClear()
       await emitSuccesses(89)
@@ -831,6 +830,51 @@ describe('backoffGetQuota', () => {
       expect(infoSpy).toHaveBeenCalledWith('Enabled %d%% of get quota requests', 100)
 
       infoSpy.mockClear()
+    })
+
+    it('should stop logging on info level when re-enabled to 100%', async () => {
+      randomSpy.mockReturnValue(0.99)
+
+      await emitSuccesses(89)
+      await emitFailures(11)
+
+      await vi.advanceTimersByTimeAsync(1000)
+
+      await emitTimes(100, getQuotaBackedOff)
+
+      // ramp up to 1%
+
+      await rampUp()
+
+      // ramp up to 5%
+
+      await rampUp()
+
+      // ramp up to 10%
+
+      await rampUp()
+
+      // ramp up to 25%
+
+      await rampUp()
+
+      // ramp up to 50%
+
+      await rampUp()
+
+      // ramp up to 100%
+
+      await rampUp()
+
+      expect(infoSpy).toHaveBeenCalledWith('Enabled %d%% of get quota requests', 100)
+
+      infoSpy.mockClear()
+
+      await emitTimes(10, async () => {
+        await vi.advanceTimersByTimeAsync(1000)
+
+        expect(infoSpy).not.toHaveBeenCalled()
+      })
     })
   })
 

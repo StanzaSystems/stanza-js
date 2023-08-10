@@ -19,16 +19,23 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
   let successCount = 0
   let failureCount = 0
   let enabledPercent = 100
-
+  let checkRequestStatusTimeoutHandle: ReturnType<typeof setTimeout> | undefined
   eventBus.on(events.internal.quota.succeeded, () => {
+    if (checkRequestStatusTimeoutHandle === undefined) {
+      resetRequestsCount()
+      checkRequestStatusTimeoutHandle = setTimeout(checkRequestsStatus, 1000)
+      logger.debug('[%d] scheduling check request status', Date.now())
+    }
     successCount++
   })
   eventBus.on(events.internal.quota.failed, () => {
+    if (checkRequestStatusTimeoutHandle === undefined) {
+      resetRequestsCount()
+      checkRequestStatusTimeoutHandle = setTimeout(checkRequestsStatus, 1000)
+      logger.debug('[%d] scheduling check request status', Date.now())
+    }
     failureCount++
   })
-
-  logger.debug('[%d] scheduling check request status', Date.now())
-  setTimeout(checkRequestsStatus, 1000)
 
   return async (...args: Args) => {
     if (enabledPercent === 100) {
@@ -47,8 +54,12 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
   function intervalFunction () {
     tryRampUpEnabledPercentBackedOff()
       .then(() => {
-        logger.debug('[%d] scheduling interval function 2', Date.now())
-        intervalFunction()
+        if (enabledPercent < 100) {
+          logger.debug('[%d] scheduling interval function', Date.now())
+          intervalFunction()
+        } else {
+          checkRequestStatusTimeoutHandle = undefined
+        }
       })
       .catch(() => {})
   }
@@ -58,10 +69,12 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
     resetRequestsCount()
     if (isFailing) {
       disable()
-      logger.debug('[%d] scheduling interval function 1', Date.now())
+      logger.debug('[%d] scheduling interval function', Date.now())
       setTimeout(intervalFunction, 1000)
-    } else {
+    } else if (enabledPercent < 100) {
       intervalFunction()
+    } else {
+      checkRequestStatusTimeoutHandle = undefined
     }
   }
 
