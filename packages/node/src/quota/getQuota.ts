@@ -8,6 +8,7 @@ import { type Tag } from '../guard/model'
 import { STANZA_SKIP_TOKEN_CACHE } from '../global/skipTokenCache'
 import { eventBus, events } from '../global/eventBus'
 import { backoffGetQuota } from './backoffGetQuota'
+import { STANZA_REQUEST_TIMEOUT } from '../global/requestTimeout'
 
 interface GetQuotaOptions {
   guard: string
@@ -19,12 +20,15 @@ interface GetQuotaOptions {
 export const getQuota = backoffGetQuota(async (options: GetQuotaOptions): Promise<StanzaToken | null> => {
   try {
     const result = await withTimeout(
-      // STANZA_REQUEST_TIMEOUT,
-      300, // TODO: temporarily make timeout lower than STANZA_REQUEST_TIMEOUT
+      STANZA_REQUEST_TIMEOUT,
       'Check quota timed out',
       getQuotaInternal(options)
     )
-    eventBus.emit(events.internal.quota.succeeded).catch(() => {})
+    eventBus.emit(
+      result !== null
+        ? events.internal.quota.succeeded
+        : events.internal.quota.failed
+    ).catch(() => {})
     return result
   } catch (e) {
     eventBus.emit(events.internal.quota.failed).catch(() => {})
