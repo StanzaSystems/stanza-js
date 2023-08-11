@@ -4,7 +4,7 @@ import { ConfigService } from '../../../gen/stanza/hub/v1/config_connect'
 import { createGrpcTransport } from '@bufbuild/connect-node'
 import { type ServiceConfig } from '../model'
 import { serviceConfigResponse } from '../api/serviceConfigResponse'
-import { decoratorConfigResponse } from '../api/decoratorConfigResponse'
+import { guardConfigResponse } from '../api/guardConfigResponse'
 import { QuotaService } from '../../../gen/stanza/hub/v1/quota_connect'
 import { stanzaTokenResponse } from '../api/stanzaTokenResponse'
 import { stanzaTokenLeaseResponse } from '../api/stanzaTokenLeaseResponse'
@@ -63,16 +63,16 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
         version: data.version
       }
     },
-    fetchDecoratorConfig: async (options) => {
+    fetchGuardConfig: async (options) => {
       const data = await grpcRequest(async () => configClient.getDecoratorConfig({
         selector: {
           serviceName,
           serviceRelease,
           environment,
-          decoratorName: options.decorator
+          decoratorName: options.guard
         },
         versionSeen: options.lastVersionSeen
-      }), decoratorConfigResponse)
+      }), guardConfigResponse)
 
       if (data === null || !data.configDataSent) {
         return null
@@ -89,7 +89,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
         priorityBoost: options.priorityBoost,
         selector: {
           featureName: options.feature,
-          decoratorName: options.decorator,
+          decoratorName: options.guard,
           environment,
           tags: options.tags
         }
@@ -101,7 +101,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
         priorityBoost: options.priorityBoost,
         selector: {
           featureName: options.feature,
-          decoratorName: options.decorator,
+          decoratorName: options.guard,
           environment,
           tags: options.tags
         }
@@ -132,7 +132,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
         tokens: [{
           token: options.token,
           decorator: {
-            name: options.decorator,
+            name: options.guard,
             environment
           }
         }]

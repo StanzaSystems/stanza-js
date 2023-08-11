@@ -28,7 +28,7 @@ describe('tokenStore', () => {
 
     it('should fetch tokens initially', async () => {
       void tokenStore.getToken({
-        decorator: 'testDecorator'
+        guard: 'testDecorator'
       })
 
       await vi.advanceTimersByTimeAsync(0)
@@ -43,7 +43,7 @@ describe('tokenStore', () => {
       }))
 
       const getTokenFromStorePromise = tokenStore.getToken({
-        decorator: 'testDecorator'
+        guard: 'testDecorator'
       })
 
       await vi.advanceTimersByTimeAsync(0)
@@ -70,7 +70,7 @@ describe('tokenStore', () => {
       }))
 
       void tokenStore.getToken({
-        decorator: 'testDecorator'
+        guard: 'testDecorator'
       })
 
       await vi.advanceTimersByTimeAsync(0)
@@ -95,7 +95,7 @@ describe('tokenStore', () => {
       await vi.advanceTimersByTimeAsync(0)
 
       const getSecondTokenFromStorePromise = tokenStore.getToken({
-        decorator: 'testDecorator'
+        guard: 'testDecorator'
       })
 
       expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
@@ -110,7 +110,7 @@ describe('tokenStore', () => {
       }))
 
       void tokenStore.getToken({
-        decorator: 'testDecorator'
+        guard: 'testDecorator'
       })
 
       await vi.advanceTimersByTimeAsync(0)
@@ -135,7 +135,7 @@ describe('tokenStore', () => {
       await vi.advanceTimersByTimeAsync(0)
 
       const getSecondTokenFromStorePromise = tokenStore.getToken({
-        decorator: 'testDecorator',
+        guard: 'testDecorator',
         feature: 'anotherFeature'
       })
 
@@ -168,10 +168,10 @@ describe('tokenStore', () => {
       }))
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
-        decorator: 'testDecorator'
+        guard: 'testDecorator'
       })
       const getTokenFromStorePromiseSecond = tokenStore.getToken({
-        decorator: 'testDecorator'
+        guard: 'testDecorator'
       })
 
       await vi.advanceTimersByTimeAsync(0)
@@ -212,10 +212,10 @@ describe('tokenStore', () => {
       }))
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
-        decorator: 'testDecorator'
+        guard: 'testDecorator'
       })
       const getTokenFromStorePromiseSecond = tokenStore.getToken({
-        decorator: 'anotherTestDecorator'
+        guard: 'anotherTestDecorator'
       })
 
       await vi.advanceTimersByTimeAsync(0)
@@ -254,10 +254,10 @@ describe('tokenStore', () => {
 
       const getTokenFromStoreBatchFirst = [
         tokenStore.getToken({
-          decorator: 'testDecorator'
+          guard: 'testDecorator'
         }),
         tokenStore.getToken({
-          decorator: 'testDecorator'
+          guard: 'testDecorator'
         })
       ]
 
@@ -303,10 +303,10 @@ describe('tokenStore', () => {
 
       const getTokenFromStoreBatchSecond = [
         tokenStore.getToken({
-          decorator: 'testDecorator'
+          guard: 'testDecorator'
         }),
         tokenStore.getToken({
-          decorator: 'testDecorator'
+          guard: 'testDecorator'
         })
       ]
 
@@ -317,7 +317,7 @@ describe('tokenStore', () => {
 
       const getTokenFromStoreBatchThird = [
         tokenStore.getToken({
-          decorator: 'testDecorator'
+          guard: 'testDecorator'
         })
       ]
       expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(3)
@@ -355,10 +355,10 @@ describe('tokenStore', () => {
 
       const getTokenFromStoreBatchForth = [
         tokenStore.getToken({
-          decorator: 'testDecorator'
+          guard: 'testDecorator'
         }),
         tokenStore.getToken({
-          decorator: 'testDecorator'
+          guard: 'testDecorator'
         })
       ]
 
@@ -373,7 +373,7 @@ describe('tokenStore', () => {
       }))
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
-        decorator: 'testDecorator'
+        guard: 'testDecorator'
       })
 
       await vi.advanceTimersByTimeAsync(0)
@@ -394,10 +394,10 @@ describe('tokenStore', () => {
       }))
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
-        decorator: 'testDecorator'
+        guard: 'testDecorator'
       })
       const getTokenFromStorePromiseSecond = tokenStore.getToken({
-        decorator: 'testDecorator'
+        guard: 'testDecorator'
       })
 
       await vi.advanceTimersByTimeAsync(0)
@@ -425,10 +425,10 @@ describe('tokenStore', () => {
       }))
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
-        decorator: 'testDecorator'
+        guard: 'testDecorator'
       })
       const getTokenFromStorePromiseSecond = tokenStore.getToken({
-        decorator: 'testDecorator'
+        guard: 'testDecorator'
       })
 
       await vi.advanceTimersByTimeAsync(0)
@@ -444,7 +444,7 @@ describe('tokenStore', () => {
       await getTokenFromStorePromiseSecond
 
       const getTokenFromStorePromiseThird = tokenStore.getToken({
-        decorator: 'testDecorator'
+        guard: 'testDecorator'
       })
 
       await vi.advanceTimersByTimeAsync(0)
@@ -472,7 +472,7 @@ describe('tokenStore', () => {
       }))
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
-        decorator: 'testDecorator'
+        guard: 'testDecorator'
       })
 
       await vi.advanceTimersByTimeAsync(0)
@@ -489,7 +489,7 @@ describe('tokenStore', () => {
       }))
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
-        decorator: 'testDecorator'
+        guard: 'testDecorator'
       })
 
       await vi.advanceTimersByTimeAsync(0)
@@ -664,18 +664,18 @@ describe('tokenStore', () => {
       })
 
       // token 0 returned immediately, 10 added to cache
-      await tokenStore.getToken({ decorator: 'aDecorator' })
+      await tokenStore.getToken({ guard: 'aDecorator' })
 
       for (let i = 1; i < 8; i++) {
         // use 7 out of 10 tokens from cache
-        await tokenStore.getToken({ decorator: 'aDecorator' })
+        await tokenStore.getToken({ guard: 'aDecorator' })
       }
 
       // still no need to fetch more tokens
       expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
 
       // using token 8 out of 10 tokens from cache
-      await tokenStore.getToken({ decorator: 'aDecorator' })
+      await tokenStore.getToken({ guard: 'aDecorator' })
 
       await vi.advanceTimersByTimeAsync(0)
 
@@ -707,7 +707,7 @@ describe('tokenStore', () => {
         }
       })
 
-      await tokenStore.getToken({ decorator: 'aDecorator' })
+      await tokenStore.getToken({ guard: 'aDecorator' })
 
       // token 0 is used, 10 in cache
 
@@ -748,7 +748,7 @@ describe('tokenStore', () => {
         }
       })
 
-      await expect(tokenStore.getToken({ decorator: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken0' })
+      await expect(tokenStore.getToken({ guard: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken0' })
 
       // token 0 is used, 10 tokens added to cache
       expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()
@@ -757,17 +757,17 @@ describe('tokenStore', () => {
 
       // tokens 1-3 expired
 
-      await expect(tokenStore.getToken({ decorator: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken4' })
-      await expect(tokenStore.getToken({ decorator: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken5' })
-      await expect(tokenStore.getToken({ decorator: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken6' })
-      await expect(tokenStore.getToken({ decorator: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken7' })
+      await expect(tokenStore.getToken({ guard: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken4' })
+      await expect(tokenStore.getToken({ guard: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken5' })
+      await expect(tokenStore.getToken({ guard: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken6' })
+      await expect(tokenStore.getToken({ guard: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken7' })
 
       // tokens 4-7 are used, 3 remaining in cache - no need to fetch more yet
 
       await vi.advanceTimersByTimeAsync(0)
       expect(mockHubService.getTokenLease).toHaveBeenCalledTimes(1)
 
-      await expect(tokenStore.getToken({ decorator: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken8' })
+      await expect(tokenStore.getToken({ guard: 'aDecorator' })).resolves.toEqual({ granted: true, token: 'aToken8' })
 
       // tokens 4-8 are used, 2 remaining in cache - need more tokens
 
@@ -805,11 +805,11 @@ describe('tokenStore', () => {
       })
 
       // token 0 is used immediately and not added to cache, 10 tokens left in cache
-      await tokenStore.getToken({ decorator: 'aDecorator' })
+      await tokenStore.getToken({ guard: 'aDecorator' })
       // getting tokens 1-3 from cache
-      await tokenStore.getToken({ decorator: 'aDecorator' })
-      await tokenStore.getToken({ decorator: 'aDecorator' })
-      await tokenStore.getToken({ decorator: 'aDecorator' })
+      await tokenStore.getToken({ guard: 'aDecorator' })
+      await tokenStore.getToken({ guard: 'aDecorator' })
+      await tokenStore.getToken({ guard: 'aDecorator' })
 
       // tokens 0-3 are used
       expect(mockHubService.getTokenLease).toHaveBeenCalledOnce()

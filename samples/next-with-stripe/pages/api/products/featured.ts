@@ -24,7 +24,7 @@ const handler: NextApiHandler = async (req, res) => {
 }
 
 const nextApiRequestStripeProductsApiDecorator = nextApiRequestDecorator({
-  decorator: 'Stripe_Products_API',
+  guard: 'Stripe_Products_API',
   feature: 'featured'
 })
 export default nextApiRequestStripeProductsApiDecorator(handler)

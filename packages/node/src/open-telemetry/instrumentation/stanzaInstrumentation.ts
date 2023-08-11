@@ -5,10 +5,10 @@ import { eventDataToRequestAttributes, type RequestAttributes } from './requestA
 import { eventDataToRequestBlockedAttributes, type RequestBlockedAttributes } from './requestBlockedAttributes'
 import { type DefaultContextAttributes, eventDataToDefaultContextAttributes } from './defaultContextAttributes'
 import {
-  type DecoratorAttributes,
-  eventDataToDecoratorAttributes,
-  eventDataToOptionalDecoratorAttributes
-} from './decoratorAttributes'
+  type GuardAttributes,
+  eventDataToGuardAttributes,
+  eventDataToOptionalGuardAttributes
+} from './guardAttributes'
 import { packageName, packageVersion } from '../../meta'
 
 type QuotaEndpoint = 'GetToken' | 'GetTokenLease' | 'SetTokenLeaseConsumed'
@@ -28,17 +28,17 @@ export class StanzaInstrumentation extends InstrumentationBase {
         fetchFailed: Counter<DefaultContextAttributes>
         fetchLatency: Histogram<DefaultContextAttributes>
       }
-      decorator: {
-        fetchOk: Counter<DefaultContextAttributes & DecoratorAttributes>
+      guard: {
+        fetchOk: Counter<DefaultContextAttributes & GuardAttributes>
         fetchFailed: Counter<DefaultContextAttributes>
         fetchLatency: Histogram<DefaultContextAttributes>
       }
     }
     quota: {
-      fetchOk: Counter<DefaultContextAttributes & Partial<DecoratorAttributes> & { endpoint: QuotaEndpoint }>
+      fetchOk: Counter<DefaultContextAttributes & Partial<GuardAttributes> & { endpoint: QuotaEndpoint }>
       fetchFailed: Counter<DefaultContextAttributes & { endpoint: QuotaEndpoint }>
       fetchLatency: Histogram<DefaultContextAttributes & { endpoint: QuotaEndpoint }>
-      validateOk: Counter<DefaultContextAttributes & DecoratorAttributes>
+      validateOk: Counter<DefaultContextAttributes & GuardAttributes>
       validateFailed: Counter<DefaultContextAttributes>
       validateLatency: Histogram<DefaultContextAttributes>
     }
@@ -90,23 +90,23 @@ export class StanzaInstrumentation extends InstrumentationBase {
     return {
       allowed: this.meter.createCounter(
         events.request.allowed.description ?? '',
-        stanzaCounterMetricOptions('Count of requests permitted to execute on a given Decorator')
+        stanzaCounterMetricOptions('Count of requests permitted to execute on a given Guard')
       ),
       blocked: this.meter.createCounter(
         events.request.blocked.description ?? '',
-        stanzaCounterMetricOptions('Count of requests not permitted to execute on a given Decorator')
+        stanzaCounterMetricOptions('Count of requests not permitted to execute on a given Guard')
       ),
       failed: this.meter.createCounter(
         events.request.failed.description ?? '',
-        stanzaCounterMetricOptions('Count of failed requests traversing a particular Decorator')
+        stanzaCounterMetricOptions('Count of failed requests traversing a particular Guard')
       ),
       succeeded: this.meter.createCounter(
         events.request.succeeded.description ?? '',
-        stanzaCounterMetricOptions('Count of successful requests traversing a particular Decorator')
+        stanzaCounterMetricOptions('Count of successful requests traversing a particular Guard')
       ),
       latency: this.meter.createHistogram(
         events.request.latency.description ?? '',
-        stanzaHistogramMetricOptions('Latency histogram for execution time for a particular Decorator')
+        stanzaHistogramMetricOptions('Latency histogram for execution time for a particular Guard')
       )
     }
   }
@@ -121,17 +121,17 @@ export class StanzaInstrumentation extends InstrumentationBase {
     eventBus.on(events.config.service.fetchLatency, ({ latency, ...data }) => {
       this.metrics.config.service.fetchLatency.record(latency, eventDataToDefaultContextAttributes(data))
     })
-    eventBus.on(events.config.decorator.fetchOk, data => {
-      this.metrics.config.decorator.fetchOk.add(1, {
+    eventBus.on(events.config.guard.fetchOk, data => {
+      this.metrics.config.guard.fetchOk.add(1, {
         ...eventDataToDefaultContextAttributes(data),
-        ...eventDataToDecoratorAttributes(data)
+        ...eventDataToGuardAttributes(data)
       })
     })
-    eventBus.on(events.config.decorator.fetchFailed, data => {
-      this.metrics.config.decorator.fetchFailed.add(1, eventDataToDefaultContextAttributes(data))
+    eventBus.on(events.config.guard.fetchFailed, data => {
+      this.metrics.config.guard.fetchFailed.add(1, eventDataToDefaultContextAttributes(data))
     })
-    eventBus.on(events.config.decorator.fetchLatency, ({ latency, ...data }) => {
-      this.metrics.config.decorator.fetchLatency.record(latency, eventDataToDefaultContextAttributes(data))
+    eventBus.on(events.config.guard.fetchLatency, ({ latency, ...data }) => {
+      this.metrics.config.guard.fetchLatency.record(latency, eventDataToDefaultContextAttributes(data))
     })
   }
 
@@ -151,18 +151,18 @@ export class StanzaInstrumentation extends InstrumentationBase {
           stanzaHistogramMetricOptions('Latency histogram for time to fetch service configuration')
         )
       },
-      decorator: {
+      guard: {
         fetchOk: this.meter.createCounter(
-          events.config.decorator.fetchOk.description ?? '',
-          stanzaCounterMetricOptions('Count of successful fetches of decorator configuration')
+          events.config.guard.fetchOk.description ?? '',
+          stanzaCounterMetricOptions('Count of successful fetches of guard configuration')
         ),
         fetchFailed: this.meter.createCounter(
-          events.config.decorator.fetchFailed.description ?? '',
-          stanzaCounterMetricOptions('Count of unsuccessful fetches of decorator configuration')
+          events.config.guard.fetchFailed.description ?? '',
+          stanzaCounterMetricOptions('Count of unsuccessful fetches of guard configuration')
         ),
         fetchLatency: this.meter.createHistogram(
-          events.config.decorator.fetchLatency.description ?? '',
-          stanzaHistogramMetricOptions('Latency histogram for time to fetch decorator configuration')
+          events.config.guard.fetchLatency.description ?? '',
+          stanzaHistogramMetricOptions('Latency histogram for time to fetch guard configuration')
         )
       }
     }
@@ -172,7 +172,7 @@ export class StanzaInstrumentation extends InstrumentationBase {
     eventBus.on(events.quota.fetchOk, data => {
       this.metrics.quota.fetchOk.add(1, {
         ...eventDataToDefaultContextAttributes(data),
-        ...eventDataToOptionalDecoratorAttributes(data),
+        ...eventDataToOptionalGuardAttributes(data),
         endpoint: data.endpoint
       })
     })
@@ -191,7 +191,7 @@ export class StanzaInstrumentation extends InstrumentationBase {
     eventBus.on(events.quota.validateOk, data => {
       this.metrics.quota.validateOk.add(1, {
         ...eventDataToDefaultContextAttributes(data),
-        ...eventDataToDecoratorAttributes(data)
+        ...eventDataToGuardAttributes(data)
       })
     })
     eventBus.on(events.quota.validateFailed, data => {

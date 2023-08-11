@@ -1,12 +1,12 @@
 import { type DefaultContextAttributes, eventDataToDefaultContextAttributes } from './defaultContextAttributes'
-import { type DecoratorAttributes, eventDataToDecoratorAttributes } from './decoratorAttributes'
+import { type GuardAttributes, eventDataToGuardAttributes } from './guardAttributes'
 import { eventDataToFeatureAttributes, type FeatureAttributes } from './featureAttributes'
-import { type DecoratorData, type DefaultContextData, type FeatureData } from '../../global/eventBus'
+import { type GuardData, type DefaultContextData, type FeatureData } from '../../global/eventBus'
 
-export type RequestAttributes = DefaultContextAttributes & DecoratorAttributes & FeatureAttributes
+export type RequestAttributes = DefaultContextAttributes & GuardAttributes & FeatureAttributes
 
-export const eventDataToRequestAttributes = (data: DefaultContextData & DecoratorData & FeatureData): RequestAttributes => ({
+export const eventDataToRequestAttributes = (data: DefaultContextData & GuardData & FeatureData): RequestAttributes => ({
   ...eventDataToDefaultContextAttributes(data),
-  ...eventDataToDecoratorAttributes(data),
+  ...eventDataToGuardAttributes(data),
   ...eventDataToFeatureAttributes(data)
 })

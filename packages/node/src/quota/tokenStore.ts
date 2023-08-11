@@ -2,7 +2,7 @@ import { type TokenQuery } from './tokenState'
 import { type StanzaToken } from '../hub/model'
 
 export interface TokenStoreQuery extends TokenQuery {
-  decorator: string
+  guard: string
 }
 
 export interface TokenStore {

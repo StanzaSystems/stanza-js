@@ -12,7 +12,7 @@ const notInitializedSyncServiceMethod = (): never => {
 export let hubService: HubService = hubServiceGlobal[HUB_SERVICE_SYMBOL] = hubServiceGlobal[HUB_SERVICE_SYMBOL] ?? {
   getServiceMetadata: notInitializedSyncServiceMethod,
   fetchServiceConfig: notInitializedServiceMethod,
-  fetchDecoratorConfig: notInitializedServiceMethod,
+  fetchGuardConfig: notInitializedServiceMethod,
   getToken: notInitializedServiceMethod,
   getTokenLease: notInitializedServiceMethod,
   validateToken: notInitializedServiceMethod,

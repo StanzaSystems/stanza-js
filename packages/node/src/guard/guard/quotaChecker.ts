@@ -1,10 +1,10 @@
-import { getDecoratorConfig } from '../../global/decoratorConfig'
+import { getGuardConfig } from '../../global/guardConfig'
 import { getQuota } from '../../quota/getQuota'
-import { StanzaDecoratorError } from '../stanzaDecoratorError'
+import { StanzaGuardError } from '../stanzaGuardError'
 import { type Tag } from '../model'
 
 export interface QuotaCheckerOptions {
-  decorator: string
+  guard: string
   feature?: string
   priorityBoost?: number
   tags?: Tag[]
@@ -14,9 +14,9 @@ export const initQuotaChecker = (options: QuotaCheckerOptions) => {
   return { shouldCheckQuota, checkQuota }
 
   function shouldCheckQuota (): boolean {
-    const decoratorConfig = getDecoratorConfig(options.decorator)
+    const guardConfig = getGuardConfig(options.guard)
 
-    return decoratorConfig?.config?.checkQuota === true
+    return guardConfig?.config?.checkQuota === true
   }
 
   async function checkQuota (): Promise<{ type: 'TOKEN_GRANTED', token: string } | null> {
@@ -24,7 +24,7 @@ export const initQuotaChecker = (options: QuotaCheckerOptions) => {
       ...options
     })
     if (token?.granted === false) {
-      throw new StanzaDecoratorError('NoQuota', 'Decorator can not be executed')
+      throw new StanzaGuardError('NoQuota', 'Guard can not be executed')
     }
 
     return token?.granted ? { type: 'TOKEN_GRANTED', token: token.token } : null

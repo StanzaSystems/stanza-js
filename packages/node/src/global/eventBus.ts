@@ -13,9 +13,9 @@ const configServiceFetchOk = Symbol('stanza.config.service.fetch_ok')
 const configServiceFetchFailed = Symbol('stanza.config.service.fetch_failed')
 const configServiceFetchLatency = Symbol('stanza.config.service.fetch_latency')
 
-const configDecoratorFetchOk = Symbol('stanza.config.decorator.fetch_ok')
-const configDecoratorFetchFailed = Symbol('stanza.config.decorator.fetch_failed')
-const configDecoratorFetchLatency = Symbol('stanza.config.decorator.fetch_latency')
+const configGuardFetchOk = Symbol('stanza.config.guard.fetch_ok')
+const configGuardFetchFailed = Symbol('stanza.config.guard.fetch_failed')
+const configGuardrFetchLatency = Symbol('stanza.config.guard.fetch_latency')
 
 const quotaFetchOk = Symbol('stanza.quota.fetch_ok')
 const quotaFetchFailed = Symbol('stanza.quota.fetch_failed')
@@ -43,10 +43,10 @@ const eventBusEvents = {
       fetchFailed: configServiceFetchFailed,
       fetchLatency: configServiceFetchLatency
     },
-    decorator: {
-      fetchOk: configDecoratorFetchOk,
-      fetchFailed: configDecoratorFetchFailed,
-      fetchLatency: configDecoratorFetchLatency
+    guard: {
+      fetchOk: configGuardFetchOk,
+      fetchFailed: configGuardFetchFailed,
+      fetchLatency: configGuardrFetchLatency
     }
   },
   quota: {
@@ -83,11 +83,11 @@ export interface FeatureData {
   featureName: string
 }
 
-export interface DecoratorData {
-  decoratorName: string
+export interface GuardData {
+  guardName: string
 }
 
-export type OptionalDecoratorData = Partial<DecoratorData>
+export type OptionalGuardData = Partial<GuardData>
 
 export interface LatencyData {
   latency: number
@@ -105,21 +105,21 @@ export interface BlockedReasonData {
 }
 
 type StanzaEventBus = EventBus<{
-  [requestAllowedEvent]: DefaultContextData & DecoratorData & FeatureData
-  [requestBlockedEvent]: DefaultContextData & DecoratorData & FeatureData & BlockedReasonData
-  [requestFailedEvent]: DefaultContextData & DecoratorData & FeatureData
-  [requestSucceededEvent]: DefaultContextData & DecoratorData & FeatureData
-  [requestLatencyEvent]: DefaultContextData & DecoratorData & FeatureData & LatencyData
+  [requestAllowedEvent]: DefaultContextData & GuardData & FeatureData
+  [requestBlockedEvent]: DefaultContextData & GuardData & FeatureData & BlockedReasonData
+  [requestFailedEvent]: DefaultContextData & GuardData & FeatureData
+  [requestSucceededEvent]: DefaultContextData & GuardData & FeatureData
+  [requestLatencyEvent]: DefaultContextData & GuardData & FeatureData & LatencyData
   [configServiceFetchOk]: DefaultContextData
   [configServiceFetchFailed]: DefaultContextData
   [configServiceFetchLatency]: DefaultContextData & LatencyData
-  [configDecoratorFetchOk]: DefaultContextData & DecoratorData
-  [configDecoratorFetchFailed]: DefaultContextData
-  [configDecoratorFetchLatency]: DefaultContextData & LatencyData
-  [quotaFetchOk]: DefaultContextData & QuotaEndpointData & OptionalDecoratorData
+  [configGuardFetchOk]: DefaultContextData & GuardData
+  [configGuardFetchFailed]: DefaultContextData
+  [configGuardrFetchLatency]: DefaultContextData & LatencyData
+  [quotaFetchOk]: DefaultContextData & QuotaEndpointData & OptionalGuardData
   [quotaFetchFailed]: DefaultContextData & QuotaEndpointData
   [quotaFetchLatency]: DefaultContextData & QuotaEndpointData & LatencyData
-  [quotaValidateOk]: DefaultContextData & DecoratorData
+  [quotaValidateOk]: DefaultContextData & GuardData
   [quotaValidateFailed]: DefaultContextData
   [quotaValidateLatency]: DefaultContextData & LatencyData
   [telemetrySendOk]: DefaultContextData & { oTelAddress: string }

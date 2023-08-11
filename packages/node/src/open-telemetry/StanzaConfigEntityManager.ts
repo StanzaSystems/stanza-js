@@ -1,8 +1,8 @@
 import { type Context } from '@opentelemetry/api'
-import { stanzaDecoratorContextKey } from '../context/stanzaDecoratorContextKey'
-import { addDecoratorConfigListener, getDecoratorConfig } from '../global/decoratorConfig'
+import { stanzaGuardContextKey } from '../context/stanzaGuardContextKey'
+import { addGuardConfigListener, getGuardConfig } from '../global/guardConfig'
 import { addServiceConfigListener, getServiceConfig } from '../global/serviceConfig'
-import { type DecoratorConfig, type ServiceConfig } from '../hub/model'
+import { type GuardConfig, type ServiceConfig } from '../hub/model'
 
 export class StanzaConfigEntityManager<T> {
   private serviceEntity: T
@@ -17,7 +17,7 @@ export class StanzaConfigEntityManager<T> {
     private readonly options: {
       getInitial: () => T
       createWithServiceConfig: (serviceConfig: NonNullable<ServiceConfig['config']>) => T
-      createWithDecoratorConfig?: (decoratorConfig: NonNullable<DecoratorConfig['config']>) => T | undefined
+      createWithDecoratorConfig?: (decoratorConfig: NonNullable<GuardConfig['config']>) => T | undefined
       cleanup: (entity: T) => Promise<void>
     }
   ) {
@@ -52,7 +52,7 @@ export class StanzaConfigEntityManager<T> {
   }
 
   private getDecoratorEntity (context: Context): T | undefined {
-    const decoratorContextValue = context.getValue(stanzaDecoratorContextKey)
+    const decoratorContextValue = context.getValue(stanzaGuardContextKey)
     const decoratorName = typeof (decoratorContextValue) === 'string' ? decoratorContextValue : undefined
     const decoratorProcessor = this.decoratorEntities[decoratorName ?? '']
 
@@ -60,7 +60,7 @@ export class StanzaConfigEntityManager<T> {
       return decoratorProcessor
     }
 
-    this.unsubscribeDecoratorConfigListeners.push(addDecoratorConfigListener(decoratorName, ({ config }) => {
+    this.unsubscribeDecoratorConfigListeners.push(addGuardConfigListener(decoratorName, ({ config }) => {
       if (config !== undefined) {
         if (this.decoratorEntities[decoratorName] !== undefined) {
           void this.options.cleanup(this.decoratorEntities[decoratorName])
@@ -72,7 +72,7 @@ export class StanzaConfigEntityManager<T> {
       }
     }))
 
-    const decoratorConfig = getDecoratorConfig(decoratorName)
+    const decoratorConfig = getGuardConfig(decoratorName)
 
     if (decoratorConfig?.config !== undefined) {
       const decoratorEntity = this.options.createWithDecoratorConfig?.(decoratorConfig.config)

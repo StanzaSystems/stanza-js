@@ -17,7 +17,7 @@ export const createTokenStore = (): TokenStore => {
 
   return {
     getToken: async (query) => {
-      const { fetchTokensIfNecessary } = getDecoratorTokenStore(query.decorator)
+      const { fetchTokensIfNecessary } = getDecoratorTokenStore(query.guard)
       return fetchTokensIfNecessary(query)
     },
     markTokenAsConsumed: (token) => {
@@ -96,7 +96,7 @@ function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
     tokenLeaseInProgressCount++
     return hubService.getTokenLease({
       ...query,
-      decorator
+      guard: decorator
     }).finally(() => {
       tokenLeaseInProgressCount--
     }).catch(() => null)

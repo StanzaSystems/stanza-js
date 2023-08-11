@@ -3,8 +3,8 @@ export interface Tag {
   value: string
 }
 
-export interface StanzaDecoratorOptions {
-  decorator: string
+export interface StanzaGuardOptions {
+  guard: string
   feature?: string
   priorityBoost?: number
   tags?: Tag[]

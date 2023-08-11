@@ -37,7 +37,7 @@ const markTokensAsConsumedMock = hubServiceMockMethod<'markTokensAsConsumed'>(as
 export const mockHubService = {
   getServiceMetadata: getServiceMetadataMock,
   fetchServiceConfig: fetchServiceConfigMock,
-  fetchDecoratorConfig: fetchDecoratorConfigMock,
+  fetchGuardConfig: fetchDecoratorConfigMock,
   getToken: getTokenMock,
   getTokenLease: getTokenLeaseMock,
   validateToken: validateTokenMock,

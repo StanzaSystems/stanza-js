@@ -1,8 +1,8 @@
 import { initQuotaChecker } from './quotaChecker'
 import { initIngressTokenValidator } from './ingressTokenValidator'
-import { type StanzaDecoratorOptions } from '../model'
+import { type StanzaGuardOptions } from '../model'
 
-type DecoratorGuardOptions = StanzaDecoratorOptions
+type DecoratorGuardOptions = StanzaGuardOptions
 
 export const initDecoratorGuard = (options: DecoratorGuardOptions) => {
   const { shouldCheckQuota, checkQuota } = initQuotaChecker(options)
