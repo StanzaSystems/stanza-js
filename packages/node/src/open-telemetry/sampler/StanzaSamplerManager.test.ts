@@ -10,9 +10,9 @@ import { StanzaSamplerManager } from './StanzaSamplerManager'
 let serviceListener: ServiceConfigListener
 
 type GetServiceConfig = typeof getServiceConfig
-type GetDecoratorConfig = typeof getGuardConfig
+type GetGuardConfig = typeof getGuardConfig
 const getServiceConfigMock = vi.fn<Parameters<GetServiceConfig>, ReturnType<GetServiceConfig>>()
-const getDecoratorConfigMock = vi.fn<Parameters<GetDecoratorConfig>, ReturnType<GetDecoratorConfig>>()
+const getGuardConfigMock = vi.fn<Parameters<GetGuardConfig>, ReturnType<GetGuardConfig>>()
 vi.mock('../../global/serviceConfig', () => {
   return {
     getServiceConfig: ((...args) => getServiceConfigMock(...args)) satisfies GetServiceConfig,
@@ -46,7 +46,7 @@ const secondMockServiceConfig = {
 
 beforeEach(async () => {
   getServiceConfigMock.mockReset()
-  getDecoratorConfigMock.mockReset()
+  getGuardConfigMock.mockReset()
 })
 
 describe('StanzaSamplerManager', function () {
@@ -94,11 +94,11 @@ describe('StanzaSamplerManager', function () {
     })
   })
 
-  describe('context with decorator', () => {
+  describe('context with guard', () => {
     it('should return AlwaysOffSampler if service config is not initialized', function () {
       const manager = new StanzaSamplerManager()
 
-      expect(manager.getSampler(ROOT_CONTEXT.setValue(stanzaGuardContextKey, 'myDecorator'))).toBeInstanceOf(AlwaysOffSampler)
+      expect(manager.getSampler(ROOT_CONTEXT.setValue(stanzaGuardContextKey, 'myGuard'))).toBeInstanceOf(AlwaysOffSampler)
     })
 
     it('should return service processor if service config is initialized', function () {
@@ -106,7 +106,7 @@ describe('StanzaSamplerManager', function () {
 
       serviceListener(mockServiceConfig)
 
-      const sampler = manager.getSampler(ROOT_CONTEXT.setValue(stanzaGuardContextKey, 'myDecorator'))
+      const sampler = manager.getSampler(ROOT_CONTEXT.setValue(stanzaGuardContextKey, 'myGuard'))
       expect(sampler).toEqual(new TraceIdRatioBasedSampler(1))
     })
   })

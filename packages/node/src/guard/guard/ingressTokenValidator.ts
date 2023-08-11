@@ -15,8 +15,8 @@ export const initIngressTokenValidator = (options: IngressTokenValidatorOptions)
   return { shouldValidateIngressToken, validateIngressToken }
 
   function shouldValidateIngressToken (): boolean {
-    const decoratorConfig = getGuardConfig(options.guard)
-    return decoratorConfig?.config?.validateIngressTokens === true
+    const guardConfig = getGuardConfig(options.guard)
+    return guardConfig?.config?.validateIngressTokens === true
   }
 
   async function validateIngressToken (): Promise<{ type: 'TOKEN_VALIDATED' } | null> {

@@ -15,7 +15,7 @@ import { hubService } from '../global/hubService'
 import { getServiceConfig } from '../global/serviceConfig'
 
 export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOptions) => {
-  const { guard } = createStanzaDecorator(options)
+  const { guard } = createStanzaGuard(options)
 
   return createStanzaWrapper<TArgs, TReturn, Promisify<TReturn>>((fn) => {
     const resultFn = async function (...args: Parameters<typeof fn>) {
@@ -67,11 +67,11 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOp
   })
 }
 
-const createStanzaDecorator = (options: StanzaGuardOptions) => {
-  const initializedDecorator = initOrGetGuard(options)
+const createStanzaGuard = (options: StanzaGuardOptions) => {
+  const initializedGuard = initOrGetGuard(options)
   return {
-    ...initializedDecorator,
-    guard: wrapEventsAsync(initializedDecorator.guard, {
+    ...initializedGuard,
+    guard: wrapEventsAsync(initializedGuard.guard, {
       success: async () => {
         const customerId = getServiceConfig()?.config.customerId
         return eventBus.emit(events.request.allowed, {

@@ -6,18 +6,18 @@ import { type GuardConfig, type ServiceConfig } from '../hub/model'
 
 export class StanzaConfigEntityManager<T> {
   private serviceEntity: T
-  private readonly decoratorEntities: Record<string, T> = {}
+  private readonly guardEntities: Record<string, T> = {}
   private readonly unsubscribeServiceConfigListener = addServiceConfigListener(({ config }) => {
     this.updateServiceEntity(config)
   })
 
-  private readonly unsubscribeDecoratorConfigListeners: Array<() => void> = []
+  private readonly unsubscribeGuardConfigListeners: Array<() => void> = []
 
   constructor (
     private readonly options: {
       getInitial: () => T
       createWithServiceConfig: (serviceConfig: NonNullable<ServiceConfig['config']>) => T
-      createWithDecoratorConfig?: (decoratorConfig: NonNullable<GuardConfig['config']>) => T | undefined
+      createWithGuardConfig?: (guardConfig: NonNullable<GuardConfig['config']>) => T | undefined
       cleanup: (entity: T) => Promise<void>
     }
   ) {
@@ -30,20 +30,20 @@ export class StanzaConfigEntityManager<T> {
   }
 
   getEntity (context: Context): T {
-    const decoratorEntity = this.getDecoratorEntity(context)
-    return decoratorEntity ?? this.serviceEntity
+    const guardEntity = this.getGuardEntity(context)
+    return guardEntity ?? this.serviceEntity
   }
 
   async shutdown (): Promise<void> {
     this.unsubscribeServiceConfigListener()
-    this.unsubscribeDecoratorConfigListeners.forEach(u => { u() })
+    this.unsubscribeGuardConfigListeners.forEach(u => { u() })
     await Promise.all(this.getAllEntities().map(async entity => this.options.cleanup(entity)))
   }
 
   getAllEntities (): T[] {
     return [
       this.serviceEntity,
-      ...Object.values(this.decoratorEntities).flat() as T[]
+      ...Object.values(this.guardEntities).flat() as T[]
     ]
   }
 
@@ -51,38 +51,38 @@ export class StanzaConfigEntityManager<T> {
     this.serviceEntity = this.options.createWithServiceConfig(serviceConfig)
   }
 
-  private getDecoratorEntity (context: Context): T | undefined {
-    const decoratorContextValue = context.getValue(stanzaGuardContextKey)
-    const decoratorName = typeof (decoratorContextValue) === 'string' ? decoratorContextValue : undefined
-    const decoratorProcessor = this.decoratorEntities[decoratorName ?? '']
+  private getGuardEntity (context: Context): T | undefined {
+    const guardContextValue = context.getValue(stanzaGuardContextKey)
+    const guardName = typeof (guardContextValue) === 'string' ? guardContextValue : undefined
+    const guardProcessor = this.guardEntities[guardName ?? '']
 
-    if (decoratorProcessor !== undefined || decoratorName === undefined) {
-      return decoratorProcessor
+    if (guardProcessor !== undefined || guardName === undefined) {
+      return guardProcessor
     }
 
-    this.unsubscribeDecoratorConfigListeners.push(addGuardConfigListener(decoratorName, ({ config }) => {
+    this.unsubscribeGuardConfigListeners.push(addGuardConfigListener(guardName, ({ config }) => {
       if (config !== undefined) {
-        if (this.decoratorEntities[decoratorName] !== undefined) {
-          void this.options.cleanup(this.decoratorEntities[decoratorName])
+        if (this.guardEntities[guardName] !== undefined) {
+          void this.options.cleanup(this.guardEntities[guardName])
         }
-        const decoratorEntity = this.options.createWithDecoratorConfig?.(config)
-        if (decoratorEntity !== undefined) {
-          this.decoratorEntities[decoratorName] = decoratorEntity
+        const guardEntity = this.options.createWithGuardConfig?.(config)
+        if (guardEntity !== undefined) {
+          this.guardEntities[guardName] = guardEntity
         }
       }
     }))
 
-    const decoratorConfig = getGuardConfig(decoratorName)
+    const guardConfig = getGuardConfig(guardName)
 
-    if (decoratorConfig?.config !== undefined) {
-      const decoratorEntity = this.options.createWithDecoratorConfig?.(decoratorConfig.config)
-      if (this.decoratorEntities[decoratorName] !== undefined) {
-        void this.options.cleanup(this.decoratorEntities[decoratorName])
+    if (guardConfig?.config !== undefined) {
+      const guardEntity = this.options.createWithGuardConfig?.(guardConfig.config)
+      if (this.guardEntities[guardName] !== undefined) {
+        void this.options.cleanup(this.guardEntities[guardName])
       }
-      if (decoratorEntity !== undefined) {
-        this.decoratorEntities[decoratorName] = decoratorEntity
+      if (guardEntity !== undefined) {
+        this.guardEntities[guardName] = guardEntity
       }
-      return decoratorEntity
+      return guardEntity
     }
 
     return undefined
