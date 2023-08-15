@@ -22,7 +22,7 @@ describe('nextRequestErrorHandler', () => {
     wrappedHandler = nextRequestErrorHandler(handler)
   })
 
-  it('should catch StanzaDecoratorError - NoQuota', async function () {
+  it('should catch StanzaGuardError - NoQuota', async function () {
     handler.mockImplementationOnce(() => {
       throw new StanzaGuardError('NoQuota', 'Message')
     })
@@ -34,7 +34,7 @@ describe('nextRequestErrorHandler', () => {
     await expect(wrappedHandler(mockReq, mockRes)).resolves.not.toThrow()
   })
 
-  it('should catch StanzaDecoratorError - InvalidToken', async function () {
+  it('should catch StanzaGuardError - InvalidToken', async function () {
     handler.mockImplementationOnce(() => {
       throw new StanzaGuardError('InvalidToken', 'Message')
     })

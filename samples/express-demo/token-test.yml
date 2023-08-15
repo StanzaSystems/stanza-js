@@ -17,7 +17,7 @@ scenarios:
             priorityBoost: -1
             selector:
               environment: local
-              decoratorName: github_guard
+              guardName: github_guard
     weight: 1
   - name: "Send enterprise requests"
     afterResponse: "trackRateLimitsFromHub"
@@ -31,5 +31,5 @@ scenarios:
             priorityBoost: 0
             selector:
               environment: local
-              decoratorName: github_guard
+              guardName: github_guard
     weight: 1

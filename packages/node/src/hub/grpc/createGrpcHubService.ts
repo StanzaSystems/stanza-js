@@ -64,12 +64,12 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
       }
     },
     fetchGuardConfig: async (options) => {
-      const data = await grpcRequest(async () => configClient.getDecoratorConfig({
+      const data = await grpcRequest(async () => configClient.getGuardConfig({
         selector: {
           serviceName,
           serviceRelease,
           environment,
-          decoratorName: options.guard
+          guardName: options.guard
         },
         versionSeen: options.lastVersionSeen
       }), guardConfigResponse)
@@ -89,7 +89,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
         priorityBoost: options.priorityBoost,
         selector: {
           featureName: options.feature,
-          decoratorName: options.guard,
+          guardName: options.guard,
           environment,
           tags: options.tags
         }
@@ -101,7 +101,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
         priorityBoost: options.priorityBoost,
         selector: {
           featureName: options.feature,
-          decoratorName: options.guard,
+          guardName: options.guard,
           environment,
           tags: options.tags
         }
@@ -131,7 +131,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
       const data = await grpcRequest(async () => quotaClient.validateToken({
         tokens: [{
           token: options.token,
-          decorator: {
+          guard: {
             name: options.guard,
             environment
           }

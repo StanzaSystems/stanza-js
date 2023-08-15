@@ -5,7 +5,7 @@
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
-import { DecoratorFeatureSelector, DecoratorSelector } from "./common_pb.js";
+import { GuardFeatureSelector, GuardSelector } from "./common_pb.js";
 
 /**
  * @generated from enum stanza.hub.v1.Reason
@@ -52,17 +52,17 @@ proto3.util.setEnumType(Reason, "stanza.hub.v1.Reason", [
 ]);
 
 /**
- * Requests token for given decorator at priority of specified feature.
+ * Requests token for given Guard at priority of specified feature.
  *
  * @generated from message stanza.hub.v1.GetTokenRequest
  */
 export class GetTokenRequest extends Message<GetTokenRequest> {
   /**
-   * Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator. If tags are in use only one quota token will be issued at a time.
+   * Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetGuardConfig endpoint for this Guard. If tags are in use only one quota token will be issued at a time.
    *
-   * @generated from field: stanza.hub.v1.DecoratorFeatureSelector selector = 1;
+   * @generated from field: stanza.hub.v1.GuardFeatureSelector selector = 1;
    */
-  selector?: DecoratorFeatureSelector;
+  selector?: GuardFeatureSelector;
 
   /**
    * Used for tracking per-client token usage, allowing automatic determination of efficient batch leases. ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or a UUID.
@@ -95,7 +95,7 @@ export class GetTokenRequest extends Message<GetTokenRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "stanza.hub.v1.GetTokenRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "selector", kind: "message", T: DecoratorFeatureSelector },
+    { no: 1, name: "selector", kind: "message", T: GuardFeatureSelector },
     { no: 4, name: "client_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
     { no: 5, name: "priority_boost", kind: "scalar", T: 5 /* ScalarType.INT32 */, opt: true },
     { no: 7, name: "weight", kind: "scalar", T: 2 /* ScalarType.FLOAT */, opt: true },
@@ -170,17 +170,17 @@ export class GetTokenResponse extends Message<GetTokenResponse> {
 }
 
 /**
- * Requests token lease for given decorator at priority of specified feature.
+ * Requests token lease for given Guard at priority of specified feature.
  *
  * @generated from message stanza.hub.v1.GetTokenLeaseRequest
  */
 export class GetTokenLeaseRequest extends Message<GetTokenLeaseRequest> {
   /**
-   * Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator. If tags are in use only one quota token will be issued at a time.
+   * Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetGuardConfig endpoint for this Guard. If tags are in use only one quota token will be issued at a time.
    *
-   * @generated from field: stanza.hub.v1.DecoratorFeatureSelector selector = 1;
+   * @generated from field: stanza.hub.v1.GuardFeatureSelector selector = 1;
    */
-  selector?: DecoratorFeatureSelector;
+  selector?: GuardFeatureSelector;
 
   /**
    * Used for tracking per-client token usage, allowing automatic determination of efficient batch leases. ID should be assigned by Stanza clients and be unique per-customer. Host or instance names may be used, or a UUID.
@@ -213,7 +213,7 @@ export class GetTokenLeaseRequest extends Message<GetTokenLeaseRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "stanza.hub.v1.GetTokenLeaseRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "selector", kind: "message", T: DecoratorFeatureSelector },
+    { no: 1, name: "selector", kind: "message", T: GuardFeatureSelector },
     { no: 4, name: "client_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
     { no: 5, name: "priority_boost", kind: "scalar", T: 5 /* ScalarType.INT32 */, opt: true },
     { no: 7, name: "default_weight", kind: "scalar", T: 2 /* ScalarType.FLOAT */, opt: true },
@@ -359,7 +359,7 @@ export class TokenLease extends Message<TokenLease> {
 }
 
 /**
- * Notifies Hub that one or more token leases has been used, i.e. decorator has been exercised.
+ * Notifies Hub that one or more token leases has been used, i.e. Guard has been exercised.
  *
  * @generated from message stanza.hub.v1.SetTokenLeaseConsumedRequest
  */
@@ -439,7 +439,7 @@ export class SetTokenLeaseConsumedResponse extends Message<SetTokenLeaseConsumed
 }
 
 /**
- * Calls Hub to validate a token (ensures token has not expired, was minted by Hub, and related to the specified Decorator). Used from Ingress decorators. Ensures callers have acquired quota prior to expending resources.
+ * Calls Hub to validate a token (ensures token has not expired, was minted by Hub, and related to the specified Guard). Used from Ingress Guards. Ensures callers have acquired quota prior to expending resources.
  *
  * @generated from message stanza.hub.v1.ValidateTokenRequest
  */
@@ -487,9 +487,9 @@ export class TokenInfo extends Message<TokenInfo> {
   token = "";
 
   /**
-   * @generated from field: stanza.hub.v1.DecoratorSelector decorator = 2;
+   * @generated from field: stanza.hub.v1.GuardSelector guard = 2;
    */
-  decorator?: DecoratorSelector;
+  guard?: GuardSelector;
 
   constructor(data?: PartialMessage<TokenInfo>) {
     super();
@@ -500,7 +500,7 @@ export class TokenInfo extends Message<TokenInfo> {
   static readonly typeName = "stanza.hub.v1.TokenInfo";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "decorator", kind: "message", T: DecoratorSelector },
+    { no: 2, name: "guard", kind: "message", T: GuardSelector },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TokenInfo {

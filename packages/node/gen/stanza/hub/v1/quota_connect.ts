@@ -44,7 +44,7 @@ export const QuotaService = {
       kind: MethodKind.Unary,
     },
     /**
-     * Used by ingress decorators to validate Hub-generated tokens.
+     * Used by ingress Guards to validate Hub-generated tokens.
      *
      * @generated from rpc stanza.hub.v1.QuotaService.ValidateToken
      */

@@ -5,22 +5,22 @@
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
-import { DecoratorFeatureSelector, Health } from "./common_pb.js";
+import { GuardFeatureSelector, Health } from "./common_pb.js";
 
 /**
- * Called by SDK to determine whether a Decorator is overloaded at a given Feature's priority level. Used so that customer code can make good decisions about fail-fast or graceful degradation as high up the stack as possible. SDK may cache the result for up to 10 seconds.
+ * Called by SDK to determine whether a Guard is overloaded at a given Feature's priority level. Used so that customer code can make good decisions about fail-fast or graceful degradation as high up the stack as possible. SDK may cache the result for up to 10 seconds.
  *
- * @generated from message stanza.hub.v1.QueryDecoratorHealthRequest
+ * @generated from message stanza.hub.v1.QueryGuardHealthRequest
  */
-export class QueryDecoratorHealthRequest extends Message<QueryDecoratorHealthRequest> {
+export class QueryGuardHealthRequest extends Message<QueryGuardHealthRequest> {
   /**
-   * Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetDecoratorConfig endpoint for this Decorator. If tags are in use only one quota token will be issued at a time.
+   * Only tags which are used for quota management should be included here - i.e. the list of quota_tags returned by the GetGuardConfig endpoint for this Guard. If tags are in use only one quota token will be issued at a time.
    *
-   * Required: decoratorName, featureName, environment
+   * Required: GuardName, featureName, environment
    *
-   * @generated from field: stanza.hub.v1.DecoratorFeatureSelector selector = 1;
+   * @generated from field: stanza.hub.v1.GuardFeatureSelector selector = 1;
    */
-  selector?: DecoratorFeatureSelector;
+  selector?: GuardFeatureSelector;
 
   /**
    * Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority. For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic.
@@ -29,69 +29,69 @@ export class QueryDecoratorHealthRequest extends Message<QueryDecoratorHealthReq
    */
   priorityBoost?: number;
 
-  constructor(data?: PartialMessage<QueryDecoratorHealthRequest>) {
+  constructor(data?: PartialMessage<QueryGuardHealthRequest>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.QueryDecoratorHealthRequest";
+  static readonly typeName = "stanza.hub.v1.QueryGuardHealthRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "selector", kind: "message", T: DecoratorFeatureSelector },
+    { no: 1, name: "selector", kind: "message", T: GuardFeatureSelector },
     { no: 4, name: "priority_boost", kind: "scalar", T: 5 /* ScalarType.INT32 */, opt: true },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): QueryDecoratorHealthRequest {
-    return new QueryDecoratorHealthRequest().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): QueryGuardHealthRequest {
+    return new QueryGuardHealthRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): QueryDecoratorHealthRequest {
-    return new QueryDecoratorHealthRequest().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): QueryGuardHealthRequest {
+    return new QueryGuardHealthRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): QueryDecoratorHealthRequest {
-    return new QueryDecoratorHealthRequest().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): QueryGuardHealthRequest {
+    return new QueryGuardHealthRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: QueryDecoratorHealthRequest | PlainMessage<QueryDecoratorHealthRequest> | undefined, b: QueryDecoratorHealthRequest | PlainMessage<QueryDecoratorHealthRequest> | undefined): boolean {
-    return proto3.util.equals(QueryDecoratorHealthRequest, a, b);
+  static equals(a: QueryGuardHealthRequest | PlainMessage<QueryGuardHealthRequest> | undefined, b: QueryGuardHealthRequest | PlainMessage<QueryGuardHealthRequest> | undefined): boolean {
+    return proto3.util.equals(QueryGuardHealthRequest, a, b);
   }
 }
 
 /**
- * @generated from message stanza.hub.v1.QueryDecoratorHealthResponse
+ * @generated from message stanza.hub.v1.QueryGuardHealthResponse
  */
-export class QueryDecoratorHealthResponse extends Message<QueryDecoratorHealthResponse> {
+export class QueryGuardHealthResponse extends Message<QueryGuardHealthResponse> {
   /**
    * @generated from field: stanza.hub.v1.Health health = 1;
    */
   health = Health.UNSPECIFIED;
 
-  constructor(data?: PartialMessage<QueryDecoratorHealthResponse>) {
+  constructor(data?: PartialMessage<QueryGuardHealthResponse>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.QueryDecoratorHealthResponse";
+  static readonly typeName = "stanza.hub.v1.QueryGuardHealthResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "health", kind: "enum", T: proto3.getEnumType(Health) },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): QueryDecoratorHealthResponse {
-    return new QueryDecoratorHealthResponse().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): QueryGuardHealthResponse {
+    return new QueryGuardHealthResponse().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): QueryDecoratorHealthResponse {
-    return new QueryDecoratorHealthResponse().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): QueryGuardHealthResponse {
+    return new QueryGuardHealthResponse().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): QueryDecoratorHealthResponse {
-    return new QueryDecoratorHealthResponse().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): QueryGuardHealthResponse {
+    return new QueryGuardHealthResponse().fromJsonString(jsonString, options);
   }
 
-  static equals(a: QueryDecoratorHealthResponse | PlainMessage<QueryDecoratorHealthResponse> | undefined, b: QueryDecoratorHealthResponse | PlainMessage<QueryDecoratorHealthResponse> | undefined): boolean {
-    return proto3.util.equals(QueryDecoratorHealthResponse, a, b);
+  static equals(a: QueryGuardHealthResponse | PlainMessage<QueryGuardHealthResponse> | undefined, b: QueryGuardHealthResponse | PlainMessage<QueryGuardHealthResponse> | undefined): boolean {
+    return proto3.util.equals(QueryGuardHealthResponse, a, b);
   }
 }
 

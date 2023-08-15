@@ -8,7 +8,7 @@ Refer to the `README.md` file linked to each sample, and the [Stanza Docs](https
 
 ## Sample Applications
 
-- [`samples/express-demo`](./samples/express-demo/README.md) - Express (Node) sample, showing Stanza decorators.  (Good first sample to start with.)
+- [`samples/express-demo`](./samples/express-demo/README.md) - Express (Node) sample, showing Stanza guards.  (Good first sample to start with.)
 - [`samples/next-with-stripe`](./samples/next-with-stripe/README.md) - Next.js sample that uses the Stripe React component.
 - [`samples/react-simple`](./samples/react-simple/README.md) - Simple React sample app
 - [`samples/simple-next`](./samples/simple-next/README.md) - Simple Next.js sample app

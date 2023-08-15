@@ -22,8 +22,8 @@ const handler: NextApiHandler = async (req, res) => {
   res.json(resultProducts.filter(({ name }) => name.toLowerCase().includes(searchString.toLowerCase())))
 }
 
-const nextApiRequestStripeProductsApiDecorator = nextApiRequestGuard({
+const nextApiRequestStripeProductsApiGuard = nextApiRequestGuard({
   guard: 'Stripe_Products_API',
   feature: 'search'
 })
-export default nextApiRequestStripeProductsApiDecorator(handler)
+export default nextApiRequestStripeProductsApiGuard(handler)

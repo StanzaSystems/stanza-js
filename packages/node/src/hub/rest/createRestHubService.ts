@@ -49,14 +49,14 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
       const body = {
         versionSeen: lastVersionSeen,
         selector: {
-          decoratorName: guard,
+          guardName: guard,
           serviceName,
           serviceRelease,
           environment
         }
       }
       logger.debug('fetching guard config with body %o', body)
-      const guardConfigResult = await hubRequest('v1/config/decorator', {
+      const guardConfigResult = await hubRequest('v1/config/guard', {
         body,
         method: 'POST'
       }, guardConfigResponse)
@@ -77,7 +77,7 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
         method: 'POST',
         body: {
           selector: {
-            decoratorName: guard,
+            guardName: guard,
             featureName: feature,
             environment,
             tags
@@ -92,7 +92,7 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
         method: 'POST',
         body: {
           selector: {
-            decoratorName: guard,
+            guardName: guard,
             featureName: feature,
             environment,
             tags
@@ -127,7 +127,7 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
         body: {
           tokens: [{
             token,
-            decorator: guard
+            guard: guard
           }]
         }
       }, stanzaValidateTokenResponse)

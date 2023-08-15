@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { QueryDecoratorHealthRequest, QueryDecoratorHealthResponse } from "./health_pb.js";
+import { QueryGuardHealthRequest, QueryGuardHealthResponse } from "./health_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -23,12 +23,12 @@ export const HealthService = {
   typeName: "stanza.hub.v1.HealthService",
   methods: {
     /**
-     * @generated from rpc stanza.hub.v1.HealthService.QueryDecoratorHealth
+     * @generated from rpc stanza.hub.v1.HealthService.QueryGuardHealth
      */
-    queryDecoratorHealth: {
-      name: "QueryDecoratorHealth",
-      I: QueryDecoratorHealthRequest,
-      O: QueryDecoratorHealthResponse,
+    queryGuardHealth: {
+      name: "QueryGuardHealth",
+      I: QueryGuardHealthRequest,
+      O: QueryGuardHealthResponse,
       kind: MethodKind.Unary,
     },
   }

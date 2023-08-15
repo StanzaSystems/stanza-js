@@ -30,13 +30,13 @@ This is a full-stack TypeScript example using:
   | search   | default | local       | 1        |
   | featured | default | local       | 2        |
 
- 3. Create a [decorator](https://ui.demo.getstanza.io/decorators) to guard the products API (match case)
- 
+ 3. Create a [guard](https://ui.demo.getstanza.io/guards) to guard the products API (match case)
+
   | Name                | Project | Environment | Traffic Type |
   |---------------------|---------|-------------|--------------|
   | Stripe_Products_API | default | local       | Outbound     |
 
- 4. On creation you will be redirected to the decorator details page. From there, ensure the traffic configuration JSON is as follows:
+ 4. On creation you will be redirected to the guard details page. From there, ensure the traffic configuration JSON is as follows:
 
  ```json
 {
@@ -50,7 +50,7 @@ This is a full-stack TypeScript example using:
  ```
 
 ### Environment Configuration:
-Make an account in the [stripe dashboard](https://dashboard.stripe.com). 
+Make an account in the [stripe dashboard](https://dashboard.stripe.com).
 
 Set the following in your .env file (copy from stripe and stanza dashboards)
 ```

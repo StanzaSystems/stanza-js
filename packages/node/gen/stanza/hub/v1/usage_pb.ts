@@ -5,7 +5,7 @@
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
-import { DecoratorSelector, Tag } from "./common_pb.js";
+import { GuardSelector, Tag } from "./common_pb.js";
 
 /**
  * MODE_SUM: query results across various axes (features, tags, apikeys) are added up and one timeseries is returned.
@@ -45,16 +45,16 @@ proto3.util.setEnumType(QueryMode, "stanza.hub.v1.QueryMode", [
 export class GetUsageRequest extends Message<GetUsageRequest> {
   /**
    * If specified, only stats relating to the tags and features in selector will be returned.
-   *  If only decorator and environment are specified, then stats relating to all tags and features will be returned.
+   *  If only guard and environment are specified, then stats relating to all tags and features will be returned.
    *
-   * @generated from field: stanza.hub.v1.DecoratorSelector selector = 1;
+   * @generated from field: stanza.hub.v1.GuardSelector selector = 1;
    */
-  selector?: DecoratorSelector;
+  selector?: GuardSelector;
 
   /**
-   * @generated from field: optional stanza.hub.v1.QueryMode decorator_query_mode = 2;
+   * @generated from field: optional stanza.hub.v1.QueryMode guard_query_mode = 2;
    */
-  decoratorQueryMode?: QueryMode;
+  guardQueryMode?: QueryMode;
 
   /**
    * @generated from field: google.protobuf.Timestamp start_ts = 3;
@@ -124,8 +124,8 @@ export class GetUsageRequest extends Message<GetUsageRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "stanza.hub.v1.GetUsageRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "selector", kind: "message", T: DecoratorSelector },
-    { no: 2, name: "decorator_query_mode", kind: "enum", T: proto3.getEnumType(QueryMode), opt: true },
+    { no: 1, name: "selector", kind: "message", T: GuardSelector },
+    { no: 2, name: "guard_query_mode", kind: "enum", T: proto3.getEnumType(QueryMode), opt: true },
     { no: 3, name: "start_ts", kind: "message", T: Timestamp },
     { no: 4, name: "end_ts", kind: "message", T: Timestamp },
     { no: 5, name: "apikey", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },

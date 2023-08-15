@@ -212,14 +212,14 @@ describe('createRestHubService', async () => {
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/config/decorator'),
+        new URL('https://url.to.hub/v1/config/guard'),
         {
           headers: {
             'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             selector: {
-              decoratorName: 'test-guard',
+              guardName: 'test-guard',
               serviceName: 'TestService',
               serviceRelease: '1',
               environment: 'test'
@@ -238,7 +238,7 @@ describe('createRestHubService', async () => {
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/config/decorator'),
+        new URL('https://url.to.hub/v1/config/guard'),
         {
           headers: {
             'X-Stanza-Key': 'testApiKey'
@@ -246,7 +246,7 @@ describe('createRestHubService', async () => {
           body: JSON.stringify({
             versionSeen: '123',
             selector: {
-              decoratorName: 'test-guard',
+              guardName: 'test-guard',
               serviceName: 'TestService',
               serviceRelease: '1',
               environment: 'test'
@@ -350,7 +350,7 @@ describe('createRestHubService', async () => {
           },
           body: JSON.stringify({
             selector: {
-              decoratorName: 'test-guard',
+              guardName: 'test-guard',
               featureName: 'test-feature',
               environment: 'test'
             },
@@ -388,7 +388,7 @@ describe('createRestHubService', async () => {
           },
           body: JSON.stringify({
             selector: {
-              decoratorName: 'test-guard',
+              guardName: 'test-guard',
               featureName: 'test-feature',
               environment: 'test',
               tags: [
@@ -493,7 +493,7 @@ describe('createRestHubService', async () => {
           },
           body: JSON.stringify({
             selector: {
-              decoratorName: 'test-guard',
+              guardName: 'test-guard',
               featureName: 'test-feature',
               environment: 'test'
             },
@@ -531,7 +531,7 @@ describe('createRestHubService', async () => {
           },
           body: JSON.stringify({
             selector: {
-              decoratorName: 'test-guard',
+              guardName: 'test-guard',
               featureName: 'test-feature',
               environment: 'test',
               tags: [
@@ -648,7 +648,7 @@ describe('createRestHubService', async () => {
           body: JSON.stringify({
             tokens: [{
               token: 'test-token',
-              decorator: 'test-guard'
+              guard: 'test-guard'
             }]
           }),
           method: 'POST'

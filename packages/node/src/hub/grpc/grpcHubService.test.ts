@@ -3,7 +3,7 @@ import { createGrpcHubService } from './createGrpcHubService'
 import type * as connectNodeModule from '@bufbuild/connect'
 import { type ConfigService } from '../../../gen/stanza/hub/v1/config_connect'
 import { type QuotaService } from '../../../gen/stanza/hub/v1/quota_connect'
-import { GetDecoratorConfigResponse, GetServiceConfigResponse } from '../../../gen/stanza/hub/v1/config_pb'
+import { GetGuardConfigResponse, GetServiceConfigResponse } from '../../../gen/stanza/hub/v1/config_pb'
 import {
   GetTokenLeaseResponse,
   GetTokenResponse,
@@ -27,7 +27,7 @@ const createPromiseClientMock = vi.fn((() => {
 
 const configClientMock = {
   getServiceConfig: vi.fn(),
-  getDecoratorConfig: vi.fn(),
+  getGuardConfig: vi.fn(),
   getBrowserContext: vi.fn()
 } satisfies connectNodeModule.PromiseClient<typeof ConfigService>
 
@@ -42,7 +42,7 @@ beforeEach(async () => {
   createPromiseClientMock.mockReset()
 
   configClientMock.getServiceConfig.mockReset()
-  configClientMock.getDecoratorConfig.mockReset()
+  configClientMock.getGuardConfig.mockReset()
   configClientMock.getBrowserContext.mockReset()
 
   quotaClientMock.getToken.mockReset()
@@ -208,11 +208,11 @@ describe('createGrpcHubService', async () => {
         guard: 'test-guard'
       })
 
-      expect(configClientMock.getDecoratorConfig).toHaveBeenCalledOnce()
-      expect(configClientMock.getDecoratorConfig).toHaveBeenCalledWith(
+      expect(configClientMock.getGuardConfig).toHaveBeenCalledOnce()
+      expect(configClientMock.getGuardConfig).toHaveBeenCalledWith(
         {
           selector: {
-            decoratorName: 'test-guard',
+            guardName: 'test-guard',
             serviceName: 'TestService',
             serviceRelease: '1',
             environment: 'test'
@@ -227,11 +227,11 @@ describe('createGrpcHubService', async () => {
         lastVersionSeen: '123'
       })
 
-      expect(configClientMock.getDecoratorConfig).toHaveBeenCalledOnce()
-      expect(configClientMock.getDecoratorConfig).toHaveBeenCalledWith(
+      expect(configClientMock.getGuardConfig).toHaveBeenCalledOnce()
+      expect(configClientMock.getGuardConfig).toHaveBeenCalledWith(
         {
           selector: {
-            decoratorName: 'test-guard',
+            guardName: 'test-guard',
             serviceName: 'TestService',
             serviceRelease: '1',
             environment: 'test'
@@ -248,8 +248,8 @@ describe('createGrpcHubService', async () => {
     })
 
     it('should return null if configDataSent is false', async () => {
-      configClientMock.getDecoratorConfig.mockImplementation(async () => {
-        return new GetDecoratorConfigResponse({
+      configClientMock.getGuardConfig.mockImplementation(async () => {
+        return new GetGuardConfigResponse({
           version: '1',
           configDataSent: false
         })
@@ -261,8 +261,8 @@ describe('createGrpcHubService', async () => {
     })
 
     it('should return config data if configDataSent is true', async () => {
-      configClientMock.getDecoratorConfig.mockImplementation(async () => {
-        return new GetDecoratorConfigResponse({
+      configClientMock.getGuardConfig.mockImplementation(async () => {
+        return new GetGuardConfigResponse({
           version: '1',
           configDataSent: true,
           config: {
@@ -287,7 +287,7 @@ describe('createGrpcHubService', async () => {
 
     it('should timeout if fetch runs too long', async () => {
       vi.useFakeTimers()
-      configClientMock.getDecoratorConfig.mockImplementation(async () => {
+      configClientMock.getGuardConfig.mockImplementation(async () => {
         return new Promise<never>(() => {})
       })
 
@@ -327,7 +327,7 @@ describe('createGrpcHubService', async () => {
           clientId: 'test-client-id',
           priorityBoost: 5,
           selector: {
-            decoratorName: 'test-guard',
+            guardName: 'test-guard',
             featureName: 'test-feature',
             environment: 'test'
           }
@@ -358,7 +358,7 @@ describe('createGrpcHubService', async () => {
           clientId: 'test-client-id',
           priorityBoost: 5,
           selector: {
-            decoratorName: 'test-guard',
+            guardName: 'test-guard',
             featureName: 'test-feature',
             environment: 'test',
             tags: [
@@ -386,7 +386,7 @@ describe('createGrpcHubService', async () => {
         {
           clientId: 'test-client-id',
           selector: {
-            decoratorName: 'test-guard',
+            guardName: 'test-guard',
             environment: 'test'
           }
         }
@@ -469,7 +469,7 @@ describe('createGrpcHubService', async () => {
           clientId: 'test-client-id',
           priorityBoost: 5,
           selector: {
-            decoratorName: 'test-guard',
+            guardName: 'test-guard',
             featureName: 'test-feature',
             environment: 'test'
           }
@@ -500,7 +500,7 @@ describe('createGrpcHubService', async () => {
           clientId: 'test-client-id',
           priorityBoost: 5,
           selector: {
-            decoratorName: 'test-guard',
+            guardName: 'test-guard',
             featureName: 'test-feature',
             environment: 'test',
             tags: [
@@ -528,7 +528,7 @@ describe('createGrpcHubService', async () => {
         {
           clientId: 'test-client-id',
           selector: {
-            decoratorName: 'test-guard',
+            guardName: 'test-guard',
             environment: 'test'
           }
         }
@@ -629,7 +629,7 @@ describe('createGrpcHubService', async () => {
         {
           tokens: [{
             token: 'test-token',
-            decorator: {
+            guard: {
               name: 'test-guard',
               environment: 'test'
             }
