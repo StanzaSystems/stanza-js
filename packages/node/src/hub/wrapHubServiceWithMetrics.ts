@@ -37,11 +37,11 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
         })
       }
     }),
-    fetchDecoratorConfig: wrapEventsAsync(hubService.fetchDecoratorConfig, {
-      success: async (_, { decorator }) => {
+    fetchGuardConfig: wrapEventsAsync(hubService.fetchGuardConfig, {
+      success: async (_, { guard }) => {
         const customerId = getServiceConfig()?.config.customerId
-        return eventBus.emit(events.config.decorator.fetchOk, {
-          decoratorName: decorator,
+        return eventBus.emit(events.config.guard.fetchOk, {
+          guardName: guard,
           serviceName,
           clientId,
           environment,
@@ -50,7 +50,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       },
       failure: async () => {
         const customerId = getServiceConfig()?.config.customerId
-        return eventBus.emit(events.config.decorator.fetchFailed, {
+        return eventBus.emit(events.config.guard.fetchFailed, {
           serviceName,
           clientId,
           environment,
@@ -59,7 +59,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       },
       latency: async (latency) => {
         const customerId = getServiceConfig()?.config.customerId
-        return eventBus.emit(events.config.decorator.fetchLatency, {
+        return eventBus.emit(events.config.guard.fetchLatency, {
           latency,
           serviceName,
           clientId,
@@ -69,10 +69,10 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       }
     }),
     getToken: wrapEventsAsync(hubService.getToken, {
-      success: async (_, { decorator }) => {
+      success: async (_, { guard }) => {
         const customerId = getServiceConfig()?.config.customerId
         return eventBus.emit(events.quota.fetchOk, {
-          decoratorName: decorator,
+          guardName: guard,
           serviceName,
           clientId,
           environment,
@@ -103,10 +103,10 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       }
     }),
     getTokenLease: wrapEventsAsync(hubService.getTokenLease, {
-      success: async (_, { decorator }) => {
+      success: async (_, { guard }) => {
         const customerId = getServiceConfig()?.config.customerId
         return eventBus.emit(events.quota.fetchOk, {
-          decoratorName: decorator,
+          guardName: guard,
           serviceName,
           clientId,
           environment,
@@ -137,14 +137,14 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       }
     }),
     validateToken: wrapEventsAsync(hubService.validateToken, {
-      success: async (result, { decorator }) => {
+      success: async (result, { guard }) => {
         const customerId = getServiceConfig()?.config.customerId
         return eventBus.emit(
           result?.valid === true
             ? events.quota.validateOk
             : events.quota.validateFailed,
           {
-            decoratorName: decorator,
+            guardName: guard,
             serviceName,
             clientId,
             environment,

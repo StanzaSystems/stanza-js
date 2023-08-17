@@ -1,5 +1,5 @@
 import { addPriorityBoostToContext } from '../context/addPriorityBoostToContext'
-import { addStanzaDecoratorToContext } from '../context/addStanzaDecoratorToContext'
+import { addStanzaGuardToContext } from '../context/addStanzaGuardToContext'
 import { addStanzaTokenToContext } from '../context/addStanzaTokenToContext'
 import { bindContext } from '../context/bindContext'
 import { removeStanzaTokenFromContext } from '../context/removeStanzaTokenFromContext'
@@ -7,22 +7,22 @@ import { createStanzaWrapper } from '../utils/createStanzaWrapper'
 import { type Fn } from '../utils/fn'
 import { isTruthy } from '../utils/isTruthy'
 import { type Promisify } from '../utils/promisify'
-import { initOrGetDecorator } from './initOrGetDecorator'
-import { type StanzaDecoratorOptions } from './model'
+import { initOrGetGuard } from './initOrGetGuard'
+import { type StanzaGuardOptions } from './model'
 import { eventBus, events } from '../global/eventBus'
 import { wrapEventsAsync } from '../utils/wrapEventsAsync'
 import { hubService } from '../global/hubService'
 import { getServiceConfig } from '../global/serviceConfig'
 
-export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDecoratorOptions) => {
-  const { guard } = createStanzaDecorator(options)
+export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOptions) => {
+  const { guard } = createStanzaGuard(options)
 
   return createStanzaWrapper<TArgs, TReturn, Promisify<TReturn>>((fn) => {
     const resultFn = async function (...args: Parameters<typeof fn>) {
       const token = await guard()
 
       const fnWithBoundContext = bindContext([
-        addStanzaDecoratorToContext(options.decorator),
+        addStanzaGuardToContext(options.guard),
         options.priorityBoost !== undefined ? addPriorityBoostToContext(options.priorityBoost) : undefined,
         token?.type === 'TOKEN_GRANTED'
           ? addStanzaTokenToContext(token.token)
@@ -40,7 +40,7 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
         return eventBus.emit(events.request.succeeded, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
-          decoratorName: options.decorator,
+          guardName: options.guard,
           customerId
         })
       },
@@ -49,7 +49,7 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
         return eventBus.emit(events.request.failed, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
-          decoratorName: options.decorator,
+          guardName: options.guard,
           customerId
         })
       },
@@ -58,7 +58,7 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
         return eventBus.emit(events.request.latency, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
-          decoratorName: options.decorator,
+          guardName: options.guard,
           customerId,
           latency
         })
@@ -67,17 +67,17 @@ export const stanzaDecorator = <TArgs extends any[], TReturn>(options: StanzaDec
   })
 }
 
-const createStanzaDecorator = (options: StanzaDecoratorOptions) => {
-  const initializedDecorator = initOrGetDecorator(options)
+const createStanzaGuard = (options: StanzaGuardOptions) => {
+  const initializedGuard = initOrGetGuard(options)
   return {
-    ...initializedDecorator,
-    guard: wrapEventsAsync(initializedDecorator.guard, {
+    ...initializedGuard,
+    guard: wrapEventsAsync(initializedGuard.guard, {
       success: async () => {
         const customerId = getServiceConfig()?.config.customerId
         return eventBus.emit(events.request.allowed, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
-          decoratorName: options.decorator,
+          guardName: options.guard,
           customerId
         })
       },
@@ -86,7 +86,7 @@ const createStanzaDecorator = (options: StanzaDecoratorOptions) => {
         return eventBus.emit(events.request.blocked, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
-          decoratorName: options.decorator,
+          guardName: options.guard,
           customerId,
           reason: 'quota'
         })

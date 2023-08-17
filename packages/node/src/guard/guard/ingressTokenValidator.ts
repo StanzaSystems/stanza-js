@@ -1,7 +1,7 @@
-import { getDecoratorConfig } from '../../global/decoratorConfig'
+import { getGuardConfig } from '../../global/guardConfig'
 import { context } from '@opentelemetry/api'
 import { stanzaTokenContextKey } from '../../context/stanzaTokenContextKey'
-import { StanzaDecoratorError } from '../stanzaDecoratorError'
+import { StanzaGuardError } from '../stanzaGuardError'
 import { type ValidatedToken } from '../../hub/model'
 import { withTimeout } from '../../utils/withTimeout'
 import { hubService } from '../../global/hubService'
@@ -9,21 +9,21 @@ import { logger } from '../../global/logger'
 import { STANZA_REQUEST_TIMEOUT } from '../../global/requestTimeout'
 
 export interface IngressTokenValidatorOptions {
-  decorator: string
+  guard: string
 }
 export const initIngressTokenValidator = (options: IngressTokenValidatorOptions) => {
   return { shouldValidateIngressToken, validateIngressToken }
 
   function shouldValidateIngressToken (): boolean {
-    const decoratorConfig = getDecoratorConfig(options.decorator)
-    return decoratorConfig?.config?.validateIngressTokens === true
+    const guardConfig = getGuardConfig(options.guard)
+    return guardConfig?.config?.validateIngressTokens === true
   }
 
   async function validateIngressToken (): Promise<{ type: 'TOKEN_VALIDATED' } | null> {
     const token = context.active().getValue(stanzaTokenContextKey)
 
     if (typeof (token) !== 'string' || token === '') {
-      throw new StanzaDecoratorError('InvalidToken', 'Valid Stanza token was not provided in the incoming header')
+      throw new StanzaGuardError('InvalidToken', 'Valid Stanza token was not provided in the incoming header')
     }
 
     let validatedToken: ValidatedToken | null = null
@@ -32,7 +32,7 @@ export const initIngressTokenValidator = (options: IngressTokenValidatorOptions)
         STANZA_REQUEST_TIMEOUT,
         'Validate token timed out',
         hubService.validateToken({
-          decorator: options.decorator,
+          guard: options.guard,
           token
         }))
     } catch (e) {
@@ -44,7 +44,7 @@ export const initIngressTokenValidator = (options: IngressTokenValidatorOptions)
     }
 
     if (!validatedToken.valid || validatedToken.token !== token) {
-      throw new StanzaDecoratorError('InvalidToken', 'Provided token was invalid')
+      throw new StanzaGuardError('InvalidToken', 'Provided token was invalid')
     }
 
     return { type: 'TOKEN_VALIDATED' }

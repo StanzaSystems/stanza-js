@@ -4,12 +4,12 @@ import { beforeAll, beforeEach, describe, expect, it, type Mock, vi } from 'vite
 
 import { mockHubService } from '../__tests__/mocks/mockHubService'
 import { stanzaTokenContextKey } from '../context/stanzaTokenContextKey'
-import { updateDecoratorConfig } from '../global/decoratorConfig'
-import { type DecoratorConfig } from '../hub/model'
-import { stanzaDecorator } from './stanzaDecorator'
-import { StanzaDecoratorError } from './stanzaDecoratorError'
+import { updateGuardConfig } from '../global/guardConfig'
+import { type GuardConfig } from '../hub/model'
+import { stanzaGuard } from './stanzaGuard'
+import { StanzaGuardError } from './stanzaGuardError'
 import type * as getQuotaModule from '../quota/getQuota'
-import { decoratorStore } from '../global/decoratorStore'
+import { guardStore } from '../global/guardStore'
 
 type GetQuotaModule = typeof getQuotaModule
 
@@ -44,13 +44,13 @@ const getQuotaMock = Object.assign(
   })
 
 beforeEach(() => {
-  updateDecoratorConfig('testDecorator', undefined as any)
+  updateGuardConfig('testGuard', undefined as any)
 
   doStuff.mockReset()
   getQuotaMock.mockReset()
   getQuotaMock.mockImplementation(async () => { throw Error('not implemented') })
   mockHubService.reset()
-  decoratorStore.clear()
+  guardStore.clear()
 })
 
 beforeAll(() => {
@@ -59,28 +59,28 @@ beforeAll(() => {
   context.setGlobalContextManager(contextManager)
 })
 
-describe('stanzaDecorator', function () {
+describe('stanzaGuard', function () {
   it('should pass-through execution initially', async function () {
-    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+    const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
       doStuff()
     })
 
-    const decoratedDoStuffPromise = decoratedDoStuff()
+    const guardedDoStuffPromise = guardedDoStuff()
 
-    await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+    await expect(guardedDoStuffPromise).resolves.toBeUndefined()
 
     expect(doStuff).toHaveBeenCalledOnce()
   })
 
   it('should pass-through execution initially and return same value as wrapped function', async function () {
     doStuff.mockReturnValueOnce('test-value')
-    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+    const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
       return doStuff()
     })
 
-    const decoratedDoStuffPromise = decoratedDoStuff()
+    const guardedDoStuffPromise = guardedDoStuff()
 
-    await expect(decoratedDoStuffPromise).resolves.toBe('test-value')
+    await expect(guardedDoStuffPromise).resolves.toBe('test-value')
 
     expect(doStuff).toHaveBeenCalledOnce()
   })
@@ -91,87 +91,87 @@ describe('stanzaDecorator', function () {
     let rejectConfig: (reason: Error) => void = () => {
       expect.fail('should not be called')
     }
-    mockHubService.fetchDecoratorConfig.mockImplementation(async () => {
+    mockHubService.fetchGuardConfig.mockImplementation(async () => {
       return new Promise<never>((_resolve, reject) => {
         rejectConfig = reject
       })
     })
-    const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+    const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
       doStuff()
     })
 
-    rejectConfig(new Error('Getting decorator config failed'))
+    rejectConfig(new Error('Getting guard config failed'))
 
     await vi.advanceTimersByTimeAsync(0)
 
-    const decoratedDoStuffPromise = decoratedDoStuff()
+    const guardedDoStuffPromise = guardedDoStuff()
 
-    await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+    await expect(guardedDoStuffPromise).resolves.toBeUndefined()
 
     expect(doStuff).toHaveBeenCalledOnce()
 
     vi.useRealTimers()
   })
 
-  it('should fetch decorator config upon initialization', async function () {
+  it('should fetch guard config upon initialization', async function () {
     mockHubService.fetchServiceConfig.mockImplementation(async () => Promise.resolve({
       version: 'test',
       config: {} as any
     }))
 
-    stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+    stanzaGuard({ guard: 'testGuard' }).bind(() => {
       doStuff()
     })
 
-    expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledOnce()
+    expect(mockHubService.fetchGuardConfig).toHaveBeenCalledOnce()
   })
 
-  it('should fetch decorator config only once upon initialization of the same decorator multiple times', async function () {
+  it('should fetch guard config only once upon initialization of the same guard multiple times', async function () {
     mockHubService.fetchServiceConfig.mockImplementation(async () => Promise.resolve({
       version: 'test',
       config: {} as any
     }))
 
-    stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+    stanzaGuard({ guard: 'testGuard' }).bind(() => {
       doStuff()
     })
 
-    stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+    stanzaGuard({ guard: 'testGuard' }).bind(() => {
       doStuff()
     })
 
-    stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+    stanzaGuard({ guard: 'testGuard' }).bind(() => {
       doStuff()
     })
 
-    expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledOnce()
-    expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledWith({ decorator: 'testDecorator' })
+    expect(mockHubService.fetchGuardConfig).toHaveBeenCalledOnce()
+    expect(mockHubService.fetchGuardConfig).toHaveBeenCalledWith({ guard: 'testGuard' })
   })
 
-  it('should fetch decorator config only once upon initialization of the same decorator multiple times - with different features, priority boosts', async function () {
+  it('should fetch guard config only once upon initialization of the same guard multiple times - with different features, priority boosts', async function () {
     mockHubService.fetchServiceConfig.mockImplementation(async () => Promise.resolve({
       version: 'test',
       config: {} as any
     }))
 
-    stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+    stanzaGuard({ guard: 'testGuard' }).bind(() => {
       doStuff()
     })
 
-    stanzaDecorator({ decorator: 'testDecorator', priorityBoost: 1 }).bind(() => {
+    stanzaGuard({ guard: 'testGuard', priorityBoost: 1 }).bind(() => {
       doStuff()
     })
 
-    stanzaDecorator({ decorator: 'testDecorator', priorityBoost: -1 }).bind(() => {
+    stanzaGuard({ guard: 'testGuard', priorityBoost: -1 }).bind(() => {
       doStuff()
     })
 
-    stanzaDecorator({ decorator: 'testDecorator', feature: 'testFeature' }).bind(() => {
+    stanzaGuard({ guard: 'testGuard', feature: 'testFeature' }).bind(() => {
       doStuff()
     })
 
-    stanzaDecorator({
-      decorator: 'testDecorator',
+    stanzaGuard({
+      guard: 'testGuard',
       tags: [{
         key: 'testTag',
         value: 'testTagValue'
@@ -180,55 +180,55 @@ describe('stanzaDecorator', function () {
       doStuff()
     })
 
-    expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledOnce()
-    expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledWith({ decorator: 'testDecorator' })
+    expect(mockHubService.fetchGuardConfig).toHaveBeenCalledOnce()
+    expect(mockHubService.fetchGuardConfig).toHaveBeenCalledWith({ guard: 'testGuard' })
   })
 
-  it('should fetch decorator config only once per different decorator', async function () {
+  it('should fetch guard config only once per different guard', async function () {
     mockHubService.fetchServiceConfig.mockImplementation(async () => Promise.resolve({
       version: 'test',
       config: {} as any
     }))
 
-    stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+    stanzaGuard({ guard: 'testGuard' }).bind(() => {
       doStuff()
     })
 
-    stanzaDecorator({ decorator: 'anotherTestDecorator' }).bind(() => {
+    stanzaGuard({ guard: 'anotherTestGuard' }).bind(() => {
       doStuff()
     })
 
-    expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledTimes(2)
-    expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledWith({ decorator: 'testDecorator' })
-    expect(mockHubService.fetchDecoratorConfig).toHaveBeenCalledWith({ decorator: 'anotherTestDecorator' })
+    expect(mockHubService.fetchGuardConfig).toHaveBeenCalledTimes(2)
+    expect(mockHubService.fetchGuardConfig).toHaveBeenCalledWith({ guard: 'testGuard' })
+    expect(mockHubService.fetchGuardConfig).toHaveBeenCalledWith({ guard: 'anotherTestGuard' })
   })
 
   describe('check quota', () => {
-    const checkQuotaDecoratorConfig = {
+    const checkQuotaGuardConfig = {
       version: 'test',
       config: {
         checkQuota: true,
         quotaTags: ['validTag', 'anotherValidTag']
-      } satisfies Partial<DecoratorConfig['config']> as any
-    } satisfies DecoratorConfig
+      } satisfies Partial<GuardConfig['config']> as any
+    } satisfies GuardConfig
 
     it('should NOT be pass-through execution after config is fetched', async function () {
       vi.useFakeTimers()
 
       getQuotaMock.mockImplementationDeferred()
-      let resolveConfig: (config: DecoratorConfig) => void = () => {}
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => new Promise<DecoratorConfig>((resolve) => {
+      let resolveConfig: (config: GuardConfig) => void = () => {}
+      mockHubService.fetchGuardConfig.mockImplementation(async () => new Promise<GuardConfig>((resolve) => {
         resolveConfig = resolve
       }))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         doStuff()
       })
 
-      resolveConfig(checkQuotaDecoratorConfig)
+      resolveConfig(checkQuotaGuardConfig)
 
       await vi.advanceTimersByTimeAsync(0)
 
-      void decoratedDoStuff()
+      void guardedDoStuff()
 
       expect(doStuff).not.toHaveBeenCalled()
 
@@ -241,21 +241,21 @@ describe('stanzaDecorator', function () {
       doStuff.mockReturnValueOnce('test-value-token-resolved')
 
       const deferred = getQuotaMock.mockImplementationDeferred()
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(checkQuotaGuardConfig))
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         return doStuff()
       })
 
-      // wait for decorator config to be initialized
+      // wait for guard config to be initialized
       await vi.advanceTimersByTimeAsync(0)
 
-      const decoratedDoStuffPromise = decoratedDoStuff()
+      const guardedDoStuffPromise = guardedDoStuff()
 
       deferred.resolve({ granted: true, token: 'test-token' })
 
       await vi.advanceTimersByTimeAsync(0)
 
-      await expect(decoratedDoStuffPromise).resolves.toBe('test-value-token-resolved')
+      await expect(guardedDoStuffPromise).resolves.toBe('test-value-token-resolved')
 
       vi.useRealTimers()
     })
@@ -264,15 +264,15 @@ describe('stanzaDecorator', function () {
       vi.useFakeTimers()
 
       const deferred = getQuotaMock.mockImplementationDeferred()
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(checkQuotaGuardConfig))
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         doStuff()
       })
 
-      // wait for decorator config to be initialized
+      // wait for guard config to be initialized
       await vi.advanceTimersByTimeAsync(0)
 
-      const decoratedDoStuffPromise = decoratedDoStuff()
+      const guardedDoStuffPromise = guardedDoStuff()
 
       expect(doStuff).not.toHaveBeenCalled()
 
@@ -284,30 +284,30 @@ describe('stanzaDecorator', function () {
 
       expect(doStuff).toHaveBeenCalledOnce()
 
-      await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+      await expect(guardedDoStuffPromise).resolves.toBeUndefined()
 
       vi.useRealTimers()
     })
 
-    it('should fail the execution with StanzaDecoratorError if token is not granted', async function () {
+    it('should fail the execution with StanzaGuardError if token is not granted', async function () {
       vi.useFakeTimers()
 
       const deferred = getQuotaMock.mockImplementationDeferred()
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(checkQuotaGuardConfig))
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         doStuff()
       })
 
-      // wait for decorator config to be initialized
+      // wait for guard config to be initialized
       await vi.advanceTimersByTimeAsync(0)
 
-      const decoratedDoStuffPromise = decoratedDoStuff()
+      const guardedDoStuffPromise = guardedDoStuff()
 
       expect(doStuff).not.toHaveBeenCalled()
 
       deferred.resolve({ granted: false })
 
-      await expect(decoratedDoStuffPromise).rejects.toThrow(new StanzaDecoratorError('NoQuota', 'Decorator can not be executed'))
+      await expect(guardedDoStuffPromise).rejects.toThrow(new StanzaGuardError('NoQuota', 'Guard can not be executed'))
 
       expect(doStuff).not.toHaveBeenCalled()
 
@@ -322,15 +322,15 @@ describe('stanzaDecorator', function () {
       vi.useFakeTimers()
 
       const deferred = getQuotaMock.mockImplementationDeferred()
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(checkQuotaGuardConfig))
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         doStuff()
       })
 
-      // wait for decorator config to be initialized
+      // wait for guard config to be initialized
       await vi.advanceTimersByTimeAsync(0)
 
-      const decoratedDoStuffPromise = decoratedDoStuff()
+      const guardedDoStuffPromise = guardedDoStuff()
 
       expect(doStuff).not.toHaveBeenCalled()
 
@@ -339,7 +339,7 @@ describe('stanzaDecorator', function () {
       expect(doStuff).not.toHaveBeenCalled()
       await vi.advanceTimersByTimeAsync(0)
 
-      await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+      await expect(guardedDoStuffPromise).resolves.toBeUndefined()
 
       expect(doStuff).toHaveBeenCalledOnce()
 
@@ -350,22 +350,22 @@ describe('stanzaDecorator', function () {
       vi.useFakeTimers()
 
       const deferred = getQuotaMock.mockImplementationDeferred()
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(checkQuotaGuardConfig))
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         doStuff()
         expect(context.active().getValue(stanzaTokenContextKey)).toBe('test-token')
       })
 
-      // wait for decorator config to be initialized
+      // wait for guard config to be initialized
       await vi.advanceTimersByTimeAsync(0)
 
-      const decoratedDoStuffPromise = decoratedDoStuff()
+      const guardedDoStuffPromise = guardedDoStuff()
 
       deferred.resolve({ granted: true, token: 'test-token' })
 
       await vi.advanceTimersByTimeAsync(0)
 
-      await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+      await expect(guardedDoStuffPromise).resolves.toBeUndefined()
 
       expect(doStuff).toHaveBeenCalledOnce()
 
@@ -376,22 +376,22 @@ describe('stanzaDecorator', function () {
       vi.useFakeTimers()
 
       const deferred = getQuotaMock.mockImplementationDeferred()
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(checkQuotaDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(checkQuotaGuardConfig))
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         doStuff()
         expect(context.active().getValue(stanzaTokenContextKey)).toBeUndefined()
       })
 
-      // wait for decorator config to be initialized
+      // wait for guard config to be initialized
       await vi.advanceTimersByTimeAsync(0)
 
-      const decoratedDoStuffPromise = decoratedDoStuff()
+      const guardedDoStuffPromise = guardedDoStuff()
 
       deferred.resolve(null)
 
       await vi.advanceTimersByTimeAsync(0)
 
-      await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+      await expect(guardedDoStuffPromise).resolves.toBeUndefined()
 
       expect(doStuff).toHaveBeenCalledOnce()
 
@@ -400,26 +400,26 @@ describe('stanzaDecorator', function () {
   })
 
   describe('validate ingress token', () => {
-    const validateIngressTokenDecoratorConfig = {
+    const validateIngressTokenGuardConfig = {
       version: 'test',
       config: {
         validateIngressTokens: true
       } as any
-    } satisfies DecoratorConfig
+    } satisfies GuardConfig
 
     it('should NOT be pass-through execution after config is fetched', async function () {
       vi.useFakeTimers()
 
-      const configDeferred = mockHubService.fetchDecoratorConfig.mockImplementationDeferred()
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      const configDeferred = mockHubService.fetchGuardConfig.mockImplementationDeferred()
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         doStuff()
       })
 
-      configDeferred.resolve(validateIngressTokenDecoratorConfig)
+      configDeferred.resolve(validateIngressTokenGuardConfig)
 
       await vi.advanceTimersByTimeAsync(0)
 
-      void decoratedDoStuff().catch(() => {})
+      void guardedDoStuff().catch(() => {})
 
       expect(doStuff).not.toHaveBeenCalled()
 
@@ -428,16 +428,16 @@ describe('stanzaDecorator', function () {
 
     it('should throw error execution after config is fetched and no token is provided in context', async function () {
       vi.useFakeTimers()
-      const configDeferred = mockHubService.fetchDecoratorConfig.mockImplementationDeferred()
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      const configDeferred = mockHubService.fetchGuardConfig.mockImplementationDeferred()
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         doStuff()
       })
 
-      configDeferred.resolve(validateIngressTokenDecoratorConfig)
+      configDeferred.resolve(validateIngressTokenGuardConfig)
 
       await vi.advanceTimersByTimeAsync(0)
 
-      await expect(decoratedDoStuff()).rejects.toThrow('Valid Stanza token was not provided')
+      await expect(guardedDoStuff()).rejects.toThrow('Valid Stanza token was not provided')
 
       vi.useRealTimers()
     })
@@ -448,15 +448,15 @@ describe('stanzaDecorator', function () {
       doStuff.mockReturnValueOnce('test-value-token-resolved')
 
       const validateDeferred = mockHubService.validateToken.mockImplementationDeferred()
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(validateIngressTokenDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(validateIngressTokenGuardConfig))
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         return doStuff()
       })
 
-      // wait for decorator config to be initialized
+      // wait for guard config to be initialized
       await vi.advanceTimersByTimeAsync(0)
 
-      const decoratedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), decoratedDoStuff)
+      const guardedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
 
       validateDeferred.resolve({
         token: 'aToken',
@@ -465,7 +465,7 @@ describe('stanzaDecorator', function () {
 
       await vi.advanceTimersByTimeAsync(0)
 
-      await expect(decoratedDoStuffPromise).resolves.toBe('test-value-token-resolved')
+      await expect(guardedDoStuffPromise).resolves.toBe('test-value-token-resolved')
 
       vi.useRealTimers()
     })
@@ -473,45 +473,45 @@ describe('stanzaDecorator', function () {
     it('should validate token before proceeding with execution', async function () {
       vi.useFakeTimers()
 
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(validateIngressTokenDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(validateIngressTokenGuardConfig))
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         doStuff()
       })
 
-      // wait for decorator config to be initialized
+      // wait for guard config to be initialized
       await vi.advanceTimersByTimeAsync(0)
 
-      void context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), decoratedDoStuff)
+      void context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
 
       expect(doStuff).not.toHaveBeenCalled()
 
       expect(mockHubService.validateToken).toHaveBeenCalledOnce()
       expect(mockHubService.validateToken).toHaveBeenCalledWith({
-        decorator: 'testDecorator',
+        guard: 'testGuard',
         token: 'aToken'
       })
 
       vi.useRealTimers()
     })
 
-    it('should fail the execution with StanzaDecoratorError if token is not validated', async function () {
+    it('should fail the execution with StanzaGuardError if token is not validated', async function () {
       vi.useFakeTimers()
       const validateDeferred = mockHubService.validateToken.mockImplementationDeferred()
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(validateIngressTokenDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(validateIngressTokenGuardConfig))
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         doStuff()
       })
 
-      // wait for decorator config to be initialized
+      // wait for guard config to be initialized
       await vi.advanceTimersByTimeAsync(0)
 
-      const decoratedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), decoratedDoStuff)
+      const guardedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
 
       expect(doStuff).not.toHaveBeenCalled()
 
       validateDeferred.resolve({ token: 'aToken', valid: false })
 
-      await expect(decoratedDoStuffPromise).rejects.toThrow(new StanzaDecoratorError('InvalidToken', 'Provided token was invalid'))
+      await expect(guardedDoStuffPromise).rejects.toThrow(new StanzaGuardError('InvalidToken', 'Provided token was invalid'))
 
       expect(doStuff).not.toHaveBeenCalled()
 
@@ -526,15 +526,15 @@ describe('stanzaDecorator', function () {
       vi.useFakeTimers()
 
       const validateDeferred = mockHubService.validateToken.mockImplementationDeferred()
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(validateIngressTokenDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(validateIngressTokenGuardConfig))
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         doStuff()
       })
 
-      // wait for decorator config to be initialized
+      // wait for guard config to be initialized
       await vi.advanceTimersByTimeAsync(0)
 
-      const decoratedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), decoratedDoStuff)
+      const guardedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
 
       expect(doStuff).not.toHaveBeenCalled()
 
@@ -543,7 +543,7 @@ describe('stanzaDecorator', function () {
       expect(doStuff).not.toHaveBeenCalled()
       await vi.advanceTimersByTimeAsync(0)
 
-      await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+      await expect(guardedDoStuffPromise).resolves.toBeUndefined()
 
       expect(doStuff).toHaveBeenCalledOnce()
 
@@ -553,15 +553,15 @@ describe('stanzaDecorator', function () {
     it('should proceed execution if validating token throws', async function () {
       vi.useFakeTimers()
       const validateDeferred = mockHubService.validateToken.mockImplementationDeferred()
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(validateIngressTokenDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(validateIngressTokenGuardConfig))
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         doStuff()
       })
 
-      // wait for decorator config to be initialized
+      // wait for guard config to be initialized
       await vi.advanceTimersByTimeAsync(0)
 
-      const decoratedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), decoratedDoStuff)
+      const guardedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
 
       expect(doStuff).not.toHaveBeenCalled()
 
@@ -570,7 +570,7 @@ describe('stanzaDecorator', function () {
       expect(doStuff).not.toHaveBeenCalled()
       await vi.advanceTimersByTimeAsync(0)
 
-      await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+      await expect(guardedDoStuffPromise).resolves.toBeUndefined()
 
       expect(doStuff).toHaveBeenCalledOnce()
 
@@ -581,20 +581,20 @@ describe('stanzaDecorator', function () {
       vi.useFakeTimers()
 
       mockHubService.validateToken.mockImplementationDeferred()
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(validateIngressTokenDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(validateIngressTokenGuardConfig))
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         doStuff()
       })
 
-      // wait for decorator config to be initialized
+      // wait for guard config to be initialized
       await vi.advanceTimersByTimeAsync(0)
 
-      const decoratedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), decoratedDoStuff)
+      const guardedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
 
       expect(doStuff).not.toHaveBeenCalled()
       await vi.advanceTimersByTimeAsync(1000)
 
-      await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+      await expect(guardedDoStuffPromise).resolves.toBeUndefined()
 
       expect(doStuff).toHaveBeenCalledOnce()
 
@@ -605,22 +605,22 @@ describe('stanzaDecorator', function () {
       vi.useFakeTimers()
 
       const validateDeferred = mockHubService.validateToken.mockImplementationDeferred()
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(validateIngressTokenDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(validateIngressTokenGuardConfig))
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         doStuff()
         expect(context.active().getValue(stanzaTokenContextKey)).toBeUndefined()
       })
 
-      // wait for decorator config to be initialized
+      // wait for guard config to be initialized
       await vi.advanceTimersByTimeAsync(0)
 
-      const decoratedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), decoratedDoStuff)
+      const guardedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
 
       validateDeferred.resolve({ token: 'aToken', valid: true })
 
       await vi.advanceTimersByTimeAsync(0)
 
-      await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+      await expect(guardedDoStuffPromise).resolves.toBeUndefined()
 
       expect(doStuff).toHaveBeenCalledOnce()
 
@@ -631,22 +631,22 @@ describe('stanzaDecorator', function () {
       vi.useFakeTimers()
 
       const validateDeferred = mockHubService.validateToken.mockImplementationDeferred()
-      mockHubService.fetchDecoratorConfig.mockImplementation(async () => Promise.resolve(validateIngressTokenDecoratorConfig))
-      const decoratedDoStuff = stanzaDecorator({ decorator: 'testDecorator' }).bind(() => {
+      mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(validateIngressTokenGuardConfig))
+      const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
         doStuff()
         expect(context.active().getValue(stanzaTokenContextKey)).toBeDefined()
       })
 
-      // wait for decorator config to be initialized
+      // wait for guard config to be initialized
       await vi.advanceTimersByTimeAsync(0)
 
-      const decoratedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), decoratedDoStuff)
+      const guardedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
 
       validateDeferred.reject(new Error('Getting token failed'))
 
       await vi.advanceTimersByTimeAsync(0)
 
-      await expect(decoratedDoStuffPromise).resolves.toBeUndefined()
+      await expect(guardedDoStuffPromise).resolves.toBeUndefined()
 
       expect(doStuff).toHaveBeenCalledOnce()
 

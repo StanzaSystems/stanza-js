@@ -3,12 +3,12 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { GetBrowserContextRequest, GetBrowserContextResponse, GetDecoratorConfigRequest, GetDecoratorConfigResponse, GetServiceConfigRequest, GetServiceConfigResponse } from "./config_pb.js";
+import { GetBrowserContextRequest, GetBrowserContextResponse, GetGuardConfigRequest, GetGuardConfigResponse, GetServiceConfigRequest, GetServiceConfigResponse } from "./config_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
  * The Config service definition.
- * This service is used by the Stanza SDK to get Service and Decorator configs.
+ * This service is used by the Stanza SDK to get Service and Guard configs.
  * This service is used by the Browser SDK to get Browser Contexts.
  *
  * @generated from service stanza.hub.v1.ConfigService
@@ -17,12 +17,12 @@ export const ConfigService = {
   typeName: "stanza.hub.v1.ConfigService",
   methods: {
     /**
-     * @generated from rpc stanza.hub.v1.ConfigService.GetDecoratorConfig
+     * @generated from rpc stanza.hub.v1.ConfigService.GetGuardConfig
      */
-    getDecoratorConfig: {
-      name: "GetDecoratorConfig",
-      I: GetDecoratorConfigRequest,
-      O: GetDecoratorConfigResponse,
+    getGuardConfig: {
+      name: "GetGuardConfig",
+      I: GetGuardConfigRequest,
+      O: GetGuardConfigResponse,
       kind: MethodKind.Unary,
     },
     /**

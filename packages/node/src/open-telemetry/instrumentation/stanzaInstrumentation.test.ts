@@ -52,7 +52,7 @@ describe('StanzaInstrumentation', () => {
         given: {
           event: events.request.allowed,
           data: {
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId'
@@ -63,7 +63,7 @@ describe('StanzaInstrumentation', () => {
           data: [
             1,
             {
-              decorator: 'testDecorator',
+              guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId'
@@ -75,7 +75,7 @@ describe('StanzaInstrumentation', () => {
         given: {
           event: events.request.blocked,
           data: {
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -87,7 +87,7 @@ describe('StanzaInstrumentation', () => {
           data: [
             1,
             {
-              decorator: 'testDecorator',
+              guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId',
@@ -100,7 +100,7 @@ describe('StanzaInstrumentation', () => {
         given: {
           event: events.request.failed,
           data: {
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId'
@@ -111,7 +111,7 @@ describe('StanzaInstrumentation', () => {
           data: [
             1,
             {
-              decorator: 'testDecorator',
+              guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId'
@@ -123,7 +123,7 @@ describe('StanzaInstrumentation', () => {
         given: {
           event: events.request.succeeded,
           data: {
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId'
@@ -134,7 +134,7 @@ describe('StanzaInstrumentation', () => {
           data: [
             1,
             {
-              decorator: 'testDecorator',
+              guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId'
@@ -147,7 +147,7 @@ describe('StanzaInstrumentation', () => {
           event: events.request.latency,
           data: {
             latency: 123.456,
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId'
@@ -158,7 +158,7 @@ describe('StanzaInstrumentation', () => {
           data: [
             123.456,
             {
-              decorator: 'testDecorator',
+              guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId'
@@ -245,23 +245,23 @@ describe('StanzaInstrumentation', () => {
           metricType: 'histogram'
         }
       },
-      // decorator config events
+      // guard config events
       {
         given: {
-          event: events.config.decorator.fetchOk,
+          event: events.config.guard.fetchOk,
           data: {
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId'
           }
         },
         expected: {
-          metric: 'stanza.config.decorator.fetch_ok',
+          metric: 'stanza.config.guard.fetch_ok',
           data: [
             1,
             {
-              decorator: 'testDecorator',
+              guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId'
@@ -271,7 +271,7 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.config.decorator.fetchFailed,
+          event: events.config.guard.fetchFailed,
           data: {
             serviceName: 'testService',
             environment: 'testEnvironment',
@@ -279,7 +279,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.config.decorator.fetch_failed',
+          metric: 'stanza.config.guard.fetch_failed',
           data: [
             1,
             {
@@ -292,7 +292,7 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.config.decorator.fetchLatency,
+          event: events.config.guard.fetchLatency,
           data: {
             latency: 123.456,
             serviceName: 'testService',
@@ -301,7 +301,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.config.decorator.fetch_latency',
+          metric: 'stanza.config.guard.fetch_latency',
           data: [
             123.456,
             {
@@ -331,7 +331,7 @@ describe('StanzaInstrumentation', () => {
         given: {
           event: events.quota.fetchOk,
           data: {
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -343,7 +343,7 @@ describe('StanzaInstrumentation', () => {
           data: [
             1,
             {
-              decorator: 'testDecorator',
+              guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId',
@@ -356,7 +356,7 @@ describe('StanzaInstrumentation', () => {
         given: {
           event: events.quota.fetchFailed,
           data: {
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -381,7 +381,7 @@ describe('StanzaInstrumentation', () => {
           event: events.quota.fetchLatency,
           data: {
             latency: 123.456,
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -406,7 +406,7 @@ describe('StanzaInstrumentation', () => {
         given: {
           event: events.quota.validateOk,
           data: {
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId'
@@ -417,7 +417,7 @@ describe('StanzaInstrumentation', () => {
           data: [
             1,
             {
-              decorator: 'testDecorator',
+              guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId'
@@ -549,7 +549,7 @@ describe('StanzaInstrumentation', () => {
         given: {
           event: events.request.allowed,
           data: {
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -561,7 +561,7 @@ describe('StanzaInstrumentation', () => {
           data: [
             1,
             {
-              decorator: 'testDecorator',
+              guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId',
@@ -574,7 +574,7 @@ describe('StanzaInstrumentation', () => {
         given: {
           event: events.request.blocked,
           data: {
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -587,7 +587,7 @@ describe('StanzaInstrumentation', () => {
           data: [
             1,
             {
-              decorator: 'testDecorator',
+              guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId',
@@ -601,7 +601,7 @@ describe('StanzaInstrumentation', () => {
         given: {
           event: events.request.failed,
           data: {
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -613,7 +613,7 @@ describe('StanzaInstrumentation', () => {
           data: [
             1,
             {
-              decorator: 'testDecorator',
+              guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId',
@@ -626,7 +626,7 @@ describe('StanzaInstrumentation', () => {
         given: {
           event: events.request.succeeded,
           data: {
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -638,7 +638,7 @@ describe('StanzaInstrumentation', () => {
           data: [
             1,
             {
-              decorator: 'testDecorator',
+              guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId',
@@ -652,7 +652,7 @@ describe('StanzaInstrumentation', () => {
           event: events.request.latency,
           data: {
             latency: 123.456,
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -664,7 +664,7 @@ describe('StanzaInstrumentation', () => {
           data: [
             123.456,
             {
-              decorator: 'testDecorator',
+              guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId',
@@ -758,12 +758,12 @@ describe('StanzaInstrumentation', () => {
           metricType: 'histogram'
         }
       },
-      // decorator config events
+      // guard config events
       {
         given: {
-          event: events.config.decorator.fetchOk,
+          event: events.config.guard.fetchOk,
           data: {
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -771,11 +771,11 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.config.decorator.fetch_ok',
+          metric: 'stanza.config.guard.fetch_ok',
           data: [
             1,
             {
-              decorator: 'testDecorator',
+              guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId',
@@ -786,7 +786,7 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.config.decorator.fetchFailed,
+          event: events.config.guard.fetchFailed,
           data: {
             serviceName: 'testService',
             environment: 'testEnvironment',
@@ -795,7 +795,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.config.decorator.fetch_failed',
+          metric: 'stanza.config.guard.fetch_failed',
           data: [
             1,
             {
@@ -809,7 +809,7 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.config.decorator.fetchLatency,
+          event: events.config.guard.fetchLatency,
           data: {
             latency: 123.456,
             serviceName: 'testService',
@@ -819,7 +819,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.config.decorator.fetch_latency',
+          metric: 'stanza.config.guard.fetch_latency',
           data: [
             123.456,
             {
@@ -850,7 +850,7 @@ describe('StanzaInstrumentation', () => {
         given: {
           event: events.quota.fetchOk,
           data: {
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -863,7 +863,7 @@ describe('StanzaInstrumentation', () => {
           data: [
             1,
             {
-              decorator: 'testDecorator',
+              guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId',
@@ -877,7 +877,7 @@ describe('StanzaInstrumentation', () => {
         given: {
           event: events.quota.fetchFailed,
           data: {
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -904,7 +904,7 @@ describe('StanzaInstrumentation', () => {
           event: events.quota.fetchLatency,
           data: {
             latency: 123.456,
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -931,7 +931,7 @@ describe('StanzaInstrumentation', () => {
         given: {
           event: events.quota.validateOk,
           data: {
-            decoratorName: 'testDecorator',
+            guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -943,7 +943,7 @@ describe('StanzaInstrumentation', () => {
           data: [
             1,
             {
-              decorator: 'testDecorator',
+              guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId',

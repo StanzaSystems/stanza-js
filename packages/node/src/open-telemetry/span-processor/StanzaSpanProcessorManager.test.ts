@@ -8,8 +8,8 @@ import {
   type SpanExporter
 } from '@opentelemetry/sdk-trace-node'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { stanzaDecoratorContextKey } from '../../context/stanzaDecoratorContextKey'
-import { type getDecoratorConfig } from '../../global/decoratorConfig'
+import { stanzaGuardContextKey } from '../../context/stanzaGuardContextKey'
+import { type getGuardConfig } from '../../global/guardConfig'
 import { type getServiceConfig, type ServiceConfigListener } from '../../global/serviceConfig'
 import { type ServiceConfig } from '../../hub/model'
 import type * as createSpanExporterModule from './createSpanExporter'
@@ -18,9 +18,9 @@ import { StanzaSpanProcessorManager } from './StanzaSpanProcessorManager'
 let serviceListener: ServiceConfigListener
 
 type GetServiceConfig = typeof getServiceConfig
-type GetDecoratorConfig = typeof getDecoratorConfig
+type GetGuardConfig = typeof getGuardConfig
 const getServiceConfigMock = vi.fn<Parameters<GetServiceConfig>, ReturnType<GetServiceConfig>>()
-const getDecoratorConfigMock = vi.fn<Parameters<GetDecoratorConfig>, ReturnType<GetDecoratorConfig>>()
+const getGuardConfigMock = vi.fn<Parameters<GetGuardConfig>, ReturnType<GetGuardConfig>>()
 vi.mock('../../global/serviceConfig', () => {
   return {
     getServiceConfig: ((...args) => getServiceConfigMock(...args)) satisfies GetServiceConfig,
@@ -109,7 +109,7 @@ const secondMockServiceConfig: ServiceConfig = {
 
 beforeEach(async () => {
   getServiceConfigMock.mockReset()
-  getDecoratorConfigMock.mockReset()
+  getGuardConfigMock.mockReset()
 })
 describe('StanzaSpanProcessorManager', function () {
   it('should create StanzaSpanProcessorManager', function () {
@@ -184,11 +184,11 @@ describe('StanzaSpanProcessorManager', function () {
     })
   })
 
-  describe('context with decorator', () => {
+  describe('context with guard', () => {
     it('should return NoopSpanProcessor if service config is not initialized', function () {
       const manager = new StanzaSpanProcessorManager()
 
-      expect(manager.getSpanProcessor(ROOT_CONTEXT.setValue(stanzaDecoratorContextKey, 'myDecorator'))).toBeInstanceOf(NoopSpanProcessor)
+      expect(manager.getSpanProcessor(ROOT_CONTEXT.setValue(stanzaGuardContextKey, 'myGuard'))).toBeInstanceOf(NoopSpanProcessor)
     })
 
     it('should return service processor if service config is initialized', function () {
@@ -196,7 +196,7 @@ describe('StanzaSpanProcessorManager', function () {
 
       serviceListener(mockServiceConfig)
 
-      const spanProcessor = manager.getSpanProcessor(ROOT_CONTEXT.setValue(stanzaDecoratorContextKey, 'myDecorator'))
+      const spanProcessor = manager.getSpanProcessor(ROOT_CONTEXT.setValue(stanzaGuardContextKey, 'myGuard'))
       expect(spanProcessor).toBeInstanceOf(BatchSpanProcessor)
       expect((spanProcessor as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test.collector',

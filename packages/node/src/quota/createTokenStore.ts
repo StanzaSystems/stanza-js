@@ -7,17 +7,17 @@ import { type StanzaToken } from '../hub/model'
 const MARK_TOKENS_AS_CONSUMED_DELAY = 100
 const TOKEN_EXPIRE_OFFSET = 2000
 
-interface DecoratorTokenStore {
+interface GuardTokenStore {
   fetchTokensIfNecessary: (query: TokenQuery) => Promise<StanzaToken | null>
 }
 export const createTokenStore = (): TokenStore => {
-  const decoratorTokenStores: Record<string, DecoratorTokenStore> = {}
+  const guardTokenStores: Record<string, GuardTokenStore> = {}
   let tokensConsumed = Array<string>()
   let tokensConsumedTimeout: ReturnType<typeof setTimeout> | undefined
 
   return {
     getToken: async (query) => {
-      const { fetchTokensIfNecessary } = getDecoratorTokenStore(query.decorator)
+      const { fetchTokensIfNecessary } = getGuardTokenStore(query.guard)
       return fetchTokensIfNecessary(query)
     },
     markTokenAsConsumed: (token) => {
@@ -36,13 +36,13 @@ export const createTokenStore = (): TokenStore => {
     }
   }
 
-  function getDecoratorTokenStore (decoratorName: string) {
-    decoratorTokenStores[decoratorName] = decoratorTokenStores[decoratorName] ?? createDecoratorTokenStore(decoratorName)
-    return decoratorTokenStores[decoratorName]
+  function getGuardTokenStore (guardName: string) {
+    guardTokenStores[guardName] = guardTokenStores[guardName] ?? createGuardTokenStore(guardName)
+    return guardTokenStores[guardName]
   }
 }
 
-function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
+function createGuardTokenStore (guard: string): GuardTokenStore {
   const state = createTokenState()
   let tokenLeaseInProgressCount = 0
   state.onTokensAvailableRatioChange(TOKEN_EXPIRE_OFFSET, (ratio) => {
@@ -96,7 +96,7 @@ function createDecoratorTokenStore (decorator: string): DecoratorTokenStore {
     tokenLeaseInProgressCount++
     return hubService.getTokenLease({
       ...query,
-      decorator
+      guard
     }).finally(() => {
       tokenLeaseInProgressCount--
     }).catch(() => null)

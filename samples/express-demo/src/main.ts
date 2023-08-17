@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
-import { stanzaDecorator, StanzaDecoratorError } from '@getstanza/node'
+import { stanzaGuard, StanzaGuardError } from '@getstanza/node'
 
 import express, { type Request, type ErrorRequestHandler, type Response, type NextFunction } from 'express'
 import * as dotenv from 'dotenv'
@@ -26,8 +26,8 @@ const gitHubGuard = (req: Request, res: Response, next: NextFunction) => {
   const plan = req.get('x-user-plan')
   const priorityBoost = (plan === 'free') ? -1 : (plan === 'enterprise') ? 1 : 0
   console.log(`plan ${plan} boost ${priorityBoost}`)
-  void stanzaDecorator({
-    decorator: 'github_guard',
+  void stanzaGuard({
+    guard: 'github_guard',
     priorityBoost
   }).call(next).catch(next)
 }
@@ -50,7 +50,7 @@ app.get('/account/:username', gitHubGuard, async (req: Request, res: Response, n
 })
 
 app.use(((err, req, res, next) => {
-  if (err instanceof StanzaDecoratorError) {
+  if (err instanceof StanzaGuardError) {
     res.status(429).send('Too many requests')
   } else {
     next(err)

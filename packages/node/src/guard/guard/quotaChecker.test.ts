@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { type DecoratorConfig } from '../../hub/model'
+import { type GuardConfig } from '../../hub/model'
 import { initQuotaChecker } from './quotaChecker'
-import { updateDecoratorConfig } from '../../global/decoratorConfig'
+import { updateGuardConfig } from '../../global/guardConfig'
 import { mockHubService } from '../../__tests__/mocks/mockHubService'
 import { logger } from '../../global/logger'
 
@@ -11,34 +11,34 @@ beforeEach(() => {
 
 describe('quotaChecker', () => {
   beforeEach(() => {
-    // @ts-expect-error: resetting decorator config
-    updateDecoratorConfig(undefined)
+    // @ts-expect-error: resetting guard config
+    updateGuardConfig(undefined)
   })
 
   describe('shouldCheckQuota()', () => {
     const { shouldCheckQuota } = initQuotaChecker({
-      decorator: 'testDecorator'
+      guard: 'testGuard'
     })
 
     it('should check quota', () => {
-      updateDecoratorConfig('testDecorator', {
+      updateGuardConfig('testGuard', {
         version: 'testVersion',
         config: {
           checkQuota: true,
           quotaTags: []
-        } satisfies Partial<DecoratorConfig['config']> as any
+        } satisfies Partial<GuardConfig['config']> as any
       })
 
       expect(shouldCheckQuota()).toBe(true)
     })
 
     it('should NOT check quota', () => {
-      updateDecoratorConfig('testDecorator', {
+      updateGuardConfig('testGuard', {
         version: 'testVersion',
         config: {
           checkQuota: false,
           quotaTags: []
-        } satisfies Partial<DecoratorConfig['config']> as any
+        } satisfies Partial<GuardConfig['config']> as any
       })
 
       expect(shouldCheckQuota()).toBe(false)
@@ -48,7 +48,7 @@ describe('quotaChecker', () => {
   describe('checkQuota()', () => {
     it('should send tag to get token lease', () => {
       const { checkQuota } = initQuotaChecker({
-        decorator: 'testDecorator',
+        guard: 'testGuard',
         tags: [
           {
             key: 'validQuotaTag',
@@ -57,19 +57,19 @@ describe('quotaChecker', () => {
         ]
       })
 
-      updateDecoratorConfig('testDecorator', {
+      updateGuardConfig('testGuard', {
         version: 'testVersion',
         config: {
           checkQuota: true,
           quotaTags: ['validQuotaTag', 'anotherValidQuotaTag']
-        } satisfies Partial<DecoratorConfig['config']> as any
+        } satisfies Partial<GuardConfig['config']> as any
       })
 
       void checkQuota()
 
       expect(mockHubService.getToken).toHaveBeenCalledOnce()
       expect(mockHubService.getToken).toHaveBeenCalledWith({
-        decorator: 'testDecorator',
+        guard: 'testGuard',
         tags: [
           {
             key: 'validQuotaTag',
@@ -81,7 +81,7 @@ describe('quotaChecker', () => {
 
     it('should send multiple tags to get token lease', () => {
       const { checkQuota } = initQuotaChecker({
-        decorator: 'testDecorator',
+        guard: 'testGuard',
         tags: [
           {
             key: 'validQuotaTag',
@@ -94,19 +94,19 @@ describe('quotaChecker', () => {
         ]
       })
 
-      updateDecoratorConfig('testDecorator', {
+      updateGuardConfig('testGuard', {
         version: 'testVersion',
         config: {
           checkQuota: true,
           quotaTags: ['validQuotaTag', 'anotherValidQuotaTag']
-        } satisfies Partial<DecoratorConfig['config']> as any
+        } satisfies Partial<GuardConfig['config']> as any
       })
 
       void checkQuota()
 
       expect(mockHubService.getToken).toHaveBeenCalledOnce()
       expect(mockHubService.getToken).toHaveBeenCalledWith({
-        decorator: 'testDecorator',
+        guard: 'testGuard',
         tags: [
           {
             key: 'validQuotaTag',
@@ -122,7 +122,7 @@ describe('quotaChecker', () => {
 
     it('should send only valid tag to get token lease', () => {
       const { checkQuota } = initQuotaChecker({
-        decorator: 'testDecorator',
+        guard: 'testGuard',
         tags: [
           {
             key: 'validQuotaTag',
@@ -135,19 +135,19 @@ describe('quotaChecker', () => {
         ]
       })
 
-      updateDecoratorConfig('testDecorator', {
+      updateGuardConfig('testGuard', {
         version: 'testVersion',
         config: {
           checkQuota: true,
           quotaTags: ['validQuotaTag', 'anotherValidQuotaTag']
-        } satisfies Partial<DecoratorConfig['config']> as any
+        } satisfies Partial<GuardConfig['config']> as any
       })
 
       void checkQuota()
 
       expect(mockHubService.getToken).toHaveBeenCalledOnce()
       expect(mockHubService.getToken).toHaveBeenCalledWith({
-        decorator: 'testDecorator',
+        guard: 'testGuard',
         tags: [
           {
             key: 'validQuotaTag',
@@ -161,7 +161,7 @@ describe('quotaChecker', () => {
       const infoSpy = vi.spyOn(logger, 'info')
 
       const { checkQuota } = initQuotaChecker({
-        decorator: 'testDecorator',
+        guard: 'testGuard',
         tags: [
           {
             key: 'validQuotaTag',
@@ -178,25 +178,25 @@ describe('quotaChecker', () => {
         ]
       })
 
-      updateDecoratorConfig('testDecorator', {
+      updateGuardConfig('testGuard', {
         version: 'testVersion',
         config: {
           checkQuota: true,
           quotaTags: ['validQuotaTag', 'anotherValidQuotaTag']
-        } satisfies Partial<DecoratorConfig['config']> as any
+        } satisfies Partial<GuardConfig['config']> as any
       })
 
       void checkQuota()
 
       expect(infoSpy).toHaveBeenCalledOnce()
-      expect(infoSpy).toHaveBeenCalledWith('Unused tags in decorator \'%s\'. Tags: %o', 'testDecorator', ['invalidQuotaTag', 'anotherInvalidQuotaTag'])
+      expect(infoSpy).toHaveBeenCalledWith('Unused tags in guard \'%s\'. Tags: %o', 'testGuard', ['invalidQuotaTag', 'anotherInvalidQuotaTag'])
     })
 
     it('should NOT log if all tags are valid', () => {
       const infoSpy = vi.spyOn(logger, 'info')
 
       const { checkQuota } = initQuotaChecker({
-        decorator: 'testDecorator',
+        guard: 'testGuard',
         tags: [
           {
             key: 'validQuotaTag',
@@ -209,12 +209,12 @@ describe('quotaChecker', () => {
         ]
       })
 
-      updateDecoratorConfig('testDecorator', {
+      updateGuardConfig('testGuard', {
         version: 'testVersion',
         config: {
           checkQuota: true,
           quotaTags: ['validQuotaTag', 'anotherValidQuotaTag']
-        } satisfies Partial<DecoratorConfig['config']> as any
+        } satisfies Partial<GuardConfig['config']> as any
       })
 
       void checkQuota()
@@ -226,15 +226,15 @@ describe('quotaChecker', () => {
       const infoSpy = vi.spyOn(logger, 'info')
 
       const { checkQuota } = initQuotaChecker({
-        decorator: 'testDecorator'
+        guard: 'testGuard'
       })
 
-      updateDecoratorConfig('testDecorator', {
+      updateGuardConfig('testGuard', {
         version: 'testVersion',
         config: {
           checkQuota: true,
           quotaTags: ['validQuotaTag', 'anotherValidQuotaTag']
-        } satisfies Partial<DecoratorConfig['config']> as any
+        } satisfies Partial<GuardConfig['config']> as any
       })
 
       void checkQuota()

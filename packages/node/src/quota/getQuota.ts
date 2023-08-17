@@ -2,14 +2,14 @@ import { type StanzaToken } from '../hub/model'
 import { withTimeout } from '../utils/withTimeout'
 import { tokenStore } from '../global/tokenStore'
 import { hubService } from '../global/hubService'
-import { getDecoratorConfig } from '../global/decoratorConfig'
+import { getGuardConfig } from '../global/guardConfig'
 import { logger } from '../global/logger'
-import { type Tag } from '../decorator/model'
+import { type Tag } from '../guard/model'
 import { STANZA_REQUEST_TIMEOUT } from '../global/requestTimeout'
 import { STANZA_SKIP_TOKEN_CACHE } from '../global/skipTokenCache'
 
 interface GetQuotaOptions {
-  decorator: string
+  guard: string
   feature?: string
   priorityBoost?: number
   tags?: Tag[]
@@ -31,13 +31,13 @@ export const getQuota = async (options: GetQuotaOptions): Promise<StanzaToken | 
 
 const getQuotaInternal = async (options: GetQuotaOptions): Promise<StanzaToken | null> => {
   const incomingQuotaTags = options.tags ?? []
-  const decoratorConfig = getDecoratorConfig(options.decorator)
-  const validDecoratorQuotaTags = decoratorConfig?.config.quotaTags ?? []
-  const validQuotaTags = incomingQuotaTags.filter(incomingTag => validDecoratorQuotaTags.includes(incomingTag.key))
-  const invalidQuotaTags = incomingQuotaTags.filter(incomingTag => !validDecoratorQuotaTags.includes(incomingTag.key))
+  const guardConfig = getGuardConfig(options.guard)
+  const validGuardQuotaTags = guardConfig?.config.quotaTags ?? []
+  const validQuotaTags = incomingQuotaTags.filter(incomingTag => validGuardQuotaTags.includes(incomingTag.key))
+  const invalidQuotaTags = incomingQuotaTags.filter(incomingTag => !validGuardQuotaTags.includes(incomingTag.key))
 
   if (invalidQuotaTags.length > 0) {
-    logger.info('Unused tags in decorator \'%s\'. Tags: %o', options.decorator, invalidQuotaTags.map(t => t.key))
+    logger.info('Unused tags in guard \'%s\'. Tags: %o', options.guard, invalidQuotaTags.map(t => t.key))
   }
 
   if (validQuotaTags.length > 0) {

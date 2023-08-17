@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from 'vitest'
-import { type DecoratorConfig, type ServiceConfig } from '../model'
+import { type GuardConfig, type ServiceConfig } from '../model'
 import { eventBus, events } from '../../global/eventBus'
 import { createRestHubService } from './createRestHubService'
 import { type ServiceConfigResponse } from '../api/serviceConfigResponse'
@@ -172,7 +172,7 @@ describe('hubService', () => {
         await vi.advanceTimersByTimeAsync(123.456)
 
         deferred.resolve({
-          config: {} satisfies Partial<DecoratorConfig['config']> as any,
+          config: {} satisfies Partial<GuardConfig['config']> as any,
           version: 'testVersion'
         })
 
@@ -221,7 +221,7 @@ describe('hubService', () => {
         await vi.advanceTimersByTimeAsync(123.456)
 
         deferred.resolve({
-          config: {} satisfies Partial<DecoratorConfig['config']> as any,
+          config: {} satisfies Partial<GuardConfig['config']> as any,
           version: 'testVersion'
         })
 
@@ -237,68 +237,68 @@ describe('hubService', () => {
       })
     })
 
-    describe('fetchDecoratorConfig', () => {
-      it('should emit stanza.config.decorator.fetch_ok when fetching succeeds', async () => {
+    describe('fetchGuard', () => {
+      it('should emit stanza.config.guard.fetch_ok when fetching succeeds', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
-        const fetchDecoratorPromise = hubService.fetchDecoratorConfig({
-          decorator: 'testDecorator'
+        const fetchGuardPromise = hubService.fetchGuardConfig({
+          guard: 'testGuard'
         })
 
         deferred.resolve({
-          config: {} satisfies Partial<DecoratorConfig['config']> as any,
+          config: {} satisfies Partial<GuardConfig['config']> as any,
           version: 'testVersion'
         })
 
-        await expect(fetchDecoratorPromise).resolves.toBeDefined()
+        await expect(fetchGuardPromise).resolves.toBeDefined()
 
-        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.decorator.fetchOk, {
-          decoratorName: 'testDecorator',
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.guard.fetchOk, {
+          guardName: 'testGuard',
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId'
         })
       })
 
-      it('should emit stanza.config.decorator.fetch_failed when fetching fails', async () => {
+      it('should emit stanza.config.guard.fetch_failed when fetching fails', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
-        const fetchDecoratorPromise = hubService.fetchDecoratorConfig({
-          decorator: 'testDecorator'
+        const fetchGuardPromise = hubService.fetchGuardConfig({
+          guard: 'testGuard'
         })
 
         deferred.reject(new Error('kaboom'))
 
-        await expect(fetchDecoratorPromise).rejects.toThrow('kaboom')
+        await expect(fetchGuardPromise).rejects.toThrow('kaboom')
 
-        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.decorator.fetchFailed, {
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.guard.fetchFailed, {
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId'
         })
       })
 
-      it('should emit stanza.config.decorator.latency event when fetching succeeds', async () => {
+      it('should emit stanza.config.guard.latency event when fetching succeeds', async () => {
         vi.useFakeTimers({
           now: 0
         })
 
         const deferred = mockHubRequest.mockImplementationDeferred()
 
-        const fetchDecoratorPromise = hubService.fetchDecoratorConfig({
-          decorator: 'testDecorator'
+        const fetchGuardPromise = hubService.fetchGuardConfig({
+          guard: 'testGuard'
         })
 
         await vi.advanceTimersByTimeAsync(123.456)
 
         deferred.resolve({
-          config: {} satisfies Partial<DecoratorConfig['config']> as any,
+          config: {} satisfies Partial<GuardConfig['config']> as any,
           version: 'testVersion'
         })
 
-        await expect(fetchDecoratorPromise).resolves.toBeDefined()
+        await expect(fetchGuardPromise).resolves.toBeDefined()
 
-        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.decorator.fetchLatency, {
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.guard.fetchLatency, {
           latency: 123.456,
           serviceName: 'testService',
           environment: 'testEnvironment',
@@ -312,7 +312,7 @@ describe('hubService', () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const getTokenPromise = hubService.getToken({
-          decorator: 'testDecorator'
+          guard: 'testGuard'
         })
 
         deferred.resolve({
@@ -326,7 +326,7 @@ describe('hubService', () => {
         })
 
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.quota.fetchOk, {
-          decoratorName: 'testDecorator',
+          guardName: 'testGuard',
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId',
@@ -338,7 +338,7 @@ describe('hubService', () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const getTokenPromise = hubService.getToken({
-          decorator: 'testDecorator'
+          guard: 'testGuard'
         })
 
         deferred.reject(new Error('kaboom'))
@@ -361,7 +361,7 @@ describe('hubService', () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const getTokenPromise = hubService.getToken({
-          decorator: 'testDecorator'
+          guard: 'testGuard'
         })
 
         await vi.advanceTimersByTimeAsync(123.456)
@@ -397,7 +397,7 @@ describe('hubService', () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const getTokenLeasePromise = hubService.getTokenLease({
-          decorator: 'testDecorator'
+          guard: 'testGuard'
         })
 
         deferred.resolve({
@@ -424,7 +424,7 @@ describe('hubService', () => {
         })
 
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.quota.fetchOk, {
-          decoratorName: 'testDecorator',
+          guardName: 'testGuard',
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId',
@@ -436,7 +436,7 @@ describe('hubService', () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const getTokenLeasePromise = hubService.getTokenLease({
-          decorator: 'testDecorator'
+          guard: 'testGuard'
         })
 
         deferred.reject(new Error('kaboom'))
@@ -455,7 +455,7 @@ describe('hubService', () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const getTokenLeasePromise = hubService.getTokenLease({
-          decorator: 'testDecorator'
+          guard: 'testGuard'
         })
 
         await vi.advanceTimersByTimeAsync(123.456)
@@ -571,7 +571,7 @@ describe('hubService', () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const validateTokenPromise = hubService.validateToken({
-          decorator: 'testDecorator',
+          guard: 'testGuard',
           token: 'testToken'
         })
 
@@ -589,7 +589,7 @@ describe('hubService', () => {
         })
 
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.quota.validateOk, {
-          decoratorName: 'testDecorator',
+          guardName: 'testGuard',
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId'
@@ -600,7 +600,7 @@ describe('hubService', () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const validateTokenPromise = hubService.validateToken({
-          decorator: 'testDecorator',
+          guard: 'testGuard',
           token: 'testToken'
         })
 
@@ -619,7 +619,7 @@ describe('hubService', () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const validateTokenPromise = hubService.validateToken({
-          decorator: 'testDecorator',
+          guard: 'testGuard',
           token: 'testToken'
         })
 
@@ -637,7 +637,7 @@ describe('hubService', () => {
         })
 
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.quota.validateFailed, {
-          decoratorName: 'testDecorator',
+          guardName: 'testGuard',
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId'
@@ -652,7 +652,7 @@ describe('hubService', () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const validateTokenPromise = hubService.validateToken({
-          decorator: 'testDecorator',
+          guard: 'testGuard',
           token: 'testToken'
         })
 

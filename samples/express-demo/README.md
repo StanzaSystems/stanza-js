@@ -1,10 +1,10 @@
 ## Express demo app
 
-An extremely simple demo app that illustrates how Stanza can be used to rate limit a service's incoming requests. 
+An extremely simple demo app that illustrates how Stanza can be used to rate limit a service's incoming requests.
 
-This demo has an endpoint that requests a user profile based on a GitHub username. 
+This demo has an endpoint that requests a user profile based on a GitHub username.
 
-It also has a middleware that parses the user's plan (Enterprise, free, or pro) from the request header, assigns requests a priority based on user plan, and passes them to a Stanza decorator.
+It also has a middleware that parses the user's plan (Enterprise, free, or pro) from the request header, assigns requests a priority based on user plan, and passes them to a Stanza guard.
 
 Requests for higher paying users are prioritized under load.
 
@@ -13,13 +13,13 @@ Requests for higher paying users are prioritized under load.
 1. Copy the `.env.example` file and rename it to `.env`.
 2. In the `.env` file, set `STANZA_API_KEY` to a [browser key](https://ui.demo.getstanza.io/admin?tab=keys) for your local environment.
 3. In the `.env` file, set `GITHUB_PAT` to a [GitHub Personal Access Token](https://github.com/settings/tokens).  It does not require any particular scopes.
-4. In the [Stanza UI](https://ui.demo.getstanza.io/decorators), create a decorator:
+4. In the [Stanza UI](https://ui.demo.getstanza.io/guards), create a guard:
 
   | Name                | Project | Environment | Traffic Type |
   |---------------------|---------|-------------|--------------|
   | github_guard        | default | local       | Outbound     |
 
-Ensure the decorator has the following traffic configuration:
+Ensure the guard has the following traffic configuration:
 
 ```json
 {
@@ -38,21 +38,21 @@ Note that this configuration is useful for demonstration purposes only.  In a re
 
 #### `enabled`
 
-Boolean value that determines whether the decorator is enabled.
+Boolean value that determines whether the guard is enabled.
 
-- When enabled, traffic flowing through this decorator is guarded based on the active configuration.
-- When disabled, all traffic is allowed to flow through the decorator without being guarded - the decorator still emits telemetry.
+- When enabled, traffic flowing through this guard is guarded based on the active configuration.
+- When disabled, all traffic is allowed to flow through the guard without being guarded - the guard still emits telemetry.
 
 #### `refillRate`
 
-The rate that the decorator is refilled, in terms of calls per second.
+The rate that the guard is refilled, in terms of calls per second.
 
-For example, if the decorator is guarding a function that makes an outbound query to another service, the refill rate controls
+For example, if the guard is guarding a function that makes an outbound query to another service, the refill rate controls
 the maximum number of queries per second allowed to access the service through that function.
 
 #### `burst`
 
-Your Decorator users will be able to temporarily make this many requests, but they will be held on average to Rate over a longer time window. Burst must be greater than or equal to Rate.
+Your Guard users will be able to temporarily make this many requests, but they will be held on average to Rate over a longer time window. Burst must be greater than or equal to Rate.
 
 #### `strictSynchronous`
 

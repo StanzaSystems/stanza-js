@@ -1,10 +1,10 @@
 import { beforeAll, beforeEach, describe, expect, it, type Mock, vi } from 'vitest'
-import { updateDecoratorConfig } from '../global/decoratorConfig'
+import { updateGuardConfig } from '../global/guardConfig'
 import { mockHubService } from '../__tests__/mocks/mockHubService'
 import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks'
 import { context } from '@opentelemetry/api'
-import { type DecoratorConfig } from '../hub/model'
-import { stanzaDecorator } from './stanzaDecorator'
+import { type GuardConfig } from '../hub/model'
+import { stanzaGuard } from './stanzaGuard'
 import { eventBus, events } from '../global/eventBus'
 import type * as getQuotaModule from '../quota/getQuota'
 type GetQuotaModule = typeof getQuotaModule
@@ -42,7 +42,7 @@ const getQuotaMock = Object.assign(
   })
 
 beforeEach(() => {
-  updateDecoratorConfig('testDecorator', undefined as any)
+  updateGuardConfig('testGuard', undefined as any)
 
   mockMessageBusEmit.mockReset()
 
@@ -63,30 +63,30 @@ beforeAll(() => {
   context.setGlobalContextManager(contextManager)
 })
 
-describe('stanzaDecorator', () => {
+describe('stanzaGuard', () => {
   describe('events', () => {
-    it('should emit stanza.request.allowed event when decorator executes', async () => {
-      updateDecoratorConfig('testDecorator', {
+    it('should emit stanza.request.allowed event when guard executes', async () => {
+      updateGuardConfig('testGuard', {
         config: {
           checkQuota: true
-        } satisfies Partial<DecoratorConfig['config']> as any,
-        version: 'testDecoratorVersion'
+        } satisfies Partial<GuardConfig['config']> as any,
+        version: 'testGuardVersion'
       })
 
       const deferred = getQuotaMock.mockImplementationDeferred()
 
-      const decoratedDoStuff = stanzaDecorator({
-        decorator: 'testDecorator'
+      const guardedDoStuff = stanzaGuard({
+        guard: 'testGuard'
       }).bind(doStuff)
 
-      const decoratedStuffPromise = decoratedDoStuff()
+      const guardStuffPromise = guardedDoStuff()
 
       deferred.resolve({ granted: true, token: 'testToken' })
 
-      await expect(decoratedStuffPromise).resolves.toBeUndefined()
+      await expect(guardStuffPromise).resolves.toBeUndefined()
 
       expect(mockMessageBusEmit).toHaveBeenCalledWith(events.request.allowed, {
-        decoratorName: 'testDecorator',
+        guardName: 'testGuard',
         featureName: '',
         serviceName: 'testService',
         environment: 'testEnvironment',
@@ -94,28 +94,28 @@ describe('stanzaDecorator', () => {
       })
     })
 
-    it('should emit stanza.request.blocked event when decorator\'s execution is blocked', async () => {
-      updateDecoratorConfig('testDecorator', {
+    it('should emit stanza.request.blocked event when guard\'s execution is blocked', async () => {
+      updateGuardConfig('testGuard', {
         config: {
           checkQuota: true
-        } satisfies Partial<DecoratorConfig['config']> as any,
-        version: 'testDecoratorVersion'
+        } satisfies Partial<GuardConfig['config']> as any,
+        version: 'testGuardVersion'
       })
 
       const deferred = getQuotaMock.mockImplementationDeferred()
 
-      const decoratedDoStuff = stanzaDecorator({
-        decorator: 'testDecorator'
+      const guardedDoStuff = stanzaGuard({
+        guard: 'testGuard'
       }).bind(doStuff)
 
-      const decoratedStuffPromise = decoratedDoStuff()
+      const guardStuffPromise = guardedDoStuff()
 
       deferred.resolve({ granted: false })
 
-      await expect(decoratedStuffPromise).rejects.toThrow()
+      await expect(guardStuffPromise).rejects.toThrow()
 
       expect(mockMessageBusEmit).toHaveBeenCalledWith(events.request.blocked, {
-        decoratorName: 'testDecorator',
+        guardName: 'testGuard',
         featureName: '',
         reason: 'quota',
         serviceName: 'testService',
@@ -124,30 +124,30 @@ describe('stanzaDecorator', () => {
       })
     })
 
-    it('should emit stanza.request.succeeded event when function wrapped with a decorator succeeds', async () => {
-      updateDecoratorConfig('testDecorator', {
+    it('should emit stanza.request.succeeded event when function wrapped with a guard succeeds', async () => {
+      updateGuardConfig('testGuard', {
         config: {
           checkQuota: true
-        } satisfies Partial<DecoratorConfig['config']> as any,
-        version: 'testDecoratorVersion'
+        } satisfies Partial<GuardConfig['config']> as any,
+        version: 'testGuardVersion'
       })
 
       const deferred = getQuotaMock.mockImplementationDeferred()
 
-      const decoratedDoStuff = stanzaDecorator({
-        decorator: 'testDecorator'
+      const guardedDoStuff = stanzaGuard({
+        guard: 'testGuard'
       }).bind(doStuff)
 
-      const decoratedStuffPromise = decoratedDoStuff()
+      const guardStuffPromise = guardedDoStuff()
 
       mockMessageBusEmit.mockReset()
 
       deferred.resolve({ granted: true, token: 'testToken' })
 
-      await expect(decoratedStuffPromise).resolves.toBeUndefined()
+      await expect(guardStuffPromise).resolves.toBeUndefined()
 
       expect(mockMessageBusEmit).toHaveBeenCalledWith(events.request.succeeded, {
-        decoratorName: 'testDecorator',
+        guardName: 'testGuard',
         featureName: '',
         serviceName: 'testService',
         environment: 'testEnvironment',
@@ -155,30 +155,30 @@ describe('stanzaDecorator', () => {
       })
     })
 
-    it('should emit stanza.request.failed event when function wrapped with a decorator fails', async () => {
-      updateDecoratorConfig('testDecorator', {
+    it('should emit stanza.request.failed event when function wrapped with a guard fails', async () => {
+      updateGuardConfig('testGuard', {
         config: {
           checkQuota: true
-        } satisfies Partial<DecoratorConfig['config']> as any,
-        version: 'testDecoratorVersion'
+        } satisfies Partial<GuardConfig['config']> as any,
+        version: 'testGuardVersion'
       })
 
       const deferred = getQuotaMock.mockImplementationDeferred()
 
-      const decoratedDoStuff = stanzaDecorator({
-        decorator: 'testDecorator'
+      const guardedDoStuff = stanzaGuard({
+        guard: 'testGuard'
       }).bind(() => {
         throw new Error('kaboom')
       })
 
-      const decoratedStuffPromise = decoratedDoStuff()
+      const guardStuffPromise = guardedDoStuff()
 
       deferred.resolve({ granted: true, token: 'testToken' })
 
-      await expect(decoratedStuffPromise).rejects.toThrow('kaboom')
+      await expect(guardStuffPromise).rejects.toThrow('kaboom')
 
       expect(mockMessageBusEmit).toHaveBeenCalledWith(events.request.failed, {
-        decoratorName: 'testDecorator',
+        guardName: 'testGuard',
         featureName: '',
         serviceName: 'testService',
         environment: 'testEnvironment',
@@ -186,33 +186,33 @@ describe('stanzaDecorator', () => {
       })
     })
 
-    it('should emit stanza.request.latency event when function wrapped with a decorator succeeds', async () => {
+    it('should emit stanza.request.latency event when function wrapped with a guard succeeds', async () => {
       vi.useFakeTimers({
         now: 0
       })
-      updateDecoratorConfig('testDecorator', {
+      updateGuardConfig('testGuard', {
         config: {
           checkQuota: true
-        } satisfies Partial<DecoratorConfig['config']> as any,
-        version: 'testDecoratorVersion'
+        } satisfies Partial<GuardConfig['config']> as any,
+        version: 'testGuardVersion'
       })
 
       const deferred = getQuotaMock.mockImplementationDeferred()
 
-      const decoratedDoStuff = stanzaDecorator({
-        decorator: 'testDecorator'
+      const guardedDoStuff = stanzaGuard({
+        guard: 'testGuard'
       }).bind(doStuff)
 
-      const decoratedStuffPromise = decoratedDoStuff()
+      const guardStuffPromise = guardedDoStuff()
 
       await vi.advanceTimersByTimeAsync(123.456)
 
       deferred.resolve({ granted: true, token: 'testToken' })
 
-      await expect(decoratedStuffPromise).resolves.toBeUndefined()
+      await expect(guardStuffPromise).resolves.toBeUndefined()
 
       expect(mockMessageBusEmit).toHaveBeenCalledWith(events.request.latency, {
-        decoratorName: 'testDecorator',
+        guardName: 'testGuard',
         featureName: '',
         latency: 123.456,
         serviceName: 'testService',

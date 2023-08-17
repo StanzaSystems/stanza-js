@@ -1,4 +1,4 @@
-import { StanzaDecoratorError } from '@getstanza/node'
+import { StanzaGuardError } from '@getstanza/node'
 import { type NextApiHandler, type NextApiRequest, type NextApiResponse } from 'next'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextRequestErrorHandler } from './nextRequestErrorHandler'
@@ -22,9 +22,9 @@ describe('nextRequestErrorHandler', () => {
     wrappedHandler = nextRequestErrorHandler(handler)
   })
 
-  it('should catch StanzaDecoratorError - NoQuota', async function () {
+  it('should catch StanzaGuardError - NoQuota', async function () {
     handler.mockImplementationOnce(() => {
-      throw new StanzaDecoratorError('NoQuota', 'Message')
+      throw new StanzaGuardError('NoQuota', 'Message')
     })
 
     expect(async () => {
@@ -34,9 +34,9 @@ describe('nextRequestErrorHandler', () => {
     await expect(wrappedHandler(mockReq, mockRes)).resolves.not.toThrow()
   })
 
-  it('should catch StanzaDecoratorError - InvalidToken', async function () {
+  it('should catch StanzaGuardError - InvalidToken', async function () {
     handler.mockImplementationOnce(() => {
-      throw new StanzaDecoratorError('InvalidToken', 'Message')
+      throw new StanzaGuardError('InvalidToken', 'Message')
     })
 
     expect(async () => {
