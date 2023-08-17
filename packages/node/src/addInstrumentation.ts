@@ -3,12 +3,27 @@ import { StanzaApiKeyPropagator } from './propagation/StanzaApiKeyPropagator'
 import { StanzaBaggagePropagator } from './propagation/StanzaBaggagePropagator'
 import { StanzaPriorityBoostPropagator } from './propagation/StanzaPriorityBoostPropagator'
 import { StanzaTokenPropagator } from './propagation/StanzaTokenPropagator'
+import { HeadersSpanEnhancer } from './span/headers/HeadersSpanEnhancer'
+import { createHttpHeaderGetter } from './createHttpHeaderGetter'
 
 export const addInstrumentation = async (serviceName: string) => {
-  /* eslint-disable @typescript-eslint/no-var-requires */
   const { HttpInstrumentation } = await import('@opentelemetry/instrumentation-http')
+  const headersEnhancer = new HeadersSpanEnhancer()
+  const httpInstrumentation = new HttpInstrumentation({
+    requestHook: (span, request) => {
+      headersEnhancer.enhanceWithRequest(span, createHttpHeaderGetter(request))
+    },
+    responseHook: (span, response) => {
+      const responseHeaderGetter = createHttpHeaderGetter(response)
+      const enhanceResponse = () => {
+        headersEnhancer.enhanceWithResponse(span, responseHeaderGetter)
+      }
 
-  const httpInstrumentation = new HttpInstrumentation()
+      enhanceResponse()
+      response.prependListener('end', enhanceResponse)
+      response.prependListener('finish', enhanceResponse)
+    }
+  })
   // NOTE: @opentelemetry/sdk-node needs to be required after we create the instrumentation.
   // Otherwise, the instrumentation fails to work
   const { NodeSDK } = await import('@opentelemetry/sdk-node')
@@ -20,7 +35,6 @@ export const addInstrumentation = async (serviceName: string) => {
   const { StanzaMetricExporter } = await import('./open-telemetry/metric/stanzaMetricExporter')
   const { StanzaInstrumentation } = await import('./open-telemetry/instrumentation/stanzaInstrumentation')
 
-  /* eslint-enable @typescript-eslint/no-var-requires */
   const sdk = new NodeSDK({
     sampler: new StanzaSampler(),
     spanProcessor: new StanzaSpanProcessor() as any, // TODO: fix any cast

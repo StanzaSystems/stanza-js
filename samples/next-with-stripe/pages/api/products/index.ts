@@ -1,4 +1,4 @@
-import { nextApiRequestDecorator } from '@getstanza/next-node'
+import { nextApiRequestGuard } from '@getstanza/next-node'
 import { type NextApiHandler } from 'next'
 import { type Product } from '../../../data/product'
 import getStripeAPI from '../../../utils/stripe-api'
@@ -22,8 +22,8 @@ const handler: NextApiHandler = async (req, res) => {
   res.json(resultProducts.filter(({ name }) => name.toLowerCase().includes(searchString.toLowerCase())))
 }
 
-const nextApiRequestStripeProductsApiDecorator = nextApiRequestDecorator({
-  decorator: 'Stripe_Products_API',
-  priorityBoost: 1
+const nextApiRequestStripeProductsApiGuard = nextApiRequestGuard({
+  guard: 'Stripe_Products_API',
+  feature: 'search'
 })
-export default nextApiRequestStripeProductsApiDecorator(handler)
+export default nextApiRequestStripeProductsApiGuard(handler)

@@ -1,0 +1,35 @@
+config:
+  target: "https://hub.stanzasys.co"
+  processor: './load-test-utils.js'
+  phases:
+    - duration: 20
+      arrivalRate: 8
+scenarios:
+  - name: "Send free requests"
+    afterResponse: "trackRateLimitsFromHub"
+    flow:
+      - post:
+          url: '/v1/quota/token'
+          headers:
+            X-Stanza-Key: "{{ $processEnvironment.STANZA_API_KEY }}"
+            x-user-plan: "free"
+          json:
+            priorityBoost: -1
+            selector:
+              environment: local
+              guardName: github_guard
+    weight: 1
+  - name: "Send enterprise requests"
+    afterResponse: "trackRateLimitsFromHub"
+    flow:
+      - post:
+          url: '/v1/quota/token'
+          headers:
+            X-Stanza-Key: "{{ $processEnvironment.STANZA_API_KEY }}"
+            x-user-plan: "enterprise"
+          json:
+            priorityBoost: 0
+            selector:
+              environment: local
+              guardName: github_guard
+    weight: 1

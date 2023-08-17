@@ -1,11 +1,31 @@
 config:
   target: "http://localhost:3002"
+  processor: './load-test-utils.js'
   phases:
-    - duration: 30
-      arrivalRate: 10
- 
+    - duration: 20
+      arrivalRate: 8
+  variables:
+    username: octocat  # github user account to test with
 scenarios:
-  - name: "Test github guard"
+  - name: "Send pro requests"
+    afterResponse: "trackRateLimitsFromApp"
     flow:
       - get:
-          url: "/account/maggiepint"
+          url: "/account/{{username}}"
+    weight: 1
+  - name: "Send free requests"
+    afterResponse: "trackRateLimitsFromApp"
+    flow:
+      - get:
+          url: "/account/{{username}}"
+          headers:
+            x-user-plan: "free"
+    weight: 1
+  - name: "Send enterprise requests"
+    afterResponse: "trackRateLimitsFromApp"
+    flow:
+      - get:
+          url: "/account/{{username}}"
+          headers:
+            x-user-plan: "enterprise"
+    weight: 1

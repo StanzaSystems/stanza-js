@@ -17,6 +17,18 @@ vi.mock('./fetchImplementation', () => {
   }
 })
 
+vi.mock('./global/logger', async () => {
+  const pino = (await import('pino')).pino
+  return {
+    logger: Object.assign(
+      pino({}),
+      {
+        wrap: <T>(_: unknown, v: T) => v
+      }
+    )
+  }
+})
+
 const getEnvInitOptionsMock = vi.fn()
 const fetchMock = vi.fn()
 
@@ -55,6 +67,9 @@ describe('Stanza init', function () {
         serviceRelease: 'dummyStanzaRelease',
         environment: 'testEnvironment'
       })).resolves.toBeUndefined()
+    }, {
+      // first init takes longer due to dynamic imports in addInstrumentation.ts
+      timeout: 10000
     })
 
     it('should not warn if valid config is provided', async () => {

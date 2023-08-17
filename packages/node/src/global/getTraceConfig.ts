@@ -6,6 +6,8 @@ export const getTraceConfig = (): TraceConfig => {
   return getServiceConfig()?.config?.traceConfig ?? {
     collectorUrl: '',
     sampleRateDefault: 0,
-    overrides: []
+    overrides: [],
+    headerSampleConfig: [],
+    paramSampleConfig: []
   }
 }

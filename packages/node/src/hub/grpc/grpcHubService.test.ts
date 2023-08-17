@@ -3,7 +3,7 @@ import { createGrpcHubService } from './createGrpcHubService'
 import type * as connectNodeModule from '@bufbuild/connect'
 import { type ConfigService } from '../../../gen/stanza/hub/v1/config_connect'
 import { type QuotaService } from '../../../gen/stanza/hub/v1/quota_connect'
-import { GetDecoratorConfigResponse, GetServiceConfigResponse } from '../../../gen/stanza/hub/v1/config_pb'
+import { GetGuardConfigResponse, GetServiceConfigResponse } from '../../../gen/stanza/hub/v1/config_pb'
 import {
   GetTokenLeaseResponse,
   GetTokenResponse,
@@ -27,7 +27,7 @@ const createPromiseClientMock = vi.fn((() => {
 
 const configClientMock = {
   getServiceConfig: vi.fn(),
-  getDecoratorConfig: vi.fn(),
+  getGuardConfig: vi.fn(),
   getBrowserContext: vi.fn()
 } satisfies connectNodeModule.PromiseClient<typeof ConfigService>
 
@@ -42,7 +42,7 @@ beforeEach(async () => {
   createPromiseClientMock.mockReset()
 
   configClientMock.getServiceConfig.mockReset()
-  configClientMock.getDecoratorConfig.mockReset()
+  configClientMock.getGuardConfig.mockReset()
   configClientMock.getBrowserContext.mockReset()
 
   quotaClientMock.getToken.mockReset()
@@ -59,7 +59,7 @@ describe('createGrpcHubService', async () => {
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
-      apiKey: 'valid-api-key'
+      apiKey: 'testApiKey'
     })
 
     it('should return service metadata', () => {
@@ -76,7 +76,7 @@ describe('createGrpcHubService', async () => {
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
-      apiKey: 'valid-api-key'
+      apiKey: 'testApiKey'
     })
 
     it('should call fetch with proper params', async () => {
@@ -157,7 +157,9 @@ describe('createGrpcHubService', async () => {
           traceConfig: {
             collectorUrl: 'https://url.to.trace.collector',
             overrides: [],
-            sampleRateDefault: 0.5
+            sampleRateDefault: 0.5,
+            headerSampleConfig: [],
+            paramSampleConfig: []
           },
           metricConfig: {
             collectorUrl: 'https://url.to.metric.collector'
@@ -182,35 +184,35 @@ describe('createGrpcHubService', async () => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(1000)
       expect.assertions(1)
 
       vi.useRealTimers()
     })
   })
 
-  describe('fetchDecoratorConfig', function () {
+  describe('fetchGuardConfig', function () {
     createPromiseClientMock.mockImplementationOnce(() => configClientMock)
     createPromiseClientMock.mockImplementationOnce(() => quotaClientMock)
-    const { fetchDecoratorConfig } = createGrpcHubService({
+    const { fetchGuardConfig } = createGrpcHubService({
       serviceName: 'TestService',
       serviceRelease: '1',
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
-      apiKey: 'valid-api-key'
+      apiKey: 'testApiKey'
     })
 
     it('should call fetch with proper params', async () => {
-      await fetchDecoratorConfig({
-        decorator: 'test-decorator'
+      await fetchGuardConfig({
+        guard: 'test-guard'
       })
 
-      expect(configClientMock.getDecoratorConfig).toHaveBeenCalledOnce()
-      expect(configClientMock.getDecoratorConfig).toHaveBeenCalledWith(
+      expect(configClientMock.getGuardConfig).toHaveBeenCalledOnce()
+      expect(configClientMock.getGuardConfig).toHaveBeenCalledWith(
         {
           selector: {
-            decoratorName: 'test-decorator',
+            guardName: 'test-guard',
             serviceName: 'TestService',
             serviceRelease: '1',
             environment: 'test'
@@ -220,16 +222,16 @@ describe('createGrpcHubService', async () => {
     })
 
     it('should call fetch with proper params - including lastVersionSeen', async () => {
-      await fetchDecoratorConfig({
-        decorator: 'test-decorator',
+      await fetchGuardConfig({
+        guard: 'test-guard',
         lastVersionSeen: '123'
       })
 
-      expect(configClientMock.getDecoratorConfig).toHaveBeenCalledOnce()
-      expect(configClientMock.getDecoratorConfig).toHaveBeenCalledWith(
+      expect(configClientMock.getGuardConfig).toHaveBeenCalledOnce()
+      expect(configClientMock.getGuardConfig).toHaveBeenCalledWith(
         {
           selector: {
-            decoratorName: 'test-decorator',
+            guardName: 'test-guard',
             serviceName: 'TestService',
             serviceRelease: '1',
             environment: 'test'
@@ -240,70 +242,60 @@ describe('createGrpcHubService', async () => {
     })
 
     it('should return null if invalid data returned', async () => {
-      const result = await fetchDecoratorConfig({ decorator: 'test-decorator' })
+      const result = await fetchGuardConfig({ guard: 'test-guard' })
 
       expect(result).toBeNull()
     })
 
     it('should return null if configDataSent is false', async () => {
-      configClientMock.getDecoratorConfig.mockImplementation(async () => {
-        return new GetDecoratorConfigResponse({
+      configClientMock.getGuardConfig.mockImplementation(async () => {
+        return new GetGuardConfigResponse({
           version: '1',
           configDataSent: false
         })
       })
 
-      const result = await fetchDecoratorConfig({ decorator: 'test-decorator' })
+      const result = await fetchGuardConfig({ guard: 'test-guard' })
 
       expect(result).toBeNull()
     })
 
     it('should return config data if configDataSent is true', async () => {
-      configClientMock.getDecoratorConfig.mockImplementation(async () => {
-        return new GetDecoratorConfigResponse({
+      configClientMock.getGuardConfig.mockImplementation(async () => {
+        return new GetGuardConfigResponse({
           version: '1',
           configDataSent: true,
           config: {
             checkQuota: true,
             quotaTags: [],
-            validateIngressTokens: false,
-            traceConfig: {
-              collectorUrl: 'https://url.to.trace.collector',
-              overrides: [],
-              sampleRateDefault: 0.5
-            }
-          } as any
+            validateIngressTokens: false
+          }
         })
       })
 
-      const result = await fetchDecoratorConfig({ decorator: 'test-decorator' })
+      const result = await fetchGuardConfig({ guard: 'test-guard' })
 
       expect(result).toEqual({
         version: '1',
         config: {
           checkQuota: true,
           quotaTags: [],
-          validateIngressTokens: false,
-          traceConfig: {
-            collectorUrl: 'https://url.to.trace.collector',
-            overrides: [],
-            sampleRateDefault: 0.5
-          }
+          validateIngressTokens: false
         }
       })
     })
 
     it('should timeout if fetch runs too long', async () => {
       vi.useFakeTimers()
-      configClientMock.getDecoratorConfig.mockImplementation(async () => {
+      configClientMock.getGuardConfig.mockImplementation(async () => {
         return new Promise<never>(() => {})
       })
 
-      void fetchDecoratorConfig({ decorator: 'test-decorator' }).catch((e) => {
+      void fetchGuardConfig({ guard: 'test-guard' }).catch((e) => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(1000)
       expect.assertions(1)
 
       vi.useRealTimers()
@@ -319,12 +311,12 @@ describe('createGrpcHubService', async () => {
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
-      apiKey: 'valid-api-key'
+      apiKey: 'testApiKey'
     })
 
     it('should call fetch with proper params', async () => {
       await getToken({
-        decorator: 'test-decorator',
+        guard: 'test-guard',
         feature: 'test-feature',
         priorityBoost: 5
       })
@@ -335,7 +327,7 @@ describe('createGrpcHubService', async () => {
           clientId: 'test-client-id',
           priorityBoost: 5,
           selector: {
-            decoratorName: 'test-decorator',
+            guardName: 'test-guard',
             featureName: 'test-feature',
             environment: 'test'
           }
@@ -345,7 +337,7 @@ describe('createGrpcHubService', async () => {
 
     it('should call fetch with proper params - including tags', async () => {
       await getToken({
-        decorator: 'test-decorator',
+        guard: 'test-guard',
         feature: 'test-feature',
         priorityBoost: 5,
         tags: [
@@ -366,7 +358,7 @@ describe('createGrpcHubService', async () => {
           clientId: 'test-client-id',
           priorityBoost: 5,
           selector: {
-            decoratorName: 'test-decorator',
+            guardName: 'test-guard',
             featureName: 'test-feature',
             environment: 'test',
             tags: [
@@ -386,7 +378,7 @@ describe('createGrpcHubService', async () => {
 
     it('should call fetch with proper params - without feature and boost', async () => {
       await getToken({
-        decorator: 'test-decorator'
+        guard: 'test-guard'
       })
 
       expect(quotaClientMock.getToken).toHaveBeenCalledOnce()
@@ -394,7 +386,7 @@ describe('createGrpcHubService', async () => {
         {
           clientId: 'test-client-id',
           selector: {
-            decoratorName: 'test-decorator',
+            guardName: 'test-guard',
             environment: 'test'
           }
         }
@@ -403,7 +395,7 @@ describe('createGrpcHubService', async () => {
 
     it('should return null if invalid data returned', async () => {
       const result = await getToken({
-        decorator: 'test-decorator'
+        guard: 'test-guard'
       })
 
       expect(result).toBeNull()
@@ -415,7 +407,7 @@ describe('createGrpcHubService', async () => {
       })
 
       const result = await getToken({
-        decorator: 'test-decorator'
+        guard: 'test-guard'
       })
 
       expect(result).toEqual({ granted: false })
@@ -427,7 +419,7 @@ describe('createGrpcHubService', async () => {
       })
 
       const result = await getToken({
-        decorator: 'test-decorator'
+        guard: 'test-guard'
       })
 
       expect(result).toEqual({ granted: true, token: 'test-token' })
@@ -440,12 +432,12 @@ describe('createGrpcHubService', async () => {
       })
 
       void getToken({
-        decorator: 'test-decorator'
+        guard: 'test-guard'
       }).catch((e) => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(1000)
       expect.assertions(1)
 
       vi.useRealTimers()
@@ -461,12 +453,12 @@ describe('createGrpcHubService', async () => {
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
-      apiKey: 'valid-api-key'
+      apiKey: 'testApiKey'
     })
 
     it('should call fetch with proper params', async () => {
       await getTokenLease({
-        decorator: 'test-decorator',
+        guard: 'test-guard',
         feature: 'test-feature',
         priorityBoost: 5
       })
@@ -477,7 +469,7 @@ describe('createGrpcHubService', async () => {
           clientId: 'test-client-id',
           priorityBoost: 5,
           selector: {
-            decoratorName: 'test-decorator',
+            guardName: 'test-guard',
             featureName: 'test-feature',
             environment: 'test'
           }
@@ -487,7 +479,7 @@ describe('createGrpcHubService', async () => {
 
     it('should call fetch with proper params - including tags', async () => {
       await getTokenLease({
-        decorator: 'test-decorator',
+        guard: 'test-guard',
         feature: 'test-feature',
         priorityBoost: 5,
         tags: [
@@ -508,7 +500,7 @@ describe('createGrpcHubService', async () => {
           clientId: 'test-client-id',
           priorityBoost: 5,
           selector: {
-            decoratorName: 'test-decorator',
+            guardName: 'test-guard',
             featureName: 'test-feature',
             environment: 'test',
             tags: [
@@ -528,7 +520,7 @@ describe('createGrpcHubService', async () => {
 
     it('should call fetch with proper params - without feature and boost', async () => {
       await getTokenLease({
-        decorator: 'test-decorator'
+        guard: 'test-guard'
       })
 
       expect(quotaClientMock.getTokenLease).toHaveBeenCalledOnce()
@@ -536,7 +528,7 @@ describe('createGrpcHubService', async () => {
         {
           clientId: 'test-client-id',
           selector: {
-            decoratorName: 'test-decorator',
+            guardName: 'test-guard',
             environment: 'test'
           }
         }
@@ -545,7 +537,7 @@ describe('createGrpcHubService', async () => {
 
     it('should return null if invalid data returned', async () => {
       const result = await getTokenLease({
-        decorator: 'test-decorator'
+        guard: 'test-guard'
       })
 
       expect(result).toBeNull()
@@ -557,7 +549,7 @@ describe('createGrpcHubService', async () => {
       })
 
       const result = await getTokenLease({
-        decorator: 'test-decorator'
+        guard: 'test-guard'
       })
 
       expect(result).toEqual({ granted: false })
@@ -578,7 +570,7 @@ describe('createGrpcHubService', async () => {
       })
 
       const result = await getTokenLease({
-        decorator: 'test-decorator'
+        guard: 'test-guard'
       })
 
       expect(result).toEqual({
@@ -602,12 +594,12 @@ describe('createGrpcHubService', async () => {
       })
 
       void getTokenLease({
-        decorator: 'test-decorator'
+        guard: 'test-guard'
       }).catch((e) => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(1000)
       expect.assertions(1)
 
       vi.useRealTimers()
@@ -623,13 +615,13 @@ describe('createGrpcHubService', async () => {
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
-      apiKey: 'valid-api-key'
+      apiKey: 'testApiKey'
     })
 
     it('should call fetch with proper params', async () => {
       await validateToken({
         token: 'test-token',
-        decorator: 'test-decorator'
+        guard: 'test-guard'
       })
 
       expect(quotaClientMock.validateToken).toHaveBeenCalledOnce()
@@ -637,8 +629,8 @@ describe('createGrpcHubService', async () => {
         {
           tokens: [{
             token: 'test-token',
-            decorator: {
-              name: 'test-decorator',
+            guard: {
+              name: 'test-guard',
               environment: 'test'
             }
           }]
@@ -649,7 +641,7 @@ describe('createGrpcHubService', async () => {
     it('should return null if invalid data returned', async () => {
       const result = await validateToken({
         token: 'test-token',
-        decorator: 'test-decorator'
+        guard: 'test-guard'
       })
 
       expect(result).toBeNull()
@@ -662,7 +654,7 @@ describe('createGrpcHubService', async () => {
 
       const result = await validateToken({
         token: 'test-token',
-        decorator: 'test-decorator'
+        guard: 'test-guard'
       })
 
       expect(result).toEqual({ valid: false, token: 'test-token' })
@@ -675,7 +667,7 @@ describe('createGrpcHubService', async () => {
 
       const result = await validateToken({
         token: 'test-token',
-        decorator: 'test-decorator'
+        guard: 'test-guard'
       })
 
       expect(result).toEqual({ valid: true, token: 'test-token' })
@@ -689,12 +681,12 @@ describe('createGrpcHubService', async () => {
 
       void validateToken({
         token: 'test-token',
-        decorator: 'test-decorator'
+        guard: 'test-guard'
       }).catch((e) => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(1000)
       expect.assertions(1)
 
       vi.useRealTimers()
@@ -710,7 +702,7 @@ describe('createGrpcHubService', async () => {
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
-      apiKey: 'valid-api-key'
+      apiKey: 'testApiKey'
     })
 
     it('should call fetch with proper params', async () => {
@@ -762,7 +754,7 @@ describe('createGrpcHubService', async () => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(1000)
       expect.assertions(1)
 
       vi.useRealTimers()

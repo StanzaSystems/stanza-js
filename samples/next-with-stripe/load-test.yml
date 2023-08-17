@@ -1,8 +1,8 @@
 config:
-  target: "https://stanza-js-next-with-stripe-git-main-stanza.vercel.app"
+  target: "http://localhost:4200"
   phases:
     - duration: 90
-      arrivalRate: 30
+      arrivalRate: 12
  
 scenarios:
   - name: "Test stripe guard"

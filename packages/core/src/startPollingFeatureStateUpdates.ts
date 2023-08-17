@@ -1,7 +1,8 @@
 import { getFeatureStatesHot } from './getFeatureStatesHot'
 import { featureChanges, getConfig, getStateProvider } from './globals'
-import { groupBy, identity } from './index'
 import { featureStatesEqual } from './models/featureStatesEqual'
+import { groupBy } from './groupBy'
+import { identity } from './identity'
 
 export async function startPollingFeatureStateUpdates (): Promise<void> {
   while (true) {

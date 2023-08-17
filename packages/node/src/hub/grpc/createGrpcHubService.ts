@@ -4,7 +4,7 @@ import { ConfigService } from '../../../gen/stanza/hub/v1/config_connect'
 import { createGrpcTransport } from '@bufbuild/connect-node'
 import { type ServiceConfig } from '../model'
 import { serviceConfigResponse } from '../api/serviceConfigResponse'
-import { decoratorConfigResponse } from '../api/decoratorConfigResponse'
+import { guardConfigResponse } from '../api/guardConfigResponse'
 import { QuotaService } from '../../../gen/stanza/hub/v1/quota_connect'
 import { stanzaTokenResponse } from '../api/stanzaTokenResponse'
 import { stanzaTokenLeaseResponse } from '../api/stanzaTokenLeaseResponse'
@@ -13,8 +13,10 @@ import { stanzaMarkTokensAsConsumedResponse } from '../api/stanzaMarkTokensAsCon
 import { type z, type ZodType } from 'zod'
 import { withTimeout } from '../../utils/withTimeout'
 import { wrapHubServiceWithMetrics } from '../wrapHubServiceWithMetrics'
-
-const HUB_REQUEST_TIMEOUT = 2000
+import { STANZA_REQUEST_TIMEOUT } from '../../global/requestTimeout'
+import { logger } from '../../global/logger'
+import { AuthService } from '../../../gen/stanza/hub/v1/auth_connect'
+import { stanzaAuthTokenResponse } from '../api/stanzaAuthTokenResponse'
 
 interface GrpcHubServiceInitOptions {
   serviceName: string
@@ -36,8 +38,11 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
   })
   const configClient = createPromiseClient(ConfigService, transport)
   const quotaClient = createPromiseClient(QuotaService, transport)
+  const authClient = createPromiseClient(AuthService, transport)
 
-  return wrapHubServiceWithMetrics({
+  return wrapHubServiceWithMetrics(logger.wrap({
+    prefix: '[gRPC Hub Service]'
+  }, {
     getServiceMetadata: () => ({ serviceName, environment, clientId }),
     fetchServiceConfig: async (options): Promise<ServiceConfig | null> => {
       const data = await grpcRequest(async () => configClient.getServiceConfig({
@@ -58,16 +63,16 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
         version: data.version
       }
     },
-    fetchDecoratorConfig: async (options) => {
-      const data = await grpcRequest(async () => configClient.getDecoratorConfig({
+    fetchGuardConfig: async (options) => {
+      const data = await grpcRequest(async () => configClient.getGuardConfig({
         selector: {
           serviceName,
           serviceRelease,
           environment,
-          decoratorName: options.decorator
+          guardName: options.guard
         },
         versionSeen: options.lastVersionSeen
-      }), decoratorConfigResponse)
+      }), guardConfigResponse)
 
       if (data === null || !data.configDataSent) {
         return null
@@ -84,7 +89,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
         priorityBoost: options.priorityBoost,
         selector: {
           featureName: options.feature,
-          decoratorName: options.decorator,
+          guardName: options.guard,
           environment,
           tags: options.tags
         }
@@ -96,7 +101,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
         priorityBoost: options.priorityBoost,
         selector: {
           featureName: options.feature,
-          decoratorName: options.decorator,
+          guardName: options.guard,
           environment,
           tags: options.tags
         }
@@ -126,8 +131,8 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
       const data = await grpcRequest(async () => quotaClient.validateToken({
         tokens: [{
           token: options.token,
-          decorator: {
-            name: options.decorator,
+          guard: {
+            name: options.guard,
             environment
           }
         }]
@@ -143,13 +148,20 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
       )
 
       return data === null ? null : { ok: true }
+    },
+    getAuthToken: async () => {
+      const data = await grpcRequest(async () => authClient.getBearerToken({}),
+        stanzaAuthTokenResponse
+      )
+
+      return data === null ? null : { token: data.bearerToken }
     }
-  })
+  }))
 }
 
 const grpcRequest = async <T extends ZodType>(req: () => Promise<unknown>, validateResult: T): Promise<z.infer<T> | null> => {
   const response = await withTimeout(
-    HUB_REQUEST_TIMEOUT,
+    STANZA_REQUEST_TIMEOUT,
     'Hub request timed out',
     req()
   )

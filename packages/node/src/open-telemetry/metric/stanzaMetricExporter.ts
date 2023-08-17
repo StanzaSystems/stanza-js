@@ -7,22 +7,35 @@ import { type ExportResult, ExportResultCode } from '@opentelemetry/core'
 import { eventBus, events } from '../../global/eventBus'
 import { hubService } from '../../global/hubService'
 import { logger } from '../../global/logger'
+import { addAuthTokenListener, getStanzaAuthToken } from '../../global/authToken'
+import { isTokenInvalidError } from '../../grpc/isTokenInvalidError'
 
 export class StanzaMetricExporter implements PushMetricExporter {
   private exporter: InMemoryMetricExporter | OTLPMetricExporter = new InMemoryMetricExporter(AggregationTemporality.CUMULATIVE)
   private collectorUrl = ''
   constructor () {
-    const serviceConfig = getServiceConfig()
-    if (serviceConfig !== undefined) {
-      this.updateExporter(serviceConfig)
+    let serviceConfig = getServiceConfig()
+    let authToken = getStanzaAuthToken()
+    if (serviceConfig !== undefined && authToken !== undefined) {
+      this.updateExporter(serviceConfig, authToken)
     }
     addServiceConfigListener((config) => {
-      this.updateExporter(config)
+      serviceConfig = config
+      if (serviceConfig !== undefined && authToken !== undefined) {
+        this.updateExporter(serviceConfig, authToken)
+      }
+    })
+    addAuthTokenListener((newToken) => {
+      authToken = newToken
+      if (serviceConfig !== undefined && authToken !== undefined) {
+        this.updateExporter(serviceConfig, authToken)
+      }
     })
   }
 
-  private updateExporter ({ config: { metricConfig } }: ServiceConfig) {
+  private updateExporter ({ config: { metricConfig } }: ServiceConfig, authToken: string) {
     const metadata = new Metadata()
+    metadata.add('Authorization', `bearer ${authToken}`)
     const prevExporter = this.exporter
     this.exporter = new OTLPMetricExporter({
       url: metricConfig.collectorUrl,
@@ -30,14 +43,17 @@ export class StanzaMetricExporter implements PushMetricExporter {
     })
     this.collectorUrl = metricConfig.collectorUrl
     prevExporter.shutdown().catch(err => {
-      logger.info('Failed to shutdown a metric exporter:\n', err)
+      logger.warn('Failed to shutdown a metric exporter: %o', err)
     })
   }
 
   export (...[metrics, originalCallback, ...restArgs]: Parameters<PushMetricExporter['export']>): void {
     const oTelAddress = this.collectorUrl
     const callback = (result: ExportResult): void => {
-      void eventBus.emit(
+      if (result.code === ExportResultCode.FAILED && isTokenInvalidError(result.error)) {
+        eventBus.emit(events.auth.tokenInvalid).catch(() => {})
+      }
+      eventBus.emit(
         result.code === ExportResultCode.SUCCESS
           ? events.telemetry.sendOk
           : events.telemetry.sendFailed,
@@ -45,7 +61,7 @@ export class StanzaMetricExporter implements PushMetricExporter {
           ...hubService.getServiceMetadata(),
           oTelAddress
         }
-      )
+      ).catch(() => {})
       originalCallback(result)
     }
 

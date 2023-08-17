@@ -1,21 +1,22 @@
 {
   "name": "next-node",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/next-node/src",
+  "sourceRoot": "packages/next-node",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/esbuild:esbuild",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/next-node",
         "main": "packages/next-node/index.ts",
         "tsConfig": "packages/next-node/tsconfig.lib.json",
-        "assets": ["packages/next-node/*.md"],
-        "generatePackageJson": true,
-        "esbuildOptions": {
-          "packages": "external"
-        }
+        "assets": ["packages/next-node/README.md"],
+        "project": "packages/next-node/package.json",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "external": "all",
+        "updateBuildableProjectDepsInPackageJson": false
       }
     },
     "publish": {
@@ -26,7 +27,10 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/next-node/**/*.ts"]
+        "lintFilePatterns": [
+          "packages/next-node/**/*.ts",
+          "packages/next-node/package.json"
+        ]
       }
     },
     "test": {

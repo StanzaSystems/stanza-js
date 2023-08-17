@@ -1,22 +1,23 @@
 {
   "name": "stanza-react",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/stanza-react/src",
+  "sourceRoot": "packages/stanza-react",
   "projectType": "library",
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/esbuild:esbuild",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/stanza-react",
         "main": "packages/stanza-react/index.ts",
         "tsConfig": "packages/stanza-react/tsconfig.lib.json",
-        "assets": ["packages/stanza-react/*.md"],
-        "generatePackageJson": true,
-        "esbuildOptions": {
-          "packages": "external"
-        }
+        "assets": ["packages/stanza-react/README.md"],
+        "project": "packages/stanza-react/package.json",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "external": "all",
+        "updateBuildableProjectDepsInPackageJson": false
       }
     },
     "publish": {
@@ -27,7 +28,10 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/stanza-react/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "packages/stanza-react/**/*.{ts,tsx,js,jsx}",
+          "packages/stanza-react/package.json"
+        ]
       }
     },
     "test": {

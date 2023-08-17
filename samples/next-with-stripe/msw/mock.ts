@@ -4,6 +4,6 @@ export async function initMocks () {
     server.listen()
   } else {
     const { worker } = await import('./browser')
-    void worker.start()
+    worker.start().catch(() => {})
   }
 }

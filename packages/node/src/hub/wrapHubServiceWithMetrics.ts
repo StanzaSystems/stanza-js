@@ -1,6 +1,7 @@
 import { type HubService } from './hubService'
 import { wrapEventsAsync } from '../utils/wrapEventsAsync'
 import { eventBus, events } from '../global/eventBus'
+import { getServiceConfig } from '../global/serviceConfig'
 
 export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
   const { serviceName, environment, clientId } = hubService.getServiceMetadata()
@@ -8,162 +9,197 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
   return {
     ...hubService,
     fetchServiceConfig: wrapEventsAsync(hubService.fetchServiceConfig, {
-      success: () => {
-        void eventBus.emit(events.config.service.fetchOk, {
+      success: async (data) => {
+        return eventBus.emit(events.config.service.fetchOk, {
           serviceName,
           clientId,
-          environment
+          environment,
+          customerId: data?.config.customerId
         })
       },
-      failure: () => {
-        void eventBus.emit(events.config.service.fetchFailed, {
+      failure: async () => {
+        const customerId = getServiceConfig()?.config.customerId
+        return eventBus.emit(events.config.service.fetchFailed, {
           serviceName,
           clientId,
-          environment
+          environment,
+          customerId
         })
       },
-      latency: (latency) => {
-        void eventBus.emit(events.config.service.fetchLatency, {
+      latency: async (latency, result) => {
+        const customerId = result?.config.customerId ?? getServiceConfig()?.config.customerId
+        return eventBus.emit(events.config.service.fetchLatency, {
           latency,
           serviceName,
           clientId,
-          environment
+          environment,
+          customerId
         })
       }
     }),
-    fetchDecoratorConfig: wrapEventsAsync(hubService.fetchDecoratorConfig, {
-      success: (_, { decorator }) => {
-        void eventBus.emit(events.config.decorator.fetchOk, {
-          decoratorName: decorator,
+    fetchGuardConfig: wrapEventsAsync(hubService.fetchGuardConfig, {
+      success: async (_, { guard }) => {
+        const customerId = getServiceConfig()?.config.customerId
+        return eventBus.emit(events.config.guard.fetchOk, {
+          guardName: guard,
           serviceName,
           clientId,
-          environment
+          environment,
+          customerId
         })
       },
-      failure: () => {
-        void eventBus.emit(events.config.decorator.fetchFailed, {
+      failure: async () => {
+        const customerId = getServiceConfig()?.config.customerId
+        return eventBus.emit(events.config.guard.fetchFailed, {
           serviceName,
           clientId,
-          environment
+          environment,
+          customerId
         })
       },
-      latency: (latency) => {
-        void eventBus.emit(events.config.decorator.fetchLatency, {
+      latency: async (latency) => {
+        const customerId = getServiceConfig()?.config.customerId
+        return eventBus.emit(events.config.guard.fetchLatency, {
           latency,
           serviceName,
           clientId,
-          environment
+          environment,
+          customerId
         })
       }
     }),
     getToken: wrapEventsAsync(hubService.getToken, {
-      success: (_, { decorator }) => {
-        void eventBus.emit(events.quota.fetchOk, {
-          decoratorName: decorator,
+      success: async (_, { guard }) => {
+        const customerId = getServiceConfig()?.config.customerId
+        return eventBus.emit(events.quota.fetchOk, {
+          guardName: guard,
           serviceName,
           clientId,
           environment,
+          customerId,
           endpoint: 'GetToken'
         })
       },
-      failure: () => {
-        void eventBus.emit(events.quota.fetchFailed, {
+      failure: async () => {
+        const customerId = getServiceConfig()?.config.customerId
+        return eventBus.emit(events.quota.fetchFailed, {
           serviceName,
           clientId,
           environment,
+          customerId,
           endpoint: 'GetToken'
         })
       },
-      latency: (latency) => {
-        void eventBus.emit(events.quota.fetchLatency, {
+      latency: async (latency) => {
+        const customerId = getServiceConfig()?.config.customerId
+        return eventBus.emit(events.quota.fetchLatency, {
           latency,
           serviceName,
           clientId,
           environment,
+          customerId,
           endpoint: 'GetToken'
         })
       }
     }),
     getTokenLease: wrapEventsAsync(hubService.getTokenLease, {
-      success: (_, { decorator }) => {
-        void eventBus.emit(events.quota.fetchOk, {
-          decoratorName: decorator,
+      success: async (_, { guard }) => {
+        const customerId = getServiceConfig()?.config.customerId
+        return eventBus.emit(events.quota.fetchOk, {
+          guardName: guard,
           serviceName,
           clientId,
           environment,
+          customerId,
           endpoint: 'GetTokenLease'
         })
       },
-      failure: () => {
-        void eventBus.emit(events.quota.fetchFailed, {
+      failure: async () => {
+        const customerId = getServiceConfig()?.config.customerId
+        return eventBus.emit(events.quota.fetchFailed, {
           serviceName,
           clientId,
           environment,
+          customerId,
           endpoint: 'GetTokenLease'
         })
       },
-      latency: (latency) => {
-        void eventBus.emit(events.quota.fetchLatency, {
+      latency: async (latency) => {
+        const customerId = getServiceConfig()?.config.customerId
+        return eventBus.emit(events.quota.fetchLatency, {
           latency,
           serviceName,
           clientId,
           environment,
+          customerId,
           endpoint: 'GetTokenLease'
         })
       }
     }),
     validateToken: wrapEventsAsync(hubService.validateToken, {
-      success: (result, { decorator }) => {
-        void eventBus.emit(
+      success: async (result, { guard }) => {
+        const customerId = getServiceConfig()?.config.customerId
+        return eventBus.emit(
           result?.valid === true
             ? events.quota.validateOk
             : events.quota.validateFailed,
           {
-            decoratorName: decorator,
+            guardName: guard,
             serviceName,
             clientId,
-            environment
+            environment,
+            customerId
           })
       },
-      failure: () => {
-        void eventBus.emit(events.quota.validateFailed, {
+      failure: async () => {
+        const customerId = getServiceConfig()?.config.customerId
+        return eventBus.emit(events.quota.validateFailed, {
           serviceName,
           clientId,
-          environment
+          environment,
+          customerId
         })
       },
-      latency: (latency) => {
-        void eventBus.emit(events.quota.validateLatency, {
+      latency: async (latency) => {
+        const customerId = getServiceConfig()?.config.customerId
+        return eventBus.emit(events.quota.validateLatency, {
           latency,
           serviceName,
           clientId,
-          environment
+          environment,
+          customerId
         })
       }
     }),
     markTokensAsConsumed: wrapEventsAsync(hubService.markTokensAsConsumed, {
-      success: () => {
-        void eventBus.emit(events.quota.fetchOk, {
+      success: async () => {
+        const customerId = getServiceConfig()?.config.customerId
+        return eventBus.emit(events.quota.fetchOk, {
           serviceName,
           clientId,
           environment,
+          customerId,
           endpoint: 'SetTokenLeaseConsumed'
         })
       },
-      failure: () => {
-        void eventBus.emit(events.quota.fetchFailed, {
+      failure: async () => {
+        const customerId = getServiceConfig()?.config.customerId
+        return eventBus.emit(events.quota.fetchFailed, {
           serviceName,
           clientId,
           environment,
+          customerId,
           endpoint: 'SetTokenLeaseConsumed'
         })
       },
-      latency: (latency) => {
-        void eventBus.emit(events.quota.fetchLatency, {
+      latency: async (latency) => {
+        const customerId = getServiceConfig()?.config.customerId
+        return eventBus.emit(events.quota.fetchLatency, {
           latency,
           serviceName,
           clientId,
           environment,
+          customerId,
           endpoint: 'SetTokenLeaseConsumed'
         })
       }

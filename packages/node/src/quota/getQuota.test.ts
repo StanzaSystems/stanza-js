@@ -41,8 +41,8 @@ describe('getQuota', function () {
     })
 
     it('should return null if getting quota times out', async function () {
-      const getQuotaPromise = getQuota({ decorator: 'testDecorator' })
-      await vi.advanceTimersByTimeAsync(2000)
+      const getQuotaPromise = getQuota({ guard: 'testGuard' })
+      await vi.advanceTimersByTimeAsync(1000)
       await expect(getQuotaPromise).resolves.toEqual(null)
     })
 
@@ -51,7 +51,7 @@ describe('getQuota', function () {
         return Promise.resolve({ granted: true, leases: [{ token: 'testToken', expiresAt: 500, feature: 'testFeature', priorityBoost: 0 }] })
       })
 
-      await expect(getQuota({ decorator: 'testDecorator' })).resolves.toEqual({
+      await expect(getQuota({ guard: 'testGuard' })).resolves.toEqual({
         granted: true,
         token: 'testToken'
       })

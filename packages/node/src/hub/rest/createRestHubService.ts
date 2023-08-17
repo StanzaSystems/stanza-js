@@ -1,4 +1,4 @@
-import { decoratorConfigResponse } from '../api/decoratorConfigResponse'
+import { guardConfigResponse } from '../api/guardConfigResponse'
 import { serviceConfigResponse } from '../api/serviceConfigResponse'
 import { stanzaTokenLeaseResponse } from '../api/stanzaTokenLeaseResponse'
 import { stanzaTokenResponse } from '../api/stanzaTokenResponse'
@@ -8,6 +8,7 @@ import { stanzaMarkTokensAsConsumedResponse } from '../api/stanzaMarkTokensAsCon
 import { type HubRequest } from '../hubRequest'
 import { wrapHubServiceWithMetrics } from '../wrapHubServiceWithMetrics'
 import { logger } from '../../global/logger'
+import { stanzaAuthTokenResponse } from '../api/stanzaAuthTokenResponse'
 
 interface HubServiceInitOptions {
   serviceName: string
@@ -18,7 +19,9 @@ interface HubServiceInitOptions {
 }
 
 export const createRestHubService = ({ serviceName, serviceRelease, environment, clientId, hubRequest }: HubServiceInitOptions): HubService => {
-  return wrapHubServiceWithMetrics({
+  return wrapHubServiceWithMetrics(logger.wrap({
+    prefix: '[REST Hub Service]'
+  }, {
     getServiceMetadata: () => ({ serviceName, environment, clientId }),
     fetchServiceConfig: async ({ lastVersionSeen } = {}) => {
       const serviceConfigResult = await hubRequest('v1/config/service', {
@@ -42,39 +45,39 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
         version: serviceConfigResult.version
       }
     },
-    fetchDecoratorConfig: async ({ decorator, lastVersionSeen }) => {
+    fetchGuardConfig: async ({ guard, lastVersionSeen }) => {
       const body = {
         versionSeen: lastVersionSeen,
         selector: {
-          decoratorName: decorator,
+          guardName: guard,
           serviceName,
           serviceRelease,
           environment
         }
       }
-      logger.debug('fetching decorator config with body %o', body)
-      const decoratorConfigResult = await hubRequest('v1/config/decorator', {
+      logger.debug('fetching guard config with body %o', body)
+      const guardConfigResult = await hubRequest('v1/config/guard', {
         body,
         method: 'POST'
-      }, decoratorConfigResponse)
+      }, guardConfigResponse)
 
-      logger.debug('fetched decorator config result: %o', decoratorConfigResult)
+      logger.debug('fetched guard config result: %o', guardConfigResult)
 
-      if (decoratorConfigResult === null || !decoratorConfigResult.configDataSent) {
+      if (guardConfigResult === null || !guardConfigResult.configDataSent) {
         return null
       }
 
       return {
-        config: decoratorConfigResult.config,
-        version: decoratorConfigResult.version
+        config: guardConfigResult.config,
+        version: guardConfigResult.version
       }
     },
-    getToken: async ({ decorator, feature, priorityBoost, tags }) => {
+    getToken: async ({ guard, feature, priorityBoost, tags }) => {
       return hubRequest('v1/quota/token', {
         method: 'POST',
         body: {
           selector: {
-            decoratorName: decorator,
+            guardName: guard,
             featureName: feature,
             environment,
             tags
@@ -84,12 +87,12 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
         }
       }, stanzaTokenResponse)
     },
-    getTokenLease: async ({ decorator, feature, priorityBoost, tags }) => {
+    getTokenLease: async ({ guard, feature, priorityBoost, tags }) => {
       const response = await hubRequest('v1/quota/lease', {
         method: 'POST',
         body: {
           selector: {
-            decoratorName: decorator,
+            guardName: guard,
             featureName: feature,
             environment,
             tags
@@ -118,13 +121,13 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
         }))
       }
     },
-    validateToken: async ({ token, decorator }) => {
+    validateToken: async ({ token, guard }) => {
       const response = await hubRequest('v1/quota/validatetoken', {
         method: 'POST',
         body: {
           tokens: [{
             token,
-            decorator
+            guard: guard
           }]
         }
       }, stanzaValidateTokenResponse)
@@ -139,6 +142,13 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
       }, stanzaMarkTokensAsConsumedResponse)
 
       return response !== null ? { ok: true } : null
+    },
+    getAuthToken: async () => {
+      const response = await hubRequest('v1/auth/token', {
+        method: 'GET'
+      }, stanzaAuthTokenResponse)
+
+      return response !== null ? { token: response.bearerToken } : null
     }
-  })
+  }))
 }

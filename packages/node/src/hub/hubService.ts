@@ -1,11 +1,17 @@
-import { type DecoratorConfig, type ServiceConfig, type StanzaToken, type ValidatedToken, type StanzaTokenLeasesResult } from './model'
+import {
+  type GuardConfig,
+  type ServiceConfig,
+  type StanzaToken,
+  type StanzaTokenLeasesResult,
+  type ValidatedToken
+} from './model'
 
 export interface FetchServiceConfigOptions {
   lastVersionSeen?: string
 }
 
-export interface FetchDecoratorConfigOptions {
-  decorator: string
+export interface FetchGuardConfigOptions {
+  guard: string
   lastVersionSeen?: string
 }
 
@@ -15,21 +21,21 @@ export interface Tag {
 }
 
 interface GetTokenOptions {
-  decorator: string
+  guard: string
   feature?: string
   priorityBoost?: number
   tags?: Tag[]
 }
 
 interface GetTokenLeaseOptions {
-  decorator: string
+  guard: string
   feature?: string
   priorityBoost?: number
   tags?: Tag[]
 }
 
 interface ValidateTokenOptions {
-  decorator: string
+  guard: string
   token: string
 }
 
@@ -44,9 +50,10 @@ export interface HubService {
     clientId: string
   }
   fetchServiceConfig: (options?: FetchServiceConfigOptions) => Promise<ServiceConfig | null>
-  fetchDecoratorConfig: (options: FetchDecoratorConfigOptions) => Promise<DecoratorConfig | null>
+  fetchGuardConfig: (options: FetchGuardConfigOptions) => Promise<GuardConfig | null>
   getToken: (options: GetTokenOptions) => Promise<StanzaToken | null>
   getTokenLease: (options: GetTokenLeaseOptions) => Promise<StanzaTokenLeasesResult | null>
   validateToken: (options: ValidateTokenOptions) => Promise<ValidatedToken | null>
   markTokensAsConsumed: (options: MarkTokensAsConsumedOptions) => Promise<{ ok: boolean } | null>
+  getAuthToken: () => Promise<{ token: string } | null>
 }

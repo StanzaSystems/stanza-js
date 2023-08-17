@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { type DecoratorConfigResponse } from '../api/decoratorConfigResponse'
+import { type GuardConfigResponse } from '../api/guardConfigResponse'
 import { type ServiceConfigResponse } from '../api/serviceConfigResponse'
 import { createRestHubService } from './createRestHubService'
 import { createHubRequest } from './createHubRequest'
@@ -34,7 +34,7 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'valid-api-key'
+        apiKey: 'testApiKey'
       })
     })
 
@@ -51,7 +51,7 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'valid-api-key'
+        apiKey: 'testApiKey'
       })
     })
 
@@ -63,7 +63,7 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/config/service'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             service: {
@@ -87,7 +87,7 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/config/service'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             versionSeen: '123',
@@ -133,6 +133,8 @@ describe('createRestHubService', async () => {
               traceConfig: {
                 collectorUrl: 'https://url.to.trace.collector',
                 overrides: [],
+                headerSampleConfig: [],
+                paramSampleConfig: [],
                 sampleRateDefault: 0.5
               },
               metricConfig: {
@@ -157,6 +159,8 @@ describe('createRestHubService', async () => {
           traceConfig: {
             collectorUrl: 'https://url.to.trace.collector',
             overrides: [],
+            headerSampleConfig: [],
+            paramSampleConfig: [],
             sampleRateDefault: 0.5
           },
           metricConfig: {
@@ -182,40 +186,40 @@ describe('createRestHubService', async () => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(1000)
       expect.assertions(1)
 
       vi.useRealTimers()
     })
   })
 
-  describe('fetchDecoratorConfig', function () {
-    const { fetchDecoratorConfig } = createRestHubService({
+  describe('fetchGuardConfig', function () {
+    const { fetchGuardConfig } = createRestHubService({
       serviceName: 'TestService',
       serviceRelease: '1',
       environment: 'test',
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'valid-api-key'
+        apiKey: 'testApiKey'
       })
     })
 
     it('should call fetch with proper params', async () => {
-      await fetchDecoratorConfig({
-        decorator: 'test-decorator'
+      await fetchGuardConfig({
+        guard: 'test-guard'
       })
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/config/decorator'),
+        new URL('https://url.to.hub/v1/config/guard'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             selector: {
-              decoratorName: 'test-decorator',
+              guardName: 'test-guard',
               serviceName: 'TestService',
               serviceRelease: '1',
               environment: 'test'
@@ -227,22 +231,22 @@ describe('createRestHubService', async () => {
     })
 
     it('should call fetch with proper params - including lastVersionSeen', async () => {
-      await fetchDecoratorConfig({
-        decorator: 'test-decorator',
+      await fetchGuardConfig({
+        guard: 'test-guard',
         lastVersionSeen: '123'
       })
 
       expect(fetchMock).toHaveBeenCalledOnce()
       expect(fetchMock).toHaveBeenCalledWith(
-        new URL('https://url.to.hub/v1/config/decorator'),
+        new URL('https://url.to.hub/v1/config/guard'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             versionSeen: '123',
             selector: {
-              decoratorName: 'test-decorator',
+              guardName: 'test-guard',
               serviceName: 'TestService',
               serviceRelease: '1',
               environment: 'test'
@@ -254,7 +258,7 @@ describe('createRestHubService', async () => {
     })
 
     it('should return null if invalid data returned', async () => {
-      const result = await fetchDecoratorConfig({ decorator: 'test-decorator' })
+      const result = await fetchGuardConfig({ guard: 'test-guard' })
 
       expect(result).toBeNull()
     })
@@ -269,7 +273,7 @@ describe('createRestHubService', async () => {
         }
       })
 
-      const result = await fetchDecoratorConfig({ decorator: 'test-decorator' })
+      const result = await fetchGuardConfig({ guard: 'test-guard' })
 
       expect(result).toBeNull()
     })
@@ -283,30 +287,20 @@ describe('createRestHubService', async () => {
             config: {
               checkQuota: true,
               quotaTags: [],
-              validateIngressTokens: false,
-              traceConfig: {
-                collectorUrl: 'https://url.to.trace.collector',
-                overrides: [],
-                sampleRateDefault: 0.5
-              }
+              validateIngressTokens: false
             }
-          } satisfies DecoratorConfigResponse)
+          } satisfies GuardConfigResponse)
         }
       })
 
-      const result = await fetchDecoratorConfig({ decorator: 'test-decorator' })
+      const result = await fetchGuardConfig({ guard: 'test-guard' })
 
       expect(result).toEqual({
         version: '1',
         config: {
           checkQuota: true,
           quotaTags: [],
-          validateIngressTokens: false,
-          traceConfig: {
-            collectorUrl: 'https://url.to.trace.collector',
-            overrides: [],
-            sampleRateDefault: 0.5
-          }
+          validateIngressTokens: false
         }
       })
     })
@@ -317,11 +311,11 @@ describe('createRestHubService', async () => {
         return new Promise(() => {})
       })
 
-      void fetchDecoratorConfig({ decorator: 'test-decorator' }).catch((e) => {
+      void fetchGuardConfig({ guard: 'test-guard' }).catch((e) => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(1000)
       expect.assertions(1)
 
       vi.useRealTimers()
@@ -336,13 +330,13 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'valid-api-key'
+        apiKey: 'testApiKey'
       })
     })
 
     it('should call fetch with proper params', async () => {
       await getToken({
-        decorator: 'test-decorator',
+        guard: 'test-guard',
         feature: 'test-feature',
         priorityBoost: 5
       })
@@ -352,11 +346,11 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/token'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             selector: {
-              decoratorName: 'test-decorator',
+              guardName: 'test-guard',
               featureName: 'test-feature',
               environment: 'test'
             },
@@ -370,7 +364,7 @@ describe('createRestHubService', async () => {
 
     it('should call fetch with proper params - including tags', async () => {
       await getToken({
-        decorator: 'test-decorator',
+        guard: 'test-guard',
         feature: 'test-feature',
         priorityBoost: 5,
         tags: [
@@ -390,11 +384,11 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/token'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             selector: {
-              decoratorName: 'test-decorator',
+              guardName: 'test-guard',
               featureName: 'test-feature',
               environment: 'test',
               tags: [
@@ -417,7 +411,7 @@ describe('createRestHubService', async () => {
     })
 
     it('should return null if invalid data returned', async () => {
-      const result = await getToken({ decorator: 'test-decorator' })
+      const result = await getToken({ guard: 'test-guard' })
 
       expect(result).toBeNull()
     })
@@ -431,7 +425,7 @@ describe('createRestHubService', async () => {
         }
       })
 
-      const result = await getToken({ decorator: 'test-decorator' })
+      const result = await getToken({ guard: 'test-guard' })
 
       expect(result).toEqual({ granted: false })
     })
@@ -446,7 +440,7 @@ describe('createRestHubService', async () => {
         }
       })
 
-      const result = await getToken({ decorator: 'test-decorator' })
+      const result = await getToken({ guard: 'test-guard' })
 
       expect(result).toEqual({
         granted: true,
@@ -460,11 +454,11 @@ describe('createRestHubService', async () => {
         return new Promise(() => {})
       })
 
-      void getToken({ decorator: 'test-decorator' }).catch((e) => {
+      void getToken({ guard: 'test-guard' }).catch((e) => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(1000)
       expect.assertions(1)
 
       vi.useRealTimers()
@@ -479,13 +473,13 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'valid-api-key'
+        apiKey: 'testApiKey'
       })
     })
 
     it('should call fetch with proper params', async () => {
       await getTokenLease({
-        decorator: 'test-decorator',
+        guard: 'test-guard',
         feature: 'test-feature',
         priorityBoost: 5
       })
@@ -495,11 +489,11 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/lease'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             selector: {
-              decoratorName: 'test-decorator',
+              guardName: 'test-guard',
               featureName: 'test-feature',
               environment: 'test'
             },
@@ -513,7 +507,7 @@ describe('createRestHubService', async () => {
 
     it('should call fetch with proper params - including tags', async () => {
       await getTokenLease({
-        decorator: 'test-decorator',
+        guard: 'test-guard',
         feature: 'test-feature',
         priorityBoost: 5,
         tags: [
@@ -533,11 +527,11 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/lease'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             selector: {
-              decoratorName: 'test-decorator',
+              guardName: 'test-guard',
               featureName: 'test-feature',
               environment: 'test',
               tags: [
@@ -560,7 +554,7 @@ describe('createRestHubService', async () => {
     })
 
     it('should return null if invalid data returned', async () => {
-      const result = await getTokenLease({ decorator: 'test-decorator' })
+      const result = await getTokenLease({ guard: 'test-guard' })
 
       expect(result).toBeNull()
     })
@@ -574,7 +568,7 @@ describe('createRestHubService', async () => {
         }
       })
 
-      const result = await getTokenLease({ decorator: 'test-decorator' })
+      const result = await getTokenLease({ guard: 'test-guard' })
 
       expect(result).toEqual({ granted: false })
     })
@@ -594,7 +588,7 @@ describe('createRestHubService', async () => {
         }
       })
 
-      const result = await getTokenLease({ decorator: 'test-decorator' })
+      const result = await getTokenLease({ guard: 'test-guard' })
 
       expect(result).toEqual({
         granted: true,
@@ -615,11 +609,11 @@ describe('createRestHubService', async () => {
         return new Promise(() => {})
       })
 
-      void getTokenLease({ decorator: 'test-decorator' }).catch((e) => {
+      void getTokenLease({ guard: 'test-guard' }).catch((e) => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(1000)
       expect.assertions(1)
 
       vi.useRealTimers()
@@ -634,13 +628,13 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'valid-api-key'
+        apiKey: 'testApiKey'
       })
     })
 
     it('should call fetch with proper params', async () => {
       await validateToken({
-        decorator: 'test-decorator',
+        guard: 'test-guard',
         token: 'test-token'
       })
 
@@ -649,12 +643,12 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/validatetoken'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             tokens: [{
               token: 'test-token',
-              decorator: 'test-decorator'
+              guard: 'test-guard'
             }]
           }),
           method: 'POST'
@@ -663,7 +657,7 @@ describe('createRestHubService', async () => {
     })
 
     it('should return null if invalid data returned', async () => {
-      const result = await validateToken({ decorator: 'test-decorator', token: 'test-token' })
+      const result = await validateToken({ guard: 'test-guard', token: 'test-token' })
 
       expect(result).toBeNull()
     })
@@ -680,7 +674,7 @@ describe('createRestHubService', async () => {
         }
       })
 
-      const result = await validateToken({ decorator: 'test-decorator', token: 'test-token' })
+      const result = await validateToken({ guard: 'test-guard', token: 'test-token' })
 
       expect(result).toEqual({ valid: false, token: 'test-token' })
     })
@@ -698,7 +692,7 @@ describe('createRestHubService', async () => {
         }
       })
 
-      const result = await validateToken({ decorator: 'test-decorator', token: 'test-token' })
+      const result = await validateToken({ guard: 'test-guard', token: 'test-token' })
 
       expect(result).toEqual({
         valid: true,
@@ -714,11 +708,11 @@ describe('createRestHubService', async () => {
         return new Promise(() => {})
       })
 
-      void validateToken({ decorator: 'test-decorator', token: 'test-token' }).catch((e) => {
+      void validateToken({ guard: 'test-guard', token: 'test-token' }).catch((e) => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(1000)
       expect.assertions(1)
 
       vi.useRealTimers()
@@ -733,7 +727,7 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'valid-api-key'
+        apiKey: 'testApiKey'
       })
     })
 
@@ -747,7 +741,7 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/consumed'),
         {
           headers: {
-            'X-Stanza-Key': 'valid-api-key'
+            'X-Stanza-Key': 'testApiKey'
           },
           body: JSON.stringify({
             tokens: ['test-token-one', 'test-token-two']
@@ -802,7 +796,7 @@ describe('createRestHubService', async () => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
 
-      await vi.advanceTimersByTimeAsync(2000)
+      await vi.advanceTimersByTimeAsync(1000)
       expect.assertions(1)
 
       vi.useRealTimers()

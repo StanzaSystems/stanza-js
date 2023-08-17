@@ -1,5 +1,8 @@
 {
   "extends": ["../../.eslintrc.json"],
+  "parserOptions": {
+    "project": ["samples/express-demo/tsconfig*.json"]
+  },
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {

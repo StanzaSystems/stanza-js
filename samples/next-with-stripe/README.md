@@ -1,7 +1,5 @@
 # Stanza Example using Stripe with TypeScript and react-stripe-js
 ## This Sample is adapted from the official [Next.js + Stripe Sample](https://github.com/vercel/next.js/tree/canary/examples/with-stripe-typescript)
-# Stanza Example using Stripe with TypeScript and react-stripe-js
-## This Sample is adapted from the official [Next.js + Stripe Sample](https://github.com/vercel/next.js/tree/canary/examples/with-stripe-typescript)
 
 This is a full-stack TypeScript example using:
 
@@ -32,13 +30,13 @@ This is a full-stack TypeScript example using:
   | search   | default | local       | 1        |
   | featured | default | local       | 2        |
 
- 3. Create a [decorator](https://ui.demo.getstanza.io/decorators) to guard the products API (match case)
- 
+ 3. Create a [guard](https://ui.demo.getstanza.io/guards) to guard the products API (match case)
+
   | Name                | Project | Environment | Traffic Type |
   |---------------------|---------|-------------|--------------|
   | Stripe_Products_API | default | local       | Outbound     |
 
- 4. On creation you will be redirected to the decorator details page. From there, ensure the traffic configuration JSON is as follows:
+ 4. On creation you will be redirected to the guard details page. From there, ensure the traffic configuration JSON is as follows:
 
  ```json
 {
@@ -52,7 +50,7 @@ This is a full-stack TypeScript example using:
  ```
 
 ### Environment Configuration:
-Make an account in the [stripe dashboard](https://dashboard.stripe.com). 
+Make an account in the [stripe dashboard](https://dashboard.stripe.com).
 
 Set the following in your .env file (copy from stripe and stanza dashboards)
 ```
@@ -71,17 +69,17 @@ NEXT_PUBLIC_STANZA_BROWSER_KEY= {{your stanza key for local environment}}
 ### Running the App
 
 ```
-npm install
+npm install (from root of repository)
 
-npm run dev
+npx nx serve next-with-stripe (from root of repository)
 ```
 
-The app will run on `localhost:3000` by default.
+The app will run on `localhost:4200` by default.
 
 ### Running Load Tests
 
 Stanza responds to load by rate limiting requests in a prioritized way. To see stanza rate limit requests while your app is running, open a separate terminal and run
 
 ```
-npx artillery run ./load-test.yml
+npx artillery run ./load-test.yml (from this directory)
 ```
