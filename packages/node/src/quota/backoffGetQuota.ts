@@ -2,7 +2,10 @@ import { eventBus, events } from '../global/eventBus'
 import { backOff } from 'exponential-backoff'
 import { logger } from '../global/logger'
 
-const rampUpSteps = [1, 5, 10, 25, 50, 100]
+const RAMP_UP_STEPS = [1, 5, 10, 25, 50, 100]
+const FAILURE_THRESHOLD = 0.1
+const INITIAL_BACKOFF_TIME = 1000
+const FAILURE_RATE_CHECK_WINDOW_SIZE = 1000
 
 export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args: Args) => Promise<RType | null>): (...args: Args) => Promise<RType | null> => {
   const tryRampUpEnabledPercentBackedOff = async () => backOff(tryRampUpEnabledPercent, {
@@ -13,7 +16,7 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
       return true
     },
     // TODO: this feels a bit like a hack
-    startingDelay: enabledPercent < 5 ? 2000 : 1000
+    startingDelay: enabledPercent < 5 ? 2 * INITIAL_BACKOFF_TIME : INITIAL_BACKOFF_TIME
   })
 
   let successCount = 0
@@ -23,7 +26,7 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
   eventBus.on(events.internal.quota.succeeded, () => {
     if (checkRequestStatusTimeoutHandle === undefined) {
       resetRequestsCount()
-      checkRequestStatusTimeoutHandle = setTimeout(checkRequestsStatus, 1000)
+      checkRequestStatusTimeoutHandle = setTimeout(checkRequestsStatus, FAILURE_RATE_CHECK_WINDOW_SIZE)
       logger.debug('[%d] scheduling check request status', Date.now())
     }
     successCount++
@@ -31,7 +34,7 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
   eventBus.on(events.internal.quota.failed, () => {
     if (checkRequestStatusTimeoutHandle === undefined) {
       resetRequestsCount()
-      checkRequestStatusTimeoutHandle = setTimeout(checkRequestsStatus, 1000)
+      checkRequestStatusTimeoutHandle = setTimeout(checkRequestsStatus, FAILURE_RATE_CHECK_WINDOW_SIZE)
       logger.debug('[%d] scheduling check request status', Date.now())
     }
     failureCount++
@@ -70,7 +73,7 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
     if (isFailing) {
       disable()
       logger.debug('[%d] scheduling interval function', Date.now())
-      setTimeout(intervalFunction, 1000)
+      setTimeout(intervalFunction, FAILURE_RATE_CHECK_WINDOW_SIZE)
     } else if (enabledPercent < 100) {
       intervalFunction()
     } else {
@@ -85,12 +88,12 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
   }
 
   async function tryRampUpEnabledPercent () {
-    enabledPercent = rampUpSteps.find(step => step > enabledPercent) ?? 100
+    enabledPercent = RAMP_UP_STEPS.find(step => step > enabledPercent) ?? 100
     eventBus.emit(events.internal.quota.enabled, { enabledPercent }).catch(() => {})
     logger.info('Enabled %d%% of get quota requests', enabledPercent)
 
     await new Promise(resolve => {
-      setTimeout(resolve, 1000)
+      setTimeout(resolve, FAILURE_RATE_CHECK_WINDOW_SIZE)
     })
 
     const rampUpFailed = areRequestsFailing()
@@ -109,7 +112,7 @@ export const backoffGetQuota = <Args extends any[], RType>(getQuotaFn: (...args:
 
     const ratio = failureCount / totalCount
 
-    return ratio > 0.1
+    return ratio > FAILURE_THRESHOLD
   }
 
   function resetRequestsCount () {
