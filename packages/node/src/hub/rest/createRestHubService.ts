@@ -127,7 +127,7 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
         body: {
           tokens: [{
             token,
-            guard: guard
+            guard
           }]
         }
       }, stanzaValidateTokenResponse)
