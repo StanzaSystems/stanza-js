@@ -3,14 +3,16 @@ import { type ServiceConfig } from '../hub/model'
 import type * as serviceConfigModuleImport from './serviceConfig'
 type ServiceConfigModule = typeof serviceConfigModuleImport
 
-const STANZA_SERVICE_CONFIG_SYMBOL = Symbol.for('Service Config')
-const STANZA_SERVICE_CONFIG_LISTENERS_SYMBOL = Symbol.for('Service Config Listeners')
+const GLOBAL_STATE_RECORD_SYMBOL = Symbol.for('[Stanza SDK Internal] Global states')
+const STANZA_SERVICE_CONFIG_SYMBOL = Symbol.for('[Stanza SDK Internal] Service Config')
 describe('serviceConfig', function () {
   let serviceConfigModule: ServiceConfigModule
 
   beforeEach(async () => {
-    (global as any)[STANZA_SERVICE_CONFIG_SYMBOL] = undefined;
-    (global as any)[STANZA_SERVICE_CONFIG_LISTENERS_SYMBOL] = undefined
+    (global as any)[STANZA_SERVICE_CONFIG_SYMBOL] = undefined
+    if ((global as any)[GLOBAL_STATE_RECORD_SYMBOL] !== undefined) {
+      (global as any)[GLOBAL_STATE_RECORD_SYMBOL][STANZA_SERVICE_CONFIG_SYMBOL] = undefined
+    }
     vi.resetModules()
     serviceConfigModule = await import('./serviceConfig')
   })
@@ -27,6 +29,11 @@ describe('serviceConfig', function () {
     serviceConfigModule.updateServiceConfig(updatedConfig)
 
     expect(serviceConfigModule.getServiceConfig()).toBe(updatedConfig)
+  })
+
+  it('should return undefined initially - no matter the test order', function () {
+    const serviceConfig = serviceConfigModule.getServiceConfig()
+    expect(serviceConfig).toBeUndefined()
   })
 
   it('should notify about updated service', function () {
