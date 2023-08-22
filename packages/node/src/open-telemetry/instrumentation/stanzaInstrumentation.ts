@@ -2,7 +2,7 @@ import { InstrumentationBase } from '@opentelemetry/instrumentation'
 import { type Counter, type Histogram, type MetricOptions, ValueType } from '@opentelemetry/api'
 import { eventBus, events } from '../../global/eventBus'
 import { eventDataToRequestAttributes, type RequestAttributes } from './requestAttributes'
-import { eventDataToRequestBlockedAttributes, type RequestBlockedAttributes } from './requestBlockedAttributes'
+import { eventDataToGuardResolutionAttributes, type GuardResolutionAttributes } from './guardResolutionAttributes'
 import { type DefaultContextAttributes, eventDataToDefaultContextAttributes } from './defaultContextAttributes'
 import {
   type GuardAttributes,
@@ -15,32 +15,32 @@ type QuotaEndpoint = 'GetToken' | 'GetTokenLease' | 'SetTokenLeaseConsumed'
 
 export class StanzaInstrumentation extends InstrumentationBase {
   private metrics!: {
-    request: {
-      allowed: Counter<RequestAttributes>
-      blocked: Counter<RequestBlockedAttributes>
+    guard: {
+      allowed: Counter<GuardResolutionAttributes>
+      blocked: Counter<GuardResolutionAttributes>
       failed: Counter<RequestAttributes>
       succeeded: Counter<RequestAttributes>
-      latency: Histogram<RequestAttributes>
+      duration: Histogram<RequestAttributes>
     }
     config: {
       service: {
         fetchOk: Counter<DefaultContextAttributes>
         fetchFailed: Counter<DefaultContextAttributes>
-        fetchLatency: Histogram<DefaultContextAttributes>
+        fetchDuration: Histogram<DefaultContextAttributes>
       }
       guard: {
         fetchOk: Counter<DefaultContextAttributes & GuardAttributes>
         fetchFailed: Counter<DefaultContextAttributes>
-        fetchLatency: Histogram<DefaultContextAttributes>
+        fetchDuration: Histogram<DefaultContextAttributes>
       }
     }
     quota: {
       fetchOk: Counter<DefaultContextAttributes & Partial<GuardAttributes> & { endpoint: QuotaEndpoint }>
       fetchFailed: Counter<DefaultContextAttributes & { endpoint: QuotaEndpoint }>
-      fetchLatency: Histogram<DefaultContextAttributes & { endpoint: QuotaEndpoint }>
+      fetchDuration: Histogram<DefaultContextAttributes & { endpoint: QuotaEndpoint }>
       validateOk: Counter<DefaultContextAttributes & GuardAttributes>
       validateFailed: Counter<DefaultContextAttributes>
-      validateLatency: Histogram<DefaultContextAttributes>
+      validateDuration: Histogram<DefaultContextAttributes>
     }
     telemetry: {
       sendOk: Counter<DefaultContextAttributes & { otel_address: string }>
@@ -61,7 +61,7 @@ export class StanzaInstrumentation extends InstrumentationBase {
 
   protected override _updateMetricInstruments () {
     this.metrics = {
-      request: this.updateRequestMetrics(),
+      guard: this.updateRequestMetrics(),
       config: this.updateConfigMetrics(),
       quota: this.updateQuotaMetrics(),
       telemetry: this.updateTelemetryMetrics()
@@ -69,44 +69,44 @@ export class StanzaInstrumentation extends InstrumentationBase {
   }
 
   private initRequestMetrics () {
-    eventBus.on(events.request.allowed, (data) => {
-      this.metrics.request.allowed.add(1, eventDataToRequestAttributes(data))
+    eventBus.on(events.guard.allowed, (data) => {
+      this.metrics.guard.allowed.add(1, eventDataToGuardResolutionAttributes(data))
     })
-    eventBus.on(events.request.blocked, data => {
-      this.metrics.request.blocked.add(1, eventDataToRequestBlockedAttributes(data))
+    eventBus.on(events.guard.blocked, data => {
+      this.metrics.guard.blocked.add(1, eventDataToGuardResolutionAttributes(data))
     })
-    eventBus.on(events.request.failed, data => {
-      this.metrics.request.failed.add(1, eventDataToRequestAttributes(data))
+    eventBus.on(events.guard.failed, data => {
+      this.metrics.guard.failed.add(1, eventDataToRequestAttributes(data))
     })
-    eventBus.on(events.request.succeeded, data => {
-      this.metrics.request.succeeded.add(1, eventDataToRequestAttributes(data))
+    eventBus.on(events.guard.succeeded, data => {
+      this.metrics.guard.succeeded.add(1, eventDataToRequestAttributes(data))
     })
-    eventBus.on(events.request.latency, ({ latency, ...data }) => {
-      this.metrics.request.latency.record(latency, eventDataToRequestAttributes(data))
+    eventBus.on(events.guard.duration, ({ duration, ...data }) => {
+      this.metrics.guard.duration.record(duration, eventDataToRequestAttributes(data))
     })
   }
 
-  private updateRequestMetrics (): typeof this.metrics.request {
+  private updateRequestMetrics (): typeof this.metrics.guard {
     return {
       allowed: this.meter.createCounter(
-        events.request.allowed.description ?? '',
+        events.guard.allowed.description ?? '',
         stanzaCounterMetricOptions('Count of requests permitted to execute on a given Guard')
       ),
       blocked: this.meter.createCounter(
-        events.request.blocked.description ?? '',
+        events.guard.blocked.description ?? '',
         stanzaCounterMetricOptions('Count of requests not permitted to execute on a given Guard')
       ),
       failed: this.meter.createCounter(
-        events.request.failed.description ?? '',
+        events.guard.failed.description ?? '',
         stanzaCounterMetricOptions('Count of failed requests traversing a particular Guard')
       ),
       succeeded: this.meter.createCounter(
-        events.request.succeeded.description ?? '',
+        events.guard.succeeded.description ?? '',
         stanzaCounterMetricOptions('Count of successful requests traversing a particular Guard')
       ),
-      latency: this.meter.createHistogram(
-        events.request.latency.description ?? '',
-        stanzaHistogramMetricOptions('Latency histogram for execution time for a particular Guard')
+      duration: this.meter.createHistogram(
+        events.guard.duration.description ?? '',
+        stanzaHistogramMetricOptions('Duration histogram for execution time for a particular Guard')
       )
     }
   }
@@ -118,8 +118,8 @@ export class StanzaInstrumentation extends InstrumentationBase {
     eventBus.on(events.config.service.fetchFailed, data => {
       this.metrics.config.service.fetchFailed.add(1, eventDataToDefaultContextAttributes(data))
     })
-    eventBus.on(events.config.service.fetchLatency, ({ latency, ...data }) => {
-      this.metrics.config.service.fetchLatency.record(latency, eventDataToDefaultContextAttributes(data))
+    eventBus.on(events.config.service.fetchDuration, ({ duration, ...data }) => {
+      this.metrics.config.service.fetchDuration.record(duration, eventDataToDefaultContextAttributes(data))
     })
     eventBus.on(events.config.guard.fetchOk, data => {
       this.metrics.config.guard.fetchOk.add(1, {
@@ -130,8 +130,8 @@ export class StanzaInstrumentation extends InstrumentationBase {
     eventBus.on(events.config.guard.fetchFailed, data => {
       this.metrics.config.guard.fetchFailed.add(1, eventDataToDefaultContextAttributes(data))
     })
-    eventBus.on(events.config.guard.fetchLatency, ({ latency, ...data }) => {
-      this.metrics.config.guard.fetchLatency.record(latency, eventDataToDefaultContextAttributes(data))
+    eventBus.on(events.config.guard.fetchDuration, ({ duration, ...data }) => {
+      this.metrics.config.guard.fetchDuration.record(duration, eventDataToDefaultContextAttributes(data))
     })
   }
 
@@ -146,9 +146,9 @@ export class StanzaInstrumentation extends InstrumentationBase {
           events.config.service.fetchFailed.description ?? '',
           stanzaCounterMetricOptions('Count of unsuccessful fetches of service configuration')
         ),
-        fetchLatency: this.meter.createHistogram(
-          events.config.service.fetchLatency.description ?? '',
-          stanzaHistogramMetricOptions('Latency histogram for time to fetch service configuration')
+        fetchDuration: this.meter.createHistogram(
+          events.config.service.fetchDuration.description ?? '',
+          stanzaHistogramMetricOptions('Duration histogram for time to fetch service configuration')
         )
       },
       guard: {
@@ -160,9 +160,9 @@ export class StanzaInstrumentation extends InstrumentationBase {
           events.config.guard.fetchFailed.description ?? '',
           stanzaCounterMetricOptions('Count of unsuccessful fetches of guard configuration')
         ),
-        fetchLatency: this.meter.createHistogram(
-          events.config.guard.fetchLatency.description ?? '',
-          stanzaHistogramMetricOptions('Latency histogram for time to fetch guard configuration')
+        fetchDuration: this.meter.createHistogram(
+          events.config.guard.fetchDuration.description ?? '',
+          stanzaHistogramMetricOptions('Duration histogram for time to fetch guard configuration')
         )
       }
     }
@@ -182,8 +182,8 @@ export class StanzaInstrumentation extends InstrumentationBase {
         endpoint: data.endpoint
       })
     })
-    eventBus.on(events.quota.fetchLatency, ({ latency, ...data }) => {
-      this.metrics.quota.fetchLatency.record(latency, {
+    eventBus.on(events.quota.fetchDuration, ({ duration, ...data }) => {
+      this.metrics.quota.fetchDuration.record(duration, {
         ...eventDataToDefaultContextAttributes(data),
         endpoint: data.endpoint
       })
@@ -197,8 +197,8 @@ export class StanzaInstrumentation extends InstrumentationBase {
     eventBus.on(events.quota.validateFailed, data => {
       this.metrics.quota.validateFailed.add(1, eventDataToDefaultContextAttributes(data))
     })
-    eventBus.on(events.quota.validateLatency, ({ latency, ...data }) => {
-      this.metrics.quota.validateLatency.record(latency, eventDataToDefaultContextAttributes(data))
+    eventBus.on(events.quota.validateDuration, ({ duration, ...data }) => {
+      this.metrics.quota.validateDuration.record(duration, eventDataToDefaultContextAttributes(data))
     })
   }
 
@@ -212,9 +212,9 @@ export class StanzaInstrumentation extends InstrumentationBase {
         events.quota.fetchFailed.description ?? '',
         stanzaCounterMetricOptions('Count of unsuccessful fetches quota')
       ),
-      fetchLatency: this.meter.createHistogram(
-        events.quota.fetchLatency.description ?? '',
-        stanzaHistogramMetricOptions('Latency histogram for time to fetch quota')
+      fetchDuration: this.meter.createHistogram(
+        events.quota.fetchDuration.description ?? '',
+        stanzaHistogramMetricOptions('Duration histogram for time to fetch quota')
       ),
       validateOk: this.meter.createCounter(
         events.quota.validateOk.description ?? '',
@@ -224,9 +224,9 @@ export class StanzaInstrumentation extends InstrumentationBase {
         events.quota.validateFailed.description ?? '',
         stanzaCounterMetricOptions('Count of unsuccessful token validations')
       ),
-      validateLatency: this.meter.createHistogram(
-        events.quota.validateLatency.description ?? '',
-        stanzaHistogramMetricOptions('Latency histogram for time to perform token validations')
+      validateDuration: this.meter.createHistogram(
+        events.quota.validateDuration.description ?? '',
+        stanzaHistogramMetricOptions('Duration histogram for time to perform token validations')
       )
     }
   }

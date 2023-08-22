@@ -26,10 +26,10 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
           customerId
         })
       },
-      latency: async (latency, result) => {
+      duration: async (duration, result) => {
         const customerId = result?.config.customerId ?? getServiceConfig()?.config.customerId
-        return eventBus.emit(events.config.service.fetchLatency, {
-          latency,
+        return eventBus.emit(events.config.service.fetchDuration, {
+          duration,
           serviceName,
           clientId,
           environment,
@@ -57,10 +57,10 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
           customerId
         })
       },
-      latency: async (latency) => {
+      duration: async (duration) => {
         const customerId = getServiceConfig()?.config.customerId
-        return eventBus.emit(events.config.guard.fetchLatency, {
-          latency,
+        return eventBus.emit(events.config.guard.fetchDuration, {
+          duration,
           serviceName,
           clientId,
           environment,
@@ -90,10 +90,10 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
           endpoint: 'GetToken'
         })
       },
-      latency: async (latency) => {
+      duration: async (duration) => {
         const customerId = getServiceConfig()?.config.customerId
-        return eventBus.emit(events.quota.fetchLatency, {
-          latency,
+        return eventBus.emit(events.quota.fetchDuration, {
+          duration,
           serviceName,
           clientId,
           environment,
@@ -124,10 +124,10 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
           endpoint: 'GetTokenLease'
         })
       },
-      latency: async (latency) => {
+      duration: async (duration) => {
         const customerId = getServiceConfig()?.config.customerId
-        return eventBus.emit(events.quota.fetchLatency, {
-          latency,
+        return eventBus.emit(events.quota.fetchDuration, {
+          duration,
           serviceName,
           clientId,
           environment,
@@ -160,10 +160,10 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
           customerId
         })
       },
-      latency: async (latency) => {
+      duration: async (duration) => {
         const customerId = getServiceConfig()?.config.customerId
-        return eventBus.emit(events.quota.validateLatency, {
-          latency,
+        return eventBus.emit(events.quota.validateDuration, {
+          duration,
           serviceName,
           clientId,
           environment,
@@ -192,10 +192,10 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
           endpoint: 'SetTokenLeaseConsumed'
         })
       },
-      latency: async (latency) => {
+      duration: async (duration) => {
         const customerId = getServiceConfig()?.config.customerId
-        return eventBus.emit(events.quota.fetchLatency, {
-          latency,
+        return eventBus.emit(events.quota.fetchDuration, {
+          duration,
           serviceName,
           clientId,
           environment,

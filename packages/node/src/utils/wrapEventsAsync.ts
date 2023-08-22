@@ -1,7 +1,7 @@
 export const wrapEventsAsync = <TArgs extends any[], TResult>(fn: (...args: TArgs) => PromiseLike<TResult>, events: {
   success?: (result: TResult, ...args: TArgs) => void | Promise<void>
   failure?: (err: unknown, ...args: TArgs) => void | Promise<void>
-  latency?: (latency: number, result: TResult | undefined, ...args: TArgs) => void | Promise<void>
+  duration?: (duration: number, result: TResult | undefined, ...args: TArgs) => void | Promise<void>
 } = {}): (...args: TArgs) => Promise<TResult> => async (...args: TArgs): Promise<TResult> => {
     const fetchGuardStart = performance.now()
     let result: TResult | undefined
@@ -14,6 +14,6 @@ export const wrapEventsAsync = <TArgs extends any[], TResult>(fn: (...args: TArg
       throw err
     } finally {
       const fetchGuardEnd = performance.now()
-      Promise.resolve(events.latency?.(fetchGuardEnd - fetchGuardStart, result, ...args)).catch(() => {})
+      Promise.resolve(events.duration?.(fetchGuardEnd - fetchGuardStart, result, ...args)).catch(() => {})
     }
   }

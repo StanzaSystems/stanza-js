@@ -14,12 +14,12 @@ describe('wrapEventsAsync', () => {
 
     const successCallback = vi.fn()
     const failureCallback = vi.fn()
-    const latencyCallback = vi.fn()
+    const durationCallback = vi.fn()
 
     const wrappedFn = wrapEventsAsync(fn, {
       success: successCallback,
       failure: failureCallback,
-      latency: latencyCallback
+      duration: durationCallback
     })
 
     const wrappedFnResult = wrappedFn()
@@ -28,7 +28,7 @@ describe('wrapEventsAsync', () => {
 
     expect(successCallback).not.toHaveBeenCalled()
     expect(failureCallback).not.toHaveBeenCalled()
-    expect(latencyCallback).not.toHaveBeenCalled()
+    expect(durationCallback).not.toHaveBeenCalled()
 
     resolveFn('aValue')
 
@@ -37,8 +37,8 @@ describe('wrapEventsAsync', () => {
     expect(successCallback).toHaveBeenCalledOnce()
     expect(successCallback).toHaveBeenCalledWith('aValue')
     expect(failureCallback).not.toHaveBeenCalled()
-    expect(latencyCallback).toHaveBeenCalledOnce()
-    expect(latencyCallback).toHaveBeenCalledWith(123.456, 'aValue')
+    expect(durationCallback).toHaveBeenCalledOnce()
+    expect(durationCallback).toHaveBeenCalledWith(123.456, 'aValue')
 
     await expect(wrappedFnResult).resolves.toBe('aValue')
 
@@ -58,12 +58,12 @@ describe('wrapEventsAsync', () => {
 
     const successCallback = vi.fn()
     const failureCallback = vi.fn()
-    const latencyCallback = vi.fn()
+    const durationCallback = vi.fn()
 
     const wrappedFn = wrapEventsAsync(fn, {
       success: successCallback,
       failure: failureCallback,
-      latency: latencyCallback
+      duration: durationCallback
     })
 
     const wrappedFnResult = wrappedFn()
@@ -73,7 +73,7 @@ describe('wrapEventsAsync', () => {
 
     expect(successCallback).not.toHaveBeenCalled()
     expect(failureCallback).not.toHaveBeenCalled()
-    expect(latencyCallback).not.toHaveBeenCalled()
+    expect(durationCallback).not.toHaveBeenCalled()
 
     rejectFn(new Error('kaboom'))
 
@@ -82,8 +82,8 @@ describe('wrapEventsAsync', () => {
     expect(successCallback).not.toHaveBeenCalled()
     expect(failureCallback).toHaveBeenCalledOnce()
     expect(failureCallback).toHaveBeenCalledWith(new Error('kaboom'))
-    expect(latencyCallback).toHaveBeenCalledOnce()
-    expect(latencyCallback).toHaveBeenCalledWith(123.456, undefined)
+    expect(durationCallback).toHaveBeenCalledOnce()
+    expect(durationCallback).toHaveBeenCalledWith(123.456, undefined)
 
     await wrappedFnResultExpectation
 
@@ -124,7 +124,7 @@ describe('wrapEventsAsync', () => {
     vi.useRealTimers()
   })
 
-  it('should not interfere with the function execution if latency callback throws', async () => {
+  it('should not interfere with the function execution if duration callback throws', async () => {
     vi.useFakeTimers({})
 
     let resolveFn: (v: unknown) => void = () => {}
@@ -135,23 +135,23 @@ describe('wrapEventsAsync', () => {
       return resultPromise
     }
 
-    const latencyCallback = vi.fn(async () => Promise.reject(new Error('kaboom')))
+    const durationCallback = vi.fn(async () => Promise.reject(new Error('kaboom')))
 
     const wrappedFn = wrapEventsAsync(fn, {
-      latency: latencyCallback
+      duration: durationCallback
     })
 
     const wrappedFnResult = wrappedFn()
 
     await vi.advanceTimersByTimeAsync(123.456)
 
-    expect(latencyCallback).not.toHaveBeenCalled()
+    expect(durationCallback).not.toHaveBeenCalled()
 
     resolveFn('aValue')
 
     await vi.advanceTimersByTimeAsync(0)
 
-    expect(latencyCallback).toHaveBeenCalledOnce()
+    expect(durationCallback).toHaveBeenCalledOnce()
 
     await expect(wrappedFnResult).resolves.toBe('aValue')
 

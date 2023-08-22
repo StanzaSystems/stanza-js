@@ -37,7 +37,7 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOp
     return wrapEventsAsync(resultFn, {
       success: async () => {
         const customerId = getServiceConfig()?.config.customerId
-        return eventBus.emit(events.request.succeeded, {
+        return eventBus.emit(events.guard.succeeded, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
           guardName: options.guard,
@@ -46,21 +46,21 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOp
       },
       failure: async () => {
         const customerId = getServiceConfig()?.config.customerId
-        return eventBus.emit(events.request.failed, {
+        return eventBus.emit(events.guard.failed, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
           guardName: options.guard,
           customerId
         })
       },
-      latency: async (...[latency]) => {
+      duration: async (...[duration]) => {
         const customerId = getServiceConfig()?.config.customerId
-        return eventBus.emit(events.request.latency, {
+        return eventBus.emit(events.guard.duration, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
           guardName: options.guard,
           customerId,
-          latency
+          duration
         })
       }
     }) as Fn<TArgs, Promisify<TReturn>>
@@ -72,18 +72,19 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
   return {
     ...initializedGuard,
     guard: wrapEventsAsync(initializedGuard.guard, {
-      success: async () => {
+      success: async (result) => {
         const customerId = getServiceConfig()?.config.customerId
-        return eventBus.emit(events.request.allowed, {
+        return eventBus.emit(events.guard.allowed, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
           guardName: options.guard,
-          customerId
+          customerId,
+          reason: result !== null ? 'quota' : 'fail_open'
         })
       },
       failure: async () => {
         const customerId = getServiceConfig()?.config.customerId
-        return eventBus.emit(events.request.blocked, {
+        return eventBus.emit(events.guard.blocked, {
           ...hubService.getServiceMetadata(),
           featureName: options.feature ?? '',
           guardName: options.guard,
