@@ -95,6 +95,55 @@ describe('stanzaGuard', () => {
       })
     })
 
+    it('should emit stanza.guard.allowed event when guard executes with fail open reason when getting token returns null', async () => {
+      updateGuardConfig('testGuard', {
+        config: {
+          checkQuota: true
+        } satisfies Partial<GuardConfig['config']> as any,
+        version: 'testGuardVersion'
+      })
+
+      const deferred = getQuotaMock.mockImplementationDeferred()
+
+      const guardedDoStuff = stanzaGuard({
+        guard: 'testGuard'
+      }).bind(doStuff)
+
+      const guardStuffPromise = guardedDoStuff()
+
+      deferred.resolve(null)
+
+      await expect(guardStuffPromise).resolves.toBeUndefined()
+
+      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
+        guardName: 'testGuard',
+        featureName: '',
+        serviceName: 'testService',
+        environment: 'testEnvironment',
+        clientId: 'testClientId',
+        reason: 'fail_open'
+      })
+    })
+
+    it('should emit stanza.guard.allowed event when guard executes with fail open reason when no guard config is provided', async () => {
+      const guardedDoStuff = stanzaGuard({
+        guard: 'testGuard'
+      }).bind(doStuff)
+
+      const guardStuffPromise = guardedDoStuff()
+
+      await expect(guardStuffPromise).resolves.toBeUndefined()
+
+      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
+        guardName: 'testGuard',
+        featureName: '',
+        serviceName: 'testService',
+        environment: 'testEnvironment',
+        clientId: 'testClientId',
+        reason: 'fail_open'
+      })
+    })
+
     it('should emit stanza.guard.blocked event when guard\'s execution is blocked', async () => {
       updateGuardConfig('testGuard', {
         config: {
