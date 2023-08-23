@@ -9,9 +9,10 @@ describe('serviceConfig', function () {
   let serviceConfigModule: ServiceConfigModule
 
   beforeEach(async () => {
-    (global as any)[STANZA_SERVICE_CONFIG_SYMBOL] = undefined
-    if ((global as any)[GLOBAL_STATE_RECORD_SYMBOL] !== undefined) {
-      (global as any)[GLOBAL_STATE_RECORD_SYMBOL][STANZA_SERVICE_CONFIG_SYMBOL] = undefined
+    const globalAsAny = global as any
+    globalAsAny[STANZA_SERVICE_CONFIG_SYMBOL] = undefined
+    if (globalAsAny[GLOBAL_STATE_RECORD_SYMBOL] !== undefined) {
+      globalAsAny[GLOBAL_STATE_RECORD_SYMBOL][STANZA_SERVICE_CONFIG_SYMBOL] = undefined
     }
     vi.resetModules()
     serviceConfigModule = await import('./serviceConfig')

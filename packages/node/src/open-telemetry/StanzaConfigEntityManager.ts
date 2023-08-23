@@ -7,8 +7,8 @@ import { type GuardConfig, type ServiceConfig } from '../hub/model'
 export class StanzaConfigEntityManager<T> {
   private serviceEntity: T
   private readonly guardEntities: Record<string, T> = {}
-  private readonly unsubscribeServiceConfigListener = addServiceConfigListener(({ config }) => {
-    this.updateServiceEntity(config)
+  private readonly unsubscribeServiceConfigListener = addServiceConfigListener((serviceConfig) => {
+    serviceConfig !== undefined && this.updateServiceEntity(serviceConfig.config)
   })
 
   private readonly unsubscribeGuardConfigListeners: Array<() => void> = []
