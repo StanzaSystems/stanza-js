@@ -49,7 +49,7 @@ describe('serviceConfig', function () {
     serviceConfigModule.updateServiceConfig(updatedConfig)
 
     expect(listener).toHaveBeenCalledOnce()
-    expect(listener).toHaveBeenCalledWith(updatedConfig)
+    expect(listener).toHaveBeenCalledWith({ initialized: true, data: updatedConfig })
   })
 
   it('should notify all listeners about updated service', function () {
@@ -66,10 +66,10 @@ describe('serviceConfig', function () {
     serviceConfigModule.updateServiceConfig(updatedConfig)
 
     expect(listener1).toHaveBeenCalledOnce()
-    expect(listener1).toHaveBeenCalledWith(updatedConfig)
+    expect(listener1).toHaveBeenCalledWith({ initialized: true, data: updatedConfig })
 
     expect(listener2).toHaveBeenCalledOnce()
-    expect(listener2).toHaveBeenCalledWith(updatedConfig)
+    expect(listener2).toHaveBeenCalledWith({ initialized: true, data: updatedConfig })
   })
 
   it('should stop notifying after listener unsubscribes', function () {
@@ -86,10 +86,10 @@ describe('serviceConfig', function () {
     serviceConfigModule.updateServiceConfig(updatedConfig1)
 
     expect(listener1).toHaveBeenCalledOnce()
-    expect(listener1).toHaveBeenCalledWith(updatedConfig1)
+    expect(listener1).toHaveBeenCalledWith({ initialized: true, data: updatedConfig1 })
 
     expect(listener2).toHaveBeenCalledOnce()
-    expect(listener2).toHaveBeenCalledWith(updatedConfig1)
+    expect(listener2).toHaveBeenCalledWith({ initialized: true, data: updatedConfig1 })
 
     listener1.mockClear()
     listener2.mockClear()
@@ -105,7 +105,7 @@ describe('serviceConfig', function () {
     expect(listener1).not.toHaveBeenCalled()
 
     expect(listener2).toHaveBeenCalledOnce()
-    expect(listener2).toHaveBeenCalledWith(updatedConfig2)
+    expect(listener2).toHaveBeenCalledWith({ initialized: true, data: updatedConfig2 })
   })
 
   it('should not fail when unsubscribing a listener multiple times', function () {
