@@ -11,11 +11,17 @@ export const withTimeout = async <T>(timeout: number, timeoutMessage: string, aP
       aPromise,
       new Promise<T>((_resolve, reject) => {
         timeoutHandle = setTimeout(() => {
-          reject(new Error(timeoutMessage))
+          reject(new TimeoutError(timeout, timeoutMessage))
         }, timeout)
       })
     ])
   } finally {
     clearTimeout(timeoutHandle)
+  }
+}
+
+export class TimeoutError extends Error {
+  constructor (public readonly timeout: number, message?: string) {
+    super(message)
   }
 }

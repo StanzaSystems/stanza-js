@@ -29,7 +29,20 @@ const telemetrySendFailed = Symbol('stanza.telemetry.send_failed')
 
 const authTokenInvalid = Symbol('stanza.auth.token_invalid')
 
+const internalQuotaSucceeded = Symbol('stanza.internal.quota.succeeded')
+const internalQuotaFailed = Symbol('stanza.internal.quota.failed')
+const internalQuotaDisabled = Symbol('stanza.internal.quota.disabled')
+const internalQuotaEnabled = Symbol('stanza.internal.quota.enabled')
+
 const eventBusEvents = {
+  internal: {
+    quota: {
+      succeeded: internalQuotaSucceeded,
+      failed: internalQuotaFailed,
+      disabled: internalQuotaDisabled,
+      enabled: internalQuotaEnabled
+    }
+  },
   request: {
     allowed: requestAllowedEvent,
     blocked: requestBlockedEvent,
@@ -125,6 +138,10 @@ type StanzaEventBus = EventBus<{
   [telemetrySendOk]: DefaultContextData & { oTelAddress: string }
   [telemetrySendFailed]: DefaultContextData & { oTelAddress: string }
   [authTokenInvalid]: undefined
+  [internalQuotaSucceeded]: undefined
+  [internalQuotaFailed]: undefined
+  [internalQuotaDisabled]: undefined
+  [internalQuotaEnabled]: { enabledPercent: number }
 }>
 
 interface EventBusGlobal {
