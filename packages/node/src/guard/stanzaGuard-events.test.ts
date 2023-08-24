@@ -65,7 +65,7 @@ beforeAll(() => {
 
 describe('stanzaGuard', () => {
   describe('events', () => {
-    it('should emit stanza.request.allowed event when guard executes', async () => {
+    it('should emit stanza.guard.allowed event when guard executes', async () => {
       updateGuardConfig('testGuard', {
         config: {
           checkQuota: true
@@ -85,16 +85,66 @@ describe('stanzaGuard', () => {
 
       await expect(guardStuffPromise).resolves.toBeUndefined()
 
-      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.request.allowed, {
+      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
         guardName: 'testGuard',
         featureName: '',
         serviceName: 'testService',
         environment: 'testEnvironment',
-        clientId: 'testClientId'
+        clientId: 'testClientId',
+        reason: 'quota'
       })
     })
 
-    it('should emit stanza.request.blocked event when guard\'s execution is blocked', async () => {
+    it('should emit stanza.guard.allowed event when guard executes with fail open reason when getting token returns null', async () => {
+      updateGuardConfig('testGuard', {
+        config: {
+          checkQuota: true
+        } satisfies Partial<GuardConfig['config']> as any,
+        version: 'testGuardVersion'
+      })
+
+      const deferred = getQuotaMock.mockImplementationDeferred()
+
+      const guardedDoStuff = stanzaGuard({
+        guard: 'testGuard'
+      }).bind(doStuff)
+
+      const guardStuffPromise = guardedDoStuff()
+
+      deferred.resolve(null)
+
+      await expect(guardStuffPromise).resolves.toBeUndefined()
+
+      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
+        guardName: 'testGuard',
+        featureName: '',
+        serviceName: 'testService',
+        environment: 'testEnvironment',
+        clientId: 'testClientId',
+        reason: 'fail_open'
+      })
+    })
+
+    it('should emit stanza.guard.allowed event when guard executes with fail open reason when no guard config is provided', async () => {
+      const guardedDoStuff = stanzaGuard({
+        guard: 'testGuard'
+      }).bind(doStuff)
+
+      const guardStuffPromise = guardedDoStuff()
+
+      await expect(guardStuffPromise).resolves.toBeUndefined()
+
+      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
+        guardName: 'testGuard',
+        featureName: '',
+        serviceName: 'testService',
+        environment: 'testEnvironment',
+        clientId: 'testClientId',
+        reason: 'fail_open'
+      })
+    })
+
+    it('should emit stanza.guard.blocked event when guard\'s execution is blocked', async () => {
       updateGuardConfig('testGuard', {
         config: {
           checkQuota: true
@@ -114,7 +164,7 @@ describe('stanzaGuard', () => {
 
       await expect(guardStuffPromise).rejects.toThrow()
 
-      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.request.blocked, {
+      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.blocked, {
         guardName: 'testGuard',
         featureName: '',
         reason: 'quota',
@@ -124,7 +174,7 @@ describe('stanzaGuard', () => {
       })
     })
 
-    it('should emit stanza.request.succeeded event when function wrapped with a guard succeeds', async () => {
+    it('should emit stanza.guard.succeeded event when function wrapped with a guard succeeds', async () => {
       updateGuardConfig('testGuard', {
         config: {
           checkQuota: true
@@ -146,7 +196,7 @@ describe('stanzaGuard', () => {
 
       await expect(guardStuffPromise).resolves.toBeUndefined()
 
-      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.request.succeeded, {
+      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.succeeded, {
         guardName: 'testGuard',
         featureName: '',
         serviceName: 'testService',
@@ -155,7 +205,7 @@ describe('stanzaGuard', () => {
       })
     })
 
-    it('should emit stanza.request.failed event when function wrapped with a guard fails', async () => {
+    it('should emit stanza.guard.failed event when function wrapped with a guard fails', async () => {
       updateGuardConfig('testGuard', {
         config: {
           checkQuota: true
@@ -177,7 +227,7 @@ describe('stanzaGuard', () => {
 
       await expect(guardStuffPromise).rejects.toThrow('kaboom')
 
-      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.request.failed, {
+      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.failed, {
         guardName: 'testGuard',
         featureName: '',
         serviceName: 'testService',
@@ -186,7 +236,7 @@ describe('stanzaGuard', () => {
       })
     })
 
-    it('should emit stanza.request.latency event when function wrapped with a guard succeeds', async () => {
+    it('should emit stanza.guard.duration event when function wrapped with a guard succeeds', async () => {
       vi.useFakeTimers({
         now: 0
       })
@@ -211,10 +261,10 @@ describe('stanzaGuard', () => {
 
       await expect(guardStuffPromise).resolves.toBeUndefined()
 
-      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.request.latency, {
+      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.duration, {
         guardName: 'testGuard',
         featureName: '',
-        latency: 123.456,
+        duration: 123.456,
         serviceName: 'testService',
         environment: 'testEnvironment',
         clientId: 'testClientId'

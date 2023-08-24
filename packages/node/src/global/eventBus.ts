@@ -3,31 +3,31 @@ import Emittery from 'emittery'
 const EVENT_BUS_SYMBOL = Symbol.for('[Stanza SDK Internal] Event Bus')
 const EVENT_BUS_EVENTS_SYMBOL = Symbol.for('[Stanza SDK Internal] Event Bus Events')
 
-const requestAllowedEvent: unique symbol = Symbol('stanza.request.allowed')
-const requestBlockedEvent = Symbol('stanza.request.blocked')
-const requestFailedEvent = Symbol('stanza.request.failed')
-const requestSucceededEvent = Symbol('stanza.request.succeeded')
-const requestLatencyEvent = Symbol('stanza.request.latency')
+const guardAllowed = Symbol('stanza.guard.allowed')
+const guardAllowedSuccess = Symbol('stanza.guard.allowed.success')
+const guardAllowedFailure = Symbol('stanza.guard.allowed.failure')
+const guardAllowedDuration = Symbol('stanza.guard.allowed.duration')
+const guardBlocked = Symbol('stanza.guard.blocked')
 
-const configServiceFetchOk = Symbol('stanza.config.service.fetch_ok')
-const configServiceFetchFailed = Symbol('stanza.config.service.fetch_failed')
-const configServiceFetchLatency = Symbol('stanza.config.service.fetch_latency')
+const configServiceFetchSuccess = Symbol('stanza.config.service.fetch.success')
+const configServiceFetchFailure = Symbol('stanza.config.service.fetch.failure')
+const configServiceFetchDuration = Symbol('stanza.config.service.fetch.duration')
 
-const configGuardFetchOk = Symbol('stanza.config.guard.fetch_ok')
-const configGuardFetchFailed = Symbol('stanza.config.guard.fetch_failed')
-const configGuardrFetchLatency = Symbol('stanza.config.guard.fetch_latency')
+const configGuardFetchSuccess = Symbol('stanza.config.guard.fetch.success')
+const configGuardFetchFailure = Symbol('stanza.config.guard.fetch.failure')
+const configGuardFetchDuration = Symbol('stanza.config.guard.fetch.duration')
 
-const quotaFetchOk = Symbol('stanza.quota.fetch_ok')
-const quotaFetchFailed = Symbol('stanza.quota.fetch_failed')
-const quotaFetchLatency = Symbol('stanza.quota.fetch_latency')
-const quotaValidateOk = Symbol('stanza.quota.validate_ok')
-const quotaValidateFailed = Symbol('stanza.quota.validate_failed')
-const quotaValidateLatency = Symbol('stanza.quota.validate_latency')
+const quotaFetchSuccess = Symbol('stanza.quota.fetch.success')
+const quotaFetchFailure = Symbol('stanza.quota.fetch.failure')
+const quotaFetchDuration = Symbol('stanza.quota.fetch.duration')
+const quotaValidateSuccess = Symbol('stanza.quota.token.validate.success')
+const quotaValidateFailure = Symbol('stanza.quota.token.validate.failure')
+const quotaValidateDuration = Symbol('stanza.quota.token.validate.duration')
 
-const telemetrySendOk = Symbol('stanza.telemetry.send_ok')
-const telemetrySendFailed = Symbol('stanza.telemetry.send_failed')
+const telemetrySendSuccess = Symbol('stanza.telemetry.success')
+const telemetrySendFailure = Symbol('stanza.telemetry.failure')
 
-const authTokenInvalid = Symbol('stanza.auth.token_invalid')
+const authTokenInvalid = Symbol('stanza.auth.token.invalid')
 
 const internalQuotaSucceeded = Symbol('stanza.internal.quota.succeeded')
 const internalQuotaFailed = Symbol('stanza.internal.quota.failed')
@@ -43,36 +43,36 @@ const eventBusEvents = {
       enabled: internalQuotaEnabled
     }
   },
-  request: {
-    allowed: requestAllowedEvent,
-    blocked: requestBlockedEvent,
-    failed: requestFailedEvent,
-    succeeded: requestSucceededEvent,
-    latency: requestLatencyEvent
+  guard: {
+    allowed: guardAllowed,
+    blocked: guardBlocked,
+    failed: guardAllowedFailure,
+    succeeded: guardAllowedSuccess,
+    duration: guardAllowedDuration
   },
   config: {
     service: {
-      fetchOk: configServiceFetchOk,
-      fetchFailed: configServiceFetchFailed,
-      fetchLatency: configServiceFetchLatency
+      fetchOk: configServiceFetchSuccess,
+      fetchFailed: configServiceFetchFailure,
+      fetchDuration: configServiceFetchDuration
     },
     guard: {
-      fetchOk: configGuardFetchOk,
-      fetchFailed: configGuardFetchFailed,
-      fetchLatency: configGuardrFetchLatency
+      fetchOk: configGuardFetchSuccess,
+      fetchFailed: configGuardFetchFailure,
+      fetchDuration: configGuardFetchDuration
     }
   },
   quota: {
-    fetchOk: quotaFetchOk,
-    fetchFailed: quotaFetchFailed,
-    fetchLatency: quotaFetchLatency,
-    validateOk: quotaValidateOk,
-    validateFailed: quotaValidateFailed,
-    validateLatency: quotaValidateLatency
+    fetchOk: quotaFetchSuccess,
+    fetchFailed: quotaFetchFailure,
+    fetchDuration: quotaFetchDuration,
+    validateOk: quotaValidateSuccess,
+    validateFailed: quotaValidateFailure,
+    validateDuration: quotaValidateDuration
   },
   telemetry: {
-    sendOk: telemetrySendOk,
-    sendFailed: telemetrySendFailed
+    sendOk: telemetrySendSuccess,
+    sendFailed: telemetrySendFailure
   },
   auth: {
     tokenInvalid: authTokenInvalid
@@ -98,12 +98,13 @@ export interface FeatureData {
 
 export interface GuardData {
   guardName: string
+  parentGuardName?: string
 }
 
 export type OptionalGuardData = Partial<GuardData>
 
-export interface LatencyData {
-  latency: number
+export interface DurationData {
+  duration: number
 }
 
 type QuotaEndpoint = 'GetToken' | 'GetTokenLease' | 'SetTokenLeaseConsumed'
@@ -111,32 +112,32 @@ export interface QuotaEndpointData {
   endpoint: QuotaEndpoint
 }
 
-export type BlockedReason = 'quota' | 'system_load' | 'circuit_breaking' | 'bulkhead' | 'throttling'
+export type GuardReason = 'fail_open' | 'dark_launch' | 'quota' | 'system_load' | 'circuit_breaking' | 'bulkhead' | 'throttling'
 
-export interface BlockedReasonData {
-  reason: BlockedReason
+export interface ReasonData {
+  reason: GuardReason
 }
 
 type StanzaEventBus = EventBus<{
-  [requestAllowedEvent]: DefaultContextData & GuardData & FeatureData
-  [requestBlockedEvent]: DefaultContextData & GuardData & FeatureData & BlockedReasonData
-  [requestFailedEvent]: DefaultContextData & GuardData & FeatureData
-  [requestSucceededEvent]: DefaultContextData & GuardData & FeatureData
-  [requestLatencyEvent]: DefaultContextData & GuardData & FeatureData & LatencyData
-  [configServiceFetchOk]: DefaultContextData
-  [configServiceFetchFailed]: DefaultContextData
-  [configServiceFetchLatency]: DefaultContextData & LatencyData
-  [configGuardFetchOk]: DefaultContextData & GuardData
-  [configGuardFetchFailed]: DefaultContextData
-  [configGuardrFetchLatency]: DefaultContextData & LatencyData
-  [quotaFetchOk]: DefaultContextData & QuotaEndpointData & OptionalGuardData
-  [quotaFetchFailed]: DefaultContextData & QuotaEndpointData
-  [quotaFetchLatency]: DefaultContextData & QuotaEndpointData & LatencyData
-  [quotaValidateOk]: DefaultContextData & GuardData
-  [quotaValidateFailed]: DefaultContextData
-  [quotaValidateLatency]: DefaultContextData & LatencyData
-  [telemetrySendOk]: DefaultContextData & { oTelAddress: string }
-  [telemetrySendFailed]: DefaultContextData & { oTelAddress: string }
+  [guardAllowed]: DefaultContextData & GuardData & FeatureData & ReasonData
+  [guardBlocked]: DefaultContextData & GuardData & FeatureData & ReasonData
+  [guardAllowedFailure]: DefaultContextData & GuardData & FeatureData
+  [guardAllowedSuccess]: DefaultContextData & GuardData & FeatureData
+  [guardAllowedDuration]: DefaultContextData & GuardData & FeatureData & DurationData
+  [configServiceFetchSuccess]: DefaultContextData
+  [configServiceFetchFailure]: DefaultContextData
+  [configServiceFetchDuration]: DefaultContextData & DurationData
+  [configGuardFetchSuccess]: DefaultContextData & GuardData
+  [configGuardFetchFailure]: DefaultContextData
+  [configGuardFetchDuration]: DefaultContextData & DurationData
+  [quotaFetchSuccess]: DefaultContextData & QuotaEndpointData & OptionalGuardData
+  [quotaFetchFailure]: DefaultContextData & QuotaEndpointData
+  [quotaFetchDuration]: DefaultContextData & QuotaEndpointData & DurationData
+  [quotaValidateSuccess]: DefaultContextData & GuardData
+  [quotaValidateFailure]: DefaultContextData
+  [quotaValidateDuration]: DefaultContextData & DurationData
+  [telemetrySendSuccess]: DefaultContextData & { oTelAddress: string }
+  [telemetrySendFailure]: DefaultContextData & { oTelAddress: string }
   [authTokenInvalid]: undefined
   [internalQuotaSucceeded]: undefined
   [internalQuotaFailed]: undefined

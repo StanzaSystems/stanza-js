@@ -50,7 +50,7 @@ describe('StanzaInstrumentation', () => {
     it.each([
       {
         given: {
-          event: events.request.allowed,
+          event: events.guard.allowed,
           data: {
             guardName: 'testGuard',
             serviceName: 'testService',
@@ -59,7 +59,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.request.allowed',
+          metric: 'stanza.guard.allowed',
           data: [
             1,
             {
@@ -73,7 +73,7 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.request.blocked,
+          event: events.guard.blocked,
           data: {
             guardName: 'testGuard',
             serviceName: 'testService',
@@ -83,7 +83,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.request.blocked',
+          metric: 'stanza.guard.blocked',
           data: [
             1,
             {
@@ -98,7 +98,7 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.request.failed,
+          event: events.guard.failed,
           data: {
             guardName: 'testGuard',
             serviceName: 'testService',
@@ -107,7 +107,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.request.failed',
+          metric: 'stanza.guard.allowed.failure',
           data: [
             1,
             {
@@ -121,7 +121,7 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.request.succeeded,
+          event: events.guard.succeeded,
           data: {
             guardName: 'testGuard',
             serviceName: 'testService',
@@ -130,7 +130,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.request.succeeded',
+          metric: 'stanza.guard.allowed.success',
           data: [
             1,
             {
@@ -144,9 +144,9 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.request.latency,
+          event: events.guard.duration,
           data: {
-            latency: 123.456,
+            duration: 123.456,
             guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
@@ -154,7 +154,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.request.latency',
+          metric: 'stanza.guard.allowed.duration',
           data: [
             123.456,
             {
@@ -191,7 +191,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.config.service.fetch_ok',
+          metric: 'stanza.config.service.fetch.success',
           data: [
             1,
             {
@@ -212,7 +212,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.config.service.fetch_failed',
+          metric: 'stanza.config.service.fetch.failure',
           data: [
             1,
             {
@@ -225,16 +225,16 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.config.service.fetchLatency,
+          event: events.config.service.fetchDuration,
           data: {
-            latency: 123.456,
+            duration: 123.456,
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId'
           }
         },
         expected: {
-          metric: 'stanza.config.service.fetch_latency',
+          metric: 'stanza.config.service.fetch.duration',
           data: [
             123.456,
             {
@@ -257,7 +257,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.config.guard.fetch_ok',
+          metric: 'stanza.config.guard.fetch.success',
           data: [
             1,
             {
@@ -279,7 +279,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.config.guard.fetch_failed',
+          metric: 'stanza.config.guard.fetch.failure',
           data: [
             1,
             {
@@ -292,16 +292,16 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.config.guard.fetchLatency,
+          event: events.config.guard.fetchDuration,
           data: {
-            latency: 123.456,
+            duration: 123.456,
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId'
           }
         },
         expected: {
-          metric: 'stanza.config.guard.fetch_latency',
+          metric: 'stanza.config.guard.fetch.duration',
           data: [
             123.456,
             {
@@ -339,7 +339,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.quota.fetch_ok',
+          metric: 'stanza.quota.fetch.success',
           data: [
             1,
             {
@@ -364,7 +364,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.quota.fetch_failed',
+          metric: 'stanza.quota.fetch.failure',
           data: [
             1,
             {
@@ -378,9 +378,9 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.quota.fetchLatency,
+          event: events.quota.fetchDuration,
           data: {
-            latency: 123.456,
+            duration: 123.456,
             guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
@@ -389,7 +389,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.quota.fetch_latency',
+          metric: 'stanza.quota.fetch.duration',
           data: [
             123.456,
             {
@@ -413,7 +413,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.quota.validate_ok',
+          metric: 'stanza.quota.token.validate.success',
           data: [
             1,
             {
@@ -435,7 +435,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.quota.validate_failed',
+          metric: 'stanza.quota.token.validate.failure',
           data: [
             1,
             {
@@ -448,16 +448,16 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.quota.validateLatency,
+          event: events.quota.validateDuration,
           data: {
-            latency: 123.456,
+            duration: 123.456,
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId'
           }
         },
         expected: {
-          metric: 'stanza.quota.validate_latency',
+          metric: 'stanza.quota.token.validate.duration',
           data: [
             123.456,
             {
@@ -494,7 +494,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.telemetry.send_ok',
+          metric: 'stanza.telemetry.success',
           data: [
             1,
             {
@@ -517,7 +517,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.telemetry.send_failed',
+          metric: 'stanza.telemetry.failure',
           data: [
             1,
             {
@@ -547,7 +547,7 @@ describe('StanzaInstrumentation', () => {
     it.each([
       {
         given: {
-          event: events.request.allowed,
+          event: events.guard.allowed,
           data: {
             guardName: 'testGuard',
             serviceName: 'testService',
@@ -557,7 +557,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.request.allowed',
+          metric: 'stanza.guard.allowed',
           data: [
             1,
             {
@@ -572,7 +572,7 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.request.blocked,
+          event: events.guard.blocked,
           data: {
             guardName: 'testGuard',
             serviceName: 'testService',
@@ -583,7 +583,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.request.blocked',
+          metric: 'stanza.guard.blocked',
           data: [
             1,
             {
@@ -599,7 +599,7 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.request.failed,
+          event: events.guard.failed,
           data: {
             guardName: 'testGuard',
             serviceName: 'testService',
@@ -609,7 +609,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.request.failed',
+          metric: 'stanza.guard.allowed.failure',
           data: [
             1,
             {
@@ -624,7 +624,7 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.request.succeeded,
+          event: events.guard.succeeded,
           data: {
             guardName: 'testGuard',
             serviceName: 'testService',
@@ -634,7 +634,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.request.succeeded',
+          metric: 'stanza.guard.allowed.success',
           data: [
             1,
             {
@@ -649,9 +649,9 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.request.latency,
+          event: events.guard.duration,
           data: {
-            latency: 123.456,
+            duration: 123.456,
             guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
@@ -660,7 +660,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.request.latency',
+          metric: 'stanza.guard.allowed.duration',
           data: [
             123.456,
             {
@@ -699,7 +699,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.config.service.fetch_ok',
+          metric: 'stanza.config.service.fetch.success',
           data: [
             1,
             {
@@ -722,7 +722,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.config.service.fetch_failed',
+          metric: 'stanza.config.service.fetch.failure',
           data: [
             1,
             {
@@ -736,9 +736,9 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.config.service.fetchLatency,
+          event: events.config.service.fetchDuration,
           data: {
-            latency: 123.456,
+            duration: 123.456,
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -746,7 +746,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.config.service.fetch_latency',
+          metric: 'stanza.config.service.fetch.duration',
           data: [
             123.456,
             {
@@ -771,7 +771,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.config.guard.fetch_ok',
+          metric: 'stanza.config.guard.fetch.success',
           data: [
             1,
             {
@@ -795,7 +795,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.config.guard.fetch_failed',
+          metric: 'stanza.config.guard.fetch.failure',
           data: [
             1,
             {
@@ -809,9 +809,9 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.config.guard.fetchLatency,
+          event: events.config.guard.fetchDuration,
           data: {
-            latency: 123.456,
+            duration: 123.456,
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -819,7 +819,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.config.guard.fetch_latency',
+          metric: 'stanza.config.guard.fetch.duration',
           data: [
             123.456,
             {
@@ -859,7 +859,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.quota.fetch_ok',
+          metric: 'stanza.quota.fetch.success',
           data: [
             1,
             {
@@ -886,7 +886,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.quota.fetch_failed',
+          metric: 'stanza.quota.fetch.failure',
           data: [
             1,
             {
@@ -901,9 +901,9 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.quota.fetchLatency,
+          event: events.quota.fetchDuration,
           data: {
-            latency: 123.456,
+            duration: 123.456,
             guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
@@ -913,7 +913,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.quota.fetch_latency',
+          metric: 'stanza.quota.fetch.duration',
           data: [
             123.456,
             {
@@ -939,7 +939,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.quota.validate_ok',
+          metric: 'stanza.quota.token.validate.success',
           data: [
             1,
             {
@@ -963,7 +963,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.quota.validate_failed',
+          metric: 'stanza.quota.token.validate.failure',
           data: [
             1,
             {
@@ -977,9 +977,9 @@ describe('StanzaInstrumentation', () => {
       },
       {
         given: {
-          event: events.quota.validateLatency,
+          event: events.quota.validateDuration,
           data: {
-            latency: 123.456,
+            duration: 123.456,
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
@@ -987,7 +987,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.quota.validate_latency',
+          metric: 'stanza.quota.token.validate.duration',
           data: [
             123.456,
             {
@@ -1026,7 +1026,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.telemetry.send_ok',
+          metric: 'stanza.telemetry.success',
           data: [
             1,
             {
@@ -1051,7 +1051,7 @@ describe('StanzaInstrumentation', () => {
           }
         },
         expected: {
-          metric: 'stanza.telemetry.send_failed',
+          metric: 'stanza.telemetry.failure',
           data: [
             1,
             {
