@@ -3,7 +3,7 @@ import React from 'react'
 import { AiOutlineShoppingCart } from 'react-icons/ai'
 import { useShoppingCart } from 'use-shopping-cart'
 import CartSummary from './CartSummary'
-import StanzaComponent from './StanzaComponent'
+import { WithStanzaFeature } from '@getstanza/react'
 
 const CartButton = () => {
   const { cartCount = 0 } = useShoppingCart()
@@ -17,13 +17,12 @@ const CartButton = () => {
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content className="PopoverContent" sideOffset={5} align="end">
-          <StanzaComponent
-            contextName="main"
-            featureName="checkout"
-            removedFallback={({ message }) => <p style={{ color: 'red' }}>Error: {message}</p>}
+          <WithStanzaFeature
+            name="checkout"
+            fallback={({ message }) => <p style={{ color: 'red' }}>Error: {message}</p>}
           >
             <CartSummary/>
-          </StanzaComponent>
+          </WithStanzaFeature>
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>

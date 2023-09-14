@@ -1,11 +1,8 @@
-import { ActionCode } from '@getstanza/browser'
-import { useStanzaContext } from '@getstanza/react'
+import { WithStanzaFeature } from '@getstanza/react'
 import React, { type ChangeEvent, type FormEvent, useCallback, useState } from 'react'
-import StanzaComponent from './StanzaComponent'
 
 const SearchBar = ({ onSearch = () => {} }: { onSearch?: (searchValue: string) => void }) => {
   const [searchValue, setSearchValue] = useState('')
-  const stanzaContext = useStanzaContext('main')
 
   const updateSearchValue = useCallback((evt: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(evt.target.value ?? '')
@@ -20,25 +17,25 @@ const SearchBar = ({ onSearch = () => {} }: { onSearch?: (searchValue: string) =
   return <form style={{ display: 'flex', gap: '1rem' }} onSubmit={(evt) => {
     handleSearch(evt, searchValue)
   }} name="searchForm" autoComplete="off">
-    <StanzaComponent
-      contextName="main"
-      featureName="search"
-    >
-      <input
-        style={{ flexBasis: '75%' }}
+    <WithStanzaFeature name="search">
+      { ({ disabled, message }) => (<>
+        <input
+        style={ { flexBasis: '75%' } }
         type="text"
         name="searchProducts"
-        value={searchValue}
-        onInput={updateSearchValue}
-        disabled={stanzaContext?.features.search.code !== ActionCode.ENABLED}
-        placeholder={stanzaContext?.features.search.message ?? 'Search products...'}
+        value={ searchValue }
+        onInput={ updateSearchValue }
+        disabled={ disabled }
+        placeholder={ disabled ? message : 'Search products...' }
       />
-      <button
-        style={{ flexBasis: '25%' }}
-        className="elements-style-background"
-        disabled={stanzaContext?.features.search.code !== ActionCode.ENABLED}
-      >Search</button>
-    </StanzaComponent>
+        <button
+          style={ { flexBasis: '25%' } }
+          className="elements-style-background"
+          disabled={ disabled }
+        >Search
+        </button>
+      </>) }
+    </WithStanzaFeature>
   </form>
 }
 

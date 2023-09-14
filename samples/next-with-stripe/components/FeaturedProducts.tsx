@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { type Product } from '../data/product'
 import Products from './Products'
-import StanzaComponent from './StanzaComponent'
+import { WithStanzaFeature } from '@getstanza/react'
 
 const FeaturedProducts = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
@@ -15,12 +15,12 @@ const FeaturedProducts = () => {
       .then(data => { setFeaturedProducts(data) })
       .catch(() => {})
   }, [])
-  return <StanzaComponent contextName="main" featureName="featured" removedFallback={({ message }) => (
+  return <WithStanzaFeature name="featured" fallback={({ message }) => (
     <p style={{ color: 'red' }}>{message}</p>
   )}>
     <h2 className="section-title">Stanza&apos;s Kid Picks!</h2>
     <Products products={featuredProducts}/>
-  </StanzaComponent>
+  </WithStanzaFeature>
 }
 
 export default FeaturedProducts
