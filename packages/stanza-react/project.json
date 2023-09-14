@@ -21,7 +21,7 @@
       }
     },
     "publish": {
-      "command": "node tools/scripts/publish.mjs next {args.ver} {args.tag}",
+      "command": "node tools/scripts/publish.mjs stanza-react {args.ver} {args.tag}",
       "dependsOn": ["build"]
     },
     "lint": {
