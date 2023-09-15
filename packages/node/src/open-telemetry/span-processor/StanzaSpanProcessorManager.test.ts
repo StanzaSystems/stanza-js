@@ -126,7 +126,7 @@ describe('StanzaSpanProcessorManager', function () {
     it('should return service processor if service config is initialized', function () {
       const manager = new StanzaSpanProcessorManager()
 
-      serviceListener(mockServiceConfig)
+      serviceListener({ initialized: true, data: mockServiceConfig })
 
       const spanProcessor = manager.getSpanProcessor(ROOT_CONTEXT)
       expect(spanProcessor).toBeInstanceOf(BatchSpanProcessor)
@@ -170,7 +170,7 @@ describe('StanzaSpanProcessorManager', function () {
         paramSampleConfig: []
       })))
 
-      serviceListener(secondMockServiceConfig)
+      serviceListener({ initialized: true, data: secondMockServiceConfig })
 
       const spanProcessor2 = manager.getSpanProcessor(ROOT_CONTEXT)
       expect(spanProcessor2).toBeInstanceOf(BatchSpanProcessor)
@@ -194,7 +194,7 @@ describe('StanzaSpanProcessorManager', function () {
     it('should return service processor if service config is initialized', function () {
       const manager = new StanzaSpanProcessorManager()
 
-      serviceListener(mockServiceConfig)
+      serviceListener({ initialized: true, data: mockServiceConfig })
 
       const spanProcessor = manager.getSpanProcessor(ROOT_CONTEXT.setValue(stanzaGuardContextKey, 'myGuard'))
       expect(spanProcessor).toBeInstanceOf(BatchSpanProcessor)

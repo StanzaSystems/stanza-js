@@ -19,8 +19,8 @@ export class StanzaMetricExporter implements PushMetricExporter {
     if (serviceConfig !== undefined && authToken !== undefined) {
       this.updateExporter(serviceConfig, authToken)
     }
-    addServiceConfigListener((config) => {
-      serviceConfig = config
+    addServiceConfigListener((state) => {
+      serviceConfig = state.initialized ? state.data : undefined
       if (serviceConfig !== undefined && authToken !== undefined) {
         this.updateExporter(serviceConfig, authToken)
       }

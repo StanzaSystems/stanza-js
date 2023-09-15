@@ -7,6 +7,7 @@ import { type GuardConfig } from '../hub/model'
 import { stanzaGuard } from './stanzaGuard'
 import { eventBus, events } from '../global/eventBus'
 import type * as getQuotaModule from '../quota/getQuota'
+import { updateServiceConfig } from '../global/serviceConfig'
 type GetQuotaModule = typeof getQuotaModule
 
 const mockMessageBusEmit = vi.spyOn(eventBus, 'emit')
@@ -43,6 +44,7 @@ const getQuotaMock = Object.assign(
 
 beforeEach(() => {
   updateGuardConfig('testGuard', undefined as any)
+  updateServiceConfig(undefined)
 
   mockMessageBusEmit.mockReset()
 

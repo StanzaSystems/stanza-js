@@ -64,7 +64,7 @@ describe('StanzaSamplerManager', function () {
     it('should return service sampler if service config is initialized', function () {
       const manager = new StanzaSamplerManager()
 
-      serviceListener(mockServiceConfig)
+      serviceListener({ initialized: true, data: mockServiceConfig })
 
       const sampler = manager.getSampler(ROOT_CONTEXT)
       expect(sampler).toEqual(new TraceIdRatioBasedSampler(1))
@@ -87,7 +87,7 @@ describe('StanzaSamplerManager', function () {
       const sampler1 = manager.getSampler(ROOT_CONTEXT)
       expect(sampler1).toEqual(new TraceIdRatioBasedSampler(1))
 
-      serviceListener(secondMockServiceConfig)
+      serviceListener({ initialized: true, data: secondMockServiceConfig })
 
       const sampler2 = manager.getSampler(ROOT_CONTEXT)
       expect(sampler2).toEqual(new TraceIdRatioBasedSampler(0.9))
@@ -104,7 +104,7 @@ describe('StanzaSamplerManager', function () {
     it('should return service processor if service config is initialized', function () {
       const manager = new StanzaSamplerManager()
 
-      serviceListener(mockServiceConfig)
+      serviceListener({ initialized: true, data: mockServiceConfig })
 
       const sampler = manager.getSampler(ROOT_CONTEXT.setValue(stanzaGuardContextKey, 'myGuard'))
       expect(sampler).toEqual(new TraceIdRatioBasedSampler(1))
