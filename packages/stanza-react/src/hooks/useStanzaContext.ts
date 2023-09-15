@@ -5,7 +5,7 @@ import { StanzaContextName } from '../context/StanzaContextName'
 
 export const useStanzaContext = (contextName?: string): StanzaContext | undefined => {
   const providedContextName = useContext(StanzaContextName)
-  const [state, setState] = useState<StanzaContext | undefined>(undefined)
+  const [state, setState] = useState<StanzaContext | undefined>()
   const stanzaInstance = useContext(StanzaReactContext)
 
   if (stanzaInstance === undefined) {
