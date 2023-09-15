@@ -1,4 +1,3 @@
-import { ActionCode } from '@getstanza/browser'
 import type React from 'react'
 import { useStanzaContext } from '../hooks/useStanzaContext'
 
@@ -17,7 +16,6 @@ export function WithStanzaFeature (props: { children: React.ReactNode, name: str
 export function WithStanzaFeature ({ children, name, fallback }: WithStanzaFeatureProps): React.ReactNode {
   const stanzaContext = useStanzaContext()
   const feature = stanzaContext?.features[name]
-  const contextCode = feature?.code ?? ActionCode.ENABLED
 
   const { renderChildren, renderFallback } = (typeof children === 'function'
     ? {
@@ -30,7 +28,7 @@ export function WithStanzaFeature ({ children, name, fallback }: WithStanzaFeatu
       }) satisfies { renderChildren: RenderChildrenFn, renderFallback: FallbackFn }
 
   const message = feature?.message ?? ''
-  return contextCode === ActionCode.ENABLED
+  return feature?.disabled !== true
     ? renderChildren({ message, disabled: false })
     : renderFallback({ message })
 }

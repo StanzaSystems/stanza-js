@@ -10,10 +10,18 @@ const CartButton = () => {
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
-        <button className="IconButton checkout-style-background badge-container icon-button" aria-label="Update dimensions">
-          <AiOutlineShoppingCart/>
-          {cartCount > 0 ? <div className="badge">{cartCount}</div> : undefined}
-        </button>
+        <WithStanzaFeature
+          name="checkout"
+        >
+          {
+            ({ disabled }) => (
+              <button className="IconButton checkout-style-background badge-container icon-button" aria-label="Update dimensions" disabled={disabled}>
+                <AiOutlineShoppingCart/>
+                {cartCount > 0 ? <div className="badge">{cartCount}</div> : undefined}
+              </button>
+            )
+          }
+        </WithStanzaFeature>
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content className="PopoverContent" sideOffset={5} align="end">
