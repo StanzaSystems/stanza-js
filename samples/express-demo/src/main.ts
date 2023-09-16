@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
-import { stanzaGuard, StanzaGuardError } from '@getstanza/node'
+import { expressStanzaGuard, stanzaErrorHandler } from '@getstanza/express'
 
-import express, { type Request, type ErrorRequestHandler, type Response, type NextFunction } from 'express'
+import express, { type Request, type Response, type NextFunction } from 'express'
 import * as dotenv from 'dotenv'
 import cors from 'cors'
 
@@ -22,15 +22,13 @@ const corsOptions = {
 app.use(cors(corsOptions))
 app.use(express.json())
 
-const gitHubGuard = (req: Request, res: Response, next: NextFunction) => {
+const gitHubGuard = expressStanzaGuard({ guard: 'github_guard' }, function (req) {
   const plan = req.get('x-user-plan')
   const priorityBoost = (plan === 'free') ? -1 : (plan === 'enterprise') ? 1 : 0
-  console.log(`plan ${plan} boost ${priorityBoost}`)
-  void stanzaGuard({
-    guard: 'github_guard',
+  return {
     priorityBoost
-  }).call(next).catch(next)
-}
+  }
+})
 
 app.get('/account/:username', gitHubGuard, async (req: Request, res: Response, next: NextFunction) => {
   const { username } = req.params
@@ -49,13 +47,7 @@ app.get('/account/:username', gitHubGuard, async (req: Request, res: Response, n
   }
 })
 
-app.use(((err, req, res, next) => {
-  if (err instanceof StanzaGuardError) {
-    res.status(429).send('Too many requests')
-  } else {
-    next(err)
-  }
-}) satisfies ErrorRequestHandler)
+app.use(stanzaErrorHandler)
 
 app.listen(3002, () => {
   console.debug('🚀 Server ready at: http://localhost:3002')
