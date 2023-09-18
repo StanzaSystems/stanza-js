@@ -1,7 +1,7 @@
 import { type FeatureState } from '@getstanza/core'
 import { describe, expect, it } from 'vitest'
 import { createContext, createFeatureFromFeatureState, createFeaturesFromFeatureState, equals, type StanzaContext } from './context'
-import { ActionCode, type StanzaFeature } from './feature'
+import { type StanzaFeature } from './feature'
 
 describe('context', () => {
   describe('createFeaturesFromFeatureState', () => {
@@ -20,35 +20,11 @@ describe('context', () => {
         lastRefreshTime: 456
       }], 100)).toEqual([{
         name: 'aFeature',
-        code: ActionCode.ENABLED,
+        disabled: false,
         lastRefreshTime: 123
       }, {
         name: 'anotherFeature',
-        code: ActionCode.ENABLED,
-        lastRefreshTime: 456
-      }] satisfies StanzaFeature[])
-    })
-
-    it('should create non empty features - filter invalid features', () => {
-      expect(createFeaturesFromFeatureState([{
-        featureName: 'aFeature',
-        enabledPercent: 100,
-        lastRefreshTime: 123
-      }, {
-        featureName: 'anotherFeature',
-        enabledPercent: 100,
-        lastRefreshTime: 456
-      }, {
-        featureName: 'invalidFeature',
-        enabledPercent: 90,
-        lastRefreshTime: 345
-      }], 90)).toEqual([{
-        name: 'aFeature',
-        code: ActionCode.ENABLED,
-        lastRefreshTime: 123
-      }, {
-        name: 'anotherFeature',
-        code: ActionCode.ENABLED,
+        disabled: false,
         lastRefreshTime: 456
       }] satisfies StanzaFeature[])
     })
@@ -62,7 +38,7 @@ describe('context', () => {
         lastRefreshTime: 123
       }, 100)).toEqual({
         name: 'aFeature',
-        code: ActionCode.ENABLED,
+        disabled: false,
         lastRefreshTime: 123
       } satisfies StanzaFeature)
     })
@@ -72,11 +48,10 @@ describe('context', () => {
         featureName: 'aFeature',
         enabledPercent: 90,
         lastRefreshTime: 123,
-        actionCodeEnabled: ActionCode.ENABLED,
         messageEnabled: 'messageEnabled'
       }, 80)).toEqual({
         name: 'aFeature',
-        code: ActionCode.ENABLED,
+        disabled: false,
         lastRefreshTime: 123,
         message: 'messageEnabled'
       } satisfies StanzaFeature)
@@ -87,32 +62,13 @@ describe('context', () => {
         featureName: 'aFeature',
         enabledPercent: 80,
         lastRefreshTime: 123,
-        actionCodeDisabled: ActionCode.DISABLED_VISIBLE,
         messageDisabled: 'messageDisabled'
       }, 90)).toEqual({
         name: 'aFeature',
-        code: ActionCode.DISABLED_VISIBLE,
+        disabled: true,
         lastRefreshTime: 123,
         message: 'messageDisabled'
       } satisfies StanzaFeature)
-    })
-
-    it('should return undefined if enabledPercent is larger than enablementNumber and no actionCodeEnabled is defined', () => {
-      expect(createFeatureFromFeatureState({
-        featureName: 'aFeature',
-        enabledPercent: 90,
-        lastRefreshTime: 123,
-        messageEnabled: 'messageEnabled'
-      }, 80)).toEqual(undefined)
-    })
-
-    it('should return undefined if enabledPercent is lower than enablementNumber and no actionCodeDisabled is defined', () => {
-      expect(createFeatureFromFeatureState({
-        featureName: 'aFeature',
-        enabledPercent: 80,
-        lastRefreshTime: 123,
-        messageDisabled: 'messageDisabled'
-      }, 90)).toEqual(undefined)
     })
   })
 
@@ -145,7 +101,7 @@ describe('context', () => {
         features: {
           aFeature: {
             name: 'aFeature',
-            code: ActionCode.ENABLED,
+            disabled: false,
             lastRefreshTime: 123
           }
         },
@@ -168,12 +124,12 @@ describe('context', () => {
         features: {
           aFeature: {
             name: 'aFeature',
-            code: ActionCode.ENABLED,
+            disabled: false,
             lastRefreshTime: 123
           },
           anotherFeature: {
             name: 'anotherFeature',
-            code: ActionCode.ENABLED,
+            disabled: false,
             lastRefreshTime: 456
           }
         },
@@ -196,7 +152,7 @@ describe('context', () => {
         features: {
           aFeature: {
             name: 'aFeature',
-            code: ActionCode.ENABLED,
+            disabled: false,
             lastRefreshTime: 456
           }
         },

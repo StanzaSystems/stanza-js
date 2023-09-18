@@ -1,5 +1,5 @@
 import { type FeatureState, groupBy, identity } from '@getstanza/core'
-import { ActionCode, type StanzaFeature } from './feature'
+import { type StanzaFeature } from './feature'
 
 export interface StanzaContext {
   readonly name: string
@@ -45,8 +45,6 @@ export function createFeaturesFromFeatureState (featureResponse: FeatureState[],
 }
 
 export function createFeatureFromFeatureState ({
-  actionCodeEnabled,
-  actionCodeDisabled,
   enabledPercent,
   featureName,
   messageEnabled,
@@ -55,37 +53,28 @@ export function createFeatureFromFeatureState ({
 }: FeatureState, enablementNumber: number): StanzaFeature | undefined {
   if (enabledPercent >= 100) {
     return ({
-      code: ActionCode.ENABLED,
       name: featureName,
+      disabled: false,
+      message: messageEnabled,
       lastRefreshTime
     })
   } else if (
     // if the enabled percent is less than this context's enablement number, this feature is enabled
     enabledPercent > enablementNumber
   ) {
-    if (actionCodeEnabled === undefined || ActionCode[actionCodeEnabled] === undefined) {
-      console.log(`feature ${featureName} has an unknown or invalid enabled action code ${actionCodeEnabled}. Stanza fails open.`)
-      return undefined
-    } else {
-      return ({
-        name: featureName,
-        code: actionCodeEnabled,
-        message: messageEnabled,
-        lastRefreshTime
-      })
-    }
+    return ({
+      name: featureName,
+      disabled: false,
+      message: messageEnabled,
+      lastRefreshTime
+    })
   } else {
     /// if not use values for a disabled feature
-    if (actionCodeDisabled === undefined || ActionCode[actionCodeDisabled] === undefined) {
-      console.log(`feature ${featureName} has an unknown or invalid disabled action code ${actionCodeDisabled}. Stanza fails open.`)
-      return undefined
-    } else {
-      return ({
-        name: featureName,
-        code: actionCodeDisabled,
-        message: messageDisabled,
-        lastRefreshTime
-      })
-    }
+    return ({
+      name: featureName,
+      disabled: true,
+      message: messageDisabled,
+      lastRefreshTime
+    })
   }
 }

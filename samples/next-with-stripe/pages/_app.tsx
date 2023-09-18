@@ -1,4 +1,8 @@
-import { createStanzaInstance, StanzaProvider } from '@getstanza/react'
+import {
+  createStanzaInstance,
+  StanzaProvider,
+  WithStanzaContextName
+} from '@getstanza/react'
 import { type AppProps } from 'next/app'
 import React from 'react'
 import Layout from '../components/Layout'
@@ -14,18 +18,23 @@ if (process.env.NODE_ENV === 'development') {
   loadPromise = Promise.resolve()
 }
 
-const stanzaInstance = createStanzaInstance({ ...config, pollDelay: loadPromise })
+const stanzaInstance = createStanzaInstance({
+  ...config,
+  pollDelay: loadPromise
+})
 
 function MyApp ({ Component, pageProps }: AppProps) {
   return (
     <StanzaProvider instance={stanzaInstance}>
-      <StripeCartProvider>
-        <Layout title="Stanza Toy Store">
-          <div className="page-container">
-            <Component {...pageProps} />
-          </div>
-        </Layout>
-      </StripeCartProvider>
+      <WithStanzaContextName name="main">
+        <StripeCartProvider>
+          <Layout title="Stanza Toy Store">
+            <div className="page-container">
+              <Component {...pageProps} />
+            </div>
+          </Layout>
+        </StripeCartProvider>
+      </WithStanzaContextName>
     </StanzaProvider>
   )
 }
