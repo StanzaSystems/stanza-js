@@ -32,16 +32,81 @@ const gitHubGuard = (req: Request, res: Response, next: NextFunction) => {
   }).call(next).catch(next)
 }
 
+const gitHubGuard2 = (req: Request, res: Response, next: NextFunction) => {
+  const plan = req.get('x-user-plan')
+  const priorityBoost = (plan === 'free') ? -1 : (plan === 'enterprise') ? 1 : 0
+  console.log(`plan ${plan} boost ${priorityBoost}`)
+  void stanzaGuard({
+    feature: 'search',
+    guard: 'github_guard',
+    priorityBoost
+  }).call(next).catch(next)
+}
+
+const gitHubGuard3 = (req: Request, res: Response, next: NextFunction) => {
+  const plan = req.get('x-user-plan')
+  const priorityBoost = (plan === 'free') ? -1 : (plan === 'enterprise') ? 1 : 0
+  console.log(`plan ${plan} boost ${priorityBoost}`)
+  void stanzaGuard({
+    feature: 'checkout',
+    guard: 'github_guard',
+    priorityBoost
+  }).call(next).catch(next)
+}
+
 app.get('/account/:username', gitHubGuard, async (req: Request, res: Response, next: NextFunction) => {
   const { username } = req.params
   try {
-    const userResponse = await fetch(`https://api.github.com/users/${username}`, {
-      headers: {
-        Authorization: `Bearer ${process.env.GITHUB_PAT}`
-      }
-    })
+    // const userResponse = await fetch(`https://api.github.com/users/${username}`, {
+    //   headers: {
+    //     Authorization: `Bearer ${process.env.GITHUB_PAT}`
+    //   }
+    // })
+    //
+    // const user = await userResponse.json()
+    const user = {
+      login: username
+    }
+    res.status(200).send(user)
+  } catch (e) {
+    res.status(500)
+    next()
+  }
+})
 
-    const user = await userResponse.json()
+app.get('/account2/:username', gitHubGuard2, async (req: Request, res: Response, next: NextFunction) => {
+  const { username } = req.params
+  try {
+    // const userResponse = await fetch(`https://api.github.com/users/${username}`, {
+    //   headers: {
+    //     Authorization: `Bearer ${process.env.GITHUB_PAT}`
+    //   }
+    // })
+    //
+    // const user = await userResponse.json()
+    const user = {
+      login: username
+    }
+    res.status(200).send(user)
+  } catch (e) {
+    res.status(500)
+    next()
+  }
+})
+
+app.get('/account3/:username', gitHubGuard3, async (req: Request, res: Response, next: NextFunction) => {
+  const { username } = req.params
+  try {
+    // const userResponse = await fetch(`https://api.github.com/users/${username}`, {
+    //   headers: {
+    //     Authorization: `Bearer ${process.env.GITHUB_PAT}`
+    //   }
+    // })
+    //
+    // const user = await userResponse.json()
+    const user = {
+      login: username
+    }
     res.status(200).send(user)
   } catch (e) {
     res.status(500)
