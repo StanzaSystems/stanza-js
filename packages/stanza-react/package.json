@@ -1,13 +1,13 @@
 {
   "name": "@getstanza/react",
-  "version": "0.0.3-beta",
+  "version": "0.0.4-beta",
   "type": "commonjs",
   "description": "Stanza React components",
   "author": "Stanza",
   "license": "Apache-2.0",
   "dependencies": {
-    "@getstanza/browser": "0.0.3-beta",
-    "@getstanza/core": "0.0.3-beta",
+    "@getstanza/browser": "0.0.4-beta",
+    "@getstanza/core": "0.0.4-beta",
     "react": "18.2.0"
   },
   "devDependencies": {
