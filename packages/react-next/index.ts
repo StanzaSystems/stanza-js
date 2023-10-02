@@ -1,4 +1,2 @@
-/* eslint-disable */
-"use-client";
-
+'use client'
 export * from './src'

@@ -1,11 +1,5 @@
-import { config } from '../stanzaConfig'
-import { createStanzaInstance } from '@getstanza/react'
-import { StanzaProvider, WithStanzaContextName } from '@getstanza/react-next'
-
-const stanzaInstance = createStanzaInstance({
-  ...config
-  // pollDelay: loadPromise
-})
+import { WithStanzaContextName } from '@getstanza/react-next'
+import Foo from './foo'
 
 export default function RootLayout ({
   children
@@ -15,11 +9,13 @@ export default function RootLayout ({
   return (
     <html lang="en">
     <body>
-    <StanzaProvider instance={ stanzaInstance }>
+    <Foo>
+    {/* <StanzaProvider instance={ stanzaInstance }> */}
       <WithStanzaContextName name="main">
         { children }
       </WithStanzaContextName>
-    </StanzaProvider>
+    {/* </StanzaProvider> */}
+    </Foo>
     </body>
     </html>
   )
