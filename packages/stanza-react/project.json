@@ -17,7 +17,8 @@
         "compiler": "babel",
         "format": ["esm", "cjs"],
         "external": "all",
-        "updateBuildableProjectDepsInPackageJson": false
+        "updateBuildableProjectDepsInPackageJson": false,
+        "rollupConfig": "packages/stanza-react/rollup.config.js"
       }
     },
     "publish": {

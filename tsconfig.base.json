@@ -15,7 +15,10 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "allowSyntheticDefaultImports": true,
@@ -23,16 +26,40 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@getstanza/browser": ["packages/browser/index.ts"],
-      "@getstanza/core": ["packages/core/index.ts"],
-      "@getstanza/mocks-browser": ["packages/mocks/browser/src/index.ts"],
-      "@getstanza/mocks-handlers": ["packages/mocks/handlers/src/index.ts"],
-      "@getstanza/mocks-server": ["packages/mocks/server/src/index.ts"],
-      "@getstanza/next": ["packages/next/index.ts"],
-      "@getstanza/next-node": ["packages/next-node/index.ts"],
-      "@getstanza/node": ["packages/node/index.ts"],
-      "@getstanza/react": ["packages/stanza-react/index.ts"]
+      "@getstanza/browser": [
+        "packages/browser/index.ts"
+      ],
+      "@getstanza/core": [
+        "packages/core/index.ts"
+      ],
+      "@getstanza/mocks-browser": [
+        "packages/mocks/browser/src/index.ts"
+      ],
+      "@getstanza/mocks-handlers": [
+        "packages/mocks/handlers/src/index.ts"
+      ],
+      "@getstanza/mocks-server": [
+        "packages/mocks/server/src/index.ts"
+      ],
+      "@getstanza/next": [
+        "packages/next/index.ts"
+      ],
+      "@getstanza/next-node": [
+        "packages/next-node/index.ts"
+      ],
+      "@getstanza/node": [
+        "packages/node/index.ts"
+      ],
+      "@getstanza/react": [
+        "packages/stanza-react/index.ts"
+      ],
+      "@getstanza/react-next": [
+        "packages/react-next/index.ts"
+      ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

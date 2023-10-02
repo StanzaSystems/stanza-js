@@ -1,0 +1,54 @@
+{
+  "name": "react-next",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/react-next",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/packages/react-next",
+        "main": "packages/react-next/index.ts",
+        "tsConfig": "packages/react-next/tsconfig.lib.json",
+        "assets": ["packages/react-next/README.md"],
+        "project": "packages/react-next/package.json",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "external": "all",
+        "updateBuildableProjectDepsInPackageJson": false,
+        "rollupConfig": "packages/react-next/rollup.config.js"
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs react-next {args.ver} {args.tag}",
+      "dependsOn": [
+        "build"
+      ]
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "packages/react-next/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": [
+        "coverage/packages/react-next"
+      ],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/react-next"
+      }
+    }
+  },
+  "tags": []
+}

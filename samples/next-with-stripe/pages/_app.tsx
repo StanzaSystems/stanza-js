@@ -10,6 +10,7 @@ import StripeCartProvider from '../components/StripeCartProvider'
 import { config } from '../stanzaConfig'
 
 import '../styles.css'
+import Link from 'next/link'
 
 let loadPromise: Promise<any> = Promise.resolve()
 if (process.env.NODE_ENV === 'development') {
@@ -30,6 +31,7 @@ function MyApp ({ Component, pageProps }: AppProps) {
         <StripeCartProvider>
           <Layout title="Stanza Toy Store">
             <div className="page-container">
+              <Link href={'/test'}>Test Page</Link>
               <Component {...pageProps} />
             </div>
           </Layout>
