@@ -1,6 +1,6 @@
 import { StanzaBrowser } from '@getstanza/browser'
 import { type StanzaCoreConfig } from '@getstanza/core'
-import { type StanzaInstance } from '@getstanza/react-next'
+import { type StanzaInstance } from './stanzaInstance'
 
 export type StanzaConfig = StanzaCoreConfig
 

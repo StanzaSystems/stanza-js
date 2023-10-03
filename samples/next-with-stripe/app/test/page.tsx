@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { WithStanzaFeature } from '@getstanza/react-next'
+import { WithStanzaFeature } from '@getstanza/react'
 
 const TestPage = () => {
   return <div>

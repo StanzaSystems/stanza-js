@@ -17,8 +17,7 @@
         "compiler": "babel",
         "format": ["esm", "cjs"],
         "external": "all",
-        "updateBuildableProjectDepsInPackageJson": false,
-        "rollupConfig": "packages/react-next/rollup.config.js"
+        "updateBuildableProjectDepsInPackageJson": false
       }
     },
     "publish": {

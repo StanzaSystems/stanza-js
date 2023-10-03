@@ -1,5 +1,9 @@
-import { WithStanzaContextName } from '@getstanza/react-next'
-import Foo from './foo'
+import { WithStanzaContextName } from '@getstanza/react'
+import WithStanza from './withStanza'
+import { initStanza } from '@getstanza/react-next'
+import { config } from '../stanzaConfig'
+
+initStanza(config)
 
 export default function RootLayout ({
   children
@@ -9,13 +13,13 @@ export default function RootLayout ({
   return (
     <html lang="en">
     <body>
-    <Foo>
+     <WithStanza>
     {/* <StanzaProvider instance={ stanzaInstance }> */}
       <WithStanzaContextName name="main">
         { children }
       </WithStanzaContextName>
     {/* </StanzaProvider> */}
-    </Foo>
+     </WithStanza>
     </body>
     </html>
   )

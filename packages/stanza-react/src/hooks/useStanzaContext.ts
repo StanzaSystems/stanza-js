@@ -2,13 +2,17 @@ import { getContextStale, type StanzaContext } from '@getstanza/browser'
 import { useContext, useEffect, useState } from 'react'
 import { StanzaReactContext } from '../context/StanzaContext'
 import { StanzaContextName } from '../context/StanzaContextName'
+import { useStanzaContextChanges } from './useStanzaContextChanges'
 
 export const useStanzaContext = (contextName?: string): StanzaContext | undefined => {
   const providedContextName = useContext(StanzaContextName)
   const [state, setState] = useState<StanzaContext | undefined>()
   const stanzaInstance = useContext(StanzaReactContext)
+  const stanzaContextChanges = useStanzaContextChanges()
 
-  if (stanzaInstance === undefined) {
+  const contextChanges = stanzaInstance?.contextChanges ?? stanzaContextChanges
+
+  if (contextChanges === undefined) {
     throw Error('Component needs to be wrapped with StanzaProvider')
   }
 
@@ -24,12 +28,12 @@ export const useStanzaContext = (contextName?: string): StanzaContext | undefine
   }, [state, resultContextName])
 
   useEffect(() => {
-    return stanzaInstance.contextChanges.addChangeListener(async (context) => {
+    return contextChanges.addChangeListener(async (context) => {
       if (context.name === resultContextName) {
         setState(context)
       }
     })
-  }, [stanzaInstance, resultContextName])
+  }, [contextChanges, resultContextName])
 
   return state
 }
