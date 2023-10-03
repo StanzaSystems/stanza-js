@@ -1,4 +1,3 @@
-'use-client'
 import React from 'react'
 import { type StanzaInstance } from '../stanzaInstance'
 import { StanzaReactContext } from './StanzaContext'

@@ -1,4 +1,3 @@
-'use-client'
 import { createContext } from 'react'
 import { type StanzaInstance } from '../stanzaInstance'
 

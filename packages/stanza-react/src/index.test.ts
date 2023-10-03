@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { createStanzaInstance } from './index'
+import { useStanzaContext } from './index'
 
 describe('index', () => {
-  it('createStanzaInstance is exported', () => {
-    expect(createStanzaInstance).toBeDefined()
+  it('useStanzaContext is exported', () => {
+    expect(useStanzaContext).toBeDefined()
   })
 })
