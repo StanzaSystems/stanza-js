@@ -1,15 +1,17 @@
-import { useRouter } from 'next/router'
+'use client'
 import React, { useCallback, useEffect, useState } from 'react'
-import Products from '../components/Products'
-import SearchBar from '../components/SearchBar'
-import { type Product } from '../data/product'
+import Products from '../../components/Products'
+import SearchBar from '../../components/SearchBar'
+import { type Product } from '../../data/product'
+import { useSearchParams, useRouter } from 'next/navigation'
 
-const SearchPage = () => {
+const SearchPageComponent = () => {
   const router = useRouter()
-  const searchString = router.query.text?.toString() ?? ''
+  const searchParams = useSearchParams()
+  const searchString = searchParams?.get('text') ?? ''
   const handleSearch = useCallback((searchValue: string) => {
-    void router.push(`search?text=${searchValue}`)
-  }, [])
+    router.push(`search?text=${searchValue}`)
+  }, [router])
 
   const [products, setProducts] = useState<Product[]>([])
   useEffect(() => {
@@ -29,4 +31,4 @@ const SearchPage = () => {
   </>)
 }
 
-export default SearchPage
+export default SearchPageComponent
