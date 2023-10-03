@@ -52,9 +52,6 @@
       ],
       "@getstanza/react": [
         "packages/stanza-react/index.ts"
-      ],
-      "@getstanza/react-next": [
-        "packages/react-next/index.ts"
       ]
     }
   },
