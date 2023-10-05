@@ -1,4 +1,4 @@
-import type { StanzaCoreConfig } from '@getstanza/core'
+import type { StanzaCoreConfig } from '@getstanza/browser'
 
 const stanzaKey = import.meta.env.VITE_STANZA_BROWSER_KEY
 
