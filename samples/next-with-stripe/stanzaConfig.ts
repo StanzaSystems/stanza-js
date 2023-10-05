@@ -1,4 +1,4 @@
-import type { StanzaCoreConfig } from '@getstanza/core'
+import type { StanzaCoreConfig } from '@getstanza/browser'
 import type { init } from '@getstanza/node'
 type NodeConfig = Parameters<typeof init>[0]
 
