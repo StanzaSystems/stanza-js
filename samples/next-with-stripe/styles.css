@@ -21,17 +21,14 @@ body {
   background: linear-gradient(to bottom right, #6772e5 0%, #bd91ff 20%, white 50%);
   background-repeat: no-repeat;
   overflow-y: scroll;
+  display: flex;
+  justify-content: center;
 }
 
 * {
   box-sizing: border-box;
   font-family: var(--body-font-family);
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-
-body {
-  display: flex;
-  justify-content: center;
 }
 
 .container {
