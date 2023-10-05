@@ -2,19 +2,19 @@ import { withStanzaHeaders } from './withStanzaHeaders'
 
 describe('withStanzaHeaders', () => {
   it('should create Stanza headers without providing initial headers', () => {
-    expect(withStanzaHeaders({ feature: 'testFeature' })).toEqual({ 'stz-feat': 'testFeature' })
+    expect(withStanzaHeaders({ feature: 'testFeature' })).toEqual({ baggage: 'stz-feat=testFeature' })
   })
 
   it('should append Stanza headers if initial provided as a record', () => {
-    expect(withStanzaHeaders({ feature: 'testFeature' }, { existingHeader: 'existingHeaderValue' })).toEqual({ existingHeader: 'existingHeaderValue', 'stz-feat': 'testFeature' })
+    expect(withStanzaHeaders({ feature: 'testFeature' }, { existingHeader: 'existingHeaderValue' })).toEqual({ existingHeader: 'existingHeaderValue', baggage: 'stz-feat=testFeature' })
   })
 
   it('should append Stanza headers if initial provided as a Headers object', () => {
-    expect(withStanzaHeaders({ feature: 'testFeature' }, new Headers({ existingHeader: 'existingHeaderValue' }))).toEqual(new Headers({ existingHeader: 'existingHeaderValue', 'stz-feat': 'testFeature' }))
+    expect(withStanzaHeaders({ feature: 'testFeature' }, new Headers({ existingHeader: 'existingHeaderValue' }))).toEqual(new Headers({ existingHeader: 'existingHeaderValue', baggage: 'stz-feat=testFeature' }))
   })
 
   it('should append Stanza headers if initial provided as an array of entries', () => {
-    expect(withStanzaHeaders({ feature: 'testFeature' }, [['existingHeader', 'existingHeaderValue']])).toEqual([['existingHeader', 'existingHeaderValue'], ['stz-feat', 'testFeature']])
+    expect(withStanzaHeaders({ feature: 'testFeature' }, [['existingHeader', 'existingHeaderValue']])).toEqual([['existingHeader', 'existingHeaderValue'], ['baggage', 'stz-feat=testFeature']])
   })
 
   it('should not modify initial headers if provided as a record', () => {
