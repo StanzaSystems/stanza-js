@@ -9,27 +9,33 @@ const CartButton = () => {
   const { cartCount = 0 } = useShoppingCart()
   return (
     <Popover.Root>
-      <Popover.Trigger asChild>
-        <WithStanzaFeature
-          name="checkout"
-        >
-          {
-            ({ disabled }) => (
-              <button className="IconButton checkout-style-background badge-container icon-button" aria-label="Update dimensions" disabled={disabled}>
-                <AiOutlineShoppingCart/>
-                {cartCount > 0 ? <div className="badge">{cartCount}</div> : undefined}
-              </button>
-            )
-          }
-        </WithStanzaFeature>
-      </Popover.Trigger>
+      <WithStanzaFeature name="checkout">
+        {({ disabled }) => (
+          <Popover.Trigger asChild>
+            <button
+              className="IconButton checkout-style-background badge-container icon-button"
+              aria-label="Update dimensions"
+              disabled={disabled}
+            >
+              <AiOutlineShoppingCart />
+              {cartCount > 0
+                ? (
+                <div className="badge">{cartCount}</div>
+                  )
+                : undefined}
+            </button>
+          </Popover.Trigger>
+        )}
+      </WithStanzaFeature>
       <Popover.Portal>
         <Popover.Content className="PopoverContent" sideOffset={5} align="end">
           <WithStanzaFeature
             name="checkout"
-            fallback={({ message }) => <p style={{ color: 'red' }}>Error: {message}</p>}
+            fallback={({ message }) => (
+              <p style={{ color: 'red' }}>Error: {message}</p>
+            )}
           >
-            <CartSummary/>
+            <CartSummary />
           </WithStanzaFeature>
         </Popover.Content>
       </Popover.Portal>

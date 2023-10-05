@@ -1,8 +1,5 @@
 {
   "extends": ["plugin:@nx/react", "../../.eslintrc.json"],
-  "parserOptions": {
-    "project": ["packages/stanza-react/tsconfig*.json"]
-  },
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {
@@ -11,7 +8,10 @@
     },
     {
       "files": ["*.ts", "*.tsx"],
-      "rules": {}
+      "rules": {},
+      "parserOptions": {
+        "project": ["packages/stanza-react/tsconfig*.json"]
+      }
     },
     {
       "files": ["*.js", "*.jsx"],
