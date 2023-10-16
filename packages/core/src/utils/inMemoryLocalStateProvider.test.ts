@@ -13,8 +13,6 @@ describe('InMemoryLocalStateProvider', () => {
       featureName: 'secondFeature',
       lastRefreshTime: 124,
       enabledPercent: 80,
-      actionCodeDisabled: 1,
-      actionCodeEnabled: 0,
       messageDisabled: 'Message disabled',
       messageEnabled: 'Message enabled'
     },
@@ -22,7 +20,6 @@ describe('InMemoryLocalStateProvider', () => {
       featureName: 'thirdFeature',
       lastRefreshTime: 125,
       enabledPercent: 0,
-      actionCodeDisabled: 2,
       messageDisabled: 'Third feature is messed up'
     }
   } satisfies Record<string, FeatureState>
