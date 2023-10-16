@@ -38,6 +38,53 @@ describe('fetchFeatureStates', () => {
     }])
   })
 
+  it('should return list of all features enabled if API takes more than 1000ms', async () => {
+    vi.useFakeTimers({
+      now: 123
+    })
+
+    mockFetchApiFeaturesStates.mockImplementation(async () => {
+      await new Promise(() => {})
+      return []
+    })
+
+    const featureStatesCallback = vi.fn()
+
+    const featureStatesPromise = fetchFeatureStates(['feature1', 'feature2']).then(featureStatesCallback)
+    await vi.advanceTimersByTimeAsync(1000)
+    expect(featureStatesCallback).toHaveBeenCalledOnce()
+    expect(featureStatesCallback).toHaveBeenCalledWith([{
+      featureName: 'feature1',
+      enabledPercent: 100,
+      lastRefreshTime: 1123
+    }, {
+      featureName: 'feature2',
+      enabledPercent: 100,
+      lastRefreshTime: 1123
+    }])
+    await expect(featureStatesPromise).resolves.toBeUndefined()
+  })
+
+  it('should return list of all features enabled if API request fails', async () => {
+    vi.useFakeTimers({
+      now: 123
+    })
+
+    mockFetchApiFeaturesStates.mockImplementation(async () => {
+      throw new Error('kaboom')
+    })
+
+    await expect(fetchFeatureStates(['feature1', 'feature2'])).resolves.toEqual([{
+      featureName: 'feature1',
+      enabledPercent: 100,
+      lastRefreshTime: 123
+    }, {
+      featureName: 'feature2',
+      enabledPercent: 100,
+      lastRefreshTime: 123
+    }])
+  })
+
   it('should return list of all features if API returns the whole list', async () => {
     vi.useFakeTimers({
       now: 123
