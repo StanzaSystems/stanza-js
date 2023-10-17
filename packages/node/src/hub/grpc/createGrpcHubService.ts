@@ -17,6 +17,7 @@ import { STANZA_REQUEST_TIMEOUT } from '../../global/requestTimeout'
 import { logger } from '../../global/logger'
 import { AuthService } from '../../../gen/stanza/hub/v1/auth_connect'
 import { stanzaAuthTokenResponse } from '../api/stanzaAuthTokenResponse'
+import { createUserAgentHeader } from '../../utils/userAgentHeader'
 
 interface GrpcHubServiceInitOptions {
   serviceName: string
@@ -33,6 +34,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
     httpVersion: '2',
     interceptors: [(next) => async (req) => {
       req.header.set('X-Stanza-Key', apiKey)
+      req.header.set('User-Agent', createUserAgentHeader({ serviceName, serviceRelease }))
       return next(req)
     }]
   })
@@ -43,7 +45,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
   return wrapHubServiceWithMetrics(logger.wrap({
     prefix: '[gRPC Hub Service]'
   }, {
-    getServiceMetadata: () => ({ serviceName, environment, clientId }),
+    getServiceMetadata: () => ({ serviceName, serviceRelease, environment, clientId }),
     fetchServiceConfig: async (options): Promise<ServiceConfig | null> => {
       const data = await grpcRequest(async () => configClient.getServiceConfig({
         service: {

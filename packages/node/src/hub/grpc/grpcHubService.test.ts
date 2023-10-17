@@ -55,7 +55,7 @@ describe('createGrpcHubService', async () => {
   describe('getServiceMetadata', () => {
     const { getServiceMetadata } = createGrpcHubService({
       serviceName: 'TestService',
-      serviceRelease: '1',
+      serviceRelease: '1.0.0',
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
@@ -63,7 +63,7 @@ describe('createGrpcHubService', async () => {
     })
 
     it('should return service metadata', () => {
-      expect(getServiceMetadata()).toEqual({ serviceName: 'TestService', environment: 'test', clientId: 'test-client-id' })
+      expect(getServiceMetadata()).toEqual({ serviceName: 'TestService', serviceRelease: '1.0.0', environment: 'test', clientId: 'test-client-id' })
     })
   })
 
@@ -72,7 +72,7 @@ describe('createGrpcHubService', async () => {
     createPromiseClientMock.mockImplementationOnce(() => quotaClientMock)
     const { fetchServiceConfig } = createGrpcHubService({
       serviceName: 'TestService',
-      serviceRelease: '1',
+      serviceRelease: '1.0.0',
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
@@ -86,7 +86,7 @@ describe('createGrpcHubService', async () => {
 
       expect(configClientMock.getServiceConfig).toHaveBeenCalledWith(
         {
-          service: { name: 'TestService', environment: 'test', release: '1' },
+          service: { name: 'TestService', environment: 'test', release: '1.0.0' },
           versionSeen: undefined
         }
       )
@@ -100,7 +100,7 @@ describe('createGrpcHubService', async () => {
       expect(configClientMock.getServiceConfig).toHaveBeenCalledOnce()
       expect(configClientMock.getServiceConfig).toHaveBeenCalledWith(
         {
-          service: { name: 'TestService', environment: 'test', release: '1' },
+          service: { name: 'TestService', environment: 'test', release: '1.0.0' },
           versionSeen: '123'
         }
       )
@@ -196,7 +196,7 @@ describe('createGrpcHubService', async () => {
     createPromiseClientMock.mockImplementationOnce(() => quotaClientMock)
     const { fetchGuardConfig } = createGrpcHubService({
       serviceName: 'TestService',
-      serviceRelease: '1',
+      serviceRelease: '1.0.0',
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
@@ -214,7 +214,7 @@ describe('createGrpcHubService', async () => {
           selector: {
             guardName: 'test-guard',
             serviceName: 'TestService',
-            serviceRelease: '1',
+            serviceRelease: '1.0.0',
             environment: 'test'
           }
         }
@@ -233,7 +233,7 @@ describe('createGrpcHubService', async () => {
           selector: {
             guardName: 'test-guard',
             serviceName: 'TestService',
-            serviceRelease: '1',
+            serviceRelease: '1.0.0',
             environment: 'test'
           },
           versionSeen: '123'
@@ -307,7 +307,7 @@ describe('createGrpcHubService', async () => {
     createPromiseClientMock.mockImplementationOnce(() => quotaClientMock)
     const { getToken } = createGrpcHubService({
       serviceName: 'TestService',
-      serviceRelease: '1',
+      serviceRelease: '1.0.0',
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
@@ -449,7 +449,7 @@ describe('createGrpcHubService', async () => {
     createPromiseClientMock.mockImplementationOnce(() => quotaClientMock)
     const { getTokenLease } = createGrpcHubService({
       serviceName: 'TestService',
-      serviceRelease: '1',
+      serviceRelease: '1.0.0',
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
@@ -611,7 +611,7 @@ describe('createGrpcHubService', async () => {
     createPromiseClientMock.mockImplementationOnce(() => quotaClientMock)
     const { validateToken } = createGrpcHubService({
       serviceName: 'TestService',
-      serviceRelease: '1',
+      serviceRelease: '1.0.0',
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
@@ -698,7 +698,7 @@ describe('createGrpcHubService', async () => {
     createPromiseClientMock.mockImplementationOnce(() => quotaClientMock)
     const { markTokensAsConsumed } = createGrpcHubService({
       serviceName: 'TestService',
-      serviceRelease: '1',
+      serviceRelease: '1.0.0',
       environment: 'test',
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',

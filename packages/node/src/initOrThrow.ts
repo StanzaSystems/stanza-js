@@ -41,7 +41,9 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
         clientId,
         hubRequest: createHubRequest({
           hubUrl: initOptions.hubUrl,
-          apiKey: initOptions.apiKey
+          apiKey: initOptions.apiKey,
+          serviceName: initOptions.serviceName,
+          serviceRelease: initOptions.serviceRelease
         })
       })
       : createGrpcHubService({

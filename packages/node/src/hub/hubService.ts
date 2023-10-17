@@ -46,6 +46,7 @@ interface MarkTokensAsConsumedOptions {
 export interface HubService {
   getServiceMetadata: () => {
     serviceName: string
+    serviceRelease: string
     environment: string
     clientId: string
   }
