@@ -64,13 +64,11 @@ describe('features', () => {
     })
     expect(browserFeatures).toContainEqual(expect.objectContaining({
       featureName: 'productSummary',
-      enabledPercent: 100,
-      actionCodeEnabled: 0
+      enabledPercent: 100
     }))
     expect(browserFeatures).toContainEqual(expect.objectContaining({
       featureName: 'shipping',
-      enabledPercent: 0,
-      actionCodeDisabled: 1
+      enabledPercent: 0
     }))
   })
 })

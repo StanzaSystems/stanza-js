@@ -46,9 +46,7 @@ function createFeatureFromCacheObject (cached: any): FeatureState {
   return {
     featureName: cached.featureName,
     enabledPercent: cached.enabledPercent,
-    actionCodeEnabled: cached.actionCodeEnabled,
     messageEnabled: cached.messageEnabled,
-    actionCodeDisabled: cached.actionCodeDisabled,
     messageDisabled: cached.messageDisabled,
     lastRefreshTime: cached.lastRefreshTime
   }

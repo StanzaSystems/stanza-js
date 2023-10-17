@@ -9,9 +9,7 @@ const featuresStatic: ApiFeatureState[] = [
   {
     name: 'search',
     config: {
-      actionCodeEnabled: 0,
       messageEnabled: 'We are having trouble with search - please retry your request.',
-      actionCodeDisabled: 2,
       messageDisabled: 'Search is totally messed up RUNNNNN!!!!!!',
       enabledPercent: 0
     }
@@ -19,14 +17,12 @@ const featuresStatic: ApiFeatureState[] = [
   {
     name: 'featured',
     config: {
-      actionCodeDisabled: 2,
       enabledPercent: 0
     }
   },
   {
     name: 'shipping',
     config: {
-      actionCodeDisabled: 1,
       messageDisabled: 'We are unable to pre-load shipping costs right now, but if you continue your order will still process',
       enabledPercent: 0
     }
@@ -34,7 +30,6 @@ const featuresStatic: ApiFeatureState[] = [
   {
     name: 'productSummary',
     config: {
-      actionCodeEnabled: 0,
       enabledPercent: 100,
       messageEnabled: 'We are having intermittent issues loading product summaries'
     }
