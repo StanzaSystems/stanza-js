@@ -30,7 +30,7 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
     logger.level = initOptions.logLevel
   }
 
-  await addInstrumentation(initOptions.serviceName)
+  await addInstrumentation(initOptions.serviceName, initOptions.serviceRelease)
 
   updateHubService(
     initOptions.useRestHubApi
