@@ -6,7 +6,7 @@ import { StanzaTokenPropagator } from './propagation/StanzaTokenPropagator'
 import { HeadersSpanEnhancer } from './span/headers/HeadersSpanEnhancer'
 import { createHttpHeaderGetter } from './createHttpHeaderGetter'
 
-export const addInstrumentation = async (serviceName: string) => {
+export const addInstrumentation = async (serviceName: string, serviceRelease: string) => {
   const { HttpInstrumentation } = await import('@opentelemetry/instrumentation-http')
   const headersEnhancer = new HeadersSpanEnhancer()
   const httpInstrumentation = new HttpInstrumentation({
@@ -37,9 +37,10 @@ export const addInstrumentation = async (serviceName: string) => {
 
   const sdk = new NodeSDK({
     sampler: new StanzaSampler(),
-    spanProcessor: new StanzaSpanProcessor() as any, // TODO: fix any cast
+    spanProcessor: new StanzaSpanProcessor(serviceName, serviceRelease) as any, // TODO: fix any cast
     resource: new Resource({
-      [SemanticResourceAttributes.SERVICE_NAME]: serviceName
+      [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
+      [SemanticResourceAttributes.SERVICE_VERSION]: serviceRelease
     }) as any, // TODO: fix any cast
     textMapPropagator:
       new CompositePropagator({
@@ -52,7 +53,7 @@ export const addInstrumentation = async (serviceName: string) => {
         ]
       }),
     metricReader: new PeriodicExportingMetricReader({
-      exporter: new StanzaMetricExporter()
+      exporter: new StanzaMetricExporter(serviceName, serviceRelease)
     }) as any, // TODO: fix any cast
     instrumentations: [
       httpInstrumentation,
