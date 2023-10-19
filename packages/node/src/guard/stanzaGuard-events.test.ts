@@ -2,7 +2,7 @@ import { beforeAll, beforeEach, describe, expect, it, type Mock, vi } from 'vite
 import { updateGuardConfig } from '../global/guardConfig'
 import { mockHubService } from '../__tests__/mocks/mockHubService'
 import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks'
-import { context } from '@opentelemetry/api'
+import { context, propagation, ROOT_CONTEXT } from '@opentelemetry/api'
 import { type GuardConfig } from '../hub/model'
 import { stanzaGuard } from './stanzaGuard'
 import { eventBus, events } from '../global/eventBus'
@@ -73,212 +73,565 @@ beforeAll(() => {
 
 describe('stanzaGuard', () => {
   describe('events', () => {
-    it('should emit stanza.guard.allowed event when guard executes', async () => {
-      updateGuardConfig('testGuard', {
-        config: {
-          checkQuota: true
-        } satisfies Partial<GuardConfig['config']> as any,
-        version: 'testGuardVersion'
+    describe('should emit stanza.guard.allowed event', () => {
+      it('when guard executes', async () => {
+        updateGuardConfig('testGuard', {
+          config: {
+            checkQuota: true
+          } satisfies Partial<GuardConfig['config']> as any,
+          version: 'testGuardVersion'
+        })
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard'
+        }).bind(doStuff)
+
+        const guardStuffPromise = guardedDoStuff()
+
+        deferred.resolve({ granted: true, token: 'testToken' })
+
+        await expect(guardStuffPromise).resolves.toBeUndefined()
+
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
+          guardName: 'testGuard',
+          featureName: '',
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId',
+          reason: 'quota'
+        })
       })
 
-      const deferred = getQuotaMock.mockImplementationDeferred()
+      it('with specified feature when guard executes', async () => {
+        updateGuardConfig('testGuard', {
+          config: {
+            checkQuota: true
+          } satisfies Partial<GuardConfig['config']> as any,
+          version: 'testGuardVersion'
+        })
 
-      const guardedDoStuff = stanzaGuard({
-        guard: 'testGuard'
-      }).bind(doStuff)
+        const deferred = getQuotaMock.mockImplementationDeferred()
 
-      const guardStuffPromise = guardedDoStuff()
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard',
+          feature: 'testFeature'
+        }).bind(doStuff)
 
-      deferred.resolve({ granted: true, token: 'testToken' })
+        const guardStuffPromise = guardedDoStuff()
 
-      await expect(guardStuffPromise).resolves.toBeUndefined()
+        deferred.resolve({ granted: true, token: 'testToken' })
 
-      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
-        guardName: 'testGuard',
-        featureName: '',
-        serviceName: 'testService',
-        environment: 'testEnvironment',
-        clientId: 'testClientId',
-        reason: 'quota'
-      })
-    })
+        await expect(guardStuffPromise).resolves.toBeUndefined()
 
-    it('should emit stanza.guard.allowed event when guard executes with fail open reason when getting token returns null', async () => {
-      updateGuardConfig('testGuard', {
-        config: {
-          checkQuota: true
-        } satisfies Partial<GuardConfig['config']> as any,
-        version: 'testGuardVersion'
-      })
-
-      const deferred = getQuotaMock.mockImplementationDeferred()
-
-      const guardedDoStuff = stanzaGuard({
-        guard: 'testGuard'
-      }).bind(doStuff)
-
-      const guardStuffPromise = guardedDoStuff()
-
-      deferred.resolve(null)
-
-      await expect(guardStuffPromise).resolves.toBeUndefined()
-
-      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
-        guardName: 'testGuard',
-        featureName: '',
-        serviceName: 'testService',
-        environment: 'testEnvironment',
-        clientId: 'testClientId',
-        reason: 'fail_open'
-      })
-    })
-
-    it('should emit stanza.guard.allowed event when guard executes with fail open reason when no guard config is provided', async () => {
-      const guardedDoStuff = stanzaGuard({
-        guard: 'testGuard'
-      }).bind(doStuff)
-
-      const guardStuffPromise = guardedDoStuff()
-
-      await expect(guardStuffPromise).resolves.toBeUndefined()
-
-      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
-        guardName: 'testGuard',
-        featureName: '',
-        serviceName: 'testService',
-        environment: 'testEnvironment',
-        clientId: 'testClientId',
-        reason: 'fail_open'
-      })
-    })
-
-    it('should emit stanza.guard.blocked event when guard\'s execution is blocked', async () => {
-      updateGuardConfig('testGuard', {
-        config: {
-          checkQuota: true
-        } satisfies Partial<GuardConfig['config']> as any,
-        version: 'testGuardVersion'
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
+          guardName: 'testGuard',
+          featureName: 'testFeature',
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId',
+          reason: 'quota'
+        })
       })
 
-      const deferred = getQuotaMock.mockImplementationDeferred()
+      it('with feature specified in context when guard executes', async () => {
+        updateGuardConfig('testGuard', {
+          config: {
+            checkQuota: true
+          } satisfies Partial<GuardConfig['config']> as any,
+          version: 'testGuardVersion'
+        })
 
-      const guardedDoStuff = stanzaGuard({
-        guard: 'testGuard'
-      }).bind(doStuff)
+        const deferred = getQuotaMock.mockImplementationDeferred()
 
-      const guardStuffPromise = guardedDoStuff()
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard'
+        }).bind(doStuff)
 
-      deferred.resolve({ granted: false })
+        const contextWithBaggage = propagation.setBaggage(ROOT_CONTEXT, propagation.createBaggage({
+          'stz-feat': { value: 'testBaggageFeature' }
+        }))
 
-      await expect(guardStuffPromise).rejects.toThrow()
+        const guardStuffPromise = context.with(contextWithBaggage, guardedDoStuff)
 
-      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.blocked, {
-        guardName: 'testGuard',
-        featureName: '',
-        reason: 'quota',
-        serviceName: 'testService',
-        environment: 'testEnvironment',
-        clientId: 'testClientId'
-      })
-    })
+        deferred.resolve({ granted: true, token: 'testToken' })
 
-    it('should emit stanza.guard.succeeded event when function wrapped with a guard succeeds', async () => {
-      updateGuardConfig('testGuard', {
-        config: {
-          checkQuota: true
-        } satisfies Partial<GuardConfig['config']> as any,
-        version: 'testGuardVersion'
-      })
+        await expect(guardStuffPromise).resolves.toBeUndefined()
 
-      const deferred = getQuotaMock.mockImplementationDeferred()
-
-      const guardedDoStuff = stanzaGuard({
-        guard: 'testGuard'
-      }).bind(doStuff)
-
-      const guardStuffPromise = guardedDoStuff()
-
-      mockMessageBusEmit.mockReset()
-
-      deferred.resolve({ granted: true, token: 'testToken' })
-
-      await expect(guardStuffPromise).resolves.toBeUndefined()
-
-      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.succeeded, {
-        guardName: 'testGuard',
-        featureName: '',
-        serviceName: 'testService',
-        environment: 'testEnvironment',
-        clientId: 'testClientId'
-      })
-    })
-
-    it('should emit stanza.guard.failed event when function wrapped with a guard fails', async () => {
-      updateGuardConfig('testGuard', {
-        config: {
-          checkQuota: true
-        } satisfies Partial<GuardConfig['config']> as any,
-        version: 'testGuardVersion'
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
+          guardName: 'testGuard',
+          featureName: 'testBaggageFeature',
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId',
+          reason: 'quota'
+        })
       })
 
-      const deferred = getQuotaMock.mockImplementationDeferred()
+      it('when guard executes with fail open reason when getting token returns null', async () => {
+        updateGuardConfig('testGuard', {
+          config: {
+            checkQuota: true
+          } satisfies Partial<GuardConfig['config']> as any,
+          version: 'testGuardVersion'
+        })
 
-      const guardedDoStuff = stanzaGuard({
-        guard: 'testGuard'
-      }).bind(() => {
-        throw new Error('kaboom')
+        const deferred = getQuotaMock.mockImplementationDeferred()
+
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard'
+        }).bind(doStuff)
+
+        const guardStuffPromise = guardedDoStuff()
+
+        deferred.resolve(null)
+
+        await expect(guardStuffPromise).resolves.toBeUndefined()
+
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
+          guardName: 'testGuard',
+          featureName: '',
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId',
+          reason: 'fail_open'
+        })
       })
 
-      const guardStuffPromise = guardedDoStuff()
+      it('when guard executes with fail open reason when no guard config is provided', async () => {
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard'
+        }).bind(doStuff)
 
-      deferred.resolve({ granted: true, token: 'testToken' })
+        const guardStuffPromise = guardedDoStuff()
 
-      await expect(guardStuffPromise).rejects.toThrow('kaboom')
+        await expect(guardStuffPromise).resolves.toBeUndefined()
 
-      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.failed, {
-        guardName: 'testGuard',
-        featureName: '',
-        serviceName: 'testService',
-        environment: 'testEnvironment',
-        clientId: 'testClientId'
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
+          guardName: 'testGuard',
+          featureName: '',
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId',
+          reason: 'fail_open'
+        })
       })
     })
 
-    it('should emit stanza.guard.duration event when function wrapped with a guard succeeds', async () => {
-      vi.useFakeTimers({
-        now: 0
-      })
-      updateGuardConfig('testGuard', {
-        config: {
-          checkQuota: true
-        } satisfies Partial<GuardConfig['config']> as any,
-        version: 'testGuardVersion'
-      })
+    describe('should emit stanza.guard.blocked event', () => {
+      it('when guard\'s execution is blocked', async () => {
+        updateGuardConfig('testGuard', {
+          config: {
+            checkQuota: true
+          } satisfies Partial<GuardConfig['config']> as any,
+          version: 'testGuardVersion'
+        })
 
-      const deferred = getQuotaMock.mockImplementationDeferred()
+        const deferred = getQuotaMock.mockImplementationDeferred()
 
-      const guardedDoStuff = stanzaGuard({
-        guard: 'testGuard'
-      }).bind(doStuff)
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard'
+        }).bind(doStuff)
 
-      const guardStuffPromise = guardedDoStuff()
+        const guardStuffPromise = guardedDoStuff()
 
-      await vi.advanceTimersByTimeAsync(123.456)
+        deferred.resolve({ granted: false })
 
-      deferred.resolve({ granted: true, token: 'testToken' })
+        await expect(guardStuffPromise).rejects.toThrow()
 
-      await expect(guardStuffPromise).resolves.toBeUndefined()
-
-      expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.duration, {
-        guardName: 'testGuard',
-        featureName: '',
-        duration: 123.456,
-        serviceName: 'testService',
-        environment: 'testEnvironment',
-        clientId: 'testClientId'
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.blocked, {
+          guardName: 'testGuard',
+          featureName: '',
+          reason: 'quota',
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
+        })
       })
 
-      vi.useRealTimers()
+      it('with specified feature when guard\'s execution is blocked', async () => {
+        updateGuardConfig('testGuard', {
+          config: {
+            checkQuota: true
+          } satisfies Partial<GuardConfig['config']> as any,
+          version: 'testGuardVersion'
+        })
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard',
+          feature: 'testFeature'
+        }).bind(doStuff)
+
+        const guardStuffPromise = guardedDoStuff()
+
+        deferred.resolve({ granted: false })
+
+        await expect(guardStuffPromise).rejects.toThrow()
+
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.blocked, {
+          guardName: 'testGuard',
+          featureName: 'testFeature',
+          reason: 'quota',
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
+        })
+      })
+
+      it('with feature specified in context when guard\'s execution is blocked', async () => {
+        updateGuardConfig('testGuard', {
+          config: {
+            checkQuota: true
+          } satisfies Partial<GuardConfig['config']> as any,
+          version: 'testGuardVersion'
+        })
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard'
+        }).bind(doStuff)
+
+        const contextWithBaggage = propagation.setBaggage(ROOT_CONTEXT, propagation.createBaggage({
+          'stz-feat': { value: 'testBaggageFeature' }
+        }))
+
+        const guardStuffPromise = context.with(contextWithBaggage, guardedDoStuff)
+
+        deferred.resolve({ granted: false })
+
+        await expect(guardStuffPromise).rejects.toThrow()
+
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.blocked, {
+          guardName: 'testGuard',
+          featureName: 'testBaggageFeature',
+          reason: 'quota',
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
+        })
+      })
+    })
+
+    describe('should emit stanza.guard.succeeded event', () => {
+      it('when function wrapped with a guard succeeds', async () => {
+        updateGuardConfig('testGuard', {
+          config: {
+            checkQuota: true
+          } satisfies Partial<GuardConfig['config']> as any,
+          version: 'testGuardVersion'
+        })
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard'
+        }).bind(doStuff)
+
+        const guardStuffPromise = guardedDoStuff()
+
+        mockMessageBusEmit.mockReset()
+
+        deferred.resolve({ granted: true, token: 'testToken' })
+
+        await expect(guardStuffPromise).resolves.toBeUndefined()
+
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.succeeded, {
+          guardName: 'testGuard',
+          featureName: '',
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
+        })
+      })
+
+      it('with specified feature when function wrapped with a guard succeeds', async () => {
+        updateGuardConfig('testGuard', {
+          config: {
+            checkQuota: true
+          } satisfies Partial<GuardConfig['config']> as any,
+          version: 'testGuardVersion'
+        })
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard',
+          feature: 'testFeature'
+        }).bind(doStuff)
+
+        const guardStuffPromise = guardedDoStuff()
+
+        mockMessageBusEmit.mockReset()
+
+        deferred.resolve({ granted: true, token: 'testToken' })
+
+        await expect(guardStuffPromise).resolves.toBeUndefined()
+
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.succeeded, {
+          guardName: 'testGuard',
+          featureName: 'testFeature',
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
+        })
+      })
+
+      it('with feature specified in context when function wrapped with a guard succeeds', async () => {
+        updateGuardConfig('testGuard', {
+          config: {
+            checkQuota: true
+          } satisfies Partial<GuardConfig['config']> as any,
+          version: 'testGuardVersion'
+        })
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard'
+        }).bind(doStuff)
+
+        const contextWithBaggage = propagation.setBaggage(ROOT_CONTEXT, propagation.createBaggage({
+          'stz-feat': { value: 'testBaggageFeature' }
+        }))
+
+        const guardStuffPromise = context.with(contextWithBaggage, guardedDoStuff)
+
+        mockMessageBusEmit.mockReset()
+
+        deferred.resolve({ granted: true, token: 'testToken' })
+
+        await expect(guardStuffPromise).resolves.toBeUndefined()
+
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.succeeded, {
+          guardName: 'testGuard',
+          featureName: 'testBaggageFeature',
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
+        })
+      })
+    })
+
+    describe('should emit stanza.guard.failed event', () => {
+      it('when function wrapped with a guard fails', async () => {
+        updateGuardConfig('testGuard', {
+          config: {
+            checkQuota: true
+          } satisfies Partial<GuardConfig['config']> as any,
+          version: 'testGuardVersion'
+        })
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard'
+        }).bind(() => {
+          throw new Error('kaboom')
+        })
+
+        const guardStuffPromise = guardedDoStuff()
+
+        deferred.resolve({ granted: true, token: 'testToken' })
+
+        await expect(guardStuffPromise).rejects.toThrow('kaboom')
+
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.failed, {
+          guardName: 'testGuard',
+          featureName: '',
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
+        })
+      })
+
+      it('with specified feature when function wrapped with a guard fails', async () => {
+        updateGuardConfig('testGuard', {
+          config: {
+            checkQuota: true
+          } satisfies Partial<GuardConfig['config']> as any,
+          version: 'testGuardVersion'
+        })
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard',
+          feature: 'testFeature'
+        }).bind(() => {
+          throw new Error('kaboom')
+        })
+
+        const guardStuffPromise = guardedDoStuff()
+
+        deferred.resolve({ granted: true, token: 'testToken' })
+
+        await expect(guardStuffPromise).rejects.toThrow('kaboom')
+
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.failed, {
+          guardName: 'testGuard',
+          featureName: 'testFeature',
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
+        })
+      })
+
+      it('with feature specified in context when function wrapped with a guard fails', async () => {
+        updateGuardConfig('testGuard', {
+          config: {
+            checkQuota: true
+          } satisfies Partial<GuardConfig['config']> as any,
+          version: 'testGuardVersion'
+        })
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard'
+        }).bind(() => {
+          throw new Error('kaboom')
+        })
+
+        const contextWithBaggage = propagation.setBaggage(ROOT_CONTEXT, propagation.createBaggage({
+          'stz-feat': { value: 'testBaggageFeature' }
+        }))
+
+        const guardStuffPromise = context.with(contextWithBaggage, guardedDoStuff)
+
+        deferred.resolve({ granted: true, token: 'testToken' })
+
+        await expect(guardStuffPromise).rejects.toThrow('kaboom')
+
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.failed, {
+          guardName: 'testGuard',
+          featureName: 'testBaggageFeature',
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
+        })
+      })
+    })
+
+    describe('should emit stanza.guard.duration event', () => {
+      it('when function wrapped with a guard succeeds', async () => {
+        vi.useFakeTimers({
+          now: 0
+        })
+        updateGuardConfig('testGuard', {
+          config: {
+            checkQuota: true
+          } satisfies Partial<GuardConfig['config']> as any,
+          version: 'testGuardVersion'
+        })
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard'
+        }).bind(doStuff)
+
+        const guardStuffPromise = guardedDoStuff()
+
+        await vi.advanceTimersByTimeAsync(123.456)
+
+        deferred.resolve({ granted: true, token: 'testToken' })
+
+        await expect(guardStuffPromise).resolves.toBeUndefined()
+
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.duration, {
+          guardName: 'testGuard',
+          featureName: '',
+          duration: 123.456,
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
+        })
+
+        vi.useRealTimers()
+      })
+
+      it('with specified feature when function wrapped with a guard succeeds', async () => {
+        vi.useFakeTimers({
+          now: 0
+        })
+        updateGuardConfig('testGuard', {
+          config: {
+            checkQuota: true
+          } satisfies Partial<GuardConfig['config']> as any,
+          version: 'testGuardVersion'
+        })
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard',
+          feature: 'testFeature'
+        }).bind(doStuff)
+
+        const guardStuffPromise = guardedDoStuff()
+
+        await vi.advanceTimersByTimeAsync(123.456)
+
+        deferred.resolve({ granted: true, token: 'testToken' })
+
+        await expect(guardStuffPromise).resolves.toBeUndefined()
+
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.duration, {
+          guardName: 'testGuard',
+          featureName: 'testFeature',
+          duration: 123.456,
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
+        })
+
+        vi.useRealTimers()
+      })
+
+      it('with feature specified in context when function wrapped with a guard succeeds', async () => {
+        vi.useFakeTimers({
+          now: 0
+        })
+        updateGuardConfig('testGuard', {
+          config: {
+            checkQuota: true
+          } satisfies Partial<GuardConfig['config']> as any,
+          version: 'testGuardVersion'
+        })
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+
+        const guardedDoStuff = stanzaGuard({
+          guard: 'testGuard'
+        }).bind(doStuff)
+
+        const contextWithBaggage = propagation.setBaggage(ROOT_CONTEXT, propagation.createBaggage({
+          'stz-feat': { value: 'testBaggageFeature' }
+        }))
+
+        const guardStuffPromise = context.with(contextWithBaggage, guardedDoStuff)
+
+        await vi.advanceTimersByTimeAsync(123.456)
+
+        deferred.resolve({ granted: true, token: 'testToken' })
+
+        await expect(guardStuffPromise).resolves.toBeUndefined()
+
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.duration, {
+          guardName: 'testGuard',
+          featureName: 'testBaggageFeature',
+          duration: 123.456,
+          serviceName: 'testService',
+          environment: 'testEnvironment',
+          clientId: 'testClientId'
+        })
+
+        vi.useRealTimers()
+      })
     })
   })
 })

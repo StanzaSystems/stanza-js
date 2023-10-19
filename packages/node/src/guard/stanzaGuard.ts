@@ -13,6 +13,7 @@ import { eventBus, events } from '../global/eventBus'
 import { wrapEventsAsync } from '../utils/wrapEventsAsync'
 import { hubService } from '../global/hubService'
 import { getServiceConfig } from '../global/serviceConfig'
+import { getActiveStanzaEntry } from '../baggage/getActiveStanzaEntry'
 
 export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOptions) => {
   const { guard } = createStanzaGuard(options)
@@ -42,7 +43,7 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOp
           serviceName,
           environment,
           clientId,
-          featureName: options.feature ?? '',
+          featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
           customerId
         })
@@ -54,7 +55,7 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOp
           serviceName,
           environment,
           clientId,
-          featureName: options.feature ?? '',
+          featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
           customerId
         })
@@ -66,7 +67,7 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOp
           serviceName,
           environment,
           clientId,
-          featureName: options.feature ?? '',
+          featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
           customerId,
           duration
@@ -88,7 +89,7 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
           serviceName,
           environment,
           clientId,
-          featureName: options.feature ?? '',
+          featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
           customerId,
           reason: result.some(reason => reason !== null) ? 'quota' : 'fail_open'
@@ -101,7 +102,7 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
           serviceName,
           environment,
           clientId,
-          featureName: options.feature ?? '',
+          featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
           customerId,
           reason: 'quota'

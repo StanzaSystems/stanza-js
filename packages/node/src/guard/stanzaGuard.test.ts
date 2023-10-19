@@ -1,4 +1,4 @@
-import { context } from '@opentelemetry/api'
+import { context, propagation, ROOT_CONTEXT } from '@opentelemetry/api'
 import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks'
 import { beforeAll, beforeEach, describe, expect, it, type Mock, vi } from 'vitest'
 
@@ -447,6 +447,148 @@ describe('stanzaGuard', function () {
         expect(doStuff).toHaveBeenCalledOnce()
 
         vi.useRealTimers()
+      })
+
+      it('should request quota with specified feature', async () => {
+        vi.useFakeTimers()
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+        mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(checkQuotaGuardConfig))
+
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard', feature: 'testFeature' }).bind(() => {
+          doStuff()
+          expect(context.active().getValue(stanzaTokenContextKey)).toBeUndefined()
+        })
+
+        // wait for guard config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const guardedDoStuffPromise = guardedDoStuff()
+
+        expect(getQuotaMock).toHaveBeenCalledOnce()
+        expect(getQuotaMock).toHaveBeenCalledWith({
+          guard: 'testGuard',
+          feature: 'testFeature'
+        })
+
+        deferred.resolve(null)
+        await expect(guardedDoStuffPromise).resolves.toBeUndefined()
+      })
+
+      it('should request quota with specified priority boost', async () => {
+        vi.useFakeTimers()
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+        mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(checkQuotaGuardConfig))
+
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard', priorityBoost: 2 }).bind(() => {
+          doStuff()
+          expect(context.active().getValue(stanzaTokenContextKey)).toBeUndefined()
+        })
+
+        // wait for guard config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const guardedDoStuffPromise = guardedDoStuff()
+
+        expect(getQuotaMock).toHaveBeenCalledOnce()
+        expect(getQuotaMock).toHaveBeenCalledWith({
+          guard: 'testGuard',
+          priorityBoost: 2
+        })
+
+        deferred.resolve(null)
+        await expect(guardedDoStuffPromise).resolves.toBeUndefined()
+      })
+
+      it('should request quota with feature from baggage', async () => {
+        vi.useFakeTimers()
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+        mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(checkQuotaGuardConfig))
+
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
+          doStuff()
+          expect(context.active().getValue(stanzaTokenContextKey)).toBeUndefined()
+        })
+
+        const contextWithBaggage = propagation.setBaggage(ROOT_CONTEXT, propagation.createBaggage({
+          'stz-feat': { value: 'testBaggageFeature' }
+        }))
+
+        // wait for guard config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const guardedDoStuffPromise = context.with(contextWithBaggage, guardedDoStuff)
+
+        expect(getQuotaMock).toHaveBeenCalledOnce()
+        expect(getQuotaMock).toHaveBeenCalledWith({
+          guard: 'testGuard',
+          feature: 'testBaggageFeature'
+        })
+
+        deferred.resolve(null)
+        await expect(guardedDoStuffPromise).resolves.toBeUndefined()
+      })
+
+      it('should request quota with priority boost from baggage', async () => {
+        vi.useFakeTimers()
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+        mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(checkQuotaGuardConfig))
+
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
+          doStuff()
+          expect(context.active().getValue(stanzaTokenContextKey)).toBeUndefined()
+        })
+
+        const contextWithBaggage = propagation.setBaggage(ROOT_CONTEXT, propagation.createBaggage({
+          'stz-boost': { value: '1' }
+        }))
+
+        // wait for guard config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const guardedDoStuffPromise = context.with(contextWithBaggage, guardedDoStuff)
+
+        expect(getQuotaMock).toHaveBeenCalledOnce()
+        expect(getQuotaMock).toHaveBeenCalledWith({
+          guard: 'testGuard',
+          priorityBoost: 1
+        })
+
+        deferred.resolve(null)
+        await expect(guardedDoStuffPromise).resolves.toBeUndefined()
+      })
+
+      it('should request quota with sum of specified priority boost and value from baggage', async () => {
+        vi.useFakeTimers()
+
+        const deferred = getQuotaMock.mockImplementationDeferred()
+        mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(checkQuotaGuardConfig))
+
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard', priorityBoost: 3 }).bind(() => {
+          doStuff()
+          expect(context.active().getValue(stanzaTokenContextKey)).toBeUndefined()
+        })
+
+        const contextWithBaggage = propagation.setBaggage(ROOT_CONTEXT, propagation.createBaggage({
+          'stz-boost': { value: '1' }
+        }))
+
+        // wait for guard config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const guardedDoStuffPromise = context.with(contextWithBaggage, guardedDoStuff)
+
+        expect(getQuotaMock).toHaveBeenCalledOnce()
+        expect(getQuotaMock).toHaveBeenCalledWith({
+          guard: 'testGuard',
+          priorityBoost: 4
+        })
+
+        deferred.resolve(null)
+        await expect(guardedDoStuffPromise).resolves.toBeUndefined()
       })
     })
 
