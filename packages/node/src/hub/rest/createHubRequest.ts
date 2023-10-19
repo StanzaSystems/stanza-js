@@ -4,13 +4,16 @@ import { fetch } from '../../fetchImplementation'
 import { type HubApiPath, type HubRequest } from '../hubRequest'
 import { logger } from '../../global/logger'
 import { STANZA_REQUEST_TIMEOUT } from '../../global/requestTimeout'
+import { createUserAgentHeader } from '../../utils/userAgentHeader'
 
 export interface HubRequestInitOptions {
   hubUrl: string
   apiKey: string
+  serviceName: string
+  serviceRelease: string
 }
 
-export const createHubRequest = ({ apiKey, hubUrl }: HubRequestInitOptions): HubRequest => {
+export const createHubRequest = ({ apiKey, hubUrl, serviceName, serviceRelease }: HubRequestInitOptions): HubRequest => {
   return async function hubRequest<T extends ZodType> (apiPath: HubApiPath, params: { method?: string, searchParams?: Record<string, string | string[] | undefined>, body?: unknown }, validateRequest: T): Promise<z.infer<T> | null> {
     const requestUrl = new URL(`${hubUrl}/${apiPath}`)
 
@@ -32,7 +35,8 @@ export const createHubRequest = ({ apiKey, hubUrl }: HubRequestInitOptions): Hub
       'Hub request timed out',
       fetch(requestUrl, {
         headers: {
-          'X-Stanza-Key': apiKey
+          'X-Stanza-Key': apiKey,
+          'User-Agent': createUserAgentHeader({ serviceName, serviceRelease })
         },
         method,
         ...(body != null ? { body: JSON.stringify(body) } : {})

@@ -30,7 +30,7 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
     logger.level = initOptions.logLevel
   }
 
-  await addInstrumentation(initOptions.serviceName)
+  await addInstrumentation(initOptions.serviceName, initOptions.serviceRelease)
 
   updateHubService(
     initOptions.useRestHubApi
@@ -41,7 +41,9 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
         clientId,
         hubRequest: createHubRequest({
           hubUrl: initOptions.hubUrl,
-          apiKey: initOptions.apiKey
+          apiKey: initOptions.apiKey,
+          serviceName: initOptions.serviceName,
+          serviceRelease: initOptions.serviceRelease
         })
       })
       : createGrpcHubService({

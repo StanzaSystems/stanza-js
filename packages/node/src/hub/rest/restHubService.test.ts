@@ -29,29 +29,33 @@ describe('createRestHubService', async () => {
   describe('getServiceMetadata', () => {
     const { getServiceMetadata } = createRestHubService({
       serviceName: 'TestService',
-      serviceRelease: '1',
+      serviceRelease: '1.0.0',
       environment: 'test',
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'testApiKey'
+        apiKey: 'testApiKey',
+        serviceName: 'TestService',
+        serviceRelease: '1.0.0'
       })
     })
 
     it('should return service metadata', () => {
-      expect(getServiceMetadata()).toEqual({ serviceName: 'TestService', environment: 'test', clientId: 'test-client-id' })
+      expect(getServiceMetadata()).toEqual({ serviceName: 'TestService', serviceRelease: '1.0.0', environment: 'test', clientId: 'test-client-id' })
     })
   })
 
   describe('fetchServiceConfig', function () {
     const { fetchServiceConfig } = createRestHubService({
       serviceName: 'TestService',
-      serviceRelease: '1',
+      serviceRelease: '1.0.0',
       environment: 'test',
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'testApiKey'
+        apiKey: 'testApiKey',
+        serviceName: 'TestService',
+        serviceRelease: '1.0.0'
       })
     })
 
@@ -63,12 +67,13 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/config/service'),
         {
           headers: {
-            'X-Stanza-Key': 'testApiKey'
+            'X-Stanza-Key': 'testApiKey',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.5-beta'
           },
           body: JSON.stringify({
             service: {
               name: 'TestService',
-              release: '1',
+              release: '1.0.0',
               environment: 'test'
             }
           }),
@@ -87,13 +92,14 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/config/service'),
         {
           headers: {
-            'X-Stanza-Key': 'testApiKey'
+            'X-Stanza-Key': 'testApiKey',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.5-beta'
           },
           body: JSON.stringify({
             versionSeen: '123',
             service: {
               name: 'TestService',
-              release: '1',
+              release: '1.0.0',
               environment: 'test'
             }
           }),
@@ -201,7 +207,9 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'testApiKey'
+        apiKey: 'testApiKey',
+        serviceName: 'TestService',
+        serviceRelease: '1.0.0'
       })
     })
 
@@ -215,7 +223,8 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/config/guard'),
         {
           headers: {
-            'X-Stanza-Key': 'testApiKey'
+            'X-Stanza-Key': 'testApiKey',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.5-beta'
           },
           body: JSON.stringify({
             selector: {
@@ -241,7 +250,8 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/config/guard'),
         {
           headers: {
-            'X-Stanza-Key': 'testApiKey'
+            'X-Stanza-Key': 'testApiKey',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.5-beta'
           },
           body: JSON.stringify({
             versionSeen: '123',
@@ -330,7 +340,9 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'testApiKey'
+        apiKey: 'testApiKey',
+        serviceName: 'TestService',
+        serviceRelease: '1.0.0'
       })
     })
 
@@ -346,7 +358,8 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/token'),
         {
           headers: {
-            'X-Stanza-Key': 'testApiKey'
+            'X-Stanza-Key': 'testApiKey',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.5-beta'
           },
           body: JSON.stringify({
             selector: {
@@ -384,7 +397,8 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/token'),
         {
           headers: {
-            'X-Stanza-Key': 'testApiKey'
+            'X-Stanza-Key': 'testApiKey',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.5-beta'
           },
           body: JSON.stringify({
             selector: {
@@ -473,7 +487,9 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'testApiKey'
+        apiKey: 'testApiKey',
+        serviceName: 'TestService',
+        serviceRelease: '1.0.0'
       })
     })
 
@@ -489,7 +505,8 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/lease'),
         {
           headers: {
-            'X-Stanza-Key': 'testApiKey'
+            'X-Stanza-Key': 'testApiKey',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.5-beta'
           },
           body: JSON.stringify({
             selector: {
@@ -527,7 +544,8 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/lease'),
         {
           headers: {
-            'X-Stanza-Key': 'testApiKey'
+            'X-Stanza-Key': 'testApiKey',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.5-beta'
           },
           body: JSON.stringify({
             selector: {
@@ -628,7 +646,9 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'testApiKey'
+        apiKey: 'testApiKey',
+        serviceName: 'TestService',
+        serviceRelease: '1.0.0'
       })
     })
 
@@ -643,7 +663,8 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/validatetoken'),
         {
           headers: {
-            'X-Stanza-Key': 'testApiKey'
+            'X-Stanza-Key': 'testApiKey',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.5-beta'
           },
           body: JSON.stringify({
             tokens: [{
@@ -727,7 +748,9 @@ describe('createRestHubService', async () => {
       clientId: 'test-client-id',
       hubRequest: createHubRequest({
         hubUrl: 'https://url.to.hub',
-        apiKey: 'testApiKey'
+        apiKey: 'testApiKey',
+        serviceName: 'TestService',
+        serviceRelease: '1.0.0'
       })
     })
 
@@ -741,7 +764,8 @@ describe('createRestHubService', async () => {
         new URL('https://url.to.hub/v1/quota/consumed'),
         {
           headers: {
-            'X-Stanza-Key': 'testApiKey'
+            'X-Stanza-Key': 'testApiKey',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.5-beta'
           },
           body: JSON.stringify({
             tokens: ['test-token-one', 'test-token-two']

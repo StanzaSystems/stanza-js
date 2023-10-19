@@ -22,7 +22,7 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
   return wrapHubServiceWithMetrics(logger.wrap({
     prefix: '[REST Hub Service]'
   }, {
-    getServiceMetadata: () => ({ serviceName, environment, clientId }),
+    getServiceMetadata: () => ({ serviceName, serviceRelease, environment, clientId }),
     fetchServiceConfig: async ({ lastVersionSeen } = {}) => {
       const serviceConfigResult = await hubRequest('v1/config/service', {
         body: {

@@ -9,11 +9,12 @@ import { hubService } from '../../global/hubService'
 import { logger } from '../../global/logger'
 import { addAuthTokenListener, getStanzaAuthToken } from '../../global/authToken'
 import { isTokenInvalidError } from '../../grpc/isTokenInvalidError'
+import { createUserAgentHeader } from '../../utils/userAgentHeader'
 
 export class StanzaMetricExporter implements PushMetricExporter {
   private exporter: InMemoryMetricExporter | OTLPMetricExporter = new InMemoryMetricExporter(AggregationTemporality.CUMULATIVE)
   private collectorUrl = ''
-  constructor () {
+  constructor (private readonly serviceName: string, private readonly serviceRelease: string) {
     let serviceConfig = getServiceConfig()
     let authToken = getStanzaAuthToken()
     if (serviceConfig !== undefined && authToken !== undefined) {
@@ -36,6 +37,7 @@ export class StanzaMetricExporter implements PushMetricExporter {
   private updateExporter ({ config: { metricConfig } }: ServiceConfig, authToken: string) {
     const metadata = new Metadata()
     metadata.add('Authorization', `bearer ${authToken}`)
+    metadata.add('User-Agent', createUserAgentHeader({ serviceName: this.serviceName, serviceRelease: this.serviceRelease }))
     const prevExporter = this.exporter
     this.exporter = new OTLPMetricExporter({
       url: metricConfig.collectorUrl,
