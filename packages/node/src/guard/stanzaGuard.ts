@@ -15,7 +15,9 @@ import { hubService } from '../global/hubService'
 import { getServiceConfig } from '../global/serviceConfig'
 import { getActiveStanzaEntry } from '../baggage/getActiveStanzaEntry'
 
-export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOptions) => {
+export const stanzaGuard = <TArgs extends any[], TReturn>(
+  options: StanzaGuardOptions
+) => {
   const { guard } = createStanzaGuard(options)
 
   return createStanzaWrapper<TArgs, TReturn, Promisify<TReturn>>((fn) => {
@@ -24,7 +26,8 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOp
 
       const fnWithBoundContext = bindContext([
         addStanzaGuardToContext(options.guard),
-        options.priorityBoost !== undefined ? addPriorityBoostToContext(options.priorityBoost) : undefined,
+        options.priorityBoost !== undefined &&
+        addPriorityBoostToContext(options.priorityBoost),
         ...guardResult.filter(isTruthy).map(token => {
           return token?.type === 'TOKEN_GRANTED'
             ? addStanzaTokenToContext(token.token)
@@ -32,7 +35,7 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOp
         })
       ].filter(isTruthy), fn)
 
-      return (fnWithBoundContext(...args) as Promisify<TReturn>)
+      return fnWithBoundContext(...args) as Promisify<TReturn>
     }
 
     return wrapEventsAsync(resultFn, {

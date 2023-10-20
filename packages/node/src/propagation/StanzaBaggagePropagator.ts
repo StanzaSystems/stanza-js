@@ -1,13 +1,49 @@
-import { type Context, type TextMapGetter, type TextMapSetter } from '@opentelemetry/api'
+import {
+  type Baggage,
+  type Context,
+  propagation,
+  type TextMapGetter,
+  type TextMapSetter
+} from '@opentelemetry/api'
 import { W3CBaggagePropagator } from '@opentelemetry/core'
-import { enrichContextWithStanzaBaggage } from '../baggage/enrichContextWithStanzaBaggage'
+import { getStanzaBaggageEntry } from '../baggage/getStanzaBaggageEntry'
+import { addPriorityBoostToContext } from '../context/addPriorityBoostToContext'
+import { getStanzaBaggageKeys } from '../baggage/getStanzaBaggageKeys'
+import { getPriorityBoostFromContext } from '../context/getPriorityBoostFromContext'
+import { stanzaPriorityBoostContextKey } from '../context/stanzaPriorityBoostContextKey'
+
+const getStanzaPriorityBoost = (baggage: Baggage) => {
+  const baggageMaybePriorityBoost = parseInt(
+    getStanzaBaggageEntry('stz-boost', baggage)?.value ?? ''
+  )
+
+  return !isNaN(baggageMaybePriorityBoost) ? baggageMaybePriorityBoost : 0
+}
+
+const stanzaBaggageKeys = getStanzaBaggageKeys('stz-boost')
 
 export class StanzaBaggagePropagator extends W3CBaggagePropagator {
   override inject (context: Context, carrier: unknown, setter: TextMapSetter): void {
-    super.inject(enrichContextWithStanzaBaggage(context), carrier, setter)
+    const currentPriorityBoost = getPriorityBoostFromContext(context)
+    const contextWithoutPriorityBoost = context.deleteValue(stanzaPriorityBoostContextKey)
+    const baggage = propagation.getBaggage(contextWithoutPriorityBoost) ?? propagation.createBaggage()
+    const baggageWithPriorityBoost = currentPriorityBoost !== 0
+      ? stanzaBaggageKeys.reduce((resultBaggage, key) => {
+        return resultBaggage.setEntry(key, { value: currentPriorityBoost.toFixed(0) })
+      }, baggage)
+      : baggage.removeEntries(...stanzaBaggageKeys)
+
+    const contextWithBaggage = propagation.setBaggage(contextWithoutPriorityBoost, baggageWithPriorityBoost)
+
+    super.inject(contextWithBaggage, carrier, setter)
   }
 
   override extract (context: Context, carrier: unknown, getter: TextMapGetter): Context {
-    return enrichContextWithStanzaBaggage(super.extract(context, carrier, getter))
+    const contextWithBaggage = super.extract(context, carrier, getter)
+    const baggage = propagation.getBaggage(contextWithBaggage) ?? propagation.createBaggage()
+    const priorityBoost = getStanzaPriorityBoost(baggage)
+    const contextWithPriorityBoost = addPriorityBoostToContext(priorityBoost)(contextWithBaggage)
+    const newBaggage = baggage.removeEntries(...stanzaBaggageKeys)
+    return propagation.setBaggage(contextWithPriorityBoost, newBaggage)
   }
 }
