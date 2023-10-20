@@ -3,6 +3,8 @@ import { getQuota } from '../../quota/getQuota'
 import { StanzaGuardError } from '../stanzaGuardError'
 import { type Tag } from '../model'
 import { getActiveStanzaEntry } from '../../baggage/getActiveStanzaEntry'
+import { getPriorityBoostFromContext } from '../../context/priorityBoost'
+import { context } from '@opentelemetry/api'
 
 export interface QuotaCheckerOptions {
   guard: string
@@ -21,11 +23,11 @@ export const initQuotaChecker = (options: QuotaCheckerOptions) => {
   }
 
   async function checkQuota (): Promise<{ type: 'TOKEN_GRANTED', token: string } | null> {
-    const activePriorityBoostEntry = getActiveStanzaEntry('stz-boost')
+    const priorityBoost = getPriorityBoostFromContext(context.active())
     const token = await getQuota({
       ...options,
       feature: getActiveStanzaEntry('stz-feat') ?? options.feature,
-      priorityBoost: activePriorityBoostEntry !== undefined ? Number(activePriorityBoostEntry) + (options.priorityBoost ?? 0) : options.priorityBoost
+      priorityBoost: priorityBoost !== 0 ? priorityBoost : undefined
     })
     if (token?.granted === false) {
       throw new StanzaGuardError('NoQuota', 'Guard can not be executed')

@@ -544,9 +544,16 @@ describe('stanzaGuard', function () {
           expect(context.active().getValue(stanzaTokenContextKey)).toBeUndefined()
         })
 
-        const contextWithBaggage = propagation.setBaggage(ROOT_CONTEXT, propagation.createBaggage({
-          'stz-boost': { value: '1' }
-        }))
+        const contextWithBaggage = new StanzaBaggagePropagator().extract(ROOT_CONTEXT, {
+          baggage: 'stz-boost=1'
+        }, {
+          keys (carrier) {
+            return Object.keys(carrier)
+          },
+          get (carrier, key) {
+            return carrier[key]
+          }
+        })
 
         // wait for guard config to be initialized
         await vi.advanceTimersByTimeAsync(0)
@@ -574,9 +581,16 @@ describe('stanzaGuard', function () {
           expect(context.active().getValue(stanzaTokenContextKey)).toBeUndefined()
         })
 
-        const contextWithBaggage = propagation.setBaggage(ROOT_CONTEXT, propagation.createBaggage({
-          'stz-boost': { value: '1' }
-        }))
+        const contextWithBaggage = new StanzaBaggagePropagator().extract(ROOT_CONTEXT, {
+          baggage: 'stz-boost=1'
+        }, {
+          keys (carrier) {
+            return Object.keys(carrier)
+          },
+          get (carrier, key) {
+            return carrier[key]
+          }
+        })
 
         // wait for guard config to be initialized
         await vi.advanceTimersByTimeAsync(0)
