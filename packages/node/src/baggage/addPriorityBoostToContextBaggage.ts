@@ -1,6 +1,8 @@
 import { type Baggage, type Context, propagation } from '@opentelemetry/api'
-import { addPriorityBoostToContext } from '../context/addPriorityBoostToContext'
-import { stanzaPriorityBoostContextKey } from '../context/stanzaPriorityBoostContextKey'
+import {
+  addPriorityBoostToContext,
+  getPriorityBoostFromContext
+} from '../context/priorityBoost'
 import { getStanzaBaggageEntry } from './getStanzaBaggageEntry'
 import { getStanzaBaggageKeys } from './getStanzaBaggageKeys'
 
@@ -15,11 +17,11 @@ export const addPriorityBoostToContextBaggage = (context: Context): Context => {
 
   const contextWithTotalPriorityBoost = addPriorityBoostToContext(getStanzaPriorityBoost(baggage))(context)
 
-  const totalPriorityBoost = contextWithTotalPriorityBoost.getValue(stanzaPriorityBoostContextKey)
+  const totalPriorityBoost = getPriorityBoostFromContext(contextWithTotalPriorityBoost)
 
   const boostStanzaBaggageKeys = getStanzaBaggageKeys('stz-boost')
 
-  const newBaggage = typeof (totalPriorityBoost) !== 'number' || totalPriorityBoost === 0
+  const newBaggage = totalPriorityBoost === 0
     ? baggage.removeEntries(...boostStanzaBaggageKeys)
     : boostStanzaBaggageKeys
       .reduce((currentBaggage, key) => currentBaggage.setEntry(key, { value: totalPriorityBoost.toFixed(0) }), baggage)

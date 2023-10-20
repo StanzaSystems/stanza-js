@@ -7,10 +7,8 @@ import {
 } from '@opentelemetry/api'
 import { W3CBaggagePropagator } from '@opentelemetry/core'
 import { getStanzaBaggageEntry } from '../baggage/getStanzaBaggageEntry'
-import { addPriorityBoostToContext } from '../context/addPriorityBoostToContext'
+import { addPriorityBoostToContext, getPriorityBoostFromContext, deletePriorityBoostFromContext } from '../context/priorityBoost'
 import { getStanzaBaggageKeys } from '../baggage/getStanzaBaggageKeys'
-import { getPriorityBoostFromContext } from '../context/getPriorityBoostFromContext'
-import { stanzaPriorityBoostContextKey } from '../context/stanzaPriorityBoostContextKey'
 
 const getStanzaPriorityBoost = (baggage: Baggage) => {
   const baggageMaybePriorityBoost = parseInt(
@@ -25,7 +23,7 @@ const stanzaBaggageKeys = getStanzaBaggageKeys('stz-boost')
 export class StanzaBaggagePropagator extends W3CBaggagePropagator {
   override inject (context: Context, carrier: unknown, setter: TextMapSetter): void {
     const currentPriorityBoost = getPriorityBoostFromContext(context)
-    const contextWithoutPriorityBoost = context.deleteValue(stanzaPriorityBoostContextKey)
+    const contextWithoutPriorityBoost = deletePriorityBoostFromContext(context)
     const baggage = propagation.getBaggage(contextWithoutPriorityBoost) ?? propagation.createBaggage()
     const baggageWithPriorityBoost = currentPriorityBoost !== 0
       ? stanzaBaggageKeys.reduce((resultBaggage, key) => {

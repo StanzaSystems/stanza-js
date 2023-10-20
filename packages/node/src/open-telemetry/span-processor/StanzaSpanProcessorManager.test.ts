@@ -8,12 +8,12 @@ import {
   type SpanExporter
 } from '@opentelemetry/sdk-trace-node'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { stanzaGuardContextKey } from '../../context/stanzaGuardContextKey'
 import { type getGuardConfig } from '../../global/guardConfig'
 import { type getServiceConfig, type ServiceConfigListener } from '../../global/serviceConfig'
 import { type ServiceConfig } from '../../hub/model'
 import type * as createSpanExporterModule from './createSpanExporter'
 import { StanzaSpanProcessorManager } from './StanzaSpanProcessorManager'
+import { addStanzaGuardToContext } from '../../context/guard'
 
 let serviceListener: ServiceConfigListener
 
@@ -188,7 +188,7 @@ describe('StanzaSpanProcessorManager', function () {
     it('should return NoopSpanProcessor if service config is not initialized', function () {
       const manager = new StanzaSpanProcessorManager('TestService', '1.0.0')
 
-      expect(manager.getSpanProcessor(ROOT_CONTEXT.setValue(stanzaGuardContextKey, 'myGuard'))).toBeInstanceOf(NoopSpanProcessor)
+      expect(manager.getSpanProcessor(addStanzaGuardToContext('myGuard')(ROOT_CONTEXT))).toBeInstanceOf(NoopSpanProcessor)
     })
 
     it('should return service processor if service config is initialized', function () {
@@ -196,7 +196,7 @@ describe('StanzaSpanProcessorManager', function () {
 
       serviceListener({ initialized: true, data: mockServiceConfig })
 
-      const spanProcessor = manager.getSpanProcessor(ROOT_CONTEXT.setValue(stanzaGuardContextKey, 'myGuard'))
+      const spanProcessor = manager.getSpanProcessor(addStanzaGuardToContext('myGuard')(ROOT_CONTEXT))
       expect(spanProcessor).toBeInstanceOf(BatchSpanProcessor)
       expect((spanProcessor as CustomSpanProcessor).exporter).toEqual((new CustomSpanExporter({
         collectorUrl: 'https://test.collector',

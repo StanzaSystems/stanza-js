@@ -1,11 +1,11 @@
 import { ROOT_CONTEXT } from '@opentelemetry/api'
 import { AlwaysOffSampler, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-node'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { stanzaGuardContextKey } from '../../context/stanzaGuardContextKey'
 import { type getGuardConfig } from '../../global/guardConfig'
 import { type getServiceConfig, type ServiceConfigListener } from '../../global/serviceConfig'
 import { type ServiceConfig } from '../../hub/model'
 import { StanzaSamplerManager } from './StanzaSamplerManager'
+import { addStanzaGuardToContext } from '../../context/guard'
 
 let serviceListener: ServiceConfigListener
 
@@ -98,7 +98,7 @@ describe('StanzaSamplerManager', function () {
     it('should return AlwaysOffSampler if service config is not initialized', function () {
       const manager = new StanzaSamplerManager()
 
-      expect(manager.getSampler(ROOT_CONTEXT.setValue(stanzaGuardContextKey, 'myGuard'))).toBeInstanceOf(AlwaysOffSampler)
+      expect(manager.getSampler(addStanzaGuardToContext('myGuard')(ROOT_CONTEXT))).toBeInstanceOf(AlwaysOffSampler)
     })
 
     it('should return service processor if service config is initialized', function () {
@@ -106,7 +106,7 @@ describe('StanzaSamplerManager', function () {
 
       serviceListener({ initialized: true, data: mockServiceConfig })
 
-      const sampler = manager.getSampler(ROOT_CONTEXT.setValue(stanzaGuardContextKey, 'myGuard'))
+      const sampler = manager.getSampler(addStanzaGuardToContext('myGuard')(ROOT_CONTEXT))
       expect(sampler).toEqual(new TraceIdRatioBasedSampler(1))
     })
   })

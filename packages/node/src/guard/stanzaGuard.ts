@@ -1,5 +1,5 @@
-import { addPriorityBoostToContext } from '../context/addPriorityBoostToContext'
-import { addStanzaGuardToContext } from '../context/addStanzaGuardToContext'
+import { addPriorityBoostToContext } from '../context/priorityBoost'
+import { addStanzaGuardToContext } from '../context/guard'
 import { addStanzaTokenToContext } from '../context/addStanzaTokenToContext'
 import { bindContext } from '../context/bindContext'
 import { removeStanzaTokenFromContext } from '../context/removeStanzaTokenFromContext'
@@ -22,20 +22,27 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(
 
   return createStanzaWrapper<TArgs, TReturn, Promisify<TReturn>>((fn) => {
     const resultFn = async function (...args: Parameters<typeof fn>) {
-      const guardResult = await guard()
+      const outerFn = bindContext(
+        [
+          addStanzaGuardToContext(options.guard),
+          options.priorityBoost !== undefined &&
+          addPriorityBoostToContext(options.priorityBoost)
+        ].filter(isTruthy),
+        async () => {
+          const guardResult = await guard()
 
-      const fnWithBoundContext = bindContext([
-        addStanzaGuardToContext(options.guard),
-        options.priorityBoost !== undefined &&
-        addPriorityBoostToContext(options.priorityBoost),
-        ...guardResult.filter(isTruthy).map(token => {
-          return token?.type === 'TOKEN_GRANTED'
-            ? addStanzaTokenToContext(token.token)
-            : removeStanzaTokenFromContext()
-        })
-      ].filter(isTruthy), fn)
+          const fnWithBoundContext = bindContext([
+            ...guardResult.filter(isTruthy).map(token => {
+              return token?.type === 'TOKEN_GRANTED'
+                ? addStanzaTokenToContext(token.token)
+                : removeStanzaTokenFromContext()
+            })
+          ].filter(isTruthy), fn)
 
-      return fnWithBoundContext(...args) as Promisify<TReturn>
+          return fnWithBoundContext(...args) as Promisify<TReturn>
+        }
+      )
+      return outerFn()
     }
 
     return wrapEventsAsync(resultFn, {

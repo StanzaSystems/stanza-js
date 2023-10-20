@@ -1,6 +1,6 @@
 import { propagation, ROOT_CONTEXT } from '@opentelemetry/api'
 import { describe, expect, it } from 'vitest'
-import { stanzaPriorityBoostContextKey } from '../context/stanzaPriorityBoostContextKey'
+import { stanzaPriorityBoostContextKey } from '../context/priorityBoost/stanzaPriorityBoostContextKey'
 import { addPriorityBoostToContextBaggage } from './addPriorityBoostToContextBaggage'
 
 describe('addPriorityBoostToContextBaggage', function () {

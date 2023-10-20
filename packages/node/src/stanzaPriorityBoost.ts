@@ -1,4 +1,4 @@
-import { addPriorityBoostToContext } from './context/addPriorityBoostToContext'
+import { addPriorityBoostToContext } from './context/priorityBoost'
 import { bindContext } from './context/bindContext'
 import { createStanzaWrapper } from './utils/createStanzaWrapper'
 
