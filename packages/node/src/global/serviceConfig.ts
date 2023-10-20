@@ -1,37 +1,25 @@
 import { type ServiceConfig } from '../hub/model'
+import { createGlobalState } from './createGlobalState'
 
-const STANZA_SERVICE_CONFIG_SYMBOL = Symbol.for('[Stanza SDK Internal] Service Config')
-const STANZA_SERVICE_CONFIG_LISTENERS_SYMBOL = Symbol.for('[Stanza SDK Internal] Service Config Listeners')
-
-export type ServiceConfigListener = (config: ServiceConfig) => void
-
-interface StanzaServiceConfigGlobal {
-  [STANZA_SERVICE_CONFIG_SYMBOL]: ServiceConfig | undefined
-  [STANZA_SERVICE_CONFIG_LISTENERS_SYMBOL]: ServiceConfigListener[] | undefined
+interface ServiceStateUninitialized {
+  initialized: false
 }
-const stanzaServiceConfigGlobal = globalThis as unknown as StanzaServiceConfigGlobal
-
-let serviceConfig = stanzaServiceConfigGlobal[STANZA_SERVICE_CONFIG_SYMBOL]
-const serviceConfigListeners = stanzaServiceConfigGlobal[STANZA_SERVICE_CONFIG_LISTENERS_SYMBOL] = stanzaServiceConfigGlobal[STANZA_SERVICE_CONFIG_LISTENERS_SYMBOL] ?? []
-
-export const getServiceConfig = () => serviceConfig
-
-export const updateServiceConfig = (newConfig: ServiceConfig) => {
-  serviceConfig = stanzaServiceConfigGlobal[STANZA_SERVICE_CONFIG_SYMBOL] = newConfig
-
-  serviceConfigListeners.forEach(listener => {
-    listener(newConfig)
-  })
+interface ServiceStateInitialized {
+  initialized: true
+  data: ServiceConfig | undefined
 }
+type ServiceState = ServiceStateUninitialized | ServiceStateInitialized
+const state = createGlobalState(Symbol.for('[Stanza SDK Internal] Service Config'), (): ServiceState => ({ initialized: false }))
 
-export const addServiceConfigListener = (listener: ServiceConfigListener) => {
-  serviceConfigListeners.push(listener)
+export type ServiceConfigListener = (config: ServiceState) => void
+export const getServiceConfig = (): ServiceConfig | undefined => state.currentValue.initialized ? state.currentValue.data : undefined
 
-  return () => {
-    const listenerIndex = serviceConfigListeners.indexOf(listener)
-    if (listenerIndex < 0) {
-      return
-    }
-    serviceConfigListeners.splice(listenerIndex, 1)
-  }
+export const isServiceConfigInitialized = (): boolean => state.currentValue.initialized
+
+export const updateServiceConfig = (newConfig: ServiceConfig | undefined) => state.update({ initialized: true, data: newConfig })
+
+export const addServiceConfigListener = state.onChange
+
+export const resetServiceConfig = () => {
+  state.update({ initialized: false })
 }

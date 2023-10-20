@@ -11,12 +11,12 @@ describe('requestTimeout', () => {
   it('should have default value', async () => {
     const { STANZA_REQUEST_TIMEOUT } = await import('./requestTimeout')
 
-    expect(STANZA_REQUEST_TIMEOUT).toEqual(1000)
+    expect(STANZA_REQUEST_TIMEOUT).toEqual(300)
   })
 
   it('should preserve set value after module resets', async () => {
     const { STANZA_REQUEST_TIMEOUT: STANZA_REQUEST_TIMEOUT_1, setRequestTimeout } = await import('./requestTimeout')
-    expect(STANZA_REQUEST_TIMEOUT_1).toEqual(1000)
+    expect(STANZA_REQUEST_TIMEOUT_1).toEqual(300)
 
     setRequestTimeout(1234)
 
@@ -40,6 +40,6 @@ describe('requestTimeout', () => {
 
     const { STANZA_REQUEST_TIMEOUT: STANZA_REQUEST_TIMEOUT_2 } = await import('./requestTimeout')
 
-    expect(STANZA_REQUEST_TIMEOUT_2).toEqual(1000)
+    expect(STANZA_REQUEST_TIMEOUT_2).toEqual(300)
   })
 })

@@ -51,7 +51,7 @@ vi.mock('@opentelemetry/sdk-trace-node', async (importOriginal: () => Promise<ty
   }
 })
 
-const createSpanExporterMock = vi.fn((config) => {
+const createSpanExporterMock = vi.fn((config, _serviceName: string, _serviceRelease: string) => {
   return new CustomSpanExporter(config)
 })
 
@@ -113,20 +113,20 @@ beforeEach(async () => {
 })
 describe('StanzaSpanProcessorManager', function () {
   it('should create StanzaSpanProcessorManager', function () {
-    expect(() => new StanzaSpanProcessorManager()).not.toThrow()
+    expect(() => new StanzaSpanProcessorManager('TestService', '1.0.0')).not.toThrow()
   })
 
   describe('empty context', () => {
     it('should return NoopSpanProcessor if service config is not initialized', function () {
-      const manager = new StanzaSpanProcessorManager()
+      const manager = new StanzaSpanProcessorManager('TestService', '1.0.0')
 
       expect(manager.getSpanProcessor(ROOT_CONTEXT)).toBeInstanceOf(NoopSpanProcessor)
     })
 
     it('should return service processor if service config is initialized', function () {
-      const manager = new StanzaSpanProcessorManager()
+      const manager = new StanzaSpanProcessorManager('TestService', '1.0.0')
 
-      serviceListener(mockServiceConfig)
+      serviceListener({ initialized: true, data: mockServiceConfig })
 
       const spanProcessor = manager.getSpanProcessor(ROOT_CONTEXT)
       expect(spanProcessor).toBeInstanceOf(BatchSpanProcessor)
@@ -142,7 +142,7 @@ describe('StanzaSpanProcessorManager', function () {
     it('should return service processor if service config is initialized before creating the manager', function () {
       getServiceConfigMock.mockImplementationOnce(() => mockServiceConfig)
 
-      const manager = new StanzaSpanProcessorManager()
+      const manager = new StanzaSpanProcessorManager('TestService', '1.0.0')
 
       const spanProcessor = manager.getSpanProcessor(ROOT_CONTEXT)
       expect(spanProcessor).toBeInstanceOf(BatchSpanProcessor)
@@ -158,7 +158,7 @@ describe('StanzaSpanProcessorManager', function () {
     it('should return updated service processor after service config is updated', function () {
       getServiceConfigMock.mockImplementation(() => mockServiceConfig)
 
-      const manager = new StanzaSpanProcessorManager()
+      const manager = new StanzaSpanProcessorManager('TestService', '1.0.0')
 
       const spanProcessor1 = manager.getSpanProcessor(ROOT_CONTEXT)
       expect(spanProcessor1).toBeInstanceOf(BatchSpanProcessor)
@@ -170,7 +170,7 @@ describe('StanzaSpanProcessorManager', function () {
         paramSampleConfig: []
       })))
 
-      serviceListener(secondMockServiceConfig)
+      serviceListener({ initialized: true, data: secondMockServiceConfig })
 
       const spanProcessor2 = manager.getSpanProcessor(ROOT_CONTEXT)
       expect(spanProcessor2).toBeInstanceOf(BatchSpanProcessor)
@@ -186,15 +186,15 @@ describe('StanzaSpanProcessorManager', function () {
 
   describe('context with guard', () => {
     it('should return NoopSpanProcessor if service config is not initialized', function () {
-      const manager = new StanzaSpanProcessorManager()
+      const manager = new StanzaSpanProcessorManager('TestService', '1.0.0')
 
       expect(manager.getSpanProcessor(ROOT_CONTEXT.setValue(stanzaGuardContextKey, 'myGuard'))).toBeInstanceOf(NoopSpanProcessor)
     })
 
     it('should return service processor if service config is initialized', function () {
-      const manager = new StanzaSpanProcessorManager()
+      const manager = new StanzaSpanProcessorManager('TestService', '1.0.0')
 
-      serviceListener(mockServiceConfig)
+      serviceListener({ initialized: true, data: mockServiceConfig })
 
       const spanProcessor = manager.getSpanProcessor(ROOT_CONTEXT.setValue(stanzaGuardContextKey, 'myGuard'))
       expect(spanProcessor).toBeInstanceOf(BatchSpanProcessor)

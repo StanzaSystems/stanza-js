@@ -1,12 +1,6 @@
 export interface StanzaFeature {
   name: string
-  code: ActionCode
+  disabled: boolean
   message?: string | undefined
   lastRefreshTime: number
-}
-
-export enum ActionCode {
-  ENABLED = 0,
-  DISABLED_VISIBLE = 1,
-  DISABLED_REMOVE = 2
 }

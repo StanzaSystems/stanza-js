@@ -8,9 +8,11 @@ export class StanzaSpanProcessorManager implements SpanProcessorManager {
   private readonly traceConfigManager = new StanzaConfigEntityManager<SpanProcessor>(
     {
       getInitial: () => new NoopSpanProcessor(),
-      createWithServiceConfig: ({ traceConfig }) => new BatchSpanProcessor(createSpanExporter(traceConfig)),
+      createWithServiceConfig: ({ traceConfig }) => new BatchSpanProcessor(createSpanExporter(traceConfig, this.serviceName, this.serviceRelease)),
       cleanup: async spanProcessor => spanProcessor.shutdown()
     })
+
+  constructor (private readonly serviceName: string, private readonly serviceRelease: string) {}
 
   async forceFlushAllSpanProcessors (): Promise<void> {
     await Promise.all(this.traceConfigManager.getAllEntities().map(async processor => processor.forceFlush()))

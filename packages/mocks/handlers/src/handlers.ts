@@ -2,51 +2,40 @@ import { rest } from 'msw'
 
 const searchFeatureAvailable = {
   featureName: 'search',
-  actionCodeEnabled: 0,
   messageEnabled: 'Search is working as expected',
-  actionCodeDisabled: 1,
   messageDisabled: 'Search is unavailable right now',
   enabledPercent: 100
 }
 const searchFeaturePartiallyAvailable = {
   featureName: 'search',
-  actionCodeEnabled: 0,
   messageEnabled: 'We are having trouble with search - please retry your request.',
-  actionCodeDisabled: 1,
   messageDisabled: 'Search is unavailable right now',
   enabledPercent: 80
 }
 const searchFeatureUnavailable = {
   featureName: 'search',
-  actionCodeEnabled: 0,
   messageEnabled: 'We are having trouble with search - please retry your request.',
-  actionCodeDisabled: 1,
   messageDisabled: 'Search is totally messed up RUNNNNN!!!!!!',
   enabledPercent: 0
 }
 const featuresStatic = [
   {
     featureName: 'checkout',
-    actionCodeEnabled: 0,
-    actionCodeDisabled: 1,
     enabledPercent: 60,
     messageEnabled: 'We are having trouble with checkout - please retry your request.',
     messageDisabled: 'Checkout is unavailable right now'
   },
   {
     featureName: 'featured',
-    actionCodeDisabled: 1,
     enabledPercent: 0
   },
   {
     featureName: 'shipping',
-    actionCodeDisabled: 1,
     messageDisabled: 'We are unable to pre-load shipping costs right now, but if you continue your order will still process',
     enabledPercent: 0
   },
   {
     featureName: 'productSummary',
-    actionCodeEnabled: 0,
     enabledPercent: 100,
     messageEnabled: 'We are having intermittent issues loading product summaries'
   }

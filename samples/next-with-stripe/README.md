@@ -62,8 +62,10 @@ STRIPE_PAYMENT_DESCRIPTION='Cool robot swag'
 # https://stripe.com/docs/webhooks/signatures
 STRIPE_WEBHOOK_SECRET={{ your webook secret}}
 
-# Stanza Specific Browser Key https://ui.demo.getstanza.io/keys
+# Stanza Specific Browser Key https://ui.demo.getstanza.io/admin?tab=keys
 NEXT_PUBLIC_STANZA_BROWSER_KEY= {{your stanza key for local environment}}
+# Stanza Specific API Key https://ui.demo.getstanza.io/admin?tab=keys
+NEXT_PUBLIC_STANZA_API_KEY= {{your stanza key for local environment}}
 ```
 
 ### Running the App

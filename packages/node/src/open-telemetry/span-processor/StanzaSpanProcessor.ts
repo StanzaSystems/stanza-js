@@ -3,7 +3,7 @@ import { StanzaSpanProcessorManager } from './StanzaSpanProcessorManager'
 import { ManagedSpanProcessor } from './ManagedSpanProcessor'
 
 export class StanzaSpanProcessor extends ManagedSpanProcessor implements SpanProcessor {
-  constructor () {
-    super(new StanzaSpanProcessorManager())
+  constructor (serviceName: string, serviceRelease: string) {
+    super(new StanzaSpanProcessorManager(serviceName, serviceRelease))
   }
 }

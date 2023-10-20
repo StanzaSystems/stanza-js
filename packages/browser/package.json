@@ -1,18 +1,18 @@
 {
   "name": "@getstanza/browser",
-  "version": "0.0.2-beta",
+  "version": "0.0.5-beta",
   "type": "commonjs",
   "description": "Stanza browser integration features",
   "author": "Stanza",
   "license": "Apache-2.0",
   "dependencies": {
     "cross-fetch": "^4.0.0",
-    "@getstanza/core": "0.0.2-beta"
+    "@getstanza/core": "0.0.5-beta"
   },
   "devDependencies": {
     "vitest": "0.33.0",
     "vitest-localstorage-mock": "^0.0.1",
-    "@getstanza/mocks-server": "0.0.2-beta",
+    "@getstanza/mocks-server": "0.0.5-beta",
     "vite-tsconfig-paths": "^4.2.0"
   }
 }

@@ -1,13 +1,13 @@
 {
   "name": "@getstanza/next",
-  "version": "0.0.2-beta",
+  "version": "0.0.5-beta",
   "type": "commonjs",
   "description": "Stanza Next components",
   "author": "Stanza",
   "license": "Apache-2.0",
   "dependencies": {
     "cookie": "^0.5.0",
-    "next": "13.4.1"
+    "next": "13.5.3"
   },
   "devDependencies": {
     "vitest": "0.33.0",

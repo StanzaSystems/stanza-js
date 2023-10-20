@@ -46,7 +46,7 @@ describe('hubService', () => {
     })
 
     describe('fetchServiceConfig', () => {
-      it('should emit stanza.config.service.fetch_ok when fetching succeeds', async () => {
+      it('should emit stanza.config.service.fetch.success when fetching succeeds', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const fetchServiceConfigPromise = hubService.fetchServiceConfig()
@@ -65,7 +65,7 @@ describe('hubService', () => {
         })
       })
 
-      it('should emit stanza.config.service.fetch_ok when fetching succeeds - with customer id', async () => {
+      it('should emit stanza.config.service.fetch.success when fetching succeeds - with customer id', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const fetchServiceConfigPromise = hubService.fetchServiceConfig()
@@ -104,7 +104,7 @@ describe('hubService', () => {
         })
       })
 
-      it('should emit stanza.config.service.fetch_failed when fetching fails', async () => {
+      it('should emit stanza.config.service.fetch.failure when fetching fails', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const fetchServiceConfigPromise = hubService.fetchServiceConfig()
@@ -120,7 +120,7 @@ describe('hubService', () => {
         })
       })
 
-      it('should emit stanza.config.service.fetch_failed when fetching fails - with customer id', async () => {
+      it('should emit stanza.config.service.fetch.failure when fetching fails - with customer id', async () => {
         updateServiceConfig({
           version: 'testVersion',
           config: {
@@ -160,7 +160,7 @@ describe('hubService', () => {
         })
       })
 
-      it('should emit stanza.config.service.latency event when fetching succeeds', async () => {
+      it('should emit stanza.config.service.fetch.duration event when fetching succeeds', async () => {
         vi.useFakeTimers({
           now: 0
         })
@@ -178,15 +178,15 @@ describe('hubService', () => {
 
         await expect(fetchServiceConfigPromise).resolves.toBeDefined()
 
-        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.service.fetchLatency, {
-          latency: 123.456,
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.service.fetchDuration, {
+          duration: 123.456,
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId'
         })
       })
 
-      it('should emit stanza.config.service.latency event when fetching succeeds - with customer id', async () => {
+      it('should emit stanza.config.service.fetch.duration event when fetching succeeds - with customer id', async () => {
         vi.useFakeTimers({
           now: 0
         })
@@ -227,8 +227,8 @@ describe('hubService', () => {
 
         await expect(fetchServiceConfigPromise).resolves.toBeDefined()
 
-        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.service.fetchLatency, {
-          latency: 123.456,
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.service.fetchDuration, {
+          duration: 123.456,
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId',
@@ -238,7 +238,7 @@ describe('hubService', () => {
     })
 
     describe('fetchGuard', () => {
-      it('should emit stanza.config.guard.fetch_ok when fetching succeeds', async () => {
+      it('should emit stanza.config.guard.fetch.success when fetching succeeds', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const fetchGuardPromise = hubService.fetchGuardConfig({
@@ -260,7 +260,7 @@ describe('hubService', () => {
         })
       })
 
-      it('should emit stanza.config.guard.fetch_failed when fetching fails', async () => {
+      it('should emit stanza.config.guard.fetch.failure when fetching fails', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const fetchGuardPromise = hubService.fetchGuardConfig({
@@ -278,7 +278,7 @@ describe('hubService', () => {
         })
       })
 
-      it('should emit stanza.config.guard.latency event when fetching succeeds', async () => {
+      it('should emit stanza.config.guard.fetch.duration event when fetching succeeds', async () => {
         vi.useFakeTimers({
           now: 0
         })
@@ -298,8 +298,8 @@ describe('hubService', () => {
 
         await expect(fetchGuardPromise).resolves.toBeDefined()
 
-        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.guard.fetchLatency, {
-          latency: 123.456,
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.config.guard.fetchDuration, {
+          duration: 123.456,
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId'
@@ -308,7 +308,7 @@ describe('hubService', () => {
     })
 
     describe('getToken', () => {
-      it('should emit stanza.quota.fetch_ok when fetching succeeds', async () => {
+      it('should emit stanza.quota.fetch.success when fetching succeeds', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const getTokenPromise = hubService.getToken({
@@ -334,7 +334,7 @@ describe('hubService', () => {
         })
       })
 
-      it('should emit stanza.quota.fetch_failed when fetching fails', async () => {
+      it('should emit stanza.quota.fetch.failure when fetching fails', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const getTokenPromise = hubService.getToken({
@@ -353,7 +353,7 @@ describe('hubService', () => {
         })
       })
 
-      it('should emit stanza.quota.fetch_latency event when fetching succeeds', async () => {
+      it('should emit stanza.quota.fetch.duration event when fetching succeeds', async () => {
         vi.useFakeTimers({
           now: 0
         })
@@ -376,8 +376,8 @@ describe('hubService', () => {
           token: 'testToken'
         })
 
-        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.quota.fetchLatency, {
-          latency: 123.456,
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.quota.fetchDuration, {
+          duration: 123.456,
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId',
@@ -393,7 +393,7 @@ describe('hubService', () => {
         })
       })
 
-      it('should emit stanza.quota.fetch_ok when fetching succeeds', async () => {
+      it('should emit stanza.quota.fetch.success when fetching succeeds', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const getTokenLeasePromise = hubService.getTokenLease({
@@ -432,7 +432,7 @@ describe('hubService', () => {
         })
       })
 
-      it('should emit stanza.quota.fetch_failed when fetching fails', async () => {
+      it('should emit stanza.quota.fetch.failure when fetching fails', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const getTokenLeasePromise = hubService.getTokenLease({
@@ -451,7 +451,7 @@ describe('hubService', () => {
         })
       })
 
-      it('should emit stanza.quota.fetch_latency event when fetching succeeds', async () => {
+      it('should emit stanza.quota.fetch.duration event when fetching succeeds', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const getTokenLeasePromise = hubService.getTokenLease({
@@ -483,8 +483,8 @@ describe('hubService', () => {
           ]
         })
 
-        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.quota.fetchLatency, {
-          latency: 123.456,
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.quota.fetchDuration, {
+          duration: 123.456,
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId',
@@ -494,7 +494,7 @@ describe('hubService', () => {
     })
 
     describe('markTokensAsConsumed', () => {
-      it('should emit stanza.quota.fetch_ok when fetching succeeds', async () => {
+      it('should emit stanza.quota.fetch.success when fetching succeeds', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const markTokensAsConsumedPromise = hubService.markTokensAsConsumed({
@@ -518,7 +518,7 @@ describe('hubService', () => {
         })
       })
 
-      it('should emit stanza.quota.fetch_failed when fetching fails', async () => {
+      it('should emit stanza.quota.fetch.failure when fetching fails', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const markTokensAsConsumedPromise = hubService.markTokensAsConsumed({
@@ -537,7 +537,7 @@ describe('hubService', () => {
         })
       })
 
-      it('should emit stanza.quota.fetch_latency event when fetching succeeds', async () => {
+      it('should emit stanza.quota.fetch.duration event when fetching succeeds', async () => {
         vi.useFakeTimers({
           now: 0
         })
@@ -556,8 +556,8 @@ describe('hubService', () => {
           ok: true
         })
 
-        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.quota.fetchLatency, {
-          latency: 123.456,
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.quota.fetchDuration, {
+          duration: 123.456,
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId',
@@ -567,7 +567,7 @@ describe('hubService', () => {
     })
 
     describe('validateToken', () => {
-      it('should emit stanza.quota.validate_ok when validating succeeds', async () => {
+      it('should emit stanza.quota.token.validate.success when validating succeeds', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const validateTokenPromise = hubService.validateToken({
@@ -596,7 +596,7 @@ describe('hubService', () => {
         })
       })
 
-      it('should emit stanza.quota.validate_failed when fetching fails', async () => {
+      it('should emit stanza.quota.token.validate.failure when fetching fails', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const validateTokenPromise = hubService.validateToken({
@@ -615,7 +615,7 @@ describe('hubService', () => {
         })
       })
 
-      it('should emit stanza.quota.validate_failed when fetching return invalid token', async () => {
+      it('should emit stanza.quota.token.validate.failure when fetching return invalid token', async () => {
         const deferred = mockHubRequest.mockImplementationDeferred()
 
         const validateTokenPromise = hubService.validateToken({
@@ -644,7 +644,7 @@ describe('hubService', () => {
         })
       })
 
-      it('should emit stanza.quota.validate_latency event when fetching succeeds', async () => {
+      it('should emit stanza.quota.token.validate.duration event when fetching succeeds', async () => {
         vi.useFakeTimers({
           now: 0
         })
@@ -671,8 +671,8 @@ describe('hubService', () => {
           token: 'testToken'
         })
 
-        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.quota.validateLatency, {
-          latency: 123.456,
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.quota.validateDuration, {
+          duration: 123.456,
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId'
