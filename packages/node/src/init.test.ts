@@ -54,7 +54,12 @@ describe('Stanza init', function () {
       await init()
 
       expect(warnSpy).toHaveBeenCalledOnce()
-      expect(warnSpy).toHaveBeenCalledWith('Provided options are invalid')
+      expect(warnSpy).toHaveBeenCalledWith(`Provided options are invalid. Please provide an object with the following properties:
+- hubUrl: string (URL to a Hub instance)
+- apiKey: string (API key for a Hub instance)
+- serviceName: string (Name of the service)
+- serviceRelease: string (A version of the service)
+- environment: string (An environment to use)`)
     })
   })
 
