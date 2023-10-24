@@ -17,7 +17,8 @@ export let hubService: HubService = hubServiceGlobal[HUB_SERVICE_SYMBOL] = hubSe
   getTokenLease: notInitializedServiceMethod,
   validateToken: notInitializedServiceMethod,
   markTokensAsConsumed: notInitializedServiceMethod,
-  getAuthToken: notInitializedServiceMethod
+  getAuthToken: notInitializedServiceMethod,
+  getGuardHealth: notInitializedServiceMethod
 } satisfies HubService
 
 export const updateHubService = (updatedService: HubService) => {

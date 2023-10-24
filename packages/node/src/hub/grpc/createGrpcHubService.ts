@@ -18,6 +18,12 @@ import { logger } from '../../global/logger'
 import { AuthService } from '../../../gen/stanza/hub/v1/auth_connect'
 import { stanzaAuthTokenResponse } from '../api/stanzaAuthTokenResponse'
 import { createUserAgentHeader } from '../../utils/userAgentHeader'
+import { HealthService } from '../../../gen/stanza/hub/v1/health_connect'
+import {
+  apiHealthToHealth,
+  stanzaGuardHealthResponse
+} from '../api/stanzaGuardHealthResponse'
+import { Health } from '../../guard/model'
 
 interface GrpcHubServiceInitOptions {
   serviceName: string
@@ -41,6 +47,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
   const configClient = createPromiseClient(ConfigService, transport)
   const quotaClient = createPromiseClient(QuotaService, transport)
   const authClient = createPromiseClient(AuthService, transport)
+  const healthClient = createPromiseClient(HealthService, transport)
 
   return wrapHubServiceWithMetrics(logger.wrap({
     prefix: '[gRPC Hub Service]'
@@ -157,6 +164,18 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
       )
 
       return data === null ? null : { token: data.bearerToken }
+    },
+    getGuardHealth: async (options) => {
+      const data = await grpcRequest(async () => healthClient.queryGuardHealth({
+        selector: {
+          guardName: options.guard,
+          featureName: options.feature,
+          environment: options.environment,
+          tags: options.tags
+        }
+      }), stanzaGuardHealthResponse)
+
+      return data !== null ? apiHealthToHealth(data.health) : Health.Unspecified
     }
   }))
 }
@@ -171,6 +190,8 @@ const grpcRequest = async <T extends ZodType>(req: () => Promise<unknown>, valid
   const parsed = validateResult.safeParse(response)
 
   if (!parsed.success) {
+    logger.debug('grpc request to hub failed %o', parsed.error)
+    logger.debug('raw response: %o', response)
     return null
   }
 

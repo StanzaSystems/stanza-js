@@ -24,6 +24,7 @@ const hubServiceMockMethod = <TMethod extends keyof HubService>(implementation: 
 
 const getServiceMetadataMock = hubServiceMockMethod<'getServiceMetadata'>(() => ({
   serviceName: 'mockService',
+  serviceRelease: '1.0.0',
   environment: 'mockEnvironment',
   clientId: 'mockClientId'
 }))
@@ -34,6 +35,7 @@ const getTokenLeaseMock = hubServiceMockMethod<'getTokenLease'>(async () => new 
 const validateTokenMock = hubServiceMockMethod<'validateToken'>(async () => new Promise<never>(() => {}))
 const markTokensAsConsumedMock = hubServiceMockMethod<'markTokensAsConsumed'>(async () => new Promise<never>(() => {}))
 const getAuthTokenMock = hubServiceMockMethod<'getAuthToken'>(async () => new Promise<never>(() => {}))
+const getGuardHealthMock = hubServiceMockMethod<'getGuardHealth'>(async () => new Promise<never>(() => {}))
 
 export const mockHubService = {
   getServiceMetadata: getServiceMetadataMock,
@@ -44,6 +46,7 @@ export const mockHubService = {
   validateToken: validateTokenMock,
   markTokensAsConsumed: markTokensAsConsumedMock,
   getAuthToken: getAuthTokenMock,
+  getGuardHealth: getGuardHealthMock,
   reset: () => {
     getServiceMetadataMock.mockReset()
     fetchServiceConfigMock.mockReset()

@@ -5,6 +5,7 @@ import {
   type StanzaTokenLeasesResult,
   type ValidatedToken
 } from './model'
+import { type Health } from '../guard/model'
 
 export interface FetchServiceConfigOptions {
   lastVersionSeen?: string
@@ -43,6 +44,13 @@ interface MarkTokensAsConsumedOptions {
   tokens: string[]
 }
 
+interface GetGuardHealthOptions {
+  guard: string
+  feature: string
+  environment: string
+  tags?: Tag[]
+}
+
 export interface HubService {
   getServiceMetadata: () => {
     serviceName: string
@@ -57,4 +65,5 @@ export interface HubService {
   validateToken: (options: ValidateTokenOptions) => Promise<ValidatedToken | null>
   markTokensAsConsumed: (options: MarkTokensAsConsumedOptions) => Promise<{ ok: boolean } | null>
   getAuthToken: () => Promise<{ token: string } | null>
+  getGuardHealth: (options: GetGuardHealthOptions) => Promise<Health>
 }
