@@ -780,7 +780,7 @@ describe('stanzaGuard', function () {
         vi.useRealTimers()
       })
 
-      it('should NOT be pass-through execution immediately when token is validated', async function () {
+      it('should return same value as wrapped function when token is validated and quota given', async function () {
         vi.useFakeTimers()
 
         doStuff.mockReturnValueOnce('test-value-token-resolved')

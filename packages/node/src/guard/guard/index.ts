@@ -21,22 +21,25 @@ export const initGuardGuard = (options: GuardGuardOptions) => {
       })
     }
 
-    if (shouldValidateIngressToken()) {
-      const validateIngressTokenResult = await validateIngressToken()
-
-      if (shouldCheckQuota()) {
-        const checkQuotaResult = await checkQuota()
-
-        return [validateIngressTokenResult, checkQuotaResult]
+    const guardSteps = [
+      {
+        shouldRun: shouldValidateIngressToken,
+        run: validateIngressToken
+      },
+      {
+        shouldRun: shouldCheckQuota,
+        run: checkQuota
       }
-      return [validateIngressTokenResult]
+    ]
+
+    const results = Array<Awaited<ReturnType<(typeof guardSteps)[number]['run']>>>()
+    for (const { shouldRun, run } of guardSteps) {
+      if (shouldRun()) {
+        const result = await run()
+        results.push(result)
+      }
     }
 
-    if (shouldCheckQuota()) {
-      const checkQuotaResult = await checkQuota()
-      return [checkQuotaResult]
-    }
-
-    return []
+    return results
   }
 }

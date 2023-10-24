@@ -20,19 +20,23 @@ vi.mock('../quota/getQuota', () => {
   } satisfies GetQuotaModule
 })
 
+type GetQuotaFn = GetQuotaModule['getQuota']
+type GetQuotaFnParameters = Parameters<GetQuotaFn>
+type GetQuotaFnReturnType = ReturnType<GetQuotaFn>
+
 const getQuotaMock = Object.assign(
-  vi.fn<Parameters<GetQuotaModule['getQuota']>, ReturnType<GetQuotaModule['getQuota']>>(async () => { throw Error('not implemented') }),
+  vi.fn<GetQuotaFnParameters, GetQuotaFnReturnType>(async () => { throw Error('not implemented') }),
   {
-    mockImplementationDeferred: function (this: Mock<Parameters<GetQuotaModule['getQuota']>, ReturnType<GetQuotaModule['getQuota']>>) {
+    mockImplementationDeferred: function (this: Mock<GetQuotaFnParameters, GetQuotaFnReturnType>) {
       const deferred: {
-        resolve: (value: Awaited<ReturnType<GetQuotaModule['getQuota']>>) => void
+        resolve: (value: Awaited<GetQuotaFnReturnType>) => void
         reject: (reason: unknown) => void
       } = {
         resolve: () => {},
         reject: () => {}
       }
       this.mockImplementation((): any => {
-        return new Promise<Awaited<ReturnType<GetQuotaModule['getQuota']>>>((resolve, reject) => {
+        return new Promise<Awaited<GetQuotaFnReturnType>>((resolve, reject) => {
           deferred.resolve = resolve
           deferred.reject = reject
         })
@@ -40,7 +44,8 @@ const getQuotaMock = Object.assign(
 
       return deferred
     }
-  })
+  }
+)
 
 beforeEach(() => {
   updateGuardConfig('testGuard', undefined as any)
