@@ -455,7 +455,7 @@ describe('stanzaGuard', function () {
         version: 'test',
         config: {
           validateIngressTokens: true
-        } as any
+        } satisfies Partial<GuardConfig['config']> as any
       } satisfies GuardConfig
 
       it('should NOT be pass-through execution after config is fetched', async function () {
@@ -700,6 +700,117 @@ describe('stanzaGuard', function () {
         await expect(guardedDoStuffPromise).resolves.toBeUndefined()
 
         expect(doStuff).toHaveBeenCalledOnce()
+
+        vi.useRealTimers()
+      })
+    })
+
+    describe('validate ingress token & check quota', () => {
+      const validateIngressAndCheckQuotaGuardConfig = {
+        version: 'test',
+        config: {
+          checkQuota: true,
+          validateIngressTokens: true
+        } satisfies Partial<GuardConfig['config']> as any
+      } satisfies GuardConfig
+
+      it('should NOT be pass-through execution after config is fetched', async function () {
+        vi.useFakeTimers()
+
+        const configDeferred = mockHubService.fetchGuardConfig.mockImplementationDeferred()
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
+          doStuff()
+        })
+
+        configDeferred.resolve(validateIngressAndCheckQuotaGuardConfig)
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        void guardedDoStuff().catch(() => {})
+
+        expect(doStuff).not.toHaveBeenCalled()
+
+        vi.useRealTimers()
+      })
+
+      it('should throw error execution after config is fetched and no token is provided in context', async function () {
+        vi.useFakeTimers()
+        const configDeferred = mockHubService.fetchGuardConfig.mockImplementationDeferred()
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
+          doStuff()
+        })
+
+        configDeferred.resolve(validateIngressAndCheckQuotaGuardConfig)
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        await expect(guardedDoStuff()).rejects.toThrow('Valid Stanza token was not provided')
+
+        vi.useRealTimers()
+      })
+
+      it('should NOT be pass-through execution immediately when token is validated', async function () {
+        vi.useFakeTimers()
+
+        doStuff.mockReturnValueOnce('test-value-token-resolved')
+
+        const validateDeferred = mockHubService.validateToken.mockImplementationDeferred()
+        getQuotaMock.mockImplementationDeferred()
+        mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(validateIngressAndCheckQuotaGuardConfig))
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
+          return doStuff()
+        })
+
+        // wait for guard config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const guardedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
+
+        validateDeferred.resolve({
+          token: 'aToken',
+          valid: true
+        })
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        void guardedDoStuffPromise.catch(() => {})
+
+        expect(doStuff).not.toHaveBeenCalled()
+
+        vi.useRealTimers()
+      })
+
+      it('should NOT be pass-through execution immediately when token is validated', async function () {
+        vi.useFakeTimers()
+
+        doStuff.mockReturnValueOnce('test-value-token-resolved')
+
+        const validateDeferred = mockHubService.validateToken.mockImplementationDeferred()
+        const getQuotaDeferred = getQuotaMock.mockImplementationDeferred()
+        mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(validateIngressAndCheckQuotaGuardConfig))
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
+          return doStuff()
+        })
+
+        // wait for guard config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const guardedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
+
+        validateDeferred.resolve({
+          token: 'aToken',
+          valid: true
+        })
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        expect(doStuff).not.toHaveBeenCalled()
+
+        getQuotaDeferred.resolve({ granted: true, token: 'test-token' })
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        await expect(guardedDoStuffPromise).resolves.toBe('test-value-token-resolved')
 
         vi.useRealTimers()
       })

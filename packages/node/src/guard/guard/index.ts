@@ -22,13 +22,21 @@ export const initGuardGuard = (options: GuardGuardOptions) => {
     }
 
     if (shouldValidateIngressToken()) {
-      return validateIngressToken()
+      const validateIngressTokenResult = await validateIngressToken()
+
+      if (shouldCheckQuota()) {
+        const checkQuotaResult = await checkQuota()
+
+        return [validateIngressTokenResult, checkQuotaResult]
+      }
+      return [validateIngressTokenResult]
     }
 
     if (shouldCheckQuota()) {
-      return checkQuota()
+      const checkQuotaResult = await checkQuota()
+      return [checkQuotaResult]
     }
 
-    return null
+    return []
   }
 }

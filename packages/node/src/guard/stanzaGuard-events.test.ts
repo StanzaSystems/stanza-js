@@ -54,6 +54,7 @@ beforeEach(() => {
   mockHubService.reset()
   mockHubService.getServiceMetadata.mockImplementation(() => ({
     serviceName: 'testService',
+    serviceRelease: '1.0.0',
     environment: 'testEnvironment',
     clientId: 'testClientId'
   }))

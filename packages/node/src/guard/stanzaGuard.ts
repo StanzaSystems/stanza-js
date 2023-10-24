@@ -19,16 +19,16 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOp
 
   return createStanzaWrapper<TArgs, TReturn, Promisify<TReturn>>((fn) => {
     const resultFn = async function (...args: Parameters<typeof fn>) {
-      const token = await guard()
+      const guardResult = await guard()
 
       const fnWithBoundContext = bindContext([
         addStanzaGuardToContext(options.guard),
         options.priorityBoost !== undefined ? addPriorityBoostToContext(options.priorityBoost) : undefined,
-        token?.type === 'TOKEN_GRANTED'
-          ? addStanzaTokenToContext(token.token)
-          : token?.type === 'TOKEN_VALIDATED'
-            ? removeStanzaTokenFromContext()
-            : null
+        ...guardResult.filter(isTruthy).map(token => {
+          return token?.type === 'TOKEN_GRANTED'
+            ? addStanzaTokenToContext(token.token)
+            : removeStanzaTokenFromContext()
+        })
       ].filter(isTruthy), fn)
 
       return (fnWithBoundContext(...args) as Promisify<TReturn>)
@@ -37,8 +37,11 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOp
     return wrapEventsAsync(resultFn, {
       success: async () => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.guard.succeeded, {
-          ...hubService.getServiceMetadata(),
+          serviceName,
+          environment,
+          clientId,
           featureName: options.feature ?? '',
           guardName: options.guard,
           customerId
@@ -46,8 +49,11 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOp
       },
       failure: async () => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.guard.failed, {
-          ...hubService.getServiceMetadata(),
+          serviceName,
+          environment,
+          clientId,
           featureName: options.feature ?? '',
           guardName: options.guard,
           customerId
@@ -55,8 +61,11 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOp
       },
       duration: async (...[duration]) => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.guard.duration, {
-          ...hubService.getServiceMetadata(),
+          serviceName,
+          environment,
+          clientId,
           featureName: options.feature ?? '',
           guardName: options.guard,
           customerId,
@@ -74,18 +83,24 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
     guard: wrapEventsAsync(initializedGuard.guard, {
       success: async (result) => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.guard.allowed, {
-          ...hubService.getServiceMetadata(),
+          serviceName,
+          environment,
+          clientId,
           featureName: options.feature ?? '',
           guardName: options.guard,
           customerId,
-          reason: result !== null ? 'quota' : 'fail_open'
+          reason: result.some(reason => reason !== null) ? 'quota' : 'fail_open'
         })
       },
       failure: async () => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.guard.blocked, {
-          ...hubService.getServiceMetadata(),
+          serviceName,
+          environment,
+          clientId,
           featureName: options.feature ?? '',
           guardName: options.guard,
           customerId,
