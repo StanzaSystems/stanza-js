@@ -51,11 +51,21 @@ afterEach(() => {
 describe('Stanza init', function () {
   describe('invalid options', () => {
     it('should throw when not options provided', async () => {
-      await expect(initOrThrow()).rejects.toEqual(new Error('Provided options are invalid'))
+      await expect(initOrThrow()).rejects.toEqual(new Error(`Provided options are invalid. Please provide an object with the following properties:
+- hubUrl: string (URL to a Hub instance)
+- apiKey: string (API key for a Hub instance)
+- serviceName: string (Name of the service)
+- serviceRelease: string (A version of the service)
+- environment: string (An environment to use)`))
     })
 
     it('should warn if empty config is provided', async () => {
-      await expect(initOrThrow()).rejects.toEqual(new Error('Provided options are invalid'))
+      await expect(initOrThrow()).rejects.toEqual(new Error(`Provided options are invalid. Please provide an object with the following properties:
+- hubUrl: string (URL to a Hub instance)
+- apiKey: string (API key for a Hub instance)
+- serviceName: string (Name of the service)
+- serviceRelease: string (A version of the service)
+- environment: string (An environment to use)`))
     })
   })
 

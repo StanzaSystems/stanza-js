@@ -6,11 +6,11 @@ const LOG_LEVELS = Object.keys({
 } satisfies Record<pino.Level, true>) as pino.Level[]
 
 export const stanzaInitOptions = z.object({
-  hubUrl: z.string().url(),
-  apiKey: z.string(),
-  serviceName: z.string(),
-  serviceRelease: z.string(),
-  environment: z.string(),
+  hubUrl: z.string().url().describe('string (URL to a Hub instance)'),
+  apiKey: z.string().describe('string (API key for a Hub instance)'),
+  serviceName: z.string().describe('string (Name of the service)'),
+  serviceRelease: z.string().describe('string (A version of the service)'),
+  environment: z.string().describe('string (An environment to use)'),
   useRestHubApi: z.boolean().optional().default(false),
   skipTokenCache: z.boolean().optional().default(false),
   requestTimeout: z.number().int().optional().default(1000),
