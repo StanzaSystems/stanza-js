@@ -3,13 +3,21 @@ import { createGrpcHubService } from './createGrpcHubService'
 import type * as connectNodeModule from '@bufbuild/connect'
 import { type ConfigService } from '../../../gen/stanza/hub/v1/config_connect'
 import { type QuotaService } from '../../../gen/stanza/hub/v1/quota_connect'
-import { GetGuardConfigResponse, GetServiceConfigResponse } from '../../../gen/stanza/hub/v1/config_pb'
+import {
+  GetGuardConfigResponse,
+  GetServiceConfigResponse
+} from '../../../gen/stanza/hub/v1/config_pb'
 import {
   GetTokenLeaseResponse,
   GetTokenResponse,
   SetTokenLeaseConsumedResponse,
   ValidateTokenResponse
 } from '../../../gen/stanza/hub/v1/quota_pb'
+import { type HealthService } from '../../../gen/stanza/hub/v1/health_connect'
+import { type AuthService } from '../../../gen/stanza/hub/v1/auth_connect'
+import { QueryGuardHealthResponse } from '../../../gen/stanza/hub/v1/health_pb'
+import { Health as APIHealth } from '../../../gen/stanza/hub/v1/common_pb'
+import { Health } from '../../guard/model'
 
 type ConnectNodeModule = typeof connectNodeModule
 
@@ -37,6 +45,14 @@ const quotaClientMock = {
   setTokenLeaseConsumed: vi.fn(),
   validateToken: vi.fn()
 } satisfies connectNodeModule.PromiseClient<typeof QuotaService>
+
+const authClientMock = {
+  getBearerToken: vi.fn()
+} satisfies connectNodeModule.PromiseClient<typeof AuthService>
+
+const healthClientMock = {
+  queryGuardHealth: vi.fn()
+} satisfies connectNodeModule.PromiseClient<typeof HealthService>
 
 beforeEach(async () => {
   createPromiseClientMock.mockReset()
@@ -750,6 +766,110 @@ describe('createGrpcHubService', async () => {
 
       void markTokensAsConsumed({
         tokens: ['test-token-one', 'test-token-two']
+      }).catch((e) => {
+        expect(e).toEqual(new Error('Hub request timed out'))
+      })
+
+      await vi.advanceTimersByTimeAsync(1000)
+      expect.assertions(1)
+
+      vi.useRealTimers()
+    })
+  })
+
+  describe('getGuardHealth', function () {
+    createPromiseClientMock.mockImplementationOnce(() => configClientMock)
+    createPromiseClientMock.mockImplementationOnce(() => quotaClientMock)
+    createPromiseClientMock.mockImplementationOnce(() => authClientMock)
+    createPromiseClientMock.mockImplementationOnce(() => healthClientMock)
+    const { getGuardHealth } = createGrpcHubService({
+      serviceName: 'TestService',
+      serviceRelease: '1.0.0',
+      environment: 'test',
+      clientId: 'test-client-id',
+      hubUrl: 'https://url.to.hub',
+      apiKey: 'testApiKey'
+    })
+
+    it('should call fetch with proper params', async () => {
+      await getGuardHealth({
+        guard: 'testGuard',
+        feature: 'testFeature',
+        environment: 'testEnvironment',
+        tags: [{
+          key: 'testTag',
+          value: 'testTagValue'
+        }]
+      })
+
+      expect(healthClientMock.queryGuardHealth).toHaveBeenCalledOnce()
+      expect(healthClientMock.queryGuardHealth).toHaveBeenCalledWith(
+        {
+          selector: {
+            guardName: 'testGuard',
+            featureName: 'testFeature',
+            environment: 'testEnvironment',
+            tags: [{
+              key: 'testTag',
+              value: 'testTagValue'
+            }]
+          }
+        }
+      )
+    })
+
+    it('should return Unspecified health if invalid data returned', async () => {
+      healthClientMock.queryGuardHealth.mockImplementation(async () => {
+        return 'WRONG_VALUE' as any
+      })
+
+      const result = await getGuardHealth({
+        guard: 'testGuard',
+        feature: 'testFeature',
+        environment: 'testEnvironment',
+        tags: [{
+          key: 'testTag',
+          value: 'testTagValue'
+        }]
+      })
+
+      expect(result).toBe(Health.Unspecified)
+    })
+
+    it('should return valid response', async () => {
+      healthClientMock.queryGuardHealth.mockImplementation(async () => {
+        return new QueryGuardHealthResponse({
+          health: APIHealth.OK
+        })
+      })
+
+      const result = await getGuardHealth({
+        guard: 'testGuard',
+        feature: 'testFeature',
+        environment: 'testEnvironment',
+        tags: [{
+          key: 'testTag',
+          value: 'testTagValue'
+        }]
+      })
+
+      expect(result).toBe(Health.Ok)
+    })
+
+    it('should timeout if fetch runs too long', async () => {
+      vi.useFakeTimers()
+      healthClientMock.queryGuardHealth.mockImplementation(async () => {
+        return new Promise<never>(() => {})
+      })
+
+      void getGuardHealth({
+        guard: 'testGuard',
+        feature: 'testFeature',
+        environment: 'testEnvironment',
+        tags: [{
+          key: 'testTag',
+          value: 'testTagValue'
+        }]
       }).catch((e) => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })

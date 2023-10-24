@@ -7,6 +7,8 @@ import { type StanzaTokenResponse } from '../api/stanzaTokenResponse'
 import { type StanzaTokenLeaseResponse } from '../api/stanzaTokenLeaseResponse'
 import { type StanzaValidateTokenResponse } from '../api/stanzaValidateTokenResponse'
 import { type StanzaMarkTokensAsConsumedResponse } from '../api/stanzaMarkTokensAsConsumedResponse'
+import { type StanzaGuardHealthResponse } from '../api/stanzaGuardHealthResponse'
+import { Health } from '../../guard/model'
 
 vi.mock('../../fetchImplementation', () => {
   return {
@@ -816,6 +818,125 @@ describe('createRestHubService', async () => {
 
       void markTokensAsConsumed({
         tokens: ['test-token-one', 'test-token-two']
+      }).catch((e) => {
+        expect(e).toEqual(new Error('Hub request timed out'))
+      })
+
+      await vi.advanceTimersByTimeAsync(1000)
+      expect.assertions(1)
+
+      vi.useRealTimers()
+    })
+  })
+
+  describe('getGuardHealth', function () {
+    const { getGuardHealth } = createRestHubService({
+      serviceName: 'TestService',
+      serviceRelease: '1',
+      environment: 'test',
+      clientId: 'test-client-id',
+      hubRequest: createHubRequest({
+        hubUrl: 'https://url.to.hub',
+        apiKey: 'testApiKey',
+        serviceName: 'TestService',
+        serviceRelease: '1.0.0'
+      })
+    })
+
+    it('should call fetch with proper params', async () => {
+      await getGuardHealth({
+        guard: 'testGuard',
+        feature: 'testFeature',
+        environment: 'testEnvironment',
+        tags: [{
+          key: 'testTag',
+          value: 'testTagValue'
+        }]
+      })
+
+      expect(fetchMock).toHaveBeenCalledOnce()
+      expect(fetchMock).toHaveBeenCalledWith(
+        new URL('https://url.to.hub/v1/health/guard'),
+        {
+          headers: {
+            'X-Stanza-Key': 'testApiKey',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.5-beta'
+          },
+          body: JSON.stringify({
+            selector: {
+              guardName: 'testGuard',
+              featureName: 'testFeature',
+              environment: 'testEnvironment',
+              tags: [{
+                key: 'testTag',
+                value: 'testTagValue'
+              }]
+            }
+          }),
+          method: 'POST'
+        }
+      )
+    })
+
+    it('should return Unspecified health if invalid data returned', async () => {
+      fetchMock.mockImplementation(async () => {
+        return {
+          json: async () => 'WRONG_VALUE'
+        }
+      })
+
+      const result = await getGuardHealth({
+        guard: 'testGuard',
+        feature: 'testFeature',
+        environment: 'testEnvironment',
+        tags: [{
+          key: 'testTag',
+          value: 'testTagValue'
+        }]
+      })
+
+      expect(result).toBe(Health.Unspecified)
+    })
+
+    it('should return ok if response is correct', async () => {
+      vi.useFakeTimers({ now: 123 })
+      fetchMock.mockImplementation(async () => {
+        return {
+          json: async () => ({
+            health: 'HEALTH_OK'
+          } satisfies StanzaGuardHealthResponse)
+        }
+      })
+
+      const result = await getGuardHealth({
+        guard: 'testGuard',
+        feature: 'testFeature',
+        environment: 'testEnvironment',
+        tags: [{
+          key: 'testTag',
+          value: 'testTagValue'
+        }]
+      })
+
+      expect(result).toEqual(Health.Ok)
+
+      vi.useRealTimers()
+    })
+
+    it('should timeout if fetch runs too long', async () => {
+      vi.useFakeTimers()
+      fetchMock.mockImplementation(async () => {
+        return new Promise(() => {})
+      })
+
+      void getGuardHealth({
+        guard: 'testGuard',
+        feature: 'testFeature',
+        environment: 'testEnvironment',
+        tags: [{
+          key: 'testTag',
+          value: 'testTagValue'
+        }]
       }).catch((e) => {
         expect(e).toEqual(new Error('Hub request timed out'))
       })
