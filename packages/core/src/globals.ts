@@ -9,13 +9,12 @@ interface StanzaInternalConfig {
   stanzaApiKey: string
   url: string
   refreshSeconds?: number
-  enablementNumberGenerator?: () => Promise<number>
+  enablementNumberGenerator: () => Promise<number>
   contextConfigs: Record<string, { features: string[] }>
 }
 
 let stanzaConfig: StanzaInternalConfig
 let localStateProvider: LocalStateProvider
-let enablementNumberGenerator: () => Promise<number>
 let enablementNumber = 100
 
 export const featureChanges = new StanzaChangeTarget<FeatureState>()
@@ -25,9 +24,9 @@ export function init (config: StanzaCoreConfig, provider: LocalStateProvider): v
   if (stanzaConfig !== undefined || localStateProvider !== undefined) {
     throw new Error('Stanza is already initialized')
   }
-  enablementNumberGenerator = config.enablementNumberGenerator ?? getEnablementNumberSimple
   stanzaConfig = {
     ...config,
+    enablementNumberGenerator: config.enablementNumberGenerator ?? getEnablementNumberSimple,
     contextConfigs: config.contextConfigs
       .reduce(groupBy('name', ({ features }) => ({ features })), {})
   }
@@ -53,7 +52,7 @@ export function getStateProvider (): LocalStateProvider {
 }
 
 export async function getEnablementNumber (): Promise<number> {
-  return enablementNumberGenerator().then(nr => {
+  return stanzaConfig.enablementNumberGenerator().then(nr => {
     enablementNumber = nr
     enablementNumberChanges.dispatchChange(nr)
     return nr
