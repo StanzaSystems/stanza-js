@@ -1,10 +1,12 @@
 import { getFeatureStatesHot } from './getFeatureStatesHot'
 import { featureChanges, getConfig, getStateProvider } from './globals'
-import { featureStatesEqual } from './models/featureStatesEqual'
-import { groupBy } from './groupBy'
-import { identity } from './identity'
 
 export async function startPollingFeatureStateUpdates (): Promise<void> {
+  const stateProvider = getStateProvider()
+  stateProvider.addChangeListener(({ newValue }) => {
+    featureChanges.dispatchChange(newValue)
+  })
+
   while (true) {
     await pollFeatureStateUpdates()
     await poll()
@@ -14,16 +16,7 @@ export async function startPollingFeatureStateUpdates (): Promise<void> {
 async function pollFeatureStateUpdates (): Promise<void> {
   const featureStates = getStateProvider().getAllFeatureStates()
   const features = featureStates.map(({ featureName }) => featureName)
-  const newFeaturesStates = await getFeatureStatesHot(features)
-
-  const oldFeatureStatesMap = featureStates.reduce(groupBy('featureName', identity), {})
-
-  newFeaturesStates.filter(newFeaturesState => {
-    const oldFeatureState = oldFeatureStatesMap[newFeaturesState.featureName]
-    return oldFeatureState == null || !featureStatesEqual(newFeaturesState, oldFeatureState)
-  }).forEach(newFeaturesState => {
-    featureChanges.dispatchChange(newFeaturesState)
-  })
+  await getFeatureStatesHot(features)
 }
 
 async function poll (): Promise<void> {
