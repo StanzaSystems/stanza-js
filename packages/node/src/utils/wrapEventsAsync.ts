@@ -8,17 +8,13 @@ interface WrapEvents<TResult, TArgs extends any[]> {
   ) => void | Promise<void>
 }
 
-type AsyncLikeFn<TArgs extends any[], TResult> = (
-  ...args: TArgs
-) => PromiseLike<TResult>
-
 type AsyncFn<TArgs extends any[], TResult> = (
   ...args: TArgs
 ) => Promise<TResult>
 
 export const wrapEventsAsync =
   <TArgs extends any[], TResult>(
-    fn: AsyncLikeFn<TArgs, TResult>,
+    fn: AsyncFn<TArgs, TResult>,
     events: WrapEvents<TResult, TArgs> = {}
   ): AsyncFn<TArgs, TResult> =>
     async (...args: TArgs): Promise<TResult> => {

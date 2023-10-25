@@ -1,4 +1,4 @@
-import { context, propagation, ROOT_CONTEXT } from '@opentelemetry/api'
+import { context, propagation, ROOT_CONTEXT, type TextMapGetter } from '@opentelemetry/api'
 import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks'
 import { beforeAll, beforeEach, describe, expect, it, type Mock, vi } from 'vitest'
 
@@ -17,6 +17,11 @@ import { StanzaBaggagePropagator } from '../propagation/StanzaBaggagePropagator'
 type GetQuotaModule = typeof getQuotaModule
 
 const doStuff = vi.fn()
+
+const recordGetter: TextMapGetter<Record<string, string>> = {
+  get: (carrier, key) => carrier[key],
+  keys: (carrier) => Object.keys(carrier)
+}
 
 vi.mock('../quota/getQuota', () => {
   return {
@@ -546,14 +551,7 @@ describe('stanzaGuard', function () {
 
         const contextWithBaggage = new StanzaBaggagePropagator().extract(ROOT_CONTEXT, {
           baggage: 'stz-boost=1'
-        }, {
-          keys (carrier) {
-            return Object.keys(carrier)
-          },
-          get (carrier, key) {
-            return carrier[key]
-          }
-        })
+        }, recordGetter)
 
         // wait for guard config to be initialized
         await vi.advanceTimersByTimeAsync(0)
@@ -583,14 +581,7 @@ describe('stanzaGuard', function () {
 
         const contextWithBaggage = new StanzaBaggagePropagator().extract(ROOT_CONTEXT, {
           baggage: 'stz-boost=1'
-        }, {
-          keys (carrier) {
-            return Object.keys(carrier)
-          },
-          get (carrier, key) {
-            return carrier[key]
-          }
-        })
+        }, recordGetter)
 
         // wait for guard config to be initialized
         await vi.advanceTimersByTimeAsync(0)
@@ -645,14 +636,7 @@ describe('stanzaGuard', function () {
 
         const contextWithBaggage = new StanzaBaggagePropagator().extract(ROOT_CONTEXT, {
           baggage: 'stz-boost=1'
-        }, {
-          keys (carrier) {
-            return Object.keys(carrier)
-          },
-          get (carrier, key) {
-            return carrier[key]
-          }
-        })
+        }, recordGetter)
 
         // wait for guard config to be initialized
         await vi.advanceTimersByTimeAsync(0)
@@ -682,14 +666,7 @@ describe('stanzaGuard', function () {
 
         const contextWithBaggage = new StanzaBaggagePropagator().extract(ROOT_CONTEXT, {
           baggage: 'stz-boost=1'
-        }, {
-          keys (carrier) {
-            return Object.keys(carrier)
-          },
-          get (carrier, key) {
-            return carrier[key]
-          }
-        })
+        }, recordGetter)
 
         // wait for guard config to be initialized
         await vi.advanceTimersByTimeAsync(0)
@@ -720,14 +697,7 @@ describe('stanzaGuard', function () {
 
         const contextWithBaggage = new StanzaBaggagePropagator().extract(ROOT_CONTEXT, {
           baggage: 'stz-boost=1'
-        }, {
-          keys (carrier) {
-            return Object.keys(carrier)
-          },
-          get (carrier, key) {
-            return carrier[key]
-          }
-        })
+        }, recordGetter)
 
         // wait for guard config to be initialized
         await vi.advanceTimersByTimeAsync(0)
