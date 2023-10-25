@@ -1,5 +1,5 @@
-import { addPriorityBoostToContext } from '../context/addPriorityBoostToContext'
-import { addStanzaGuardToContext } from '../context/addStanzaGuardToContext'
+import { addPriorityBoostToContext } from '../context/priorityBoost'
+import { addStanzaGuardToContext } from '../context/guard'
 import { addStanzaTokenToContext } from '../context/addStanzaTokenToContext'
 import { bindContext } from '../context/bindContext'
 import { removeStanzaTokenFromContext } from '../context/removeStanzaTokenFromContext'
@@ -13,25 +13,39 @@ import { eventBus, events } from '../global/eventBus'
 import { wrapEventsAsync } from '../utils/wrapEventsAsync'
 import { hubService } from '../global/hubService'
 import { getServiceConfig } from '../global/serviceConfig'
+import { getActiveStanzaEntry } from '../baggage/getActiveStanzaEntry'
 
-export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOptions) => {
+export const stanzaGuard = <TArgs extends any[], TReturn>(
+  options: StanzaGuardOptions
+) => {
   const { guard } = createStanzaGuard(options)
 
   return createStanzaWrapper<TArgs, TReturn, Promisify<TReturn>>((fn) => {
     const resultFn = async function (...args: Parameters<typeof fn>) {
-      const guardResult = await guard()
+      const outerFn = bindContext(
+        [
+          addStanzaGuardToContext(options.guard),
+          options.priorityBoost !== undefined &&
+            addPriorityBoostToContext(options.priorityBoost)
+        ].filter(isTruthy),
+        async () => {
+          const guardResult = await guard()
 
-      const fnWithBoundContext = bindContext([
-        addStanzaGuardToContext(options.guard),
-        options.priorityBoost !== undefined ? addPriorityBoostToContext(options.priorityBoost) : undefined,
-        ...guardResult.filter(isTruthy).map(token => {
-          return token?.type === 'TOKEN_GRANTED'
-            ? addStanzaTokenToContext(token.token)
-            : removeStanzaTokenFromContext()
-        })
-      ].filter(isTruthy), fn)
+          const fnWithBoundContext = bindContext(
+            guardResult
+              .filter(isTruthy)
+              .map((token) =>
+                token?.type === 'TOKEN_GRANTED'
+                  ? addStanzaTokenToContext(token.token)
+                  : removeStanzaTokenFromContext()
+              ),
+            fn
+          )
 
-      return (fnWithBoundContext(...args) as Promisify<TReturn>)
+          return fnWithBoundContext(...args) as Promisify<TReturn>
+        }
+      )
+      return outerFn()
     }
 
     return wrapEventsAsync(resultFn, {
@@ -42,7 +56,7 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOp
           serviceName,
           environment,
           clientId,
-          featureName: options.feature ?? '',
+          featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
           customerId
         })
@@ -54,7 +68,7 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOp
           serviceName,
           environment,
           clientId,
-          featureName: options.feature ?? '',
+          featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
           customerId
         })
@@ -66,7 +80,7 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(options: StanzaGuardOp
           serviceName,
           environment,
           clientId,
-          featureName: options.feature ?? '',
+          featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
           customerId,
           duration
@@ -88,10 +102,10 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
           serviceName,
           environment,
           clientId,
-          featureName: options.feature ?? '',
+          featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
           customerId,
-          reason: result.some(reason => reason !== null) ? 'quota' : 'fail_open'
+          reason: result.some((reason) => reason !== null) ? 'quota' : 'fail_open'
         })
       },
       failure: async () => {
@@ -101,7 +115,7 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
           serviceName,
           environment,
           clientId,
-          featureName: options.feature ?? '',
+          featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
           customerId,
           reason: 'quota'

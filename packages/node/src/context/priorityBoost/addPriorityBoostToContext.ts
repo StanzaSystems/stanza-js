@@ -1,10 +1,9 @@
 import { type Context } from '@opentelemetry/api'
 import { stanzaPriorityBoostContextKey } from './stanzaPriorityBoostContextKey'
+import { getPriorityBoostFromContext } from './getPriorityBoostFromContext'
 
 export const addPriorityBoostToContext = (priorityBoost: number) => (context: Context): Context => {
-  const currentContextPriorityBoost = context.getValue(stanzaPriorityBoostContextKey)
-
-  const currentPriorityBoost = typeof (currentContextPriorityBoost) === 'number' ? currentContextPriorityBoost : 0
+  const currentPriorityBoost = getPriorityBoostFromContext(context)
 
   const totalPriorityBoost = currentPriorityBoost + priorityBoost
   return totalPriorityBoost !== 0

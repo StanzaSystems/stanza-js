@@ -1,8 +1,8 @@
 import { type Context } from '@opentelemetry/api'
-import { stanzaGuardContextKey } from '../context/stanzaGuardContextKey'
 import { addGuardConfigListener, getGuardConfig } from '../global/guardConfig'
 import { addServiceConfigListener, getServiceConfig } from '../global/serviceConfig'
 import { type GuardConfig, type ServiceConfig } from '../hub/model'
+import { getStanzaGuardFromContext } from '../context/guard'
 
 export class StanzaConfigEntityManager<T> {
   private serviceEntity: T
@@ -52,8 +52,7 @@ export class StanzaConfigEntityManager<T> {
   }
 
   private getGuardEntity (context: Context): T | undefined {
-    const guardContextValue = context.getValue(stanzaGuardContextKey)
-    const guardName = typeof (guardContextValue) === 'string' ? guardContextValue : undefined
+    const guardName = getStanzaGuardFromContext(context)
     const guardProcessor = this.guardEntities[guardName ?? '']
 
     if (guardProcessor !== undefined || guardName === undefined) {

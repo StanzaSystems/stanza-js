@@ -1,7 +1,6 @@
 import { StanzaSampler } from './open-telemetry/sampler/StanzaSampler'
 import { StanzaApiKeyPropagator } from './propagation/StanzaApiKeyPropagator'
 import { StanzaBaggagePropagator } from './propagation/StanzaBaggagePropagator'
-import { StanzaPriorityBoostPropagator } from './propagation/StanzaPriorityBoostPropagator'
 import { StanzaTokenPropagator } from './propagation/StanzaTokenPropagator'
 import { HeadersSpanEnhancer } from './span/headers/HeadersSpanEnhancer'
 import { createHttpHeaderGetter } from './createHttpHeaderGetter'
@@ -47,7 +46,6 @@ export const addInstrumentation = async (serviceName: string, serviceRelease: st
         propagators: [
           new W3CTraceContextPropagator(),
           new StanzaBaggagePropagator(),
-          new StanzaPriorityBoostPropagator(),
           new StanzaApiKeyPropagator(),
           new StanzaTokenPropagator()
         ]
