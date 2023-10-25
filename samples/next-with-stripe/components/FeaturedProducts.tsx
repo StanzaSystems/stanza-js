@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { type Product } from '../data/product'
 import Products from './Products'
 import { WithStanzaFeature } from '@getstanza/react'
+import { withStanzaHeaders } from '@getstanza/core'
 
 const FeaturedProducts = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
   useEffect(() => {
     fetch('api/products/featured', {
-      headers: {
-        baggage: 'stz-feat=featured'
-      }
+      headers: withStanzaHeaders({ feature: 'featured' })
     })
       .then(async response => response.json())
       .then(data => { setFeaturedProducts(data) })
