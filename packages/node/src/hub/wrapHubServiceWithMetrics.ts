@@ -4,12 +4,11 @@ import { eventBus, events } from '../global/eventBus'
 import { getServiceConfig } from '../global/serviceConfig'
 
 export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
-  const { serviceName, environment, clientId } = hubService.getServiceMetadata()
-
   return {
     ...hubService,
     fetchServiceConfig: wrapEventsAsync(hubService.fetchServiceConfig, {
       success: async (data) => {
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.config.service.fetchOk, {
           serviceName,
           clientId,
@@ -19,6 +18,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       },
       failure: async () => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.config.service.fetchFailed, {
           serviceName,
           clientId,
@@ -28,6 +28,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       },
       duration: async (duration, result) => {
         const customerId = result?.config.customerId ?? getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.config.service.fetchDuration, {
           duration,
           serviceName,
@@ -40,6 +41,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
     fetchGuardConfig: wrapEventsAsync(hubService.fetchGuardConfig, {
       success: async (_, { guard }) => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.config.guard.fetchOk, {
           guardName: guard,
           serviceName,
@@ -50,6 +52,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       },
       failure: async () => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.config.guard.fetchFailed, {
           serviceName,
           clientId,
@@ -59,6 +62,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       },
       duration: async (duration) => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.config.guard.fetchDuration, {
           duration,
           serviceName,
@@ -71,6 +75,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
     getToken: wrapEventsAsync(hubService.getToken, {
       success: async (_, { guard }) => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.quota.fetchOk, {
           guardName: guard,
           serviceName,
@@ -82,6 +87,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       },
       failure: async () => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.quota.fetchFailed, {
           serviceName,
           clientId,
@@ -92,6 +98,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       },
       duration: async (duration) => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.quota.fetchDuration, {
           duration,
           serviceName,
@@ -105,6 +112,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
     getTokenLease: wrapEventsAsync(hubService.getTokenLease, {
       success: async (_, { guard }) => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.quota.fetchOk, {
           guardName: guard,
           serviceName,
@@ -116,6 +124,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       },
       failure: async () => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.quota.fetchFailed, {
           serviceName,
           clientId,
@@ -126,6 +135,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       },
       duration: async (duration) => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.quota.fetchDuration, {
           duration,
           serviceName,
@@ -139,6 +149,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
     validateToken: wrapEventsAsync(hubService.validateToken, {
       success: async (result, { guard }) => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(
           result?.valid === true
             ? events.quota.validateOk
@@ -153,6 +164,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       },
       failure: async () => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.quota.validateFailed, {
           serviceName,
           clientId,
@@ -162,6 +174,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       },
       duration: async (duration) => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.quota.validateDuration, {
           duration,
           serviceName,
@@ -174,6 +187,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
     markTokensAsConsumed: wrapEventsAsync(hubService.markTokensAsConsumed, {
       success: async () => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.quota.fetchOk, {
           serviceName,
           clientId,
@@ -184,6 +198,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       },
       failure: async () => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.quota.fetchFailed, {
           serviceName,
           clientId,
@@ -194,6 +209,7 @@ export function wrapHubServiceWithMetrics (hubService: HubService): HubService {
       },
       duration: async (duration) => {
         const customerId = getServiceConfig()?.config.customerId
+        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(events.quota.fetchDuration, {
           duration,
           serviceName,

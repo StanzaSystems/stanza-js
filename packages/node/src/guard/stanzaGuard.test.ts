@@ -455,7 +455,7 @@ describe('stanzaGuard', function () {
         version: 'test',
         config: {
           validateIngressTokens: true
-        } as any
+        } satisfies Partial<GuardConfig['config']> as any
       } satisfies GuardConfig
 
       it('should NOT be pass-through execution after config is fetched', async function () {
@@ -694,6 +694,242 @@ describe('stanzaGuard', function () {
         const guardedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
 
         validateDeferred.reject(new Error('Getting token failed'))
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        await expect(guardedDoStuffPromise).resolves.toBeUndefined()
+
+        expect(doStuff).toHaveBeenCalledOnce()
+
+        vi.useRealTimers()
+      })
+    })
+
+    describe('validate ingress token & check quota', () => {
+      const validateIngressAndCheckQuotaGuardConfig = {
+        version: 'test',
+        config: {
+          checkQuota: true,
+          validateIngressTokens: true
+        } satisfies Partial<GuardConfig['config']> as any
+      } satisfies GuardConfig
+
+      it('should NOT be pass-through execution after config is fetched', async function () {
+        vi.useFakeTimers()
+
+        const configDeferred = mockHubService.fetchGuardConfig.mockImplementationDeferred()
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
+          doStuff()
+        })
+
+        configDeferred.resolve(validateIngressAndCheckQuotaGuardConfig)
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        void guardedDoStuff().catch(() => {})
+
+        expect(doStuff).not.toHaveBeenCalled()
+
+        vi.useRealTimers()
+      })
+
+      it('should throw error execution after config is fetched and no token is provided in context', async function () {
+        vi.useFakeTimers()
+        const configDeferred = mockHubService.fetchGuardConfig.mockImplementationDeferred()
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
+          doStuff()
+        })
+
+        configDeferred.resolve(validateIngressAndCheckQuotaGuardConfig)
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        await expect(guardedDoStuff()).rejects.toThrow('Valid Stanza token was not provided')
+
+        vi.useRealTimers()
+      })
+
+      it('should NOT be pass-through execution immediately when token is validated', async function () {
+        vi.useFakeTimers()
+
+        doStuff.mockReturnValueOnce('test-value-token-resolved')
+
+        const validateDeferred = mockHubService.validateToken.mockImplementationDeferred()
+        getQuotaMock.mockImplementationDeferred()
+        mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(validateIngressAndCheckQuotaGuardConfig))
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
+          return doStuff()
+        })
+
+        // wait for guard config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const guardedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
+
+        validateDeferred.resolve({
+          token: 'aToken',
+          valid: true
+        })
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        void guardedDoStuffPromise.catch(() => {})
+
+        expect(doStuff).not.toHaveBeenCalled()
+
+        vi.useRealTimers()
+      })
+
+      it('should return same value as wrapped function when token is validated and quota given', async function () {
+        vi.useFakeTimers()
+
+        doStuff.mockReturnValueOnce('test-value-token-resolved')
+
+        const validateDeferred = mockHubService.validateToken.mockImplementationDeferred()
+        const getQuotaDeferred = getQuotaMock.mockImplementationDeferred()
+        mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(validateIngressAndCheckQuotaGuardConfig))
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
+          return doStuff()
+        })
+
+        // wait for guard config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const guardedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
+
+        validateDeferred.resolve({
+          token: 'aToken',
+          valid: true
+        })
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        expect(doStuff).not.toHaveBeenCalled()
+
+        getQuotaDeferred.resolve({ granted: true, token: 'test-token' })
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        await expect(guardedDoStuffPromise).resolves.toBe('test-value-token-resolved')
+
+        vi.useRealTimers()
+      })
+
+      it('should fail the execution with StanzaGuardError if token is not validated', async function () {
+        vi.useFakeTimers()
+        const validateDeferred = mockHubService.validateToken.mockImplementationDeferred()
+        mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(validateIngressAndCheckQuotaGuardConfig))
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
+          doStuff()
+        })
+
+        // wait for guard config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const guardedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
+
+        expect(doStuff).not.toHaveBeenCalled()
+
+        validateDeferred.resolve({ token: 'aToken', valid: false })
+
+        await expect(guardedDoStuffPromise).rejects.toThrow(new StanzaGuardError('InvalidToken', 'Provided token was invalid'))
+
+        expect(doStuff).not.toHaveBeenCalled()
+
+        await vi.advanceTimersByTimeAsync(5000)
+
+        expect(doStuff).not.toHaveBeenCalledOnce()
+
+        vi.useRealTimers()
+      })
+
+      it('should fail the execution with StanzaGuardError if ingress token is validated but new token is not granted', async function () {
+        vi.useFakeTimers()
+
+        const validateDeferred = mockHubService.validateToken.mockImplementationDeferred()
+        const getQuotaDeferred = getQuotaMock.mockImplementationDeferred()
+        mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(validateIngressAndCheckQuotaGuardConfig))
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
+          return doStuff()
+        })
+
+        // wait for guard config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const guardedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
+
+        validateDeferred.resolve({
+          token: 'aToken',
+          valid: true
+        })
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        getQuotaDeferred.resolve({ granted: false })
+
+        await expect(guardedDoStuffPromise).rejects.toThrow(new StanzaGuardError('NoQuota', 'Guard can not be executed'))
+
+        expect(doStuff).not.toHaveBeenCalled()
+
+        await vi.advanceTimersByTimeAsync(5000)
+
+        expect(doStuff).not.toHaveBeenCalledOnce()
+
+        vi.useRealTimers()
+      })
+
+      it('should remove token from an execution context when token is validated and attach token to an execution context when token is granted', async function () {
+        vi.useFakeTimers()
+
+        const validateDeferred = mockHubService.validateToken.mockImplementationDeferred()
+        const getQuotaDeferred = getQuotaMock.mockImplementationDeferred()
+        mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(validateIngressAndCheckQuotaGuardConfig))
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
+          doStuff()
+          expect(context.active().getValue(stanzaTokenContextKey)).toBe('new-test-token')
+        })
+
+        // wait for guard config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const guardedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
+
+        validateDeferred.resolve({ token: 'aToken', valid: true })
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        getQuotaDeferred.resolve({ granted: true, token: 'new-test-token' })
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        await expect(guardedDoStuffPromise).resolves.toBeUndefined()
+
+        expect(doStuff).toHaveBeenCalledOnce()
+
+        vi.useRealTimers()
+      })
+
+      it('should remove token from an execution context when token is validated and NOT attach new token to an execution context when getting quota returns null', async function () {
+        vi.useFakeTimers()
+
+        const validateDeferred = mockHubService.validateToken.mockImplementationDeferred()
+        const getQuotaDeferred = getQuotaMock.mockImplementationDeferred()
+        mockHubService.fetchGuardConfig.mockImplementation(async () => Promise.resolve(validateIngressAndCheckQuotaGuardConfig))
+        const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(() => {
+          doStuff()
+          expect(context.active().getValue(stanzaTokenContextKey)).toBeUndefined()
+        })
+
+        // wait for guard config to be initialized
+        await vi.advanceTimersByTimeAsync(0)
+
+        const guardedDoStuffPromise = context.with(context.active().setValue(stanzaTokenContextKey, 'aToken'), guardedDoStuff)
+
+        validateDeferred.resolve({ token: 'aToken', valid: true })
+
+        await vi.advanceTimersByTimeAsync(0)
+
+        getQuotaDeferred.resolve(null)
 
         await vi.advanceTimersByTimeAsync(0)
 
