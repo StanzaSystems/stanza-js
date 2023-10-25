@@ -9,6 +9,11 @@ import { type HubRequest } from '../hubRequest'
 import { wrapHubServiceWithMetrics } from '../wrapHubServiceWithMetrics'
 import { logger } from '../../global/logger'
 import { stanzaAuthTokenResponse } from '../api/stanzaAuthTokenResponse'
+import {
+  apiHealthToHealth,
+  stanzaGuardHealthResponse
+} from '../api/stanzaGuardHealthResponse'
+import { Health } from '../../guard/model'
 
 interface HubServiceInitOptions {
   serviceName: string
@@ -149,6 +154,21 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
       }, stanzaAuthTokenResponse)
 
       return response !== null ? { token: response.bearerToken } : null
+    },
+    getGuardHealth: async ({ guard, feature, environment, tags }) => {
+      const response = await hubRequest('v1/health/guard', {
+        method: 'POST',
+        body: {
+          selector: {
+            guardName: guard,
+            featureName: feature,
+            environment,
+            tags
+          }
+        }
+      }, stanzaGuardHealthResponse)
+
+      return response !== null ? apiHealthToHealth(response.health) : Health.Unspecified
     }
   }))
 }
