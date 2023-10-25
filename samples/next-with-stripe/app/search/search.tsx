@@ -4,6 +4,7 @@ import Products from '../../components/Products'
 import SearchBar from '../../components/SearchBar'
 import { type Product } from '../../data/product'
 import { useSearchParams, useRouter } from 'next/navigation'
+import { withStanzaHeaders } from '@getstanza/core'
 
 const SearchPageComponent = () => {
   const router = useRouter()
@@ -16,9 +17,7 @@ const SearchPageComponent = () => {
   const [products, setProducts] = useState<Product[]>([])
   useEffect(() => {
     fetch(`api/products?search=${searchString}`, {
-      headers: {
-        baggage: 'stz-feat=search'
-      }
+      headers: withStanzaHeaders({ feature: 'search' })
     })
       .then(async response => response.json())
       .then(data => { setProducts(data) })
