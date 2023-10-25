@@ -26,18 +26,21 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(
         [
           addStanzaGuardToContext(options.guard),
           options.priorityBoost !== undefined &&
-          addPriorityBoostToContext(options.priorityBoost)
+            addPriorityBoostToContext(options.priorityBoost)
         ].filter(isTruthy),
         async () => {
           const guardResult = await guard()
 
-          const fnWithBoundContext = bindContext([
-            ...guardResult.filter(isTruthy).map(token => {
-              return token?.type === 'TOKEN_GRANTED'
-                ? addStanzaTokenToContext(token.token)
-                : removeStanzaTokenFromContext()
-            })
-          ].filter(isTruthy), fn)
+          const fnWithBoundContext = bindContext(
+            guardResult
+              .filter(isTruthy)
+              .map((token) =>
+                token?.type === 'TOKEN_GRANTED'
+                  ? addStanzaTokenToContext(token.token)
+                  : removeStanzaTokenFromContext()
+              ),
+            fn
+          )
 
           return fnWithBoundContext(...args) as Promisify<TReturn>
         }
@@ -102,7 +105,7 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
           featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
           customerId,
-          reason: result.some(reason => reason !== null) ? 'quota' : 'fail_open'
+          reason: result.some((reason) => reason !== null) ? 'quota' : 'fail_open'
         })
       },
       failure: async () => {
