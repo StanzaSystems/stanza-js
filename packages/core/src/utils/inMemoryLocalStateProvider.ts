@@ -28,6 +28,7 @@ export const createInMemoryLocalStateProvider = (): LocalStateProvider => {
   const featureStateChangeEmitter = new StanzaChangeTarget<{ oldValue: FeatureState | undefined, newValue: FeatureState }>()
 
   return {
+    init: () => {},
     getFeatureState,
     setFeatureState,
     getAllFeatureStates,

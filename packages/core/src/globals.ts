@@ -32,6 +32,8 @@ export function init (config: StanzaCoreConfig, provider: LocalStateProvider): v
   }
   localStateProvider = provider
 
+  localStateProvider.init(config.contextConfigs)
+
   getEnablementNumber().catch((e) => {
     console.warn('Failed to get enablement number', e)
   })
