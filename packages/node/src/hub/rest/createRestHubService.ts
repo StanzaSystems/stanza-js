@@ -36,7 +36,8 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
             name: serviceName,
             release: serviceRelease,
             environment
-          }
+          },
+          clientId
         },
         method: 'POST'
       }, serviceConfigResponse)
