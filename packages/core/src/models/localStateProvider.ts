@@ -5,7 +5,7 @@ type LocalStateChangeListener = (event: { oldValue: FeatureState | undefined, ne
 export interface LocalStateProvider {
   init: (config: unknown) => void
   setFeatureState: (context: FeatureState) => void
-  getFeatureState: (name?: string) => FeatureState | undefined
+  getFeatureState: (name: string) => FeatureState | undefined
   getAllFeatureStates: () => FeatureState[]
   addChangeListener: (callback: LocalStateChangeListener) => () => void
   removeChangeListener: (callback: LocalStateChangeListener) => void

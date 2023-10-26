@@ -1,8 +1,6 @@
-import { type FeatureState } from '../models/featureState'
-import { createInMemoryLocalStateProvider } from './inMemoryLocalStateProvider'
-import { type LocalStateProvider } from '../models/localStateProvider'
-
-describe('InMemoryLocalStateProvider', () => {
+import { type FeatureState, type LocalStateProvider } from '@getstanza/core'
+import { createLocalStorageStateProvider } from './localStorageStateProvider'
+describe('localStorageStateProvider', () => {
   let stateProvider: LocalStateProvider
 
   const testFeatures = {
@@ -26,8 +24,13 @@ describe('InMemoryLocalStateProvider', () => {
     }
   } satisfies Record<string, FeatureState>
 
+  afterAll(() => {
+    localStorage.clear()
+  })
+
   beforeEach(() => {
-    stateProvider = createInMemoryLocalStateProvider()
+    stateProvider = createLocalStorageStateProvider()
+    localStorage.clear()
   })
 
   it('should throw before initialized', () => {
@@ -48,6 +51,38 @@ describe('InMemoryLocalStateProvider', () => {
     expect(() => { stateProvider.removeChangeListener(() => {}) }).not.toThrow()
   })
 
+  it('should NOT clear existing feature states if stanza-config in local storage is same as new one', () => {
+    localStorage.setItem('stanza_feature_test', 'dummy-value')
+    localStorage.setItem('stanza_feature_another-test', 'another-dummy-value')
+    localStorage.setItem('stanza_config', '{}')
+
+    stateProvider.init({})
+
+    expect(Object.keys(localStorage)).toContain('stanza_feature_test')
+    expect(Object.keys(localStorage)).toContain('stanza_feature_another-test')
+  })
+
+  it('should clear existing feature states if no stanza-config exists in local storage', () => {
+    localStorage.setItem('stanza_feature_test', 'dummy-value')
+    localStorage.setItem('stanza_feature_another-test', 'another-dummy-value')
+
+    stateProvider.init({})
+
+    expect(Object.keys(localStorage)).not.toContain('stanza_feature_test')
+    expect(Object.keys(localStorage)).not.toContain('stanza_feature_another-test')
+  })
+
+  it('should clear existing feature states if stanza-config in local storage is different then the new one', () => {
+    localStorage.setItem('stanza_feature_test', 'dummy-value')
+    localStorage.setItem('stanza_feature_another-test', 'another-dummy-value')
+    localStorage.setItem('stanza_config', '{}')
+
+    stateProvider.init({ anotherKey: 'anotherValue' })
+
+    expect(Object.keys(localStorage)).not.toContain('stanza_feature_test')
+    expect(Object.keys(localStorage)).not.toContain('stanza_feature_another-test')
+  })
+
   describe('when initialized', () => {
     beforeEach(() => {
       stateProvider.init({})
@@ -59,7 +94,7 @@ describe('InMemoryLocalStateProvider', () => {
 
     it('should store and retrieve a feature', () => {
       stateProvider.setFeatureState(testFeatures.first)
-      expect(stateProvider.getFeatureState('firstFeature')).toBe(testFeatures.first)
+      expect(stateProvider.getFeatureState('firstFeature')).toEqual(testFeatures.first)
     })
 
     it('should return undefined if feature doesn\'t exist in store', () => {

@@ -3,6 +3,7 @@ import { StanzaChangeTarget } from './eventEmitter'
 import { type FeatureState } from './models/featureState'
 import { startPollingFeatureStateUpdates } from './startPollingFeatureStateUpdates'
 import { createInMemoryLocalStateProvider } from './utils/inMemoryLocalStateProvider'
+import { type LocalStateProvider } from './models/localStateProvider'
 
 const mockGetFeaturesStatesHot = vi.fn()
 const mockGetConfig = vi.fn()
@@ -32,10 +33,11 @@ describe('pollFeatureStateUpdates', () => {
     enabledPercent: 90,
     lastRefreshTime: 1234
   }]
-  let localStateProvider = createInMemoryLocalStateProvider()
+  let localStateProvider: LocalStateProvider
 
   beforeEach(() => {
     localStateProvider = createInMemoryLocalStateProvider()
+    localStateProvider.init({})
     mockGetFeaturesStatesHot.mockReset()
     mockGetConfig.mockReset()
     mockGetStateProvider.mockImplementation(() => localStateProvider)
