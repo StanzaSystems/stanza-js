@@ -54,7 +54,6 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
   }, {
     getServiceMetadata: () => ({ serviceName, serviceRelease, environment, clientId }),
     fetchServiceConfig: async (options): Promise<ServiceConfig | null> => {
-      console.log('fetchServiceConfig', clientId)
       const data = await grpcRequest(async () => configClient.getServiceConfig({
         service: {
           name: serviceName,
