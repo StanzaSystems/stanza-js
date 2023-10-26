@@ -1,12 +1,24 @@
-import { type FeatureState, type LocalStateProvider } from '@getstanza/core'
+import {
+  type FeatureState,
+  type LocalStateProvider,
+  StanzaChangeTarget
+} from '@getstanza/core'
 
 const stanzaFeaturePrefix = 'stanza_feature_' as const
 type StanzaFeaturePrefix = typeof stanzaFeaturePrefix
 type StanzaFeatureKey = `${StanzaFeaturePrefix}${string}`
 
-function setFeatureState (feature: FeatureState): void {
-  const name = feature.featureName ?? ''
-  localStorage.setItem(createStanzaFeatureKey(name), JSON.stringify(feature))
+function setFeatureState (featureState: FeatureState): void {
+  const name = featureState.featureName ?? ''
+  const key = createStanzaFeatureKey(name)
+  const oldFeatureStringValue = localStorage.getItem(key)
+  const newFeatureStringValue = JSON.stringify(featureState)
+  if (newFeatureStringValue === oldFeatureStringValue) {
+    return
+  }
+  const oldValue = getFeatureState(name)
+  localStorage.setItem(key, newFeatureStringValue)
+  featureStateChangeEmitter.dispatchChange({ oldValue, newValue: featureState })
 }
 
 function getFeatureState (name?: string): FeatureState | undefined {
@@ -52,8 +64,25 @@ function createFeatureFromCacheObject (cached: any): FeatureState {
   }
 }
 
-export default {
+const featureStateChangeEmitter = new StanzaChangeTarget<{ oldValue: FeatureState | undefined, newValue: FeatureState }>()
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', ({
+    storageArea,
+    key,
+    oldValue,
+    newValue
+  }) => {
+    if (key !== null && storageArea === localStorage && isStanzaFeatureKey(key) && oldValue !== newValue && newValue !== null) {
+      featureStateChangeEmitter.dispatchChange({ oldValue: oldValue !== null ? parseFeature(oldValue) : undefined, newValue: parseFeature(newValue) })
+    }
+  })
+}
+
+export const localStorageStateProvider = {
   getFeatureState,
   setFeatureState,
-  getAllFeatureStates
+  getAllFeatureStates,
+  addChangeListener: (...args) => featureStateChangeEmitter.addChangeListener(...args),
+  removeChangeListener: (...args) => { featureStateChangeEmitter.removeChangeListener(...args) }
 } satisfies LocalStateProvider

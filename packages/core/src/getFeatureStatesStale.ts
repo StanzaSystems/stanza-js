@@ -3,8 +3,8 @@ import { createFeatureState } from './models/createFeatureState'
 import { type FeatureState } from './models/featureState'
 
 export function getFeatureStatesStale (features: string[]): FeatureState[] {
-  const featureStates = features.map(name => getStateProvider().getFeatureState(name) ?? createFeatureState(name))
   const stateProvider = getStateProvider()
+  const featureStates = features.map(name => stateProvider.getFeatureState(name) ?? createFeatureState(name))
   featureStates.forEach(featureState => {
     stateProvider.setFeatureState(featureState)
   })

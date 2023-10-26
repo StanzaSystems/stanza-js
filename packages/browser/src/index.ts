@@ -1,6 +1,6 @@
 import { Stanza, StanzaChangeTarget, type StanzaCoreConfig, utils } from '@getstanza/core'
 import { createContext, type StanzaContext } from './context'
-import localState from './localStorageStateProvider'
+import { localStorageStateProvider } from './localStorageStateProvider'
 export * from './feature'
 
 export type { StanzaContext }
@@ -10,7 +10,7 @@ const { getConfig, getEnablementNumber, getEnablementNumberStale } = utils.globa
 const contextChanges = new StanzaChangeTarget<StanzaContext>()
 
 export const init = (initialConfig: StanzaCoreConfig): void => {
-  Stanza.init(initialConfig, typeof window !== 'undefined' ? localState : undefined)
+  Stanza.init(initialConfig, typeof window !== 'undefined' ? localStorageStateProvider : undefined)
 
   const featureToContextMap = initialConfig.contextConfigs.reduce<Record<string, string[]>>((result, contextConfig) => {
     contextConfig.features.forEach(feature => {
