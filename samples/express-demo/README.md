@@ -11,9 +11,11 @@ Requests for higher paying users are prioritized under load.
 ## Setup
 
 1. Copy the `.env.example` file and rename it to `.env`.
-2. In the `.env` file, set `STANZA_API_KEY` to a [browser key](https://ui.demo.getstanza.io/admin?tab=keys) for your local environment.
-3. In the `.env` file, set `GITHUB_PAT` to a [GitHub Personal Access Token](https://github.com/settings/tokens).  It does not require any particular scopes.
-4. In the [Stanza UI](https://ui.demo.getstanza.io/guards), create a guard:
+2. Set the `STANZA_HUB_ADDRESS` to your environment, and don't forget to add the port on it (e.g.: `https://hub.dev.getstanza.dev:9020`).
+3. In the `.env` file, set `STANZA_API_KEY` to a [API key](https://ui.demo.getstanza.io/admin?tab=keys) for your local environment.
+4. In the `.env` file, set `GITHUB_PAT` to a [GitHub Personal Access Token](https://github.com/settings/tokens).  It does not require any particular scopes.
+5. Create a service named `expressDemo` and set `STANZA_SERVICE_NAME=expressDemo` in the `.env` file.
+6. In the [Stanza UI](https://ui.demo.getstanza.io/guards), create a guard:
 
   | Name                | Project | Environment | Traffic Type |
   |---------------------|---------|-------------|--------------|
