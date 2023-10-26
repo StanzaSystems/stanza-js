@@ -4,11 +4,20 @@ import { StanzaBaggagePropagator } from './propagation/StanzaBaggagePropagator'
 import { StanzaTokenPropagator } from './propagation/StanzaTokenPropagator'
 import { HeadersSpanEnhancer } from './span/headers/HeadersSpanEnhancer'
 import { createHttpHeaderGetter } from './createHttpHeaderGetter'
+import { HeaderContextPropagator } from './propagation/HeaderContextPropagator'
 
 export const addInstrumentation = async (serviceName: string, serviceRelease: string) => {
   const { HttpInstrumentation } = await import('@opentelemetry/instrumentation-http')
   const headersEnhancer = new HeadersSpanEnhancer()
   const httpInstrumentation = new HttpInstrumentation({
+    headersToSpanAttributes: {
+      client: {
+        requestHeaders: ['x-hello']
+      },
+      server: {
+        requestHeaders: ['x-hello']
+      }
+    },
     requestHook: (span, request) => {
       headersEnhancer.enhanceWithRequest(span, createHttpHeaderGetter(request))
     },
@@ -47,7 +56,8 @@ export const addInstrumentation = async (serviceName: string, serviceRelease: st
           new W3CTraceContextPropagator(),
           new StanzaBaggagePropagator(),
           new StanzaApiKeyPropagator(),
-          new StanzaTokenPropagator()
+          new StanzaTokenPropagator(),
+          new HeaderContextPropagator('x-hello', Symbol.for('foo'))
         ]
       }),
     metricReader: new PeriodicExportingMetricReader({
