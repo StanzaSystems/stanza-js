@@ -13,12 +13,12 @@ Requests for higher paying users are prioritized under load.
 1. Copy the `.env.example` file and rename it to `.env`.
 2. In the `.env` file, set `STANZA_API_KEY` to a [API key](https://ui.stanzasys.co/) for your local environment.
 3. In the `.env` file, set `GITHUB_PAT` to a [GitHub Personal Access Token](https://github.com/settings/tokens). It does not require any particular scopes.
-4. Create a service named `expressDemo`.
+4. In the [Stanza UI](https://ui.stanzasys.co/), create a service named `expressDemo`.
 5. In the [Stanza UI](https://ui.stanzasys.co/), create a guard:
 
-  | Name                | Project | Environment | Traffic Type |
-  |---------------------|---------|-------------|--------------|
-  | github_guard        | default | local       | Outbound     |
+  | Name                | Project | Environment | Traffic Type | Guarded Service |
+  |---------------------|---------|-------------|--------------|-----------------|
+  | github_guard        | default | local       | Outbound     | expressDemo     |
 
 Ensure the guard has the following traffic configuration:
 
