@@ -7,8 +7,7 @@ import { StanzaConfiguredSampler } from './StanzaConfiguredSampler'
 export class StanzaSamplerManager implements SamplerManager {
   private readonly traceConfigManager = new StanzaConfigEntityManager<Sampler>({
     getInitial: () => new AlwaysOffSampler(),
-    createWithServiceConfig: (serviceConfig) =>
-      new StanzaConfiguredSampler(serviceConfig),
+    createWithServiceConfig: (serviceConfig) => new StanzaConfiguredSampler(serviceConfig),
     cleanup: async () => {}
   })
 
