@@ -5,13 +5,14 @@ import { stanzaGuard, StanzaGuardError } from '@getstanza/node'
 import express, { type Request, type ErrorRequestHandler, type Response, type NextFunction } from 'express'
 import * as dotenv from 'dotenv'
 import cors from 'cors'
-
-dotenv.config()
 // must come after dotenv
 // eslint-disable-next-line import/first
 import './addInstrumentation'
 // eslint-disable-next-line import/first
 import fetch from 'node-fetch'
+import { logger } from 'verdaccio/build/lib/logger'
+
+dotenv.config()
 
 const app = express()
 
@@ -35,13 +36,15 @@ const gitHubGuard = (req: Request, res: Response, next: NextFunction) => {
 app.get('/account/:username', gitHubGuard, async (req: Request, res: Response, next: NextFunction) => {
   const { username } = req.params
   try {
-    const userResponse = await fetch(`https://api.github.com/users/${username}`, {
-      headers: {
-        Authorization: `Bearer ${process.env.GITHUB_PAT}`
-      }
-    })
-
-    const user = await userResponse.json()
+    // const userResponse = await fetch(`https://api.github.com/users/${username}`, {
+    //   headers: {
+    //     Authorization: `Bearer ${process.env.GITHUB_PAT}`
+    //   }
+    // })
+    //
+    // const user = await userResponse.json()
+    console.info('HEADERS', req.headers)
+    const user = { login: username }
     res.status(200).send(user)
   } catch (e) {
     res.status(500)
