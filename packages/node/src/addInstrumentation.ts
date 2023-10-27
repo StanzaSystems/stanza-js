@@ -52,7 +52,8 @@ export const addInstrumentation = async (serviceName: string, serviceRelease: st
       ]
     }),
     metricReader: new PeriodicExportingMetricReader({
-      exporter: new StanzaMetricExporter(serviceName, serviceRelease)
+      exporter: new StanzaMetricExporter(serviceName, serviceRelease),
+      exportIntervalMillis: 10000
     }) as any, // TODO: fix any cast
     instrumentations: [
       httpInstrumentation,
