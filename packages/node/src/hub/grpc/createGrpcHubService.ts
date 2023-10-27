@@ -61,7 +61,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
           release: serviceRelease
         },
         versionSeen: options?.lastVersionSeen,
-        clientId
+        clientId: options?.clientId
       }), serviceConfigResponse)
 
       if (data === null || !data.configDataSent) {

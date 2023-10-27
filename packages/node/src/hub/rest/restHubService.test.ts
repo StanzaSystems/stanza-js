@@ -77,9 +77,7 @@ describe('createRestHubService', async () => {
               name: 'TestService',
               release: '1.0.0',
               environment: 'test'
-            },
-            // TODO: clientId should be optional
-            clientId: 'test-client-id'
+            }
           }),
           method: 'POST'
         }
@@ -88,7 +86,8 @@ describe('createRestHubService', async () => {
 
     it('should call fetch with proper params - including lastVersionSeen, and clientId', async () => {
       await fetchServiceConfig({
-        lastVersionSeen: '123'
+        lastVersionSeen: '123',
+        clientId: '456'
       })
 
       expect(fetchMock).toHaveBeenCalledOnce()
@@ -106,7 +105,7 @@ describe('createRestHubService', async () => {
               release: '1.0.0',
               environment: 'test'
             },
-            clientId: 'test-client-id'
+            clientId: '456'
           }),
           method: 'POST'
         }

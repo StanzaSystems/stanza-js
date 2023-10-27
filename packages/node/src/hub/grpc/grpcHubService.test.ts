@@ -102,16 +102,15 @@ describe('createGrpcHubService', async () => {
 
       expect(configClientMock.getServiceConfig).toHaveBeenCalledWith(
         {
-          service: { name: 'TestService', environment: 'test', release: '1.0.0' },
-          versionSeen: undefined,
-          clientId: 'test-client-id'
+          service: { name: 'TestService', environment: 'test', release: '1.0.0' }
         }
       )
     })
 
     it('should call fetch with proper params - including lastVersionSeen and clientId', async () => {
       await fetchServiceConfig({
-        lastVersionSeen: '123'
+        lastVersionSeen: '123',
+        clientId: '456'
       })
 
       expect(configClientMock.getServiceConfig).toHaveBeenCalledOnce()
@@ -119,7 +118,7 @@ describe('createGrpcHubService', async () => {
         {
           service: { name: 'TestService', environment: 'test', release: '1.0.0' },
           versionSeen: '123',
-          clientId: 'test-client-id'
+          clientId: '456'
         }
       )
     })

@@ -28,16 +28,16 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
     prefix: '[REST Hub Service]'
   }, {
     getServiceMetadata: () => ({ serviceName, serviceRelease, environment, clientId }),
-    fetchServiceConfig: async ({ lastVersionSeen } = {}) => {
+    fetchServiceConfig: async (options) => {
       const serviceConfigResult = await hubRequest('v1/config/service', {
         body: {
-          versionSeen: lastVersionSeen,
+          versionSeen: options?.lastVersionSeen,
           service: {
             name: serviceName,
             release: serviceRelease,
             environment
           },
-          clientId
+          clientId: options?.clientId
         },
         method: 'POST'
       }, serviceConfigResponse)
