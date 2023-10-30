@@ -7,34 +7,7 @@ import {
 const stanzaFeaturePrefix = 'stanza_feature_' as const
 type StanzaFeaturePrefix = typeof stanzaFeaturePrefix
 type StanzaFeatureKey = `${StanzaFeaturePrefix}${string}`
-
-function setFeatureState (featureState: FeatureState): void {
-  const name = featureState.featureName ?? ''
-  const key = createStanzaFeatureKey(name)
-  const oldFeatureStringValue = localStorage.getItem(key)
-  const newFeatureStringValue = JSON.stringify(featureState)
-  if (newFeatureStringValue === oldFeatureStringValue) {
-    return
-  }
-  const oldValue = getFeatureState(name)
-  localStorage.setItem(key, newFeatureStringValue)
-  featureStateChangeEmitter.dispatchChange({ oldValue, newValue: featureState })
-}
-
-function getFeatureState (name?: string): FeatureState | undefined {
-  const featureSerialized = localStorage.getItem(createStanzaFeatureKey(name ?? ''))
-  if (featureSerialized === null) {
-    return undefined
-  }
-  return parseFeature(featureSerialized)
-}
-
-function getAllFeatureStates (): FeatureState[] {
-  return Object.keys(localStorage)
-    .filter(isStanzaFeatureKey)
-    .map(key => localStorage.getItem(key) as string)
-    .map(parseFeature)
-}
+const STANZA_CONFIG_KEY = 'stanza_config'
 
 function parseFeature (featureSerialized: string): FeatureState {
   return createFeatureFromCacheObject(JSON.parse(featureSerialized))
@@ -66,23 +39,80 @@ function createFeatureFromCacheObject (cached: any): FeatureState {
 
 const featureStateChangeEmitter = new StanzaChangeTarget<{ oldValue: FeatureState | undefined, newValue: FeatureState }>()
 
-if (typeof window !== 'undefined') {
-  window.addEventListener('storage', ({
-    storageArea,
-    key,
-    oldValue,
-    newValue
-  }) => {
-    if (key !== null && storageArea === localStorage && isStanzaFeatureKey(key) && oldValue !== newValue && newValue !== null) {
-      featureStateChangeEmitter.dispatchChange({ oldValue: oldValue !== null ? parseFeature(oldValue) : undefined, newValue: parseFeature(newValue) })
+export const createLocalStorageStateProvider = (): LocalStateProvider => {
+  let initialized = false
+  function setFeatureState (featureState: FeatureState): void {
+    assertInitialized()
+    const name = featureState.featureName ?? ''
+    const key = createStanzaFeatureKey(name)
+    const oldFeatureStringValue = localStorage.getItem(key)
+    const newFeatureStringValue = JSON.stringify(featureState)
+    if (newFeatureStringValue === oldFeatureStringValue) {
+      return
     }
-  })
+    const oldValue = getFeatureState(name)
+    localStorage.setItem(key, newFeatureStringValue)
+    featureStateChangeEmitter.dispatchChange({ oldValue, newValue: featureState })
+  }
+
+  function getFeatureState (name: string): FeatureState | undefined {
+    assertInitialized()
+    const featureSerialized = localStorage.getItem(createStanzaFeatureKey(name))
+    if (featureSerialized === null) {
+      return undefined
+    }
+    return parseFeature(featureSerialized)
+  }
+
+  function getAllFeatureStates (): FeatureState[] {
+    assertInitialized()
+    return getAllStateKeys()
+      .map(key => localStorage.getItem(key) as string)
+      .map(parseFeature)
+  }
+
+  function assertInitialized () {
+    if (!initialized) {
+      throw new Error('Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.')
+    }
+  }
+
+  return {
+    init: (config) => {
+      const configString = JSON.stringify(config)
+      const existingConfig = localStorage.getItem(STANZA_CONFIG_KEY)
+
+      if (configString !== existingConfig) {
+        localStorage.setItem(STANZA_CONFIG_KEY, configString)
+        getAllStateKeys().forEach(key => { localStorage.removeItem(key) })
+      }
+
+      window.addEventListener('storage', ({
+        storageArea,
+        key,
+        oldValue,
+        newValue
+      }) => {
+        if (key !== null && storageArea === localStorage && isStanzaFeatureKey(key) && oldValue !== newValue && newValue !== null) {
+          featureStateChangeEmitter.dispatchChange({ oldValue: oldValue !== null ? parseFeature(oldValue) : undefined, newValue: parseFeature(newValue) })
+        }
+      })
+      initialized = true
+    },
+    getFeatureState,
+    setFeatureState,
+    getAllFeatureStates,
+    addChangeListener: (...args) => {
+      assertInitialized()
+      return featureStateChangeEmitter.addChangeListener(...args)
+    },
+    removeChangeListener: (...args) => {
+      assertInitialized()
+      featureStateChangeEmitter.removeChangeListener(...args)
+    }
+  }
 }
 
-export const localStorageStateProvider = {
-  getFeatureState,
-  setFeatureState,
-  getAllFeatureStates,
-  addChangeListener: (...args) => featureStateChangeEmitter.addChangeListener(...args),
-  removeChangeListener: (...args) => { featureStateChangeEmitter.removeChangeListener(...args) }
-} satisfies LocalStateProvider
+function getAllStateKeys () {
+  return Object.keys(localStorage).filter(isStanzaFeatureKey)
+}
