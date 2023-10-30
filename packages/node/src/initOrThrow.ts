@@ -67,6 +67,6 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
       })
   )
 
-  startPollingServiceConfig()
+  startPollingServiceConfig(clientId)
   startPollingAuthToken()
 }

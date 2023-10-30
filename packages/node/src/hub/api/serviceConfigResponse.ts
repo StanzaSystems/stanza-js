@@ -41,12 +41,14 @@ const zSentinelConfig = z.object({
 })
 
 const serviceConfigNoData = z.object({
+  clientId: z.string().optional(),
   version: z.string(),
   configDataSent: z.literal(false),
   config: z.null().optional()
 })
 
 const serviceConfigWithData = z.object({
+  clientId: z.string().optional(),
   version: z.string(),
   configDataSent: z.literal(true),
   config: z.object({
