@@ -142,7 +142,8 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
       const response = await hubRequest('v1/quota/consumed', {
         method: 'POST',
         body: {
-          tokens
+          tokens,
+          environment
         }
       }, stanzaMarkTokensAsConsumedResponse)
 
@@ -150,7 +151,10 @@ export const createRestHubService = ({ serviceName, serviceRelease, environment,
     },
     getAuthToken: async () => {
       const response = await hubRequest('v1/auth/token', {
-        method: 'GET'
+        method: 'GET',
+        body: {
+          environment
+        }
       }, stanzaAuthTokenResponse)
 
       return response !== null ? { token: response.bearerToken } : null
