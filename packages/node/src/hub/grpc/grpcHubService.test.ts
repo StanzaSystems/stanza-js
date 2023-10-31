@@ -729,6 +729,7 @@ describe('createGrpcHubService', async () => {
       expect(quotaClientMock.setTokenLeaseConsumed).toHaveBeenCalledOnce()
       expect(quotaClientMock.setTokenLeaseConsumed).toHaveBeenCalledWith(
         {
+          environment: 'test',
           tokens: ['test-token-one', 'test-token-two']
         }
       )
