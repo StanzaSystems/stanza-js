@@ -152,6 +152,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
     },
     markTokensAsConsumed: async (options) => {
       const data = await grpcRequest(async () => quotaClient.setTokenLeaseConsumed({
+        environment,
         tokens: options.tokens
       }),
       stanzaMarkTokensAsConsumedResponse
@@ -160,8 +161,10 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
       return data === null ? null : { ok: true }
     },
     getAuthToken: async () => {
-      const data = await grpcRequest(async () => authClient.getBearerToken({}),
-        stanzaAuthTokenResponse
+      const data = await grpcRequest(async () => authClient.getBearerToken({
+        environment
+      }),
+      stanzaAuthTokenResponse
       )
 
       return data === null ? null : { token: data.bearerToken }

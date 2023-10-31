@@ -772,7 +772,8 @@ describe('createRestHubService', async () => {
             'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.5-beta'
           },
           body: JSON.stringify({
-            tokens: ['test-token-one', 'test-token-two']
+            tokens: ['test-token-one', 'test-token-two'],
+            environment: 'test'
           }),
           method: 'POST'
         }
