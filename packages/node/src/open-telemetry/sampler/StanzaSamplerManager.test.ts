@@ -1,11 +1,12 @@
 import { ROOT_CONTEXT } from '@opentelemetry/api'
-import { AlwaysOffSampler, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-node'
+import { AlwaysOffSampler } from '@opentelemetry/sdk-trace-node'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { type getGuardConfig } from '../../global/guardConfig'
 import { type getServiceConfig, type ServiceConfigListener } from '../../global/serviceConfig'
 import { type ServiceConfig } from '../../hub/model'
 import { StanzaSamplerManager } from './StanzaSamplerManager'
 import { addStanzaGuardToContext } from '../../context/guard'
+import { StanzaConfiguredSampler } from './StanzaConfiguredSampler'
 
 let serviceListener: ServiceConfigListener
 
@@ -67,7 +68,7 @@ describe('StanzaSamplerManager', function () {
       serviceListener({ initialized: true, data: mockServiceConfig })
 
       const sampler = manager.getSampler(ROOT_CONTEXT)
-      expect(sampler).toEqual(new TraceIdRatioBasedSampler(1))
+      expect(sampler).toEqual(new StanzaConfiguredSampler(mockServiceConfig.config))
     })
 
     it('should return service sampler if service config is initialized before creating the manager', function () {
@@ -76,7 +77,7 @@ describe('StanzaSamplerManager', function () {
       const manager = new StanzaSamplerManager()
 
       const sampler = manager.getSampler(ROOT_CONTEXT)
-      expect(sampler).toEqual(new TraceIdRatioBasedSampler(1))
+      expect(sampler).toEqual(new StanzaConfiguredSampler(mockServiceConfig.config))
     })
 
     it('should return updated service sampler after service config is updated', function () {
@@ -85,12 +86,12 @@ describe('StanzaSamplerManager', function () {
       const manager = new StanzaSamplerManager()
 
       const sampler1 = manager.getSampler(ROOT_CONTEXT)
-      expect(sampler1).toEqual(new TraceIdRatioBasedSampler(1))
+      expect(sampler1).toEqual(new StanzaConfiguredSampler(mockServiceConfig.config))
 
       serviceListener({ initialized: true, data: secondMockServiceConfig })
 
       const sampler2 = manager.getSampler(ROOT_CONTEXT)
-      expect(sampler2).toEqual(new TraceIdRatioBasedSampler(0.9))
+      expect(sampler2).toEqual(new StanzaConfiguredSampler(secondMockServiceConfig.config))
     })
   })
 
@@ -107,7 +108,7 @@ describe('StanzaSamplerManager', function () {
       serviceListener({ initialized: true, data: mockServiceConfig })
 
       const sampler = manager.getSampler(addStanzaGuardToContext('myGuard')(ROOT_CONTEXT))
-      expect(sampler).toEqual(new TraceIdRatioBasedSampler(1))
+      expect(sampler).toEqual(new StanzaConfiguredSampler(mockServiceConfig.config))
     })
   })
 })

@@ -84,9 +84,10 @@ describe('createRestHubService', async () => {
       )
     })
 
-    it('should call fetch with proper params - including lastVersionSeen', async () => {
+    it('should call fetch with proper params - including lastVersionSeen, and clientId', async () => {
       await fetchServiceConfig({
-        lastVersionSeen: '123'
+        lastVersionSeen: '123',
+        clientId: '456'
       })
 
       expect(fetchMock).toHaveBeenCalledOnce()
@@ -103,7 +104,8 @@ describe('createRestHubService', async () => {
               name: 'TestService',
               release: '1.0.0',
               environment: 'test'
-            }
+            },
+            clientId: '456'
           }),
           method: 'POST'
         }

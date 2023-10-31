@@ -52,10 +52,10 @@ describe('fetchServiceConfig', () => {
   })
 
   it('should call hub service with correct params', () => {
-    void fetchServiceConfig({ lastVersionSeen: '1' })
+    void fetchServiceConfig({ lastVersionSeen: '1', clientId: '2' })
 
     expect(mockHubService.fetchServiceConfig).toHaveBeenCalledOnce()
-    expect(mockHubService.fetchServiceConfig).toHaveBeenCalledWith({ lastVersionSeen: '1' })
+    expect(mockHubService.fetchServiceConfig).toHaveBeenCalledWith({ lastVersionSeen: '1', clientId: '2' })
   })
 
   it('should update service config if hub returns value - and service config not initialized', async () => {

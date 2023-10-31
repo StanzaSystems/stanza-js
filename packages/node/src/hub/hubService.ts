@@ -9,6 +9,7 @@ import { type Health } from '../guard/model'
 
 export interface FetchServiceConfigOptions {
   lastVersionSeen?: string
+  clientId?: string
 }
 
 export interface FetchGuardConfigOptions {
