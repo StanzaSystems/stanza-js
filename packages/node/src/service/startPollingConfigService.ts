@@ -4,7 +4,7 @@ import { startPolling } from '../utils/startPolling'
 import { logger } from '../global/logger'
 import { type FetchServiceConfigOptions } from '../hub/hubService'
 
-export const startPollingServiceConfig = (clientId?: string) => {
+export const startPollingServiceConfig = (clientId: string) => {
   logger.debug('start polling service config')
   startPolling(async (prevResult: ServiceConfig | null) => {
     const options: FetchServiceConfigOptions = {

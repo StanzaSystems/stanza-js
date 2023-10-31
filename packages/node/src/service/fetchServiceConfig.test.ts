@@ -15,7 +15,6 @@ vi.mock('../global/serviceConfig', () => {
 })
 
 const mockServiceConfig: ServiceConfig = {
-  clientId: 'client-id',
   version: 'test',
   config: {
     traceConfig: {

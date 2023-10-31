@@ -4,7 +4,7 @@ import { type StanzaTokenResponse } from './api/stanzaTokenResponse'
 
 type DataSent<T extends { configDataSent: boolean }> = T extends { configDataSent: true } ? T : never
 
-export type ServiceConfig = Pick<DataSent<ServiceConfigResponse>, 'version' | 'config' | 'clientId'>
+export type ServiceConfig = Pick<DataSent<ServiceConfigResponse>, 'version' | 'config'>
 export type GuardConfig = Pick<DataSent<GuardConfigResponse>, 'version' | 'config'>
 export type StanzaToken = StanzaTokenResponse
 export interface StanzaTokenLease {
