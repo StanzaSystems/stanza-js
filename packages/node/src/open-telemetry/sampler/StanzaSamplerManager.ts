@@ -1,12 +1,13 @@
 import { type Context } from '@opentelemetry/api'
-import { AlwaysOffSampler, type Sampler, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-node'
+import { AlwaysOffSampler, type Sampler } from '@opentelemetry/sdk-trace-node'
 import { StanzaConfigEntityManager } from '../StanzaConfigEntityManager'
 import { type SamplerManager } from './SamplerManager'
+import { StanzaConfiguredSampler } from './StanzaConfiguredSampler'
 
 export class StanzaSamplerManager implements SamplerManager {
   private readonly traceConfigManager = new StanzaConfigEntityManager<Sampler>({
     getInitial: () => new AlwaysOffSampler(),
-    createWithServiceConfig: ({ traceConfig }) => new TraceIdRatioBasedSampler(traceConfig.sampleRateDefault),
+    createWithServiceConfig: (serviceConfig) => new StanzaConfiguredSampler(serviceConfig),
     cleanup: async () => {}
   })
 

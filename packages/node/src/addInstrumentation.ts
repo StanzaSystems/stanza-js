@@ -4,6 +4,7 @@ import { StanzaBaggagePropagator } from './propagation/StanzaBaggagePropagator'
 import { StanzaTokenPropagator } from './propagation/StanzaTokenPropagator'
 import { HeadersSpanEnhancer } from './span/headers/HeadersSpanEnhancer'
 import { createHttpHeaderGetter } from './createHttpHeaderGetter'
+import { TraceConfigOverrideAdditionalInfoPropagator } from './propagation/TraceConfigOverrideAdditionalInfoPropagator'
 
 export const addInstrumentation = async (serviceName: string, serviceRelease: string) => {
   const { HttpInstrumentation } = await import('@opentelemetry/instrumentation-http')
@@ -41,17 +42,18 @@ export const addInstrumentation = async (serviceName: string, serviceRelease: st
       [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
       [SemanticResourceAttributes.SERVICE_VERSION]: serviceRelease
     }) as any, // TODO: fix any cast
-    textMapPropagator:
-      new CompositePropagator({
-        propagators: [
-          new W3CTraceContextPropagator(),
-          new StanzaBaggagePropagator(),
-          new StanzaApiKeyPropagator(),
-          new StanzaTokenPropagator()
-        ]
-      }),
+    textMapPropagator: new CompositePropagator({
+      propagators: [
+        new W3CTraceContextPropagator(),
+        new StanzaBaggagePropagator(),
+        new StanzaApiKeyPropagator(),
+        new StanzaTokenPropagator(),
+        new TraceConfigOverrideAdditionalInfoPropagator()
+      ]
+    }),
     metricReader: new PeriodicExportingMetricReader({
-      exporter: new StanzaMetricExporter(serviceName, serviceRelease)
+      exporter: new StanzaMetricExporter(serviceName, serviceRelease),
+      exportIntervalMillis: 10000
     }) as any, // TODO: fix any cast
     instrumentations: [
       httpInstrumentation,
