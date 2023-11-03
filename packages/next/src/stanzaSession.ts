@@ -1,6 +1,6 @@
 import cookie from 'cookie'
 import { type NextApiHandler, type NextApiRequest, type NextApiResponse } from 'next'
-import { type NextRequest, NextResponse } from 'next/server'
+import { type NextMiddleware, NextResponse } from 'next/server'
 import { addCookie } from './addCookie'
 
 interface StanzaSessionOptions {
@@ -23,7 +23,7 @@ export function stanzaSession (options: Partial<StanzaSessionOptions> = {
     generateEnablementNumber = async () => Math.floor(Math.random() * 99)
   } = options
   const cookieName = name
-  return { getEnablementNumber, withStanzaSession, middleware }
+  return { getEnablementNumber, withStanzaSession, middleware: withStanzaSessionMiddleware(), withStanzaSessionMiddleware }
 
   async function getEnablementNumber (
     req: Pick<NextApiRequest, 'cookies' | 'headers'>
@@ -52,24 +52,63 @@ export function stanzaSession (options: Partial<StanzaSessionOptions> = {
     }
   }
 
-  async function middleware (request: NextRequest): Promise<NextResponse> {
-    const cookieEnablementNumber = request.cookies.get(cookieName)?.value
-    const enablementNumberMaybe = parseInt(cookieEnablementNumber ?? '')
-    const headers = new Headers(request.headers)
-    const enablementNumber = isNaN(enablementNumberMaybe) ? await generateEnablementNumber() : enablementNumberMaybe
-    const enablementNumberStringValue = enablementNumber.toString()
-    headers.set(X_STANZA_ENABLEMENT_NUMBER_HEADER, enablementNumberStringValue)
-    const response = NextResponse.next({
-      request: {
-        headers
+  function withStanzaSessionMiddleware (nextMiddleware?: NextMiddleware): NextMiddleware {
+    return async (...args) => {
+      const [request] = args
+      const cookieEnablementNumber = request.cookies.get(cookieName)?.value
+      const enablementNumberMaybe = parseInt(cookieEnablementNumber ?? '')
+      const headers = new Headers(request.headers)
+      const enablementNumber = isNaN(enablementNumberMaybe) ? await generateEnablementNumber() : enablementNumberMaybe
+      const enablementNumberStringValue = enablementNumber.toString()
+      headers.set(X_STANZA_ENABLEMENT_NUMBER_HEADER, enablementNumberStringValue)
+
+      const nextMiddlewareResult = await nextMiddleware?.(...args)
+
+      const stanzaResponse = NextResponse.next({
+        request: {
+          headers
+        }
+      })
+
+      // If wrapped middleware return null or undefined we can just return stanzaResponse.
+      // Otherwise, we need to merge nextMiddlewareResult with stanzaResponse.
+      // To preserve nextMiddlewareResult we don't want to add headers produced by empty NextResponse.next() call
+      // so that we don't break rewrites, redirects and direct response returns
+      const response = nextMiddlewareResult == null
+        ? stanzaResponse
+        : new NextResponse(nextMiddlewareResult?.body ?? stanzaResponse.body, {
+          headers: mergeHeaders(nextMiddlewareResult.headers, removeCommonHeaders(NextResponse.next().headers, stanzaResponse.headers)),
+          status: nextMiddlewareResult?.status ?? stanzaResponse.status,
+          statusText: nextMiddlewareResult?.statusText ?? stanzaResponse.statusText
+        })
+
+      if (isNaN(enablementNumberMaybe)) {
+        response.cookies.set(cookieName, enablementNumberStringValue)
+      }
+
+      return response
+    }
+  }
+
+  function mergeHeaders (...headers: Headers[]): Headers {
+    return headers.reduce((combined, nextHeaders) => {
+      nextHeaders.forEach((value, key) => {
+        combined.set(key, value)
+      })
+      return combined
+    }, new Headers())
+  }
+
+  function removeCommonHeaders (firstHeaders: Headers, secondHeaders: Headers): Headers {
+    const result = new Headers(firstHeaders)
+    secondHeaders.forEach((value, key) => {
+      if (result.has(key)) {
+        result.delete(key)
+      } else {
+        result.set(key, value)
       }
     })
-
-    if (isNaN(enablementNumberMaybe)) {
-      response.cookies.set(cookieName, enablementNumberStringValue)
-    }
-
-    return response
+    return result
   }
 
   function commitHeader (res: NextApiResponse, enablementNumber: number) {
