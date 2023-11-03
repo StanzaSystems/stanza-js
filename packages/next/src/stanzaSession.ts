@@ -2,6 +2,8 @@ import cookie from 'cookie'
 import { type NextApiHandler, type NextApiRequest, type NextApiResponse } from 'next'
 import { type NextMiddleware, NextResponse } from 'next/server'
 import { addCookie } from './addCookie'
+import { mergeHeaders } from './mergeHeaders'
+import { removeCommonHeaders } from './removeCommonHeaders'
 
 interface StanzaSessionOptions {
   name: string
@@ -88,27 +90,6 @@ export function stanzaSession (options: Partial<StanzaSessionOptions> = {
 
       return response
     }
-  }
-
-  function mergeHeaders (...headers: Headers[]): Headers {
-    return headers.reduce((combined, nextHeaders) => {
-      nextHeaders.forEach((value, key) => {
-        combined.set(key, value)
-      })
-      return combined
-    }, new Headers())
-  }
-
-  function removeCommonHeaders (firstHeaders: Headers, secondHeaders: Headers): Headers {
-    const result = new Headers(firstHeaders)
-    secondHeaders.forEach((value, key) => {
-      if (result.has(key)) {
-        result.delete(key)
-      } else {
-        result.set(key, value)
-      }
-    })
-    return result
   }
 
   function commitHeader (res: NextApiResponse, enablementNumber: number) {
