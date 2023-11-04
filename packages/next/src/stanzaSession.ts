@@ -79,7 +79,7 @@ export function stanzaSession (options: Partial<StanzaSessionOptions> = {
       const response = nextMiddlewareResult == null
         ? stanzaResponse
         : new NextResponse(nextMiddlewareResult?.body ?? stanzaResponse.body, {
-          headers: mergeHeaders(nextMiddlewareResult.headers, removeCommonHeaders(NextResponse.next().headers, stanzaResponse.headers)),
+          headers: mergeHeaders(nextMiddlewareResult.headers, removeCommonHeaders(stanzaResponse.headers, NextResponse.next().headers)),
           status: nextMiddlewareResult?.status ?? stanzaResponse.status,
           statusText: nextMiddlewareResult?.statusText ?? stanzaResponse.statusText
         })
