@@ -1,6 +1,6 @@
 import { type NextApiRequest, type NextApiResponse } from 'next'
-import { type NextRequest, NextResponse } from 'next/server'
-import { describe, expect, it, vi } from 'vitest'
+import { type NextFetchEvent, type NextRequest, NextResponse } from 'next/server'
+import { assert, describe, expect, it, vi } from 'vitest'
 import { stanzaSession } from '../stanzaSession'
 
 const createMockApiRequest = (cookies: Partial<Record<string, string>> = {}, headers: Partial<Record<string, string | string[] | undefined>> = {}): NextApiRequest => ({
@@ -14,6 +14,10 @@ const createMockNextRequest = (cookies: Record<string, string> = {}, headers: Re
   },
   headers: new Headers(headers)
 } as any as NextRequest)
+
+const createMockNextFetchEvent = () => {
+  return {} as any as NextFetchEvent
+}
 
 const createMockApiResponse = ({
   getHeader = () => undefined, setHeader = function () {
@@ -76,7 +80,7 @@ describe('stanzaSession', () => {
         generateEnablementNumber: () => 99
       })
 
-      await session.middleware(req)
+      await session.middleware(req, createMockNextFetchEvent())
 
       expect(nextResponseSpy).toHaveBeenCalledTimes(1)
       expect(nextResponseSpy).toHaveBeenCalledWith({
@@ -96,7 +100,7 @@ describe('stanzaSession', () => {
       const session = stanzaSession({
         generateEnablementNumber
       })
-      await session.middleware(req)
+      await session.middleware(req, createMockNextFetchEvent())
 
       expect(generateEnablementNumber).not.toHaveBeenCalled()
     })
@@ -108,7 +112,9 @@ describe('stanzaSession', () => {
       const session = stanzaSession({
         generateEnablementNumber: () => 99
       })
-      const res = await session.middleware(req)
+      const res = await session.middleware(req, createMockNextFetchEvent())
+
+      assert(res instanceof NextResponse)
 
       expect(res.cookies.get('stanza-enablement-number')?.value).toBeUndefined()
     })
@@ -118,7 +124,9 @@ describe('stanzaSession', () => {
       const generateEnablementNumber = vi.spyOn(Math, 'random')
       generateEnablementNumber.mockImplementationOnce(() => 0.5)
       const session = stanzaSession()
-      const res = await session.middleware(req)
+      const res = await session.middleware(req, createMockNextFetchEvent())
+
+      assert(res instanceof NextResponse)
 
       expect(generateEnablementNumber).toHaveBeenCalledTimes(1)
       expect(res.cookies.get('stanza-enablement-number')?.value).toBe('49')
@@ -130,7 +138,7 @@ describe('stanzaSession', () => {
       const session = stanzaSession({
         generateEnablementNumber
       })
-      await session.middleware(req)
+      await session.middleware(req, createMockNextFetchEvent())
 
       expect(generateEnablementNumber).toHaveBeenCalledTimes(1)
     })
@@ -140,7 +148,9 @@ describe('stanzaSession', () => {
       const session = stanzaSession({
         generateEnablementNumber: () => 99
       })
-      const res = await session.middleware(req)
+      const res = await session.middleware(req, createMockNextFetchEvent())
+
+      assert(res instanceof NextResponse)
 
       expect(res.cookies.get('stanza-enablement-number')?.value).toBe('99')
     })
@@ -153,7 +163,7 @@ describe('stanzaSession', () => {
       const session = stanzaSession({
         generateEnablementNumber
       })
-      await session.middleware(req)
+      await session.middleware(req, createMockNextFetchEvent())
 
       expect(generateEnablementNumber).toHaveBeenCalledTimes(1)
     })
@@ -165,7 +175,9 @@ describe('stanzaSession', () => {
       const session = stanzaSession({
         generateEnablementNumber: () => 99
       })
-      const res = await session.middleware(req)
+      const res = await session.middleware(req, createMockNextFetchEvent())
+
+      assert(res instanceof NextResponse)
 
       expect(res.cookies.get('stanza-enablement-number')?.value).toBe('99')
     })
