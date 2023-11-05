@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 import useSWR from 'swr'
 import ClearCart from '../components/ClearCart'
 
-import Layout from '../components/Layout'
 import PrintObject from '../components/PrintObject'
 
 import { fetchGetJSON } from '../utils/api-helpers'
