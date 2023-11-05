@@ -25,15 +25,13 @@ const ResultPage: NextPage = () => {
   if (error) return <div>failed to load</div>
 
   return (
-    <Layout title="Checkout Payment Result | Next.js + TypeScript Example">
-      <div className="page-container">
-        <h1>Checkout Payment Result</h1>
-        <h2>Status: {data?.payment_intent?.status ?? 'loading...'}</h2>
-        <h3>CheckoutSession response:</h3>
-        <PrintObject content={data ?? 'loading...'}/>
-        <ClearCart/>
-      </div>
-    </Layout>
+    <div className="page-container">
+      <h1>Checkout Payment Result</h1>
+      <h2>Status: {data?.payment_intent?.status ?? 'loading...'}</h2>
+      <h3>CheckoutSession response:</h3>
+      <PrintObject content={data ?? 'loading...'} />
+      <ClearCart />
+    </div>
   )
 }
 
