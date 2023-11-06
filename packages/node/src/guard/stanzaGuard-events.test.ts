@@ -5,9 +5,10 @@ import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks'
 import { context, propagation, ROOT_CONTEXT } from '@opentelemetry/api'
 import { type GuardConfig } from '../hub/model'
 import { stanzaGuard } from './stanzaGuard'
-import { eventBus, events, type ReasonData } from '../global/eventBus'
+import { eventBus, events } from '../global/eventBus'
 import type * as getQuotaModule from '../quota/getQuota'
 import { updateServiceConfig } from '../global/serviceConfig'
+
 type GetQuotaModule = typeof getQuotaModule
 
 const mockMessageBusEmit = vi.spyOn(eventBus, 'emit')
@@ -74,7 +75,7 @@ beforeAll(() => {
 describe('stanzaGuard', () => {
   describe('events', () => {
     describe('should emit stanza.guard.allowed event', () => {
-      it.skip('when guard executes', async () => {
+      it('when guard executes', async () => {
         updateGuardConfig('testGuard', {
           config: {
             checkQuota: true,
@@ -109,7 +110,7 @@ describe('stanzaGuard', () => {
         })
       })
 
-      it.skip('with specified feature when guard executes', async () => {
+      it('with specified feature when guard executes', async () => {
         updateGuardConfig('testGuard', {
           config: {
             checkQuota: true,
@@ -145,7 +146,7 @@ describe('stanzaGuard', () => {
         })
       })
 
-      it.skip('with feature specified in context when guard executes', async () => {
+      it('with feature specified in context when guard executes', async () => {
         updateGuardConfig('testGuard', {
           config: {
             checkQuota: true,
@@ -184,7 +185,7 @@ describe('stanzaGuard', () => {
         })
       })
 
-      it.skip('when guard executes with fail open reason when getting token returns null', async () => {
+      it('when guard executes with fail open reason when getting token returns null', async () => {
         updateGuardConfig('testGuard', {
           config: {
             checkQuota: true,
@@ -219,7 +220,7 @@ describe('stanzaGuard', () => {
         })
       })
 
-      it.skip('when guard executes with fail open reason when no guard config is provided', async () => {
+      it('when guard executes with fail open reason when no guard config is provided', async () => {
         const guardedDoStuff = stanzaGuard({
           guard: 'testGuard'
         }).bind(doStuff)

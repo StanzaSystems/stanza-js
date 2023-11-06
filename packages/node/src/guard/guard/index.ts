@@ -2,7 +2,6 @@ import { initQuotaChecker } from './quotaChecker'
 import { initIngressTokenValidator } from './ingressTokenValidator'
 import { type StanzaGuardOptions } from '../model'
 import { addServiceConfigListener, isServiceConfigInitialized } from '../../global/serviceConfig'
-import { type ReasonData } from '../../global/eventBus'
 
 type GuardGuardOptions = StanzaGuardOptions
 
@@ -52,6 +51,7 @@ export const initGuardGuard = (options: GuardGuardOptions) => {
       if (shouldRun()) {
         const result = await run()
         results.push(result)
+        if (result.status === 'failure') break
       } else {
         results.push(notRun())
       }
