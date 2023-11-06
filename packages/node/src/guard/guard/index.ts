@@ -2,6 +2,7 @@ import { initQuotaChecker } from './quotaChecker'
 import { initIngressTokenValidator } from './ingressTokenValidator'
 import { type StanzaGuardOptions } from '../model'
 import { addServiceConfigListener, isServiceConfigInitialized } from '../../global/serviceConfig'
+import { type ReasonData } from '../../global/eventBus'
 
 type GuardGuardOptions = StanzaGuardOptions
 
@@ -24,19 +25,35 @@ export const initGuardGuard = (options: GuardGuardOptions) => {
     const guardSteps = [
       {
         shouldRun: shouldValidateIngressToken,
-        run: validateIngressToken
+        run: validateIngressToken,
+        notRun: (): Awaited<ReturnType<typeof validateIngressToken>> => ({
+          type: 'TOKEN_VALIDATE',
+          status: 'disabled',
+          reason: {
+            tokenReason: 'TOKEN_EVAL_DISABLED'
+          }
+        })
       },
       {
         shouldRun: shouldCheckQuota,
-        run: checkQuota
+        run: checkQuota,
+        notRun: (): Awaited<ReturnType<typeof checkQuota>> => ({
+          type: 'QUOTA',
+          status: 'disabled',
+          reason: {
+            quotaReason: 'QUOTA_EVAL_DISABLED'
+          }
+        })
       }
     ]
 
     const results = Array<Awaited<ReturnType<(typeof guardSteps)[number]['run']>>>()
-    for (const { shouldRun, run } of guardSteps) {
+    for (const { shouldRun, run, notRun } of guardSteps) {
       if (shouldRun()) {
         const result = await run()
         results.push(result)
+      } else {
+        results.push(notRun())
       }
     }
 

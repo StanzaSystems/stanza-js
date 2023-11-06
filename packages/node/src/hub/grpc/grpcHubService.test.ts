@@ -297,7 +297,8 @@ describe('createGrpcHubService', async () => {
         config: {
           checkQuota: true,
           quotaTags: [],
-          validateIngressTokens: false
+          validateIngressTokens: false,
+          reportOnly: false
         }
       })
     })

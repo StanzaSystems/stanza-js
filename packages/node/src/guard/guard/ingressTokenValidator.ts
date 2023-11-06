@@ -7,9 +7,15 @@ import { withTimeout } from '../../utils/withTimeout'
 import { hubService } from '../../global/hubService'
 import { logger } from '../../global/logger'
 import { STANZA_REQUEST_TIMEOUT } from '../../global/requestTimeout'
+import { type ReasonData } from '../../global/eventBus'
+import { type CheckerResponse } from './types'
 
 export interface IngressTokenValidatorOptions {
   guard: string
+}
+
+type TokenValidateResponse = CheckerResponse<'TOKEN_VALIDATE'> & {
+  reason: Pick<ReasonData, 'tokenReason'>
 }
 export const initIngressTokenValidator = (options: IngressTokenValidatorOptions) => {
   return { shouldValidateIngressToken, validateIngressToken }
@@ -19,10 +25,12 @@ export const initIngressTokenValidator = (options: IngressTokenValidatorOptions)
     return guardConfig?.config?.validateIngressTokens === true
   }
 
-  async function validateIngressToken (): Promise<{ type: 'TOKEN_VALIDATED' } | null> {
+  async function validateIngressToken (): Promise<TokenValidateResponse> {
     const token = context.active().getValue(stanzaTokenContextKey)
 
     if (typeof (token) !== 'string' || token === '') {
+      // return {type: 'TOKEN_VALIDATE', status: 'failure', reason: {tokenReason: ''}}
+      // TODO
       throw new StanzaGuardError('InvalidToken', 'Valid Stanza token was not provided in the incoming header')
     }
 
@@ -40,13 +48,20 @@ export const initIngressTokenValidator = (options: IngressTokenValidatorOptions)
     }
 
     if (validatedToken === null) {
-      return null
+      return { type: 'TOKEN_VALIDATE', status: 'failOpen', reason: { tokenReason: 'TOKEN_VALIDATION_ERROR' } }
     }
 
     if (!validatedToken.valid || validatedToken.token !== token) {
-      throw new StanzaGuardError('InvalidToken', 'Provided token was invalid')
+      return { type: 'TOKEN_VALIDATE', status: 'failure', reason: { tokenReason: 'TOKEN_NOT_VALID' } }
+      // throw new StanzaGuardError('InvalidToken', 'Provided token was invalid')
     }
 
-    return { type: 'TOKEN_VALIDATED' }
+    return {
+      type: 'TOKEN_VALIDATE',
+      status: 'success',
+      reason: {
+        tokenReason: 'TOKEN_VALID'
+      }
+    }
   }
 }
