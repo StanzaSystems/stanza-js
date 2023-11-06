@@ -7,7 +7,12 @@ export interface StanzaProviderProps {
   instance: StanzaInstance
 }
 
-export const StanzaProvider: React.FunctionComponent<StanzaProviderProps> = (props) => {
+export const StanzaProvider: React.FC<StanzaProviderProps> = (props) => {
   const { children, instance } = props
-  return (<StanzaReactContext.Provider value={instance}>{children}</StanzaReactContext.Provider>)
+
+  return (
+    <StanzaReactContext.Provider value={instance}>
+      {children}
+    </StanzaReactContext.Provider>
+  )
 }
