@@ -63,46 +63,49 @@ const ElementsForm: FC<{
     })
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault()
-    // Abort if form isn't valid
-    if (!e.currentTarget.reportValidity()) return
-    if (elements == null) return
-    setPayment({ status: 'processing' })
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+    async function submit () {
+      e.preventDefault()
+      // Abort if form isn't valid
+      if (!e.currentTarget.reportValidity()) return
+      if (elements == null) return
+      setPayment({ status: 'processing' })
 
-    // Create a PaymentIntent with the specified amount.
-    const response = await fetchPostJSON('/api/payment_intents', {
-      amount: input.customDonation,
-      payment_intent_id: paymentIntent?.id
-    })
-    setPayment(response)
+      // Create a PaymentIntent with the specified amount.
+      const response = await fetchPostJSON('/api/payment_intents', {
+        amount: input.customDonation,
+        payment_intent_id: paymentIntent?.id
+      })
+      setPayment(response)
 
-    if (response.statusCode === 500) {
-      setPayment({ status: 'error' })
-      setErrorMessage(response.message)
-      return
-    }
+      if (response.statusCode === 500) {
+        setPayment({ status: 'error' })
+        setErrorMessage(response.message)
+        return
+      }
 
-    // Use your card Element with other Stripe.js APIs
-    const error = await stripe?.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: 'http://localhost:3000/donate-with-elements',
-        payment_method_data: {
-          billing_details: {
-            name: input.cardholderName
+      // Use your card Element with other Stripe.js APIs
+      const error = await stripe?.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: 'http://localhost:4200/donate-with-elements',
+          payment_method_data: {
+            billing_details: {
+              name: input.cardholderName
+            }
           }
         }
-      }
-    })
+      })
 
-    if (error !== undefined) {
-      setPayment({ status: 'error' })
-      setErrorMessage(error?.error.message ?? 'An unknown error occurred')
-    } else if (paymentIntent != null) {
-      setPayment(paymentIntent)
+      if (error !== undefined) {
+        setPayment({ status: 'error' })
+        setErrorMessage(error?.error.message ?? 'An unknown error occurred')
+      } else if (paymentIntent != null) {
+        setPayment(paymentIntent)
+      }
     }
+
+    void submit()
   }
 
   return (
@@ -123,15 +126,15 @@ const ElementsForm: FC<{
           <legend>Your payment details:</legend>
           {paymentType === 'card'
             ? (
-            <input
-              placeholder="Cardholder name"
-              className="elements-style"
-              type="Text"
-              name="cardholderName"
-              onChange={handleInputChange}
-              required
-            />
-              )
+              <input
+                placeholder="Cardholder name"
+                className="elements-style"
+                type="Text"
+                name="cardholderName"
+                onChange={handleInputChange}
+                required
+              />
+            )
             : null}
           <div className="FormRow elements-style">
             <PaymentElement
