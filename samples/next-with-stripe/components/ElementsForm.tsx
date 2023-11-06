@@ -14,6 +14,39 @@ import * as config from '../config'
 import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js'
 import { type PaymentIntent } from '@stripe/stripe-js'
 
+interface PaymentStatusProps {
+  status: string
+  errorMessage: string
+}
+
+const PaymentStatus = (props: PaymentStatusProps) => {
+  const { status, errorMessage } = props
+
+  switch (status) {
+    case 'processing':
+    case 'requires_payment_method':
+    case 'requires_confirmation':
+      return <h2>Processing...</h2>
+
+    case 'requires_action':
+      return <h2>Authenticating...</h2>
+
+    case 'succeeded':
+      return <h2>Payment Succeeded 🥳</h2>
+
+    case 'error':
+      return (
+        <>
+          <h2>Error 😭</h2>
+          <p className="error-message">{errorMessage}</p>
+        </>
+      )
+
+    default:
+      return null
+  }
+}
+
 const ElementsForm: FC<{
   paymentIntent?: PaymentIntent | null
 }> = ({ paymentIntent = null }) => {
@@ -29,32 +62,6 @@ const ElementsForm: FC<{
   const [errorMessage, setErrorMessage] = useState('')
   const stripe = useStripe()
   const elements = useElements()
-
-  const PaymentStatus = ({ status }: { status: string }) => {
-    switch (status) {
-      case 'processing':
-      case 'requires_payment_method':
-      case 'requires_confirmation':
-        return <h2>Processing...</h2>
-
-      case 'requires_action':
-        return <h2>Authenticating...</h2>
-
-      case 'succeeded':
-        return <h2>Payment Succeeded 🥳</h2>
-
-      case 'error':
-        return (
-          <>
-            <h2>Error 😭</h2>
-            <p className="error-message">{errorMessage}</p>
-          </>
-        )
-
-      default:
-        return null
-    }
-  }
 
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setInput({
@@ -134,7 +141,7 @@ const ElementsForm: FC<{
                 onChange={handleInputChange}
                 required
               />
-            )
+              )
             : null}
           <div className="FormRow elements-style">
             <PaymentElement
@@ -155,7 +162,7 @@ const ElementsForm: FC<{
           Donate {formatAmountForDisplay(input.customDonation, config.CURRENCY)}
         </button>
       </form>
-      <PaymentStatus status={payment.status} />
+      <PaymentStatus status={payment.status} errorMessage={errorMessage} />
       <PrintObject content={payment} />
     </>
   )
