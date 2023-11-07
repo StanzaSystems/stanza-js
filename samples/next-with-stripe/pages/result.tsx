@@ -1,14 +1,17 @@
+import { useEffect, useState } from 'react'
 import { type NextPage } from 'next'
 import { useRouter } from 'next/router'
 import useSWR from 'swr'
-import ClearCart from '../components/ClearCart'
 
 import PrintObject from '../components/PrintObject'
 
 import { fetchGetJSON } from '../utils/api-helpers'
+import { useShoppingCart } from 'use-shopping-cart'
 
 const ResultPage: NextPage = () => {
+  const [hasClearedCart, setHasClearedCart] = useState(false)
   const router = useRouter()
+  const { clearCart } = useShoppingCart()
 
   // Fetch CheckoutSession from static page via
   // https://nextjs.org/docs/basic-features/data-fetching#static-generation
@@ -20,6 +23,14 @@ const ResultPage: NextPage = () => {
     fetchGetJSON
   )
 
+  useEffect(() => {
+    if (data !== undefined) {
+      setHasClearedCart(true)
+      clearCart()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
+
   // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   if (error) return <div>failed to load</div>
 
@@ -29,7 +40,7 @@ const ResultPage: NextPage = () => {
       <h2>Status: {data?.payment_intent?.status ?? 'loading...'}</h2>
       <h3>CheckoutSession response:</h3>
       <PrintObject content={data ?? 'loading...'} />
-      <ClearCart />
+      {hasClearedCart && <p>Cart cleared</p>}
     </div>
   )
 }
