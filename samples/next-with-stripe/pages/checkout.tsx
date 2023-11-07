@@ -10,7 +10,6 @@ interface CheckoutProps {
 const stripe = getStripe()
 
 const Checkout = (props: CheckoutProps) => {
-  console.log(props)
   return (
     <Elements options={{ clientSecret: props.clientSecret }} stripe={stripe}>
       <ElementsForm/>
@@ -18,10 +17,11 @@ const Checkout = (props: CheckoutProps) => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps<CheckoutProps> = async () => {
+export const getServerSideProps: GetServerSideProps<CheckoutProps> = async (context) => {
   let result
+  const host = context.req.headers.host ?? 'localhost:4200'
   try {
-    const response = await fetch('http://localhost:4200/api/payment_intents', {
+    const response = await fetch(`http://${host}/api/payment_intents`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -31,7 +31,6 @@ export const getServerSideProps: GetServerSideProps<CheckoutProps> = async () =>
       })
     })
     result = await response.json()
-    console.log(result.client_secret)
   } catch (error) {
     console.log(error)
   }

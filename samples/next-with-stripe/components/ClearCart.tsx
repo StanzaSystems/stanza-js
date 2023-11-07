@@ -1,16 +1,13 @@
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useShoppingCart } from 'use-shopping-cart'
 
 export default function ClearCart () {
   const { clearCart } = useShoppingCart()
 
-  const clearCartItems = useCallback(() => {
-    return clearCart
-  }, [clearCart])
-
   useEffect(() => {
-    clearCartItems()
-  }, [clearCartItems])
+    clearCart()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return <p>Cart cleared.</p>
 }
