@@ -69,21 +69,7 @@ export const createGrpcHubService = ({ serviceName, serviceRelease, environment,
       }
 
       return {
-        config: {
-          ...data.config
-          // traceConfig: {
-          //   ...data.config.traceConfig,
-          //   overrides: [
-          //     ...data.config.traceConfig.overrides,
-          //     {
-          //       sampleRate: 0.95,
-          //       spanSelectors: [
-          //         { otelAttribute: 'http.server.header.x_hello', value: 'stanza' }
-          //       ]
-          //     }
-          //   ]
-          // }
-        },
+        config: data.config,
         version: data.version
       }
     },

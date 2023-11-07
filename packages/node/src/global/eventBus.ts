@@ -1,9 +1,7 @@
 import Emittery from 'emittery'
 
 const EVENT_BUS_SYMBOL = Symbol.for('[Stanza SDK Internal] Event Bus')
-const EVENT_BUS_EVENTS_SYMBOL = Symbol.for(
-  '[Stanza SDK Internal] Event Bus Events'
-)
+const EVENT_BUS_EVENTS_SYMBOL = Symbol.for('[Stanza SDK Internal] Event Bus Events')
 
 const guardAllowed = Symbol('stanza.guard.allowed')
 const guardAllowedSuccess = Symbol('stanza.guard.allowed.success')
@@ -14,9 +12,7 @@ const guardFailOpen = Symbol('stanza.guard.failopen')
 
 const configServiceFetchSuccess = Symbol('stanza.config.service.fetch.success')
 const configServiceFetchFailure = Symbol('stanza.config.service.fetch.failure')
-const configServiceFetchDuration = Symbol(
-  'stanza.config.service.fetch.duration'
-)
+const configServiceFetchDuration = Symbol('stanza.config.service.fetch.duration')
 
 const configGuardFetchSuccess = Symbol('stanza.config.guard.fetch.success')
 const configGuardFetchFailure = Symbol('stanza.config.guard.fetch.failure')
@@ -123,15 +119,6 @@ export interface QuotaEndpointData {
   endpoint: QuotaEndpoint
 }
 
-export type GuardReason =
-  | 'fail_open'
-  | 'dark_launch'
-  | 'quota'
-  | 'system_load'
-  | 'circuit_breaking'
-  | 'bulkhead'
-  | 'throttling'
-
 export type GuardMode = 'unspecified' | 'normal' | 'report_only'
 
 export type ConfigState =
@@ -187,19 +174,14 @@ type StanzaEventBus = EventBus<{
   [guardFailOpen]: DefaultContextData & GuardData & FeatureData & ReasonData & GuardModeData
   [guardAllowedFailure]: DefaultContextData & GuardData & FeatureData
   [guardAllowedSuccess]: DefaultContextData & GuardData & FeatureData
-  [guardAllowedDuration]: DefaultContextData &
-  GuardData &
-  FeatureData &
-  DurationData
+  [guardAllowedDuration]: DefaultContextData & GuardData & FeatureData & DurationData
   [configServiceFetchSuccess]: DefaultContextData
   [configServiceFetchFailure]: DefaultContextData
   [configServiceFetchDuration]: DefaultContextData & DurationData
   [configGuardFetchSuccess]: DefaultContextData & GuardData
   [configGuardFetchFailure]: DefaultContextData
   [configGuardFetchDuration]: DefaultContextData & DurationData
-  [quotaFetchSuccess]: DefaultContextData &
-  QuotaEndpointData &
-  OptionalGuardData
+  [quotaFetchSuccess]: DefaultContextData & QuotaEndpointData & OptionalGuardData
   [quotaFetchFailure]: DefaultContextData & QuotaEndpointData
   [quotaFetchDuration]: DefaultContextData & QuotaEndpointData & DurationData
   [quotaValidateSuccess]: DefaultContextData & GuardData
@@ -221,8 +203,6 @@ interface EventBusGlobal {
 
 const eventBusGlobal = global as unknown as EventBusGlobal
 
-export const eventBus: StanzaEventBus = (eventBusGlobal[EVENT_BUS_SYMBOL] =
-  eventBusGlobal[EVENT_BUS_SYMBOL] ?? new Emittery())
+export const eventBus: StanzaEventBus = (eventBusGlobal[EVENT_BUS_SYMBOL] = eventBusGlobal[EVENT_BUS_SYMBOL] ?? new Emittery())
 
-export const events = (eventBusGlobal[EVENT_BUS_EVENTS_SYMBOL] =
-  eventBusGlobal[EVENT_BUS_EVENTS_SYMBOL] ?? eventBusEvents)
+export const events = (eventBusGlobal[EVENT_BUS_EVENTS_SYMBOL] = eventBusGlobal[EVENT_BUS_EVENTS_SYMBOL] ?? eventBusEvents)
