@@ -206,7 +206,7 @@ describe('stanzaGuard', () => {
 
         await expect(guardStuffPromise).resolves.toBeUndefined()
 
-        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.failOpen, {
           guardName: 'testGuard',
           featureName: '',
           serviceName: 'testService',
@@ -229,7 +229,7 @@ describe('stanzaGuard', () => {
 
         await expect(guardStuffPromise).resolves.toBeUndefined()
 
-        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.failOpen, {
           guardName: 'testGuard',
           featureName: '',
           serviceName: 'testService',
@@ -237,8 +237,8 @@ describe('stanzaGuard', () => {
           clientId: 'testClientId',
           configState: 'CONFIG_UNSPECIFIED',
           localReason: 'LOCAL_NOT_SUPPORTED',
-          tokenReason: 'TOKEN_EVAL_DISABLED',
-          quotaReason: 'QUOTA_EVAL_DISABLED',
+          tokenReason: 'TOKEN_NOT_EVAL',
+          quotaReason: 'QUOTA_NOT_EVAL',
           mode: 'normal'
         })
       })

@@ -34,11 +34,14 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(
         async () => {
           const guardResult = await guard()
 
-          const failure = guardResult.find(r => r.status === 'failure')
+          const failure = guardResult.find(
+            (r): r is typeof r & { status: 'failure' } =>
+              r.status === 'failure'
+          )
           if (failure !== undefined) {
             throw failure.type === 'QUOTA'
-              ? new StanzaGuardError('NoQuota', 'Guard can not be executed')
-              : new StanzaGuardError('InvalidToken', 'Provided token was invalid')
+              ? new StanzaGuardError('NoQuota', failure.message)
+              : new StanzaGuardError('InvalidToken', failure.message)
           }
 
           const fnWithBoundContext = bindContext(
@@ -47,7 +50,8 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(
               .map((token) =>
                 token?.type === 'QUOTA' && token.status === 'success'
                   ? addStanzaTokenToContext(token.token)
-                  : token.type === 'TOKEN_VALIDATE' && token.status === 'success'
+                  : token.type === 'TOKEN_VALIDATE' &&
+                    token.status === 'success'
                     ? removeStanzaTokenFromContext()
                     : identity
               ),
@@ -111,9 +115,11 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
         const customerId = getServiceConfig()?.config.customerId
         const { serviceName, environment, clientId } = hubService.getServiceMetadata()
         return eventBus.emit(
-          result.every(r => r.status !== 'failure')
-            ? events.guard.allowed
-            : events.guard.blocked,
+          result.some((r) => r.status === 'failure')
+            ? events.guard.blocked
+            : result.some((r) => r.status === 'failOpen')
+              ? events.guard.failOpen
+              : events.guard.allowed,
           {
             serviceName,
             environment,
@@ -123,7 +129,8 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
             customerId,
             ...getReasons(result.filter(isTruthy).map(({ reason }) => reason)),
             mode: 'normal'
-          })
+          }
+        )
       },
       failure: async (err) => {
         if (err instanceof StanzaGuardError) {
@@ -144,14 +151,24 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
     })
   }
 
-  function getReasons (reasons: Array<Partial<ReasonData> | StanzaGuardError>): ReasonData {
-    return reasons.reduce<ReasonData>((resultReasons, current) => {
-      return current instanceof StanzaGuardError ? resultReasons : Object.assign(resultReasons, current)
-    }, {
-      configState: getGuardConfig(options.guard) !== undefined ? 'CONFIG_CACHED_OK' : 'CONFIG_UNSPECIFIED', // TODO
-      localReason: 'LOCAL_NOT_SUPPORTED',
-      tokenReason: 'TOKEN_UNSPECIFIED',
-      quotaReason: 'QUOTA_UNSPECIFIED'
-    })
+  function getReasons (
+    reasons: Array<Partial<ReasonData> | StanzaGuardError>
+  ): ReasonData {
+    return reasons.reduce<ReasonData>(
+      (resultReasons, current) => {
+        return current instanceof StanzaGuardError
+          ? resultReasons
+          : Object.assign(resultReasons, current)
+      },
+      {
+        configState:
+          getGuardConfig(options.guard) !== undefined
+            ? 'CONFIG_CACHED_OK'
+            : 'CONFIG_UNSPECIFIED', // TODO: distinguish unspecified and failed to fetch config
+        localReason: 'LOCAL_NOT_SUPPORTED',
+        tokenReason: 'TOKEN_UNSPECIFIED',
+        quotaReason: 'QUOTA_UNSPECIFIED'
+      }
+    )
   }
 }

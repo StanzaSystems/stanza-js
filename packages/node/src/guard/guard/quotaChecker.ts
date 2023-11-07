@@ -14,7 +14,7 @@ export interface QuotaCheckerOptions {
   tags?: Tag[]
 }
 
-type CheckQuotaResponse = CheckerResponse<'QUOTA', { token: string }> & {
+type CheckQuotaResponse = CheckerResponse<'QUOTA', { token: string }, { message: string }> & {
   reason: Pick<ReasonData, 'quotaReason'>
 }
 
@@ -38,9 +38,9 @@ export const initQuotaChecker = (options: QuotaCheckerOptions) => {
       return {
         type: 'QUOTA',
         status: 'failure',
-        reason: { quotaReason: 'QUOTA_BLOCKED' }
+        reason: { quotaReason: 'QUOTA_BLOCKED' },
+        message: 'Guard can not be executed'
       }
-      // throw new StanzaGuardError('NoQuota', 'Guard can not be executed')
     }
 
     return token?.granted

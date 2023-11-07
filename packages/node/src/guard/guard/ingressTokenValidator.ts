@@ -1,7 +1,6 @@
 import { getGuardConfig } from '../../global/guardConfig'
 import { context } from '@opentelemetry/api'
 import { stanzaTokenContextKey } from '../../context/stanzaTokenContextKey'
-import { StanzaGuardError } from '../stanzaGuardError'
 import { type ValidatedToken } from '../../hub/model'
 import { withTimeout } from '../../utils/withTimeout'
 import { hubService } from '../../global/hubService'
@@ -14,7 +13,7 @@ export interface IngressTokenValidatorOptions {
   guard: string
 }
 
-type TokenValidateResponse = CheckerResponse<'TOKEN_VALIDATE'> & {
+type TokenValidateResponse = CheckerResponse<'TOKEN_VALIDATE', Record<string, unknown>, { message: string }> & {
   reason: Pick<ReasonData, 'tokenReason'>
 }
 export const initIngressTokenValidator = (options: IngressTokenValidatorOptions) => {
@@ -29,9 +28,7 @@ export const initIngressTokenValidator = (options: IngressTokenValidatorOptions)
     const token = context.active().getValue(stanzaTokenContextKey)
 
     if (typeof (token) !== 'string' || token === '') {
-      // return {type: 'TOKEN_VALIDATE', status: 'failure', reason: {tokenReason: ''}}
-      // TODO
-      throw new StanzaGuardError('InvalidToken', 'Valid Stanza token was not provided in the incoming header')
+      return { type: 'TOKEN_VALIDATE', status: 'failure', reason: { tokenReason: 'TOKEN_NOT_VALID' }, message: 'Valid Stanza token was not provided in the incoming header' }
     }
 
     let validatedToken: ValidatedToken | null = null
@@ -52,8 +49,7 @@ export const initIngressTokenValidator = (options: IngressTokenValidatorOptions)
     }
 
     if (!validatedToken.valid || validatedToken.token !== token) {
-      return { type: 'TOKEN_VALIDATE', status: 'failure', reason: { tokenReason: 'TOKEN_NOT_VALID' } }
-      // throw new StanzaGuardError('InvalidToken', 'Provided token was invalid')
+      return { type: 'TOKEN_VALIDATE', status: 'failure', reason: { tokenReason: 'TOKEN_NOT_VALID' }, message: 'Provided token was invalid' }
     }
 
     return {
