@@ -2,10 +2,15 @@ import { beforeEach, describe, expect, it, type SpyInstance, vi } from 'vitest'
 import { MeterProvider } from '@opentelemetry/sdk-metrics'
 import { type Counter, type Histogram, type Meter, type MeterProvider as IMeterProvider } from '@opentelemetry/api'
 import type * as eventBusModule from '../../global/eventBus'
-import { type ConfigState, eventBus, events, type LocalReason, type QuotaReason, type TokenReason } from '../../global/eventBus'
+import { eventBus, events } from '../../global/eventBus'
 import { StanzaInstrumentation } from './stanzaInstrumentation'
 
 type EventBusModule = typeof eventBusModule
+type ConfigState = eventBusModule.ConfigState
+type LocalReason = eventBusModule.LocalReason
+type TokenReason = eventBusModule.TokenReason
+type QuotaReason = eventBusModule.QuotaReason
+
 vi.mock('../../global/eventBus', async (_importOriginal) => {
   const Emittery = (await import('emittery')).default
   const original: any = await vi.importActual('../../global/eventBus')
