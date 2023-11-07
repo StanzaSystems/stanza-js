@@ -18,6 +18,7 @@ export class StanzaInstrumentation extends InstrumentationBase {
     guard: {
       allowed: Counter<GuardResolutionAttributes>
       blocked: Counter<GuardResolutionAttributes>
+      failOpen: Counter<GuardResolutionAttributes>
       failed: Counter<RequestAttributes>
       succeeded: Counter<RequestAttributes>
       duration: Histogram<RequestAttributes>
@@ -72,6 +73,9 @@ export class StanzaInstrumentation extends InstrumentationBase {
     eventBus.on(events.guard.allowed, (data) => {
       this.metrics.guard.allowed.add(1, eventDataToGuardResolutionAttributes(data))
     })
+    eventBus.on(events.guard.failOpen, data => {
+      this.metrics.guard.failOpen.add(1, eventDataToGuardResolutionAttributes(data))
+    })
     eventBus.on(events.guard.blocked, data => {
       this.metrics.guard.blocked.add(1, eventDataToGuardResolutionAttributes(data))
     })
@@ -95,6 +99,10 @@ export class StanzaInstrumentation extends InstrumentationBase {
       blocked: this.meter.createCounter(
         events.guard.blocked.description ?? '',
         stanzaCounterMetricOptions('Count of requests not permitted to execute on a given Guard')
+      ),
+      failOpen: this.meter.createCounter(
+        events.guard.failOpen.description ?? '',
+        stanzaCounterMetricOptions('Count of requests which encountered an error condition, but were allowed to proceed anyway')
       ),
       failed: this.meter.createCounter(
         events.guard.failed.description ?? '',

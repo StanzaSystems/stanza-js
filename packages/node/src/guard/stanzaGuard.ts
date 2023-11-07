@@ -110,17 +110,20 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
       success: async (result) => {
         const customerId = getServiceConfig()?.config.customerId
         const { serviceName, environment, clientId } = hubService.getServiceMetadata()
-        return eventBus.emit(events.guard.allowed, {
-          serviceName,
-          environment,
-          clientId,
-          featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
-          guardName: options.guard,
-          customerId,
-          ...getReasons(result.filter(isTruthy).map(({ reason }) => reason)),
-          mode: 'normal'
-          // reason: result.some((reason) => reason !== null) ? 'quota' : 'fail_open'
-        })
+        return eventBus.emit(
+          result.every(r => r.status !== 'failure')
+            ? events.guard.allowed
+            : events.guard.blocked,
+          {
+            serviceName,
+            environment,
+            clientId,
+            featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
+            guardName: options.guard,
+            customerId,
+            ...getReasons(result.filter(isTruthy).map(({ reason }) => reason)),
+            mode: 'normal'
+          })
       },
       failure: async (err) => {
         if (err instanceof StanzaGuardError) {
@@ -150,34 +153,5 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
       tokenReason: 'TOKEN_UNSPECIFIED',
       quotaReason: 'QUOTA_UNSPECIFIED'
     })
-
-    // return {
-    //   configState: getGuardConfig(options.guard) !== undefined ? 'CONFIG_CACHED_OK' : 'CONFIG_UNSPECIFIED', // TODO
-    //   localReason: 'LOCAL_NOT_SUPPORTED',
-    //   // tokenReason: reasons.map<ReasonData['tokenReason']>(r => {
-    //   //   if (r === null) {
-    //   //     return 'TOKEN_UNSPECIFIED'
-    //   //   }
-    //   //   if (r instanceof StanzaGuardError) {
-    //   //     return r.reason === 'InvalidToken' ? 'TOKEN_NOT_VALID' : 'TOKEN_UNSPECIFIED'
-    //   //   }
-    //   //   if (r.type === 'TOKEN_VALIDATED') {
-    //   //     return 'TOKEN_VALID'
-    //   //   }
-    //   //   return 'TOKEN_UNSPECIFIED'
-    //   // })[0], // TODO
-    //   // quotaReason: reasons.map<ReasonData['quotaReason']>(r => {
-    //   //   if (r === null) {
-    //   //     return 'QUOTA_UNSPECIFIED'
-    //   //   }
-    //   //   if (r instanceof StanzaGuardError) {
-    //   //     return r.reason === 'NoQuota' ? 'QUOTA_BLOCKED' : 'QUOTA_UNSPECIFIED'
-    //   //   }
-    //   //   if (r.type === 'QUOTA_GRANTED') {
-    //   //     return 'QUOTA_GRANTED'
-    //   //   }
-    //   //   return 'QUOTA_UNSPECIFIED'
-    //   // })[0] // TODO
-    // }
   }
 }

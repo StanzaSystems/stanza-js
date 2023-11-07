@@ -51,6 +51,7 @@ const eventBusEvents = {
   guard: {
     allowed: guardAllowed,
     blocked: guardBlocked,
+    failOpen: guardFailOpen,
     failed: guardAllowedFailure,
     succeeded: guardAllowedSuccess,
     duration: guardAllowedDuration

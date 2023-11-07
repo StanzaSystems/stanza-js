@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, type SpyInstance, vi } from 'vitest'
 import { MeterProvider } from '@opentelemetry/sdk-metrics'
 import { type Counter, type Histogram, type Meter, type MeterProvider as IMeterProvider } from '@opentelemetry/api'
 import type * as eventBusModule from '../../global/eventBus'
-import { eventBus, events } from '../../global/eventBus'
+import { type ConfigState, eventBus, events, type LocalReason, type QuotaReason, type TokenReason } from '../../global/eventBus'
 import { StanzaInstrumentation } from './stanzaInstrumentation'
 
 type EventBusModule = typeof eventBusModule
@@ -55,7 +55,11 @@ describe('StanzaInstrumentation', () => {
             guardName: 'testGuard',
             serviceName: 'testService',
             environment: 'testEnvironment',
-            clientId: 'testClientId'
+            clientId: 'testClientId',
+            configState: 'CONFIG_CACHED_OK' satisfies ConfigState,
+            localReason: 'LOCAL_NOT_SUPPORTED' satisfies LocalReason,
+            tokenReason: 'TOKEN_VALID' satisfies TokenReason,
+            quotaReason: 'QUOTA_GRANTED' satisfies QuotaReason
           }
         },
         expected: {
@@ -66,7 +70,42 @@ describe('StanzaInstrumentation', () => {
               guard: 'testGuard',
               service: 'testService',
               environment: 'testEnvironment',
-              client_id: 'testClientId'
+              client_id: 'testClientId',
+              config_state: 'CONFIG_CACHED_OK',
+              local_reason: 'LOCAL_NOT_SUPPORTED',
+              token_reason: 'TOKEN_VALID',
+              quota_reason: 'QUOTA_GRANTED'
+            }],
+          metricType: 'counter'
+        }
+      },
+      {
+        given: {
+          event: events.guard.failOpen,
+          data: {
+            guardName: 'testGuard',
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            configState: 'CONFIG_CACHED_OK' satisfies ConfigState,
+            localReason: 'LOCAL_NOT_SUPPORTED' satisfies LocalReason,
+            tokenReason: 'TOKEN_VALID' satisfies TokenReason,
+            quotaReason: 'QUOTA_TIMEOUT' satisfies QuotaReason
+          }
+        },
+        expected: {
+          metric: 'stanza.guard.failopen',
+          data: [
+            1,
+            {
+              guard: 'testGuard',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              config_state: 'CONFIG_CACHED_OK',
+              local_reason: 'LOCAL_NOT_SUPPORTED',
+              token_reason: 'TOKEN_VALID',
+              quota_reason: 'QUOTA_TIMEOUT'
             }],
           metricType: 'counter'
         }
@@ -79,7 +118,10 @@ describe('StanzaInstrumentation', () => {
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
-            reason: 'quota'
+            configState: 'CONFIG_CACHED_OK' satisfies ConfigState,
+            localReason: 'LOCAL_NOT_SUPPORTED' satisfies LocalReason,
+            tokenReason: 'TOKEN_EVAL_DISABLED' satisfies TokenReason,
+            quotaReason: 'QUOTA_BLOCKED' satisfies QuotaReason
           }
         },
         expected: {
@@ -91,7 +133,10 @@ describe('StanzaInstrumentation', () => {
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId',
-              reason: 'quota'
+              config_state: 'CONFIG_CACHED_OK',
+              local_reason: 'LOCAL_NOT_SUPPORTED',
+              token_reason: 'TOKEN_EVAL_DISABLED',
+              quota_reason: 'QUOTA_BLOCKED'
             }],
           metricType: 'counter'
         }
@@ -553,7 +598,11 @@ describe('StanzaInstrumentation', () => {
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
-            customerId: 'testCustomerId'
+            customerId: 'testCustomerId',
+            configState: 'CONFIG_CACHED_OK' satisfies ConfigState,
+            localReason: 'LOCAL_NOT_SUPPORTED' satisfies LocalReason,
+            tokenReason: 'TOKEN_VALID' satisfies TokenReason,
+            quotaReason: 'QUOTA_GRANTED' satisfies QuotaReason
           }
         },
         expected: {
@@ -565,7 +614,44 @@ describe('StanzaInstrumentation', () => {
               service: 'testService',
               environment: 'testEnvironment',
               client_id: 'testClientId',
-              customer_id: 'testCustomerId'
+              customer_id: 'testCustomerId',
+              config_state: 'CONFIG_CACHED_OK',
+              local_reason: 'LOCAL_NOT_SUPPORTED',
+              token_reason: 'TOKEN_VALID',
+              quota_reason: 'QUOTA_GRANTED'
+            }],
+          metricType: 'counter'
+        }
+      },
+      {
+        given: {
+          event: events.guard.failOpen,
+          data: {
+            guardName: 'testGuard',
+            serviceName: 'testService',
+            environment: 'testEnvironment',
+            clientId: 'testClientId',
+            customerId: 'testCustomerId',
+            configState: 'CONFIG_CACHED_OK' satisfies ConfigState,
+            localReason: 'LOCAL_NOT_SUPPORTED' satisfies LocalReason,
+            tokenReason: 'TOKEN_VALID' satisfies TokenReason,
+            quotaReason: 'QUOTA_TIMEOUT' satisfies QuotaReason
+          }
+        },
+        expected: {
+          metric: 'stanza.guard.failopen',
+          data: [
+            1,
+            {
+              guard: 'testGuard',
+              service: 'testService',
+              environment: 'testEnvironment',
+              client_id: 'testClientId',
+              customer_id: 'testCustomerId',
+              config_state: 'CONFIG_CACHED_OK',
+              local_reason: 'LOCAL_NOT_SUPPORTED',
+              token_reason: 'TOKEN_VALID',
+              quota_reason: 'QUOTA_TIMEOUT'
             }],
           metricType: 'counter'
         }
@@ -579,7 +665,10 @@ describe('StanzaInstrumentation', () => {
             environment: 'testEnvironment',
             clientId: 'testClientId',
             customerId: 'testCustomerId',
-            reason: 'quota'
+            configState: 'CONFIG_CACHED_OK' satisfies ConfigState,
+            localReason: 'LOCAL_NOT_SUPPORTED' satisfies LocalReason,
+            tokenReason: 'TOKEN_EVAL_DISABLED' satisfies TokenReason,
+            quotaReason: 'QUOTA_BLOCKED' satisfies QuotaReason
           }
         },
         expected: {
@@ -592,7 +681,10 @@ describe('StanzaInstrumentation', () => {
               environment: 'testEnvironment',
               client_id: 'testClientId',
               customer_id: 'testCustomerId',
-              reason: 'quota'
+              config_state: 'CONFIG_CACHED_OK',
+              local_reason: 'LOCAL_NOT_SUPPORTED',
+              token_reason: 'TOKEN_EVAL_DISABLED',
+              quota_reason: 'QUOTA_BLOCKED'
             }],
           metricType: 'counter'
         }

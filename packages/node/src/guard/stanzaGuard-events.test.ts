@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, it, type Mock, vi } from 'vitest'
+import { type Mock } from 'vitest'
 import { updateGuardConfig } from '../global/guardConfig'
 import { mockHubService } from '../__tests__/mocks/mockHubService'
 import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks'
@@ -245,7 +245,7 @@ describe('stanzaGuard', () => {
     })
 
     describe('should emit stanza.guard.blocked event', () => {
-      it.skip('when guard\'s execution is blocked', async () => {
+      it('when guard\'s execution is blocked', async () => {
         updateGuardConfig('testGuard', {
           config: {
             checkQuota: true,
@@ -280,7 +280,7 @@ describe('stanzaGuard', () => {
         })
       })
 
-      it.skip('with specified feature when guard\'s execution is blocked', async () => {
+      it('with specified feature when guard\'s execution is blocked', async () => {
         updateGuardConfig('testGuard', {
           config: {
             checkQuota: true
@@ -304,14 +304,18 @@ describe('stanzaGuard', () => {
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.blocked, {
           guardName: 'testGuard',
           featureName: 'testFeature',
-          reason: 'quota',
           serviceName: 'testService',
           environment: 'testEnvironment',
-          clientId: 'testClientId'
+          clientId: 'testClientId',
+          configState: 'CONFIG_CACHED_OK',
+          localReason: 'LOCAL_NOT_SUPPORTED',
+          tokenReason: 'TOKEN_EVAL_DISABLED',
+          quotaReason: 'QUOTA_BLOCKED',
+          mode: 'normal'
         })
       })
 
-      it.skip('with feature specified in context when guard\'s execution is blocked', async () => {
+      it('with feature specified in context when guard\'s execution is blocked', async () => {
         updateGuardConfig('testGuard', {
           config: {
             checkQuota: true
@@ -338,10 +342,14 @@ describe('stanzaGuard', () => {
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.blocked, {
           guardName: 'testGuard',
           featureName: 'testBaggageFeature',
-          reason: 'quota',
           serviceName: 'testService',
           environment: 'testEnvironment',
-          clientId: 'testClientId'
+          clientId: 'testClientId',
+          configState: 'CONFIG_CACHED_OK',
+          localReason: 'LOCAL_NOT_SUPPORTED',
+          tokenReason: 'TOKEN_EVAL_DISABLED',
+          quotaReason: 'QUOTA_BLOCKED',
+          mode: 'normal'
         })
       })
     })
