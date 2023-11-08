@@ -24,12 +24,11 @@ const ResultPage: NextPage = () => {
   )
 
   useEffect(() => {
-    if (data !== undefined) {
+    if (data !== undefined && !hasClearedCart) {
       setHasClearedCart(true)
       clearCart()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data])
+  }, [data, clearCart, hasClearedCart])
 
   // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   if (error) return <div>failed to load</div>
