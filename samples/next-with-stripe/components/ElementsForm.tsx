@@ -13,53 +13,45 @@ import * as config from '../config'
 
 import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js'
 import { type PaymentIntent } from '@stripe/stripe-js'
+import { getPaymentStatus } from '../utils/get-payment-status'
 
 interface PaymentStatusProps {
   status: string
-  errorMessage: string
+  errorMessage: string | null
 }
 
 const PaymentStatus = (props: PaymentStatusProps) => {
   const { status, errorMessage } = props
-
-  switch (status) {
-    case 'processing':
-    case 'requires_payment_method':
-    case 'requires_confirmation':
-      return <h2>Processing...</h2>
-
-    case 'requires_action':
-      return <h2>Authenticating...</h2>
-
-    case 'succeeded':
-      return <h2>Payment Succeeded 🥳</h2>
-
-    case 'error':
-      return (
-        <>
-          <h2>Error 😭</h2>
-          <p className="error-message">{errorMessage}</p>
-        </>
-      )
-
-    default:
-      return null
+  const message = getPaymentStatus(status, errorMessage)
+  if (message === null) {
+    return null
   }
+
+  if (errorMessage === null) {
+    return <h2>{message}</h2>
+  }
+
+  return (
+    <>
+      <h2>Error 😭</h2>
+      <p className="error-message">{errorMessage}</p>
+    </>
+  )
 }
 
 const ElementsForm: FC<{
   paymentIntent?: PaymentIntent | null
 }> = ({ paymentIntent = null }) => {
-  const defaultAmout = (paymentIntent != null)
+  const defaultAmount = (paymentIntent != null)
     ? formatAmountFromStripe(paymentIntent.amount, paymentIntent.currency)
     : Math.round(config.MAX_AMOUNT / config.AMOUNT_STEP)
   const [input, setInput] = useState({
-    customDonation: defaultAmout,
+    customDonation: defaultAmount,
     cardholderName: ''
   })
   const [paymentType, setPaymentType] = useState('')
   const [payment, setPayment] = useState({ status: 'initial' })
-  const [errorMessage, setErrorMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const stripe = useStripe()
   const elements = useElements()
 
@@ -94,7 +86,7 @@ const ElementsForm: FC<{
     const error = await stripe?.confirmPayment({
       elements,
       confirmParams: {
-        return_url: 'http://localhost:4200/donate-with-elements',
+        return_url: window.location.origin,
         payment_method_data: {
           billing_details: {
             name: input.cardholderName
