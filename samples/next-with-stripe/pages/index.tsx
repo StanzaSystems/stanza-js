@@ -16,9 +16,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const MainPage: NextPage = (_props: { enablementNumber?: number }) => {
   const router = useRouter()
+
+  if (router.query.redirect_status === 'succeeded') {
+    alert('Thank you for buying with us')
+  }
+
   const handleSearch = useCallback((searchValue: string) => {
     void router.push(`search?text=${searchValue}`)
   }, [])
+
   return (
     <>
       <SearchBar onSearch={handleSearch}/>

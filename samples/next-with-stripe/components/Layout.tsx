@@ -40,10 +40,11 @@ const Layout = ({
           <h1>
             <span className="light">{title}</span>
           </h1>
-          <CartButton/>
+          <CartButton />
         </div>
       </header>
-      <>{children}</>
+
+      {children}
     </div>
   </>
 )

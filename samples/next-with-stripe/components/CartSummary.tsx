@@ -81,7 +81,9 @@ const CartSummary = () => {
       <button
         className="cart-style-background"
         type="button"
-        onClick={clearCart}
+        onClick={() => {
+          clearCart()
+        }}
       >
         Clear Cart
       </button>

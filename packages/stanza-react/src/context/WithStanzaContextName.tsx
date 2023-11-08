@@ -6,7 +6,12 @@ interface WithStanzaContextNameProps {
   name: string
 }
 
-export const WithStanzaContextName: React.FunctionComponent<WithStanzaContextNameProps> = (props) => {
+export const WithStanzaContextName: React.FC<WithStanzaContextNameProps> = (props) => {
   const { children, name } = props
-  return (<StanzaContextName.Provider value={name}>{children}</StanzaContextName.Provider>)
+
+  return (
+    <StanzaContextName.Provider value={name}>
+      {children}
+    </StanzaContextName.Provider>
+  )
 }
