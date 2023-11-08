@@ -33,9 +33,8 @@ export const getQuota = backoffGetQuota(async (options: GetQuotaOptions): Promis
   } catch (e) {
     eventBus.emit(events.internal.quota.failed).catch(() => {})
     logger.warn('Failed to fetch the token: %o', e instanceof Error ? e.message : e)
+    throw e
   }
-
-  return null
 })
 
 const getQuotaInternal = async (options: GetQuotaOptions): Promise<StanzaToken | null> => {

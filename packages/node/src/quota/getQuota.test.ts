@@ -3,6 +3,7 @@ import { mockHubService } from '../__tests__/mocks/mockHubService'
 import { getQuota } from './getQuota'
 import { type TokenStore } from './tokenStore'
 import { createTokenStore } from './createTokenStore'
+import { TimeoutError } from '../utils/withTimeout'
 
 vi.mock('../global/tokenStore', () => {
   return {
@@ -40,10 +41,11 @@ describe('getQuota', function () {
       vi.useRealTimers()
     })
 
-    it('should return null if getting quota times out', async function () {
+    it('should throw TimeoutError if getting quota times out', async function () {
       const getQuotaPromise = getQuota({ guard: 'testGuard' })
+      const expectationPromise = expect(getQuotaPromise).rejects.toThrow(new TimeoutError(1000, 'Check quota timed out'))
       await vi.advanceTimersByTimeAsync(1000)
-      await expect(getQuotaPromise).resolves.toEqual(null)
+      await expectationPromise
     })
 
     it('should get quota if hubService returns valid token', async () => {
