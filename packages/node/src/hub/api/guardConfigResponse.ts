@@ -12,7 +12,8 @@ const guardConfigWithData = z.object({
   config: z.object({
     checkQuota: z.boolean(),
     quotaTags: z.array(z.string()),
-    validateIngressTokens: z.boolean()
+    validateIngressTokens: z.boolean(),
+    reportOnly: z.boolean()
   })
 })
 export const guardConfigResponse = z.union(

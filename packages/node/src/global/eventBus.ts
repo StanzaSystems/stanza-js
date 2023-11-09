@@ -8,6 +8,7 @@ const guardAllowedSuccess = Symbol('stanza.guard.allowed.success')
 const guardAllowedFailure = Symbol('stanza.guard.allowed.failure')
 const guardAllowedDuration = Symbol('stanza.guard.allowed.duration')
 const guardBlocked = Symbol('stanza.guard.blocked')
+const guardFailOpen = Symbol('stanza.guard.failopen')
 
 const configServiceFetchSuccess = Symbol('stanza.config.service.fetch.success')
 const configServiceFetchFailure = Symbol('stanza.config.service.fetch.failure')
@@ -46,6 +47,7 @@ const eventBusEvents = {
   guard: {
     allowed: guardAllowed,
     blocked: guardBlocked,
+    failOpen: guardFailOpen,
     failed: guardAllowedFailure,
     succeeded: guardAllowedSuccess,
     duration: guardAllowedDuration
@@ -79,7 +81,11 @@ const eventBusEvents = {
   }
 } as const
 
-type GetKeys<T> = T extends Record<infer K, symbol> ? T[K] : T extends Record<infer K, unknown> ? GetKeys<T[K]> : never
+type GetKeys<T> = T extends Record<infer K, symbol>
+  ? T[K]
+  : T extends Record<infer K, unknown>
+    ? GetKeys<T[K]>
+    : never
 
 type EventKeys = GetKeys<typeof eventBusEvents>
 
@@ -108,19 +114,64 @@ export interface DurationData {
 }
 
 type QuotaEndpoint = 'GetToken' | 'GetTokenLease' | 'SetTokenLeaseConsumed'
+
 export interface QuotaEndpointData {
   endpoint: QuotaEndpoint
 }
 
-export type GuardReason = 'fail_open' | 'dark_launch' | 'quota' | 'system_load' | 'circuit_breaking' | 'bulkhead' | 'throttling'
+export type GuardMode = 'unspecified' | 'normal' | 'report_only'
+
+export type ConfigState =
+  | 'CONFIG_UNSPECIFIED'
+  | 'CONFIG_CACHED_OK'
+  | 'CONFIG_FETCHED_OK'
+  | 'CONFIG_NOT_FOUND'
+  | 'CONFIG_FETCH_ERROR'
+  | 'CONFIG_FETCH_TIMEOUT'
+
+export type LocalReason =
+  | 'LOCAL_UNSPECIFIED'
+  | 'LOCAL_NOT_SUPPORTED'
+  | 'LOCAL_NOT_EVAL'
+  | 'LOCAL_EVAL_DISABLED'
+  | 'LOCAL_ALLOWED'
+  | 'LOCAL_BLOCKED'
+  | 'LOCAL_ERROR'
+
+export type TokenReason =
+  | 'TOKEN_UNSPECIFIED'
+  | 'TOKEN_NOT_EVAL'
+  | 'TOKEN_EVAL_DISABLED'
+  | 'TOKEN_NOT_VALID'
+  | 'TOKEN_VALID'
+  | 'TOKEN_VALIDATION_ERROR'
+  | 'TOKEN_VALIDATION_TIMEOUT'
+
+export type QuotaReason =
+  | 'QUOTA_UNSPECIFIED'
+  | 'QUOTA_NOT_EVAL'
+  | 'QUOTA_EVAL_DISABLED'
+  | 'QUOTA_LOCAL_ERROR'
+  | 'QUOTA_BLOCKED'
+  | 'QUOTA_GRANTED'
+  | 'QUOTA_ERROR'
+  | 'QUOTA_TIMEOUT'
+
+export interface GuardModeData {
+  mode: GuardMode
+}
 
 export interface ReasonData {
-  reason: GuardReason
+  configState: ConfigState
+  localReason: LocalReason
+  tokenReason: TokenReason
+  quotaReason: QuotaReason
 }
 
 type StanzaEventBus = EventBus<{
-  [guardAllowed]: DefaultContextData & GuardData & FeatureData & ReasonData
-  [guardBlocked]: DefaultContextData & GuardData & FeatureData & ReasonData
+  [guardAllowed]: DefaultContextData & GuardData & FeatureData & ReasonData & GuardModeData
+  [guardBlocked]: DefaultContextData & GuardData & FeatureData & ReasonData & GuardModeData
+  [guardFailOpen]: DefaultContextData & GuardData & FeatureData & ReasonData & GuardModeData
   [guardAllowedFailure]: DefaultContextData & GuardData & FeatureData
   [guardAllowedSuccess]: DefaultContextData & GuardData & FeatureData
   [guardAllowedDuration]: DefaultContextData & GuardData & FeatureData & DurationData
@@ -149,6 +200,7 @@ interface EventBusGlobal {
   [EVENT_BUS_SYMBOL]: StanzaEventBus | undefined
   [EVENT_BUS_EVENTS_SYMBOL]: typeof eventBusEvents | undefined
 }
+
 const eventBusGlobal = global as unknown as EventBusGlobal
 
 export const eventBus: StanzaEventBus = eventBusGlobal[EVENT_BUS_SYMBOL] = eventBusGlobal[EVENT_BUS_SYMBOL] ?? new Emittery()

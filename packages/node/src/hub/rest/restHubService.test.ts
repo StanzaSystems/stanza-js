@@ -301,7 +301,8 @@ describe('createRestHubService', async () => {
             config: {
               checkQuota: true,
               quotaTags: [],
-              validateIngressTokens: false
+              validateIngressTokens: false,
+              reportOnly: false
             }
           } satisfies GuardConfigResponse)
         }
@@ -314,7 +315,8 @@ describe('createRestHubService', async () => {
         config: {
           checkQuota: true,
           quotaTags: [],
-          validateIngressTokens: false
+          validateIngressTokens: false,
+          reportOnly: false
         }
       })
     })

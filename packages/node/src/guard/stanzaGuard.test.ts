@@ -754,7 +754,7 @@ describe('stanzaGuard', function () {
 
         await vi.advanceTimersByTimeAsync(0)
 
-        await expect(guardedDoStuff()).rejects.toThrow('Valid Stanza token was not provided')
+        await expect(guardedDoStuff()).rejects.toThrow('Valid Stanza token was not provided in the incoming header')
 
         vi.useRealTimers()
       })

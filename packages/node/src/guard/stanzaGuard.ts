@@ -9,11 +9,14 @@ import { isTruthy } from '../utils/isTruthy'
 import { type Promisify } from '../utils/promisify'
 import { initOrGetGuard } from './initOrGetGuard'
 import { type StanzaGuardOptions } from './model'
-import { eventBus, events } from '../global/eventBus'
+import { eventBus, events, type ReasonData } from '../global/eventBus'
 import { wrapEventsAsync } from '../utils/wrapEventsAsync'
 import { hubService } from '../global/hubService'
 import { getServiceConfig } from '../global/serviceConfig'
 import { getActiveStanzaEntry } from '../baggage/getActiveStanzaEntry'
+import { getGuardConfig } from '../global/guardConfig'
+import { StanzaGuardError } from './stanzaGuardError'
+import { identity } from 'ramda'
 
 export const stanzaGuard = <TArgs extends any[], TReturn>(
   options: StanzaGuardOptions
@@ -31,13 +34,26 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(
         async () => {
           const guardResult = await guard()
 
+          const failure = guardResult.find(
+            (r): r is typeof r & { status: 'failure' } =>
+              r.status === 'failure'
+          )
+          if (failure !== undefined) {
+            throw failure.type === 'QUOTA'
+              ? new StanzaGuardError('NoQuota', failure.message)
+              : new StanzaGuardError('InvalidToken', failure.message)
+          }
+
           const fnWithBoundContext = bindContext(
             guardResult
               .filter(isTruthy)
               .map((token) =>
-                token?.type === 'TOKEN_GRANTED'
+                token?.type === 'QUOTA' && token.status === 'success'
                   ? addStanzaTokenToContext(token.token)
-                  : removeStanzaTokenFromContext()
+                  : token.type === 'TOKEN_VALIDATE' &&
+                    token.status === 'success'
+                    ? removeStanzaTokenFromContext()
+                    : identity
               ),
             fn
           )
@@ -98,29 +114,61 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
       success: async (result) => {
         const customerId = getServiceConfig()?.config.customerId
         const { serviceName, environment, clientId } = hubService.getServiceMetadata()
-        return eventBus.emit(events.guard.allowed, {
-          serviceName,
-          environment,
-          clientId,
-          featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
-          guardName: options.guard,
-          customerId,
-          reason: result.some((reason) => reason !== null) ? 'quota' : 'fail_open'
-        })
+        return eventBus.emit(
+          result.some((r) => r.status === 'failure')
+            ? events.guard.blocked
+            : result.some((r) => r.status === 'failOpen')
+              ? events.guard.failOpen
+              : events.guard.allowed,
+          {
+            serviceName,
+            environment,
+            clientId,
+            featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
+            guardName: options.guard,
+            customerId,
+            ...getReasons(result.filter(isTruthy).map(({ reason }) => reason)),
+            mode: 'normal'
+          }
+        )
       },
-      failure: async () => {
-        const customerId = getServiceConfig()?.config.customerId
-        const { serviceName, environment, clientId } = hubService.getServiceMetadata()
-        return eventBus.emit(events.guard.blocked, {
-          serviceName,
-          environment,
-          clientId,
-          featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
-          guardName: options.guard,
-          customerId,
-          reason: 'quota'
-        })
+      failure: async (err) => {
+        if (err instanceof StanzaGuardError) {
+          const customerId = getServiceConfig()?.config.customerId
+          const { serviceName, environment, clientId } = hubService.getServiceMetadata()
+          return eventBus.emit(events.guard.blocked, {
+            serviceName,
+            environment,
+            clientId,
+            featureName: getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
+            guardName: options.guard,
+            customerId,
+            ...getReasons([err]),
+            mode: 'normal'
+          })
+        }
       }
     })
+  }
+
+  function getReasons (
+    reasons: Array<Partial<ReasonData> | StanzaGuardError>
+  ): ReasonData {
+    return reasons.reduce<ReasonData>(
+      (resultReasons, current) => {
+        return current instanceof StanzaGuardError
+          ? resultReasons
+          : Object.assign(resultReasons, current)
+      },
+      {
+        configState:
+          getGuardConfig(options.guard) !== undefined
+            ? 'CONFIG_CACHED_OK'
+            : 'CONFIG_UNSPECIFIED', // TODO: distinguish unspecified and failed to fetch config
+        localReason: 'LOCAL_NOT_SUPPORTED',
+        tokenReason: 'TOKEN_UNSPECIFIED',
+        quotaReason: 'QUOTA_UNSPECIFIED'
+      }
+    )
   }
 }

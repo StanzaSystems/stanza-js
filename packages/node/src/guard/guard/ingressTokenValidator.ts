@@ -1,15 +1,20 @@
 import { getGuardConfig } from '../../global/guardConfig'
 import { context } from '@opentelemetry/api'
 import { stanzaTokenContextKey } from '../../context/stanzaTokenContextKey'
-import { StanzaGuardError } from '../stanzaGuardError'
 import { type ValidatedToken } from '../../hub/model'
 import { withTimeout } from '../../utils/withTimeout'
 import { hubService } from '../../global/hubService'
 import { logger } from '../../global/logger'
 import { STANZA_REQUEST_TIMEOUT } from '../../global/requestTimeout'
+import { type ReasonData } from '../../global/eventBus'
+import { type CheckerResponse } from './types'
 
 export interface IngressTokenValidatorOptions {
   guard: string
+}
+
+type TokenValidateResponse = CheckerResponse<'TOKEN_VALIDATE', Record<string, unknown>, { message: string }> & {
+  reason: Pick<ReasonData, 'tokenReason'>
 }
 export const initIngressTokenValidator = (options: IngressTokenValidatorOptions) => {
   return { shouldValidateIngressToken, validateIngressToken }
@@ -19,11 +24,11 @@ export const initIngressTokenValidator = (options: IngressTokenValidatorOptions)
     return guardConfig?.config?.validateIngressTokens === true
   }
 
-  async function validateIngressToken (): Promise<{ type: 'TOKEN_VALIDATED' } | null> {
+  async function validateIngressToken (): Promise<TokenValidateResponse> {
     const token = context.active().getValue(stanzaTokenContextKey)
 
     if (typeof (token) !== 'string' || token === '') {
-      throw new StanzaGuardError('InvalidToken', 'Valid Stanza token was not provided in the incoming header')
+      return { type: 'TOKEN_VALIDATE', status: 'failure', reason: { tokenReason: 'TOKEN_NOT_VALID' }, message: 'Valid Stanza token was not provided in the incoming header' }
     }
 
     let validatedToken: ValidatedToken | null = null
@@ -40,13 +45,19 @@ export const initIngressTokenValidator = (options: IngressTokenValidatorOptions)
     }
 
     if (validatedToken === null) {
-      return null
+      return { type: 'TOKEN_VALIDATE', status: 'failOpen', reason: { tokenReason: 'TOKEN_VALIDATION_ERROR' } }
     }
 
     if (!validatedToken.valid || validatedToken.token !== token) {
-      throw new StanzaGuardError('InvalidToken', 'Provided token was invalid')
+      return { type: 'TOKEN_VALIDATE', status: 'failure', reason: { tokenReason: 'TOKEN_NOT_VALID' }, message: 'Provided token was invalid' }
     }
 
-    return { type: 'TOKEN_VALIDATED' }
+    return {
+      type: 'TOKEN_VALIDATE',
+      status: 'success',
+      reason: {
+        tokenReason: 'TOKEN_VALID'
+      }
+    }
   }
 }

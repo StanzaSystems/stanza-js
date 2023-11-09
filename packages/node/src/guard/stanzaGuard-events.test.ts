@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, it, type Mock, vi } from 'vitest'
+import { type Mock } from 'vitest'
 import { updateGuardConfig } from '../global/guardConfig'
 import { mockHubService } from '../__tests__/mocks/mockHubService'
 import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks'
@@ -8,6 +8,7 @@ import { stanzaGuard } from './stanzaGuard'
 import { eventBus, events } from '../global/eventBus'
 import type * as getQuotaModule from '../quota/getQuota'
 import { updateServiceConfig } from '../global/serviceConfig'
+
 type GetQuotaModule = typeof getQuotaModule
 
 const mockMessageBusEmit = vi.spyOn(eventBus, 'emit')
@@ -77,7 +78,8 @@ describe('stanzaGuard', () => {
       it('when guard executes', async () => {
         updateGuardConfig('testGuard', {
           config: {
-            checkQuota: true
+            checkQuota: true,
+            reportOnly: false
           } satisfies Partial<GuardConfig['config']> as any,
           version: 'testGuardVersion'
         })
@@ -100,14 +102,19 @@ describe('stanzaGuard', () => {
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId',
-          reason: 'quota'
+          configState: 'CONFIG_CACHED_OK',
+          localReason: 'LOCAL_NOT_SUPPORTED',
+          tokenReason: 'TOKEN_EVAL_DISABLED',
+          quotaReason: 'QUOTA_GRANTED',
+          mode: 'normal'
         })
       })
 
       it('with specified feature when guard executes', async () => {
         updateGuardConfig('testGuard', {
           config: {
-            checkQuota: true
+            checkQuota: true,
+            reportOnly: false
           } satisfies Partial<GuardConfig['config']> as any,
           version: 'testGuardVersion'
         })
@@ -131,14 +138,19 @@ describe('stanzaGuard', () => {
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId',
-          reason: 'quota'
+          configState: 'CONFIG_CACHED_OK',
+          localReason: 'LOCAL_NOT_SUPPORTED',
+          tokenReason: 'TOKEN_EVAL_DISABLED',
+          quotaReason: 'QUOTA_GRANTED',
+          mode: 'normal'
         })
       })
 
       it('with feature specified in context when guard executes', async () => {
         updateGuardConfig('testGuard', {
           config: {
-            checkQuota: true
+            checkQuota: true,
+            reportOnly: false
           } satisfies Partial<GuardConfig['config']> as any,
           version: 'testGuardVersion'
         })
@@ -165,14 +177,19 @@ describe('stanzaGuard', () => {
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId',
-          reason: 'quota'
+          configState: 'CONFIG_CACHED_OK',
+          localReason: 'LOCAL_NOT_SUPPORTED',
+          tokenReason: 'TOKEN_EVAL_DISABLED',
+          quotaReason: 'QUOTA_GRANTED',
+          mode: 'normal'
         })
       })
 
       it('when guard executes with fail open reason when getting token returns null', async () => {
         updateGuardConfig('testGuard', {
           config: {
-            checkQuota: true
+            checkQuota: true,
+            reportOnly: false
           } satisfies Partial<GuardConfig['config']> as any,
           version: 'testGuardVersion'
         })
@@ -189,13 +206,17 @@ describe('stanzaGuard', () => {
 
         await expect(guardStuffPromise).resolves.toBeUndefined()
 
-        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.failOpen, {
           guardName: 'testGuard',
           featureName: '',
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId',
-          reason: 'fail_open'
+          configState: 'CONFIG_CACHED_OK',
+          localReason: 'LOCAL_NOT_SUPPORTED',
+          tokenReason: 'TOKEN_EVAL_DISABLED',
+          quotaReason: 'QUOTA_ERROR',
+          mode: 'normal'
         })
       })
 
@@ -208,13 +229,17 @@ describe('stanzaGuard', () => {
 
         await expect(guardStuffPromise).resolves.toBeUndefined()
 
-        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.allowed, {
+        expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.failOpen, {
           guardName: 'testGuard',
           featureName: '',
           serviceName: 'testService',
           environment: 'testEnvironment',
           clientId: 'testClientId',
-          reason: 'fail_open'
+          configState: 'CONFIG_UNSPECIFIED',
+          localReason: 'LOCAL_NOT_SUPPORTED',
+          tokenReason: 'TOKEN_NOT_EVAL',
+          quotaReason: 'QUOTA_NOT_EVAL',
+          mode: 'normal'
         })
       })
     })
@@ -223,7 +248,8 @@ describe('stanzaGuard', () => {
       it('when guard\'s execution is blocked', async () => {
         updateGuardConfig('testGuard', {
           config: {
-            checkQuota: true
+            checkQuota: true,
+            reportOnly: false
           } satisfies Partial<GuardConfig['config']> as any,
           version: 'testGuardVersion'
         })
@@ -243,10 +269,14 @@ describe('stanzaGuard', () => {
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.blocked, {
           guardName: 'testGuard',
           featureName: '',
-          reason: 'quota',
           serviceName: 'testService',
           environment: 'testEnvironment',
-          clientId: 'testClientId'
+          clientId: 'testClientId',
+          configState: 'CONFIG_CACHED_OK',
+          localReason: 'LOCAL_NOT_SUPPORTED',
+          tokenReason: 'TOKEN_EVAL_DISABLED',
+          quotaReason: 'QUOTA_BLOCKED',
+          mode: 'normal'
         })
       })
 
@@ -274,10 +304,14 @@ describe('stanzaGuard', () => {
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.blocked, {
           guardName: 'testGuard',
           featureName: 'testFeature',
-          reason: 'quota',
           serviceName: 'testService',
           environment: 'testEnvironment',
-          clientId: 'testClientId'
+          clientId: 'testClientId',
+          configState: 'CONFIG_CACHED_OK',
+          localReason: 'LOCAL_NOT_SUPPORTED',
+          tokenReason: 'TOKEN_EVAL_DISABLED',
+          quotaReason: 'QUOTA_BLOCKED',
+          mode: 'normal'
         })
       })
 
@@ -308,10 +342,14 @@ describe('stanzaGuard', () => {
         expect(mockMessageBusEmit).toHaveBeenCalledWith(events.guard.blocked, {
           guardName: 'testGuard',
           featureName: 'testBaggageFeature',
-          reason: 'quota',
           serviceName: 'testService',
           environment: 'testEnvironment',
-          clientId: 'testClientId'
+          clientId: 'testClientId',
+          configState: 'CONFIG_CACHED_OK',
+          localReason: 'LOCAL_NOT_SUPPORTED',
+          tokenReason: 'TOKEN_EVAL_DISABLED',
+          quotaReason: 'QUOTA_BLOCKED',
+          mode: 'normal'
         })
       })
     })

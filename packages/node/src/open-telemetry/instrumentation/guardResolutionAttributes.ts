@@ -1,11 +1,31 @@
-import { eventDataToRequestAttributes, type RequestAttributes } from './requestAttributes'
-import { type ReasonData, type GuardData, type DefaultContextData, type FeatureData } from '../../global/eventBus'
+import {
+  eventDataToRequestAttributes,
+  type RequestAttributes
+} from './requestAttributes'
+import type {
+  ReasonData,
+  GuardData,
+  DefaultContextData,
+  FeatureData,
+  ConfigState,
+  LocalReason,
+  TokenReason,
+  QuotaReason
+} from '../../global/eventBus'
 
-export type GuardResolutionReason = 'fail_open' | 'dark_launch' | 'quota' | 'system_load' | 'circuit_breaking' | 'bulkhead' | 'throttling'
+export type GuardResolutionAttributes = RequestAttributes & {
+  config_state: ConfigState
+  local_reason: LocalReason
+  token_reason: TokenReason
+  quota_reason: QuotaReason
+}
 
-export type GuardResolutionAttributes = RequestAttributes & { reason: GuardResolutionReason }
-
-export const eventDataToGuardResolutionAttributes = (data: DefaultContextData & GuardData & FeatureData & ReasonData): GuardResolutionAttributes => ({
+export const eventDataToGuardResolutionAttributes = (
+  data: DefaultContextData & GuardData & FeatureData & ReasonData
+): GuardResolutionAttributes => ({
   ...eventDataToRequestAttributes(data),
-  reason: data.reason
+  config_state: data.configState,
+  local_reason: data.localReason,
+  token_reason: data.tokenReason,
+  quota_reason: data.quotaReason
 })
