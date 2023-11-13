@@ -40,6 +40,13 @@ export const initGuardGuard = (options: GuardGuardOptions) => {
           reason: {
             tokenReason: 'TOKEN_EVAL_DISABLED'
           }
+        }),
+        onError: (): Awaited<ReturnType<typeof validateIngressToken>> => ({
+          type: 'TOKEN_VALIDATE',
+          status: 'failOpen',
+          reason: {
+            tokenReason: 'TOKEN_VALIDATION_ERROR'
+          }
         })
       },
       {
@@ -59,21 +66,32 @@ export const initGuardGuard = (options: GuardGuardOptions) => {
           reason: {
             quotaReason: 'QUOTA_EVAL_DISABLED'
           }
+        }),
+        onError: (): Awaited<ReturnType<typeof checkQuota>> => ({
+          type: 'QUOTA',
+          status: 'failOpen',
+          reason: {
+            quotaReason: 'QUOTA_LOCAL_ERROR'
+          }
         })
       }
     ]
 
-    const results = Array<Awaited<ReturnType<(typeof guardSteps)[number]['onEnabled']>>>()
-    for (const { isEnabled, onEnabled, onDisabled, canEval, onNoEval } of guardSteps) {
-      if (!canEval()) {
-        results.push(onNoEval())
-      } else if (isEnabled()) {
-        const result = await onEnabled()
-        results.push(result)
-        if (result.status === 'failure') break
-      } else {
-        results.push(onDisabled())
+    type GuardCheckResult = Awaited<ReturnType<(typeof guardSteps)[number]['onEnabled']>>
+    const results = Array<GuardCheckResult>()
+    for (const { isEnabled, onEnabled, onDisabled, canEval, onNoEval, onError } of guardSteps) {
+      let stepResult: GuardCheckResult
+      try {
+        stepResult = !canEval()
+          ? onNoEval()
+          : isEnabled()
+            ? await onEnabled()
+            : onDisabled()
+      } catch (e) {
+        stepResult = onError()
       }
+      results.push(stepResult)
+      if (stepResult.status === 'failure') break
     }
 
     return results

@@ -4,8 +4,9 @@ import { type Tag } from '../model'
 import { getActiveStanzaEntry } from '../../baggage/getActiveStanzaEntry'
 import { getPriorityBoostFromContext } from '../../context/priorityBoost'
 import { context } from '@opentelemetry/api'
-import { type ReasonData } from '../../global/eventBus'
+import { type QuotaReason, type ReasonData } from '../../global/eventBus'
 import { type CheckerResponse } from './types'
+import { TimeoutError } from '../../utils/withTimeout'
 
 export interface QuotaCheckerOptions {
   guard: string
@@ -28,34 +29,58 @@ export const initQuotaChecker = (options: QuotaCheckerOptions) => {
   }
 
   async function checkQuota (): Promise<CheckQuotaResponse> {
-    const priorityBoost = getPriorityBoostFromContext(context.active())
-    const token = await getQuota({
-      ...options,
-      feature: getActiveStanzaEntry('stz-feat') ?? options.feature,
-      priorityBoost: priorityBoost !== 0 ? priorityBoost : undefined
-    })
-    if (token?.granted === false) {
-      return {
-        type: 'QUOTA',
-        status: 'failure',
-        reason: { quotaReason: 'QUOTA_BLOCKED' },
-        message: 'Guard can not be executed'
-      }
-    }
+    try {
+      const priorityBoost = getPriorityBoostFromContext(context.active())
+      const token = await getQuota({
+        ...options,
+        feature: getActiveStanzaEntry('stz-feat') ?? options.feature,
+        priorityBoost: priorityBoost !== 0 ? priorityBoost : undefined
+      })
 
-    return token?.granted
-      ? {
-          type: 'QUOTA',
-          status: 'success',
-          token: token.token,
-          reason: { quotaReason: 'QUOTA_GRANTED' }
-        }
-      : {
-          type: 'QUOTA',
-          status: 'failOpen',
-          reason: {
-            quotaReason: 'QUOTA_ERROR'
-          }
-        }
+      if (token === null) {
+        return quotaFailOpen('QUOTA_ERROR')
+      }
+
+      return token.granted
+        ? quotaSuccess('QUOTA_GRANTED', token.token)
+        : quotaFailure('QUOTA_BLOCKED', 'Guard can not be executed')
+    } catch (e) {
+      if (e instanceof TimeoutError) {
+        return quotaFailOpen('QUOTA_TIMEOUT')
+      }
+      throw e
+    }
+  }
+}
+
+function quotaFailure (quotaReason: QuotaReason, message: string): CheckQuotaResponse {
+  return {
+    type: 'QUOTA',
+    status: 'failure',
+    reason: {
+      quotaReason
+    },
+    message
+  }
+}
+
+function quotaSuccess (quotaReason: QuotaReason, token: string): CheckQuotaResponse {
+  return {
+    type: 'QUOTA',
+    status: 'success',
+    reason: {
+      quotaReason
+    },
+    token
+  }
+}
+
+function quotaFailOpen (quotaReason: QuotaReason): CheckQuotaResponse {
+  return {
+    type: 'QUOTA',
+    status: 'failOpen',
+    reason: {
+      quotaReason
+    }
   }
 }
