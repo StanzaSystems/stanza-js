@@ -10,6 +10,7 @@ type ConfigState = eventBusModule.ConfigState
 type LocalReason = eventBusModule.LocalReason
 type TokenReason = eventBusModule.TokenReason
 type QuotaReason = eventBusModule.QuotaReason
+type GuardMode = eventBusModule.GuardMode
 
 vi.mock('../../global/eventBus', async (_importOriginal) => {
   const Emittery = (await import('emittery')).default
@@ -64,7 +65,8 @@ describe('StanzaInstrumentation', () => {
             configState: 'CONFIG_CACHED_OK' satisfies ConfigState,
             localReason: 'LOCAL_NOT_SUPPORTED' satisfies LocalReason,
             tokenReason: 'TOKEN_VALID' satisfies TokenReason,
-            quotaReason: 'QUOTA_GRANTED' satisfies QuotaReason
+            quotaReason: 'QUOTA_GRANTED' satisfies QuotaReason,
+            mode: 'normal' satisfies GuardMode
           }
         },
         expected: {
@@ -79,7 +81,8 @@ describe('StanzaInstrumentation', () => {
               config_state: 'CONFIG_CACHED_OK',
               local_reason: 'LOCAL_NOT_SUPPORTED',
               token_reason: 'TOKEN_VALID',
-              quota_reason: 'QUOTA_GRANTED'
+              quota_reason: 'QUOTA_GRANTED',
+              mode: 'normal'
             }],
           metricType: 'counter'
         }
@@ -95,7 +98,8 @@ describe('StanzaInstrumentation', () => {
             configState: 'CONFIG_CACHED_OK' satisfies ConfigState,
             localReason: 'LOCAL_NOT_SUPPORTED' satisfies LocalReason,
             tokenReason: 'TOKEN_VALID' satisfies TokenReason,
-            quotaReason: 'QUOTA_TIMEOUT' satisfies QuotaReason
+            quotaReason: 'QUOTA_TIMEOUT' satisfies QuotaReason,
+            mode: 'normal' satisfies GuardMode
           }
         },
         expected: {
@@ -110,7 +114,8 @@ describe('StanzaInstrumentation', () => {
               config_state: 'CONFIG_CACHED_OK',
               local_reason: 'LOCAL_NOT_SUPPORTED',
               token_reason: 'TOKEN_VALID',
-              quota_reason: 'QUOTA_TIMEOUT'
+              quota_reason: 'QUOTA_TIMEOUT',
+              mode: 'normal'
             }],
           metricType: 'counter'
         }
@@ -126,7 +131,8 @@ describe('StanzaInstrumentation', () => {
             configState: 'CONFIG_CACHED_OK' satisfies ConfigState,
             localReason: 'LOCAL_NOT_SUPPORTED' satisfies LocalReason,
             tokenReason: 'TOKEN_EVAL_DISABLED' satisfies TokenReason,
-            quotaReason: 'QUOTA_BLOCKED' satisfies QuotaReason
+            quotaReason: 'QUOTA_BLOCKED' satisfies QuotaReason,
+            mode: 'normal' satisfies GuardMode
           }
         },
         expected: {
@@ -141,7 +147,8 @@ describe('StanzaInstrumentation', () => {
               config_state: 'CONFIG_CACHED_OK',
               local_reason: 'LOCAL_NOT_SUPPORTED',
               token_reason: 'TOKEN_EVAL_DISABLED',
-              quota_reason: 'QUOTA_BLOCKED'
+              quota_reason: 'QUOTA_BLOCKED',
+              mode: 'normal'
             }],
           metricType: 'counter'
         }
@@ -607,7 +614,8 @@ describe('StanzaInstrumentation', () => {
             configState: 'CONFIG_CACHED_OK' satisfies ConfigState,
             localReason: 'LOCAL_NOT_SUPPORTED' satisfies LocalReason,
             tokenReason: 'TOKEN_VALID' satisfies TokenReason,
-            quotaReason: 'QUOTA_GRANTED' satisfies QuotaReason
+            quotaReason: 'QUOTA_GRANTED' satisfies QuotaReason,
+            mode: 'normal' satisfies GuardMode
           }
         },
         expected: {
@@ -623,7 +631,8 @@ describe('StanzaInstrumentation', () => {
               config_state: 'CONFIG_CACHED_OK',
               local_reason: 'LOCAL_NOT_SUPPORTED',
               token_reason: 'TOKEN_VALID',
-              quota_reason: 'QUOTA_GRANTED'
+              quota_reason: 'QUOTA_GRANTED',
+              mode: 'normal'
             }],
           metricType: 'counter'
         }
@@ -640,7 +649,8 @@ describe('StanzaInstrumentation', () => {
             configState: 'CONFIG_CACHED_OK' satisfies ConfigState,
             localReason: 'LOCAL_NOT_SUPPORTED' satisfies LocalReason,
             tokenReason: 'TOKEN_VALID' satisfies TokenReason,
-            quotaReason: 'QUOTA_TIMEOUT' satisfies QuotaReason
+            quotaReason: 'QUOTA_TIMEOUT' satisfies QuotaReason,
+            mode: 'normal' satisfies GuardMode
           }
         },
         expected: {
@@ -656,7 +666,8 @@ describe('StanzaInstrumentation', () => {
               config_state: 'CONFIG_CACHED_OK',
               local_reason: 'LOCAL_NOT_SUPPORTED',
               token_reason: 'TOKEN_VALID',
-              quota_reason: 'QUOTA_TIMEOUT'
+              quota_reason: 'QUOTA_TIMEOUT',
+              mode: 'normal'
             }],
           metricType: 'counter'
         }
@@ -673,7 +684,8 @@ describe('StanzaInstrumentation', () => {
             configState: 'CONFIG_CACHED_OK' satisfies ConfigState,
             localReason: 'LOCAL_NOT_SUPPORTED' satisfies LocalReason,
             tokenReason: 'TOKEN_EVAL_DISABLED' satisfies TokenReason,
-            quotaReason: 'QUOTA_BLOCKED' satisfies QuotaReason
+            quotaReason: 'QUOTA_BLOCKED' satisfies QuotaReason,
+            mode: 'normal' satisfies GuardMode
           }
         },
         expected: {
@@ -689,7 +701,8 @@ describe('StanzaInstrumentation', () => {
               config_state: 'CONFIG_CACHED_OK',
               local_reason: 'LOCAL_NOT_SUPPORTED',
               token_reason: 'TOKEN_EVAL_DISABLED',
-              quota_reason: 'QUOTA_BLOCKED'
+              quota_reason: 'QUOTA_BLOCKED',
+              mode: 'normal'
             }],
           metricType: 'counter'
         }

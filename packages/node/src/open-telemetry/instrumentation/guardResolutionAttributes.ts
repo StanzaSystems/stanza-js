@@ -3,14 +3,15 @@ import {
   type RequestAttributes
 } from './requestAttributes'
 import type {
-  ReasonData,
-  GuardData,
+  ConfigState,
   DefaultContextData,
   FeatureData,
-  ConfigState,
+  GuardData,
+  GuardMode,
   LocalReason,
-  TokenReason,
-  QuotaReason
+  QuotaReason,
+  ReasonData,
+  TokenReason
 } from '../../global/eventBus'
 
 export type GuardResolutionAttributes = RequestAttributes & {
@@ -18,14 +19,16 @@ export type GuardResolutionAttributes = RequestAttributes & {
   local_reason: LocalReason
   token_reason: TokenReason
   quota_reason: QuotaReason
+  mode: GuardMode
 }
 
 export const eventDataToGuardResolutionAttributes = (
-  data: DefaultContextData & GuardData & FeatureData & ReasonData
+  data: DefaultContextData & GuardData & FeatureData & ReasonData & { mode: GuardMode }
 ): GuardResolutionAttributes => ({
   ...eventDataToRequestAttributes(data),
   config_state: data.configState,
   local_reason: data.localReason,
   token_reason: data.tokenReason,
-  quota_reason: data.quotaReason
+  quota_reason: data.quotaReason,
+  mode: data.mode
 })

@@ -38,7 +38,7 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(
             (r): r is typeof r & { status: 'failure' } =>
               r.status === 'failure'
           )
-          if (failure !== undefined) {
+          if (failure !== undefined && getGuardConfig(options.guard)?.config.reportOnly !== true) {
             throw failure.type === 'QUOTA'
               ? new StanzaGuardError('NoQuota', failure.message)
               : new StanzaGuardError('InvalidToken', failure.message)
@@ -106,6 +106,15 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(
   })
 }
 
+function getGuardMode (guardName: string) {
+  const guardConfig = getGuardConfig(guardName)?.config
+  return guardConfig?.reportOnly === true
+    ? 'report_only'
+    : guardConfig?.reportOnly === false
+      ? 'normal'
+      : 'unspecified'
+}
+
 const createStanzaGuard = (options: StanzaGuardOptions) => {
   const initializedGuard = initOrGetGuard(options)
   return {
@@ -128,7 +137,7 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
             guardName: options.guard,
             customerId,
             ...getReasons(result.filter(isTruthy).map(({ reason }) => reason)),
-            mode: 'normal'
+            mode: getGuardMode(options.guard)
           }
         )
       },
@@ -144,7 +153,7 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
             guardName: options.guard,
             customerId,
             ...getReasons([err]),
-            mode: 'normal'
+            mode: getGuardMode(options.guard)
           })
         }
       }
