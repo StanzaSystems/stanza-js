@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitest/config'
 
-import viteTsConfigPaths from 'vite-tsconfig-paths'
+import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import { resolve } from 'path'
 import { searchForWorkspaceRoot } from 'vite'
 
@@ -21,9 +21,7 @@ export default defineConfig({
     }
   },
   plugins: [
-    viteTsConfigPaths({
-      root: '../../'
-    })
+    nxViteTsPaths()
   ],
   // Uncomment this if you are using workers.
   // worker: {
