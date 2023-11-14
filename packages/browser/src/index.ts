@@ -21,7 +21,7 @@ export const init = (initialConfig: StanzaCoreConfig): void => {
   }, {})
 
   Stanza.featureChanges.addChangeListener((featureState) => {
-    featureToContextMap[featureState.featureName].map(async (contextName) => {
+    featureToContextMap[featureState.featureName].forEach((contextName) => {
       contextChanges.dispatchChange(getContextStale(contextName))
     })
   })

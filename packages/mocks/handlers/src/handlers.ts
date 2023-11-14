@@ -62,11 +62,11 @@ export const handlers = [
       })
     }
     if (count <= 2) {
-      return new Response(JSON.stringify({
+      return HttpResponse.json({
         featureConfigs: [searchFeatureAvailable, ...featuresStatic].filter(f => {
           return features.includes(f.featureName)
         })
-      }), {
+      }, {
         status: 200,
         headers: {
           'ETag': 'eTag1'
@@ -82,14 +82,14 @@ export const handlers = [
       })
     }
     if (count === 4) {
-      return new Response(JSON.stringify({
-        featureConfigs: [searchFeaturePartiallyAvailable, ...featuresStatic].filter(f => {
+      return HttpResponse.json({
+        featureConfigs: [searchFeatureAvailable, ...featuresStatic].filter(f => {
           return features.includes(f.featureName)
         })
-      }), {
+      }, {
         status: 200,
         headers: {
-          'ETag': 'eTag2'
+          'ETag': 'eTag1'
         }
       })
     }
@@ -102,9 +102,9 @@ export const handlers = [
       })
     }
     if (count === 7) {
-      return new Response(JSON.stringify({
-        featureConfigs: [searchFeatureUnavailable, ...featuresStatic].filter(f => features.includes(f.featureName))
-      }), {
+      return HttpResponse.json({
+        featureConfigs: [searchFeaturePartiallyAvailable, ...featuresStatic].filter(f => features.includes(f.featureName))
+      }, {
         status: 200,
         headers: {
           'ETag': 'eTag3'
