@@ -3,7 +3,7 @@ import {
   type ReadableSpan,
   type Span,
   type SpanProcessor,
-} from '@opentelemetry/sdk-trace-node';
+} from '@opentelemetry/sdk-trace-base';
 import { type SpanProcessorManager } from './SpanProcessorManager';
 
 export class ManagedSpanProcessor implements SpanProcessor {

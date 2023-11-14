@@ -5,7 +5,7 @@ const HUB_SERVICE_SYMBOL = Symbol.for('[Stanza SDK Internal] Hub Service');
 interface HubServiceGlobal {
   [HUB_SERVICE_SYMBOL]: HubService | undefined;
 }
-const hubServiceGlobal = global as unknown as HubServiceGlobal;
+const hubServiceGlobal = globalThis as unknown as HubServiceGlobal;
 
 const notInitializedServiceMethod = async () =>
   Promise.reject(new Error('Hub Service not initialized yet'));

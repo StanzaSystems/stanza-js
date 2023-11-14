@@ -1,12 +1,12 @@
 import { ROOT_CONTEXT } from '@opentelemetry/api';
 /* eslint-disable import/no-duplicates */
-import type * as SdkTraceNodeModule from '@opentelemetry/sdk-trace-node';
+import type * as SdkTraceNodeModule from '@opentelemetry/sdk-trace-base';
 import {
   BatchSpanProcessor,
   InMemorySpanExporter,
   NoopSpanProcessor,
   type SpanExporter,
-} from '@opentelemetry/sdk-trace-node';
+} from '@opentelemetry/sdk-trace-base';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { type getGuardConfig } from '../../global/guardConfig';
 import {
@@ -47,7 +47,7 @@ vi.mock('./createSpanExporter', () => {
 });
 
 vi.mock(
-  '@opentelemetry/sdk-trace-node',
+  '@opentelemetry/sdk-trace-base',
   async (importOriginal: () => Promise<typeof SdkTraceNodeModule>) => {
     const original = await importOriginal();
 

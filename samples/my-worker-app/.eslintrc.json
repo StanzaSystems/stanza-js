@@ -1,0 +1,21 @@
+{
+  "extends": ["../../.eslintrc.json"],
+  "parserOptions": {
+    "project": ["samples/my-worker-app/tsconfig*.json"]
+  },
+  "ignorePatterns": ["!**/*"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {}
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {}
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "rules": {}
+    }
+  ]
+}

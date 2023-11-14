@@ -8,7 +8,7 @@ interface StanzaPriorityBoostContextKeyGlobal {
   [STANZA_PRIORITY_BOOST_CONTEXT_KEY_SYMBOL]: symbol | undefined;
 }
 const stanzaPriorityBoostContextKeyGlobal =
-  global as unknown as StanzaPriorityBoostContextKeyGlobal;
+  globalThis as unknown as StanzaPriorityBoostContextKeyGlobal;
 
 export const stanzaPriorityBoostContextKey =
   (stanzaPriorityBoostContextKeyGlobal[

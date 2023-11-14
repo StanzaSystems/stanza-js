@@ -1,4 +1,4 @@
-import { type SpanExporter } from '@opentelemetry/sdk-trace-node';
+import { type SpanExporter } from '@opentelemetry/sdk-trace-base';
 import { StanzaSpanExporter } from './StanzaSpanExporter';
 
 export function createSpanExporter(

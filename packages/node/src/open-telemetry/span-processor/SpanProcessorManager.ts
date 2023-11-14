@@ -1,5 +1,5 @@
 import { type Context } from '@opentelemetry/api';
-import { type SpanProcessor } from '@opentelemetry/sdk-trace-node';
+import { type SpanProcessor } from '@opentelemetry/sdk-trace-base';
 
 export interface SpanProcessorManager {
   forceFlushAllSpanProcessors: () => Promise<void>;

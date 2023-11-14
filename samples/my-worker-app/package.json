@@ -1,0 +1,7 @@
+{
+  "name": "my-worker-app",
+  "private": true,
+  "scripts": {
+    "test": "vitest run"
+  }
+}

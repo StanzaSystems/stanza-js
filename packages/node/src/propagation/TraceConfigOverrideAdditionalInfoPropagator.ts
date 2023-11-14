@@ -19,7 +19,7 @@ interface StanzaTraceConfigOverrideAdditionalInfoKeyGlobal {
 }
 
 const stanzaTraceConfigOverrideAdditionalInfoKeyGlobal =
-  global as unknown as StanzaTraceConfigOverrideAdditionalInfoKeyGlobal;
+  globalThis as unknown as StanzaTraceConfigOverrideAdditionalInfoKeyGlobal;
 
 const stanzaTraceConfigOverrideAdditionalInfoKey =
   (stanzaTraceConfigOverrideAdditionalInfoKeyGlobal[

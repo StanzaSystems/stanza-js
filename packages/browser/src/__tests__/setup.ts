@@ -4,7 +4,7 @@ import 'vitest-localstorage-mock';
 import { server } from '@getstanza/mocks-server';
 
 // Add `fetch` polyfill.
-global.fetch = fetch;
+globalThis.fetch = fetch;
 
 beforeAll(() => {
   server.listen({ onUnhandledRequest: 'error' });

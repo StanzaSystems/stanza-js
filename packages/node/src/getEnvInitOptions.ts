@@ -6,6 +6,7 @@ import {
   coerceStringToLogLevel,
 } from './coerceStanzaInitOptions';
 import { identity } from '@getstanza/core';
+import process from 'node:process';
 
 type StanzaInitOptionsFromEnv = Exclude<
   keyof StanzaInitOptions,

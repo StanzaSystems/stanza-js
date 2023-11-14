@@ -6,7 +6,7 @@ interface StanzaTokenContextKeyGlobal {
   [STANZA_TOKEN_CONTEXT_KEY_SYMBOL]: symbol | undefined;
 }
 const stanzaTokenContextKeyGlobal =
-  global as unknown as StanzaTokenContextKeyGlobal;
+  globalThis as unknown as StanzaTokenContextKeyGlobal;
 
 export const stanzaTokenContextKey = (stanzaTokenContextKeyGlobal[
   STANZA_TOKEN_CONTEXT_KEY_SYMBOL

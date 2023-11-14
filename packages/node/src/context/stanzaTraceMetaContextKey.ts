@@ -8,7 +8,7 @@ interface StanzaTraceMetaContextKeyGlobal {
   [STANZA_TRACE_META_CONTEXT_KEY_SYMBOL]: symbol | undefined;
 }
 const stanzaTraceMetaContextKeyGlobal =
-  global as unknown as StanzaTraceMetaContextKeyGlobal;
+  globalThis as unknown as StanzaTraceMetaContextKeyGlobal;
 
 export const stanzaTraceMetaContextKey = (stanzaTraceMetaContextKeyGlobal[
   STANZA_TRACE_META_CONTEXT_KEY_SYMBOL

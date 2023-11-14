@@ -7,7 +7,7 @@ interface StanzaGuardContextKeyGlobal {
 }
 
 const stanzaGuardContextKeyGlobal =
-  global as unknown as StanzaGuardContextKeyGlobal;
+  globalThis as unknown as StanzaGuardContextKeyGlobal;
 
 export const stanzaGuardContextKey = (stanzaGuardContextKeyGlobal[
   STANZA_GUARD_CONTEXT_KEY_SYMBOL

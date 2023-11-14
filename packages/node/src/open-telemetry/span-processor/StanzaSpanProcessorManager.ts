@@ -3,7 +3,7 @@ import {
   BatchSpanProcessor,
   NoopSpanProcessor,
   type SpanProcessor,
-} from '@opentelemetry/sdk-trace-node';
+} from '@opentelemetry/sdk-trace-base';
 import { createSpanExporter } from './createSpanExporter';
 import { type SpanProcessorManager } from './SpanProcessorManager';
 import { StanzaConfigEntityManager } from '../StanzaConfigEntityManager';

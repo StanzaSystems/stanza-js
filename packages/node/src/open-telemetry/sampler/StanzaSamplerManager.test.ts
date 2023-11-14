@@ -1,5 +1,5 @@
 import { ROOT_CONTEXT } from '@opentelemetry/api';
-import { AlwaysOffSampler } from '@opentelemetry/sdk-trace-node';
+import { AlwaysOffSampler } from '@opentelemetry/sdk-trace-base';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { type getGuardConfig } from '../../global/guardConfig';
 import {

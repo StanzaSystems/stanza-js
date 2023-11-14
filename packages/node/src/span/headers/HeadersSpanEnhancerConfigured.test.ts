@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { HeadersSpanEnhancerConfigured } from './HeadersSpanEnhancerConfigured';
 import { ROOT_CONTEXT, SpanKind, TraceFlags } from '@opentelemetry/api';
-import { Span, Tracer } from '@opentelemetry/sdk-trace-node';
+import { Span, Tracer } from '@opentelemetry/sdk-trace-base';
 import { BasicTracerProvider } from '@opentelemetry/sdk-trace-base/build/src/BasicTracerProvider';
 
 const getHeader =

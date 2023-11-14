@@ -4,9 +4,9 @@ import { getEnvInitOptions } from './getEnvInitOptions';
 import { updateHubService } from './global/hubService';
 import { stanzaInitOptions, type StanzaInitOptions } from './stanzaInitOptions';
 import { startPollingServiceConfig } from './service/startPollingConfigService';
-import { createGrpcHubService } from './hub/grpc/createGrpcHubService';
-import { createHubRequest } from './hub/rest/createHubRequest';
-import { createRestHubService } from './hub/rest/createRestHubService';
+// import { createGrpcHubService } from './hub/grpc/createGrpcHubService';
+// import { createHubRequest } from './hub/rest/createHubRequest';
+// import { createRestHubService } from './hub/rest/createRestHubService';
 import { setRequestTimeout } from './global/requestTimeout';
 import { setSkipTokenCache } from './global/skipTokenCache';
 import { logger } from './global/logger';
@@ -28,6 +28,8 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
       .filter(({ value }) => value.description)
       .map(({ key, value }) => `- ${key}: ${value.description}`)
       .join('\n');
+
+    console.log('error', JSON.stringify(parseResult.error))
     throw new TypeError(
       `Provided options are invalid. Please provide an object with the following properties:\n${expectedFields}`
     );
@@ -44,28 +46,44 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
   await addInstrumentation(initOptions.serviceName, initOptions.serviceRelease);
 
   updateHubService(
-    initOptions.useRestHubApi
-      ? createRestHubService({
-          serviceName: initOptions.serviceName,
-          serviceRelease: initOptions.serviceRelease,
-          environment: initOptions.environment,
-          clientId,
-          hubRequest: createHubRequest({
-            hubUrl: initOptions.hubUrl,
-            apiKey: initOptions.apiKey,
-            serviceName: initOptions.serviceName,
-            serviceRelease: initOptions.serviceRelease,
-          }),
-        })
-      : createGrpcHubService({
-          serviceName: initOptions.serviceName,
-          serviceRelease: initOptions.serviceRelease,
-          environment: initOptions.environment,
-          clientId,
+    await Promise.all([
+      import('./hub/rest/createRestHubService'),
+      import('./hub/rest/createHubRequest')
+    ])
+      .then(([module1, module2]) => module1.createRestHubService({
+        serviceName: initOptions.serviceName,
+        serviceRelease: initOptions.serviceRelease,
+        environment: initOptions.environment,
+        clientId,
+        hubRequest: module2.createHubRequest({
           hubUrl: initOptions.hubUrl,
           apiKey: initOptions.apiKey,
+          serviceName: initOptions.serviceName,
+          serviceRelease: initOptions.serviceRelease
         })
-  );
+      }))
+    // initOptions.useRestHubApi
+    //   ? createRestHubService({
+    //     serviceName: initOptions.serviceName,
+    //     serviceRelease: initOptions.serviceRelease,
+    //     environment: initOptions.environment,
+    //     clientId,
+    //     hubRequest: createHubRequest({
+    //       hubUrl: initOptions.hubUrl,
+    //       apiKey: initOptions.apiKey,
+    //       serviceName: initOptions.serviceName,
+    //       serviceRelease: initOptions.serviceRelease
+    //     })
+    //   })
+    //   : createGrpcHubService({
+    //     serviceName: initOptions.serviceName,
+    //     serviceRelease: initOptions.serviceRelease,
+    //     environment: initOptions.environment,
+    //     clientId,
+    //     hubUrl: initOptions.hubUrl,
+    //     apiKey: initOptions.apiKey
+    //   })
+  )
 
   startPollingServiceConfig(clientId);
   startPollingAuthToken();

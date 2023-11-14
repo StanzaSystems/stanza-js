@@ -1,4 +1,4 @@
-import { type Sampler } from '@opentelemetry/sdk-trace-node';
+import { type Sampler } from '@opentelemetry/sdk-trace-base';
 import { type SamplerManager } from './SamplerManager';
 
 export class ManagedSampler implements Sampler {

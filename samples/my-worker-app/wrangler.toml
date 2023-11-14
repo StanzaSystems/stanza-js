@@ -1,0 +1,6 @@
+name = "my-worker-app"
+compatibility_date = "2023-07-31"
+main = "src/index.ts"
+
+#node_compat = true
+compatibility_flags = [ "nodejs_compat" ]

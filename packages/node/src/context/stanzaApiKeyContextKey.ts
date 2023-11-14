@@ -6,7 +6,7 @@ interface StanzaApiKeyContextKeyGlobal {
   [STANZA_API_KEY_CONTEXT_KEY_SYMBOL]: symbol | undefined;
 }
 const stanzaApiKeyContextKeyGlobal =
-  global as unknown as StanzaApiKeyContextKeyGlobal;
+  globalThis as unknown as StanzaApiKeyContextKeyGlobal;
 
 export const stanzaApiKeyContextKey = (stanzaApiKeyContextKeyGlobal[
   STANZA_API_KEY_CONTEXT_KEY_SYMBOL

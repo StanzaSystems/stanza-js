@@ -6,7 +6,7 @@ const TOKEN_STORE_SYMBOL = Symbol.for('[Stanza SDK Internal] Token Store');
 interface TokenStoreGlobal {
   [TOKEN_STORE_SYMBOL]: TokenStore | undefined;
 }
-const tokenStoreGlobal = global as unknown as TokenStoreGlobal;
+const tokenStoreGlobal = globalThis as unknown as TokenStoreGlobal;
 
 export const tokenStore: TokenStore = (tokenStoreGlobal[TOKEN_STORE_SYMBOL] =
   tokenStoreGlobal[TOKEN_STORE_SYMBOL] ?? createTokenStore());

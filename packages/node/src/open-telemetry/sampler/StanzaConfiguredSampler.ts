@@ -9,7 +9,7 @@ import {
   type Sampler,
   type SamplingResult,
   TraceIdRatioBasedSampler,
-} from '@opentelemetry/sdk-trace-node';
+} from '@opentelemetry/sdk-trace-base';
 import { type ServiceConfig } from '../../hub/model';
 import { getTraceConfigOverrideAdditionalInfo } from '../../propagation/TraceConfigOverrideAdditionalInfoPropagator';
 

@@ -222,7 +222,7 @@ interface EventBusGlobal {
   [EVENT_BUS_EVENTS_SYMBOL]: typeof eventBusEvents | undefined;
 }
 
-const eventBusGlobal = global as unknown as EventBusGlobal;
+const eventBusGlobal = globalThis as unknown as EventBusGlobal;
 
 export const eventBus: StanzaEventBus = (eventBusGlobal[EVENT_BUS_SYMBOL] =
   eventBusGlobal[EVENT_BUS_SYMBOL] ?? new Emittery());
