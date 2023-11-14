@@ -12,7 +12,7 @@ export async function fetchGetJSON(url: string) {
 
 export async function fetchPostJSON(
   url: string,
-  data?: Record<string, unknown>
+  data?: Record<string, unknown>,
 ) {
   try {
     // Default options are marked with *

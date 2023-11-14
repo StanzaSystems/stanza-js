@@ -11,17 +11,14 @@ const stripe = getStripe();
 
 const Checkout = (props: CheckoutProps) => {
   return (
-    <Elements
-      options={{ clientSecret: props.clientSecret }}
-      stripe={stripe}
-    >
+    <Elements options={{ clientSecret: props.clientSecret }} stripe={stripe}>
       <ElementsForm />
     </Elements>
   );
 };
 
 export const getServerSideProps: GetServerSideProps<CheckoutProps> = async (
-  context
+  context,
 ) => {
   let result;
   const host = context.req.headers.host ?? 'localhost:4200';

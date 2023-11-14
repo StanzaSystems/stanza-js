@@ -8,7 +8,7 @@ const INITIAL_BACKOFF_TIME = 1000;
 const FAILURE_RATE_CHECK_WINDOW_SIZE = 1000;
 
 export const backoffGetQuota = <Args extends any[], RType>(
-  getQuotaFn: (...args: Args) => Promise<RType | null>
+  getQuotaFn: (...args: Args) => Promise<RType | null>,
 ): ((...args: Args) => Promise<RType | null>) => {
   const tryRampUpEnabledPercentBackedOff = async () =>
     backOff(tryRampUpEnabledPercent, {
@@ -34,7 +34,7 @@ export const backoffGetQuota = <Args extends any[], RType>(
       resetRequestsCount();
       checkRequestStatusTimeoutHandle = setTimeout(
         checkRequestsStatus,
-        FAILURE_RATE_CHECK_WINDOW_SIZE
+        FAILURE_RATE_CHECK_WINDOW_SIZE,
       );
       logger.debug('[%d] scheduling check request status', Date.now());
     }
@@ -45,7 +45,7 @@ export const backoffGetQuota = <Args extends any[], RType>(
       resetRequestsCount();
       checkRequestStatusTimeoutHandle = setTimeout(
         checkRequestsStatus,
-        FAILURE_RATE_CHECK_WINDOW_SIZE
+        FAILURE_RATE_CHECK_WINDOW_SIZE,
       );
       logger.debug('[%d] scheduling check request status', Date.now());
     }
@@ -95,7 +95,7 @@ export const backoffGetQuota = <Args extends any[], RType>(
     enabledPercent = 0;
     eventBus.emit(events.internal.quota.disabled).catch(() => {});
     logger.error(
-      'Failed to get more than 10% of get quota requests. Failing open'
+      'Failed to get more than 10% of get quota requests. Failing open',
     );
   }
 

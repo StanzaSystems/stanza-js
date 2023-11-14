@@ -7,7 +7,7 @@ import { type FetchServiceConfigOptions } from '../hub/hubService';
 import { type ServiceConfig } from '../hub/model';
 
 export async function fetchServiceConfig(
-  options?: FetchServiceConfigOptions
+  options?: FetchServiceConfigOptions,
 ): Promise<ServiceConfig | null> {
   let serviceConfig: ServiceConfig | null = null;
   try {

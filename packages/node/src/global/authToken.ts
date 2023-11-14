@@ -2,7 +2,7 @@ import { createGlobalState } from './createGlobalState';
 
 const state = createGlobalState(
   Symbol.for('[Stanza SDK Internal] Auth bearer token'),
-  (): string | undefined => undefined
+  (): string | undefined => undefined,
 );
 
 export const updateStanzaAuthToken = state.update;

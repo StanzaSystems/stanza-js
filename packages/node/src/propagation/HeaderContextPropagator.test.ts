@@ -32,9 +32,9 @@ describe('StanzaApiKeyPropagator', function () {
             {
               [headerKey]: 'aToken',
             },
-            recordGetter
+            recordGetter,
           )
-          .getValue(contextKey)
+          .getValue(contextKey),
       ).toEqual('aToken');
     });
 
@@ -47,9 +47,9 @@ describe('StanzaApiKeyPropagator', function () {
             {
               get: () => ['aToken'],
               keys: () => [],
-            }
+            },
           )
-          .getValue(contextKey)
+          .getValue(contextKey),
       ).toEqual('aToken');
     });
 
@@ -62,15 +62,15 @@ describe('StanzaApiKeyPropagator', function () {
             {
               get: () => [],
               keys: () => [],
-            }
+            },
           )
-          .getValue(contextKey)
+          .getValue(contextKey),
       ).toBeUndefined();
     });
 
     it('should NOT extract Stanza key from carrier if does not exist', function () {
       expect(
-        propagator.extract(ROOT_CONTEXT, {}, recordGetter).getValue(contextKey)
+        propagator.extract(ROOT_CONTEXT, {}, recordGetter).getValue(contextKey),
       ).toBeUndefined();
     });
   });

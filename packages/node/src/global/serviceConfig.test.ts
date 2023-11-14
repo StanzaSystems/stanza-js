@@ -4,10 +4,10 @@ import type * as serviceConfigModuleImport from './serviceConfig';
 type ServiceConfigModule = typeof serviceConfigModuleImport;
 
 const GLOBAL_STATE_RECORD_SYMBOL = Symbol.for(
-  '[Stanza SDK Internal] Global states'
+  '[Stanza SDK Internal] Global states',
 );
 const STANZA_SERVICE_CONFIG_SYMBOL = Symbol.for(
-  '[Stanza SDK Internal] Service Config'
+  '[Stanza SDK Internal] Service Config',
 );
 describe('serviceConfig', function () {
   let serviceConfigModule: ServiceConfigModule;

@@ -72,7 +72,7 @@ describe('hubService', () => {
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
-          }
+          },
         );
       });
 
@@ -114,7 +114,7 @@ describe('hubService', () => {
             environment: 'testEnvironment',
             clientId: 'testClientId',
             customerId: 'testCustomerId',
-          }
+          },
         );
       });
 
@@ -133,7 +133,7 @@ describe('hubService', () => {
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
-          }
+          },
         );
       });
 
@@ -176,7 +176,7 @@ describe('hubService', () => {
             environment: 'testEnvironment',
             clientId: 'testClientId',
             customerId: 'testCustomerId',
-          }
+          },
         );
       });
 
@@ -205,7 +205,7 @@ describe('hubService', () => {
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
-          }
+          },
         );
       });
 
@@ -258,7 +258,7 @@ describe('hubService', () => {
             environment: 'testEnvironment',
             clientId: 'testClientId',
             customerId: 'testCustomerId',
-          }
+          },
         );
       });
     });
@@ -285,7 +285,7 @@ describe('hubService', () => {
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
-          }
+          },
         );
       });
 
@@ -306,7 +306,7 @@ describe('hubService', () => {
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
-          }
+          },
         );
       });
 
@@ -337,7 +337,7 @@ describe('hubService', () => {
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
-          }
+          },
         );
       });
     });
@@ -387,7 +387,7 @@ describe('hubService', () => {
             environment: 'testEnvironment',
             clientId: 'testClientId',
             endpoint: 'GetToken',
-          }
+          },
         );
       });
 
@@ -422,7 +422,7 @@ describe('hubService', () => {
             environment: 'testEnvironment',
             clientId: 'testClientId',
             endpoint: 'GetToken',
-          }
+          },
         );
       });
     });
@@ -491,7 +491,7 @@ describe('hubService', () => {
             environment: 'testEnvironment',
             clientId: 'testClientId',
             endpoint: 'GetTokenLease',
-          }
+          },
         );
       });
 
@@ -535,7 +535,7 @@ describe('hubService', () => {
             environment: 'testEnvironment',
             clientId: 'testClientId',
             endpoint: 'GetTokenLease',
-          }
+          },
         );
       });
     });
@@ -583,7 +583,7 @@ describe('hubService', () => {
             environment: 'testEnvironment',
             clientId: 'testClientId',
             endpoint: 'SetTokenLeaseConsumed',
-          }
+          },
         );
       });
 
@@ -614,7 +614,7 @@ describe('hubService', () => {
             environment: 'testEnvironment',
             clientId: 'testClientId',
             endpoint: 'SetTokenLeaseConsumed',
-          }
+          },
         );
       });
     });
@@ -650,7 +650,7 @@ describe('hubService', () => {
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
-          }
+          },
         );
       });
 
@@ -672,7 +672,7 @@ describe('hubService', () => {
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
-          }
+          },
         );
       });
 
@@ -706,7 +706,7 @@ describe('hubService', () => {
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
-          }
+          },
         );
       });
 
@@ -746,7 +746,7 @@ describe('hubService', () => {
             serviceName: 'testService',
             environment: 'testEnvironment',
             clientId: 'testClientId',
-          }
+          },
         );
       });
     });

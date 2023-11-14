@@ -1,10 +1,10 @@
 import { type GuardConfig } from '../hub/model';
 
 const STANZA_GUARD_CONFIG_SYMBOL = Symbol.for(
-  '[Stanza SDK Internal] Guard Config'
+  '[Stanza SDK Internal] Guard Config',
 );
 const STANZA_GUARD_CONFIG_LISTENERS_SYMBOL = Symbol.for(
-  '[Stanza SDK Internal] Guard Config Listeners'
+  '[Stanza SDK Internal] Guard Config Listeners',
 );
 
 export type GuardConfigListener = (config: GuardConfig) => void;
@@ -37,7 +37,7 @@ export const updateGuardConfig = (name: string, newConfig: GuardConfig) => {
 
 export const addGuardConfigListener = (
   guardName: string,
-  listener: GuardConfigListener
+  listener: GuardConfigListener,
 ) => {
   guardConfigListeners[guardName] = guardConfigListeners[guardName] ?? [];
   guardConfigListeners[guardName].push(listener);

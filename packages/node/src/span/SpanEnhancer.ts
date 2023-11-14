@@ -1,7 +1,7 @@
 import { type Span } from '@opentelemetry/api';
 
 export type HeaderGetter = (
-  headerName: string
+  headerName: string,
 ) => string | number | string[] | undefined;
 
 export interface SpanEnhancer {

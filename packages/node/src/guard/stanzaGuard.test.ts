@@ -57,11 +57,11 @@ const getQuotaMock = Object.assign(
       this: Mock<
         Parameters<GetQuotaModule['getQuota']>,
         ReturnType<GetQuotaModule['getQuota']>
-      >
+      >,
     ) {
       const deferred: {
         resolve: (
-          value: Awaited<ReturnType<GetQuotaModule['getQuota']>>
+          value: Awaited<ReturnType<GetQuotaModule['getQuota']>>,
         ) => void;
         reject: (reason: unknown) => void;
       } = {
@@ -73,13 +73,13 @@ const getQuotaMock = Object.assign(
           (resolve, reject) => {
             deferred.resolve = resolve;
             deferred.reject = reject;
-          }
+          },
         );
       });
 
       return deferred;
     },
-  }
+  },
 );
 
 beforeEach(() => {
@@ -209,7 +209,7 @@ describe('stanzaGuard', function () {
         Promise.resolve({
           version: 'test',
           config: {} as any,
-        })
+        }),
       );
 
       stanzaGuard({ guard: 'testGuard' }).bind(() => {
@@ -224,7 +224,7 @@ describe('stanzaGuard', function () {
         Promise.resolve({
           version: 'test',
           config: {} as any,
-        })
+        }),
       );
 
       stanzaGuard({ guard: 'testGuard' }).bind(() => {
@@ -250,7 +250,7 @@ describe('stanzaGuard', function () {
         Promise.resolve({
           version: 'test',
           config: {} as any,
-        })
+        }),
       );
 
       stanzaGuard({ guard: 'testGuard' }).bind(() => {
@@ -292,7 +292,7 @@ describe('stanzaGuard', function () {
         Promise.resolve({
           version: 'test',
           config: {} as any,
-        })
+        }),
       );
 
       stanzaGuard({ guard: 'testGuard' }).bind(() => {
@@ -332,12 +332,12 @@ describe('stanzaGuard', function () {
             async () =>
               new Promise<GuardConfig>((resolve) => {
                 resolveConfig = resolve;
-              })
+              }),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           resolveConfig(checkQuotaGuardConfig);
@@ -358,12 +358,12 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               return doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -376,7 +376,7 @@ describe('stanzaGuard', function () {
           await vi.advanceTimersByTimeAsync(0);
 
           await expect(guardedDoStuffPromise).resolves.toBe(
-            'test-value-token-resolved'
+            'test-value-token-resolved',
           );
 
           vi.useRealTimers();
@@ -387,12 +387,12 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -420,12 +420,12 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -438,7 +438,7 @@ describe('stanzaGuard', function () {
           deferred.resolve({ granted: false });
 
           await expect(guardedDoStuffPromise).rejects.toThrow(
-            new StanzaGuardError('NoQuota', 'Guard can not be executed')
+            new StanzaGuardError('NoQuota', 'Guard can not be executed'),
           );
 
           expect(doStuff).not.toHaveBeenCalled();
@@ -455,12 +455,12 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -487,15 +487,15 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
               expect(context.active().getValue(stanzaTokenContextKey)).toBe(
-                'test-token'
+                'test-token',
               );
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -519,15 +519,15 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
               expect(
-                context.active().getValue(stanzaTokenContextKey)
+                context.active().getValue(stanzaTokenContextKey),
               ).toBeUndefined();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -551,7 +551,7 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
 
           const guardedDoStuff = stanzaGuard({
@@ -560,7 +560,7 @@ describe('stanzaGuard', function () {
           }).bind(() => {
             doStuff();
             expect(
-              context.active().getValue(stanzaTokenContextKey)
+              context.active().getValue(stanzaTokenContextKey),
             ).toBeUndefined();
           });
 
@@ -584,23 +584,23 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
 
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
               expect(
-                context.active().getValue(stanzaTokenContextKey)
+                context.active().getValue(stanzaTokenContextKey),
               ).toBeUndefined();
-            }
+            },
           );
 
           const contextWithBaggage = propagation.setBaggage(
             ROOT_CONTEXT,
             propagation.createBaggage({
               'stz-feat': { value: 'testBaggageFeature' },
-            })
+            }),
           );
 
           // wait for guard config to be initialized
@@ -608,7 +608,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             contextWithBaggage,
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           expect(getQuotaMock).toHaveBeenCalledOnce();
@@ -626,7 +626,7 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
 
           const guardedDoStuff = stanzaGuard({
@@ -635,7 +635,7 @@ describe('stanzaGuard', function () {
           }).bind(() => {
             doStuff();
             expect(
-              context.active().getValue(stanzaTokenContextKey)
+              context.active().getValue(stanzaTokenContextKey),
             ).toBeUndefined();
           });
 
@@ -659,16 +659,16 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
 
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
               expect(
-                context.active().getValue(stanzaTokenContextKey)
+                context.active().getValue(stanzaTokenContextKey),
               ).toBeUndefined();
-            }
+            },
           );
 
           const contextWithBaggage = new StanzaBaggagePropagator().extract(
@@ -676,7 +676,7 @@ describe('stanzaGuard', function () {
             {
               baggage: 'stz-boost=1',
             },
-            recordGetter
+            recordGetter,
           );
 
           // wait for guard config to be initialized
@@ -684,7 +684,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             contextWithBaggage,
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           expect(getQuotaMock).toHaveBeenCalledOnce();
@@ -702,7 +702,7 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
 
           const guardedDoStuff = stanzaGuard({
@@ -711,7 +711,7 @@ describe('stanzaGuard', function () {
           }).bind(() => {
             doStuff();
             expect(
-              context.active().getValue(stanzaTokenContextKey)
+              context.active().getValue(stanzaTokenContextKey),
             ).toBeUndefined();
           });
 
@@ -720,7 +720,7 @@ describe('stanzaGuard', function () {
             {
               baggage: 'stz-boost=1',
             },
-            recordGetter
+            recordGetter,
           );
 
           // wait for guard config to be initialized
@@ -728,7 +728,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             contextWithBaggage,
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           expect(getQuotaMock).toHaveBeenCalledOnce();
@@ -746,7 +746,7 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({
             guard: 'testGuard',
@@ -777,13 +777,13 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
               expect(getPriorityBoostFromContext(context.active())).toBe(1);
-            }
+            },
           );
 
           const contextWithBaggage = new StanzaBaggagePropagator().extract(
@@ -791,7 +791,7 @@ describe('stanzaGuard', function () {
             {
               baggage: 'stz-boost=1',
             },
-            recordGetter
+            recordGetter,
           );
 
           // wait for guard config to be initialized
@@ -799,7 +799,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             contextWithBaggage,
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           deferred.resolve({ granted: true, token: 'test-token' });
@@ -818,7 +818,7 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({
             guard: 'testGuard',
@@ -833,7 +833,7 @@ describe('stanzaGuard', function () {
             {
               baggage: 'stz-boost=1',
             },
-            recordGetter
+            recordGetter,
           );
 
           // wait for guard config to be initialized
@@ -841,7 +841,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             contextWithBaggage,
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           deferred.resolve({ granted: true, token: 'test-token' });
@@ -860,7 +860,7 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({
             guard: 'testGuard',
@@ -868,7 +868,7 @@ describe('stanzaGuard', function () {
           }).bind(() => {
             doStuff();
             const priorityBoostFromContext = getPriorityBoostFromContext(
-              context.active()
+              context.active(),
             );
             expect(priorityBoostFromContext).toBe(0);
           });
@@ -878,7 +878,7 @@ describe('stanzaGuard', function () {
             {
               baggage: 'stz-boost=1',
             },
-            recordGetter
+            recordGetter,
           );
 
           // wait for guard config to be initialized
@@ -886,7 +886,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             contextWithBaggage,
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           deferred.resolve({ granted: true, token: 'test-token' });
@@ -918,7 +918,7 @@ describe('stanzaGuard', function () {
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           configDeferred.resolve(validateIngressTokenGuardConfig);
@@ -939,7 +939,7 @@ describe('stanzaGuard', function () {
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           configDeferred.resolve(validateIngressTokenGuardConfig);
@@ -947,7 +947,7 @@ describe('stanzaGuard', function () {
           await vi.advanceTimersByTimeAsync(0);
 
           await expect(guardedDoStuff()).rejects.toThrow(
-            'Valid Stanza token was not provided in the incoming header'
+            'Valid Stanza token was not provided in the incoming header',
           );
 
           vi.useRealTimers();
@@ -961,12 +961,12 @@ describe('stanzaGuard', function () {
           const validateDeferred =
             mockHubService.validateToken.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressTokenGuardConfig)
+            Promise.resolve(validateIngressTokenGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               return doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -974,7 +974,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           validateDeferred.resolve({
@@ -985,7 +985,7 @@ describe('stanzaGuard', function () {
           await vi.advanceTimersByTimeAsync(0);
 
           await expect(guardedDoStuffPromise).resolves.toBe(
-            'test-value-token-resolved'
+            'test-value-token-resolved',
           );
 
           vi.useRealTimers();
@@ -995,12 +995,12 @@ describe('stanzaGuard', function () {
           vi.useFakeTimers();
 
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressTokenGuardConfig)
+            Promise.resolve(validateIngressTokenGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1008,7 +1008,7 @@ describe('stanzaGuard', function () {
 
           void context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           expect(doStuff).not.toHaveBeenCalled();
@@ -1027,12 +1027,12 @@ describe('stanzaGuard', function () {
           const validateDeferred =
             mockHubService.validateToken.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressTokenGuardConfig)
+            Promise.resolve(validateIngressTokenGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1040,7 +1040,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           expect(doStuff).not.toHaveBeenCalled();
@@ -1048,7 +1048,7 @@ describe('stanzaGuard', function () {
           validateDeferred.resolve({ token: 'aToken', valid: false });
 
           await expect(guardedDoStuffPromise).rejects.toThrow(
-            new StanzaGuardError('InvalidToken', 'Provided token was invalid')
+            new StanzaGuardError('InvalidToken', 'Provided token was invalid'),
           );
 
           expect(doStuff).not.toHaveBeenCalled();
@@ -1066,12 +1066,12 @@ describe('stanzaGuard', function () {
           const validateDeferred =
             mockHubService.validateToken.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressTokenGuardConfig)
+            Promise.resolve(validateIngressTokenGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1079,7 +1079,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           expect(doStuff).not.toHaveBeenCalled();
@@ -1101,12 +1101,12 @@ describe('stanzaGuard', function () {
           const validateDeferred =
             mockHubService.validateToken.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressTokenGuardConfig)
+            Promise.resolve(validateIngressTokenGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1114,7 +1114,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           expect(doStuff).not.toHaveBeenCalled();
@@ -1136,12 +1136,12 @@ describe('stanzaGuard', function () {
 
           mockHubService.validateToken.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressTokenGuardConfig)
+            Promise.resolve(validateIngressTokenGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1149,7 +1149,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           expect(doStuff).not.toHaveBeenCalled();
@@ -1168,15 +1168,15 @@ describe('stanzaGuard', function () {
           const validateDeferred =
             mockHubService.validateToken.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressTokenGuardConfig)
+            Promise.resolve(validateIngressTokenGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
               expect(
-                context.active().getValue(stanzaTokenContextKey)
+                context.active().getValue(stanzaTokenContextKey),
               ).toBeUndefined();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1184,7 +1184,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           validateDeferred.resolve({ token: 'aToken', valid: true });
@@ -1204,15 +1204,15 @@ describe('stanzaGuard', function () {
           const validateDeferred =
             mockHubService.validateToken.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressTokenGuardConfig)
+            Promise.resolve(validateIngressTokenGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
               expect(
-                context.active().getValue(stanzaTokenContextKey)
+                context.active().getValue(stanzaTokenContextKey),
               ).toBeDefined();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1220,7 +1220,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           validateDeferred.reject(new Error('Getting token failed'));
@@ -1253,7 +1253,7 @@ describe('stanzaGuard', function () {
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           configDeferred.resolve(validateIngressAndCheckQuotaGuardConfig);
@@ -1274,7 +1274,7 @@ describe('stanzaGuard', function () {
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           configDeferred.resolve(validateIngressAndCheckQuotaGuardConfig);
@@ -1282,7 +1282,7 @@ describe('stanzaGuard', function () {
           await vi.advanceTimersByTimeAsync(0);
 
           await expect(guardedDoStuff()).rejects.toThrow(
-            'Valid Stanza token was not provided'
+            'Valid Stanza token was not provided',
           );
 
           vi.useRealTimers();
@@ -1297,12 +1297,12 @@ describe('stanzaGuard', function () {
             mockHubService.validateToken.mockImplementationDeferred();
           getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressAndCheckQuotaGuardConfig)
+            Promise.resolve(validateIngressAndCheckQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               return doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1310,7 +1310,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           validateDeferred.resolve({
@@ -1336,12 +1336,12 @@ describe('stanzaGuard', function () {
             mockHubService.validateToken.mockImplementationDeferred();
           const getQuotaDeferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressAndCheckQuotaGuardConfig)
+            Promise.resolve(validateIngressAndCheckQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               return doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1349,7 +1349,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           validateDeferred.resolve({
@@ -1366,7 +1366,7 @@ describe('stanzaGuard', function () {
           await vi.advanceTimersByTimeAsync(0);
 
           await expect(guardedDoStuffPromise).resolves.toBe(
-            'test-value-token-resolved'
+            'test-value-token-resolved',
           );
 
           vi.useRealTimers();
@@ -1377,12 +1377,12 @@ describe('stanzaGuard', function () {
           const validateDeferred =
             mockHubService.validateToken.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressAndCheckQuotaGuardConfig)
+            Promise.resolve(validateIngressAndCheckQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1390,7 +1390,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           expect(doStuff).not.toHaveBeenCalled();
@@ -1398,7 +1398,7 @@ describe('stanzaGuard', function () {
           validateDeferred.resolve({ token: 'aToken', valid: false });
 
           await expect(guardedDoStuffPromise).rejects.toThrow(
-            new StanzaGuardError('InvalidToken', 'Provided token was invalid')
+            new StanzaGuardError('InvalidToken', 'Provided token was invalid'),
           );
 
           expect(doStuff).not.toHaveBeenCalled();
@@ -1417,12 +1417,12 @@ describe('stanzaGuard', function () {
             mockHubService.validateToken.mockImplementationDeferred();
           const getQuotaDeferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressAndCheckQuotaGuardConfig)
+            Promise.resolve(validateIngressAndCheckQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               return doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1430,7 +1430,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           validateDeferred.resolve({
@@ -1443,7 +1443,7 @@ describe('stanzaGuard', function () {
           getQuotaDeferred.resolve({ granted: false });
 
           await expect(guardedDoStuffPromise).rejects.toThrow(
-            new StanzaGuardError('NoQuota', 'Guard can not be executed')
+            new StanzaGuardError('NoQuota', 'Guard can not be executed'),
           );
 
           expect(doStuff).not.toHaveBeenCalled();
@@ -1462,15 +1462,15 @@ describe('stanzaGuard', function () {
             mockHubService.validateToken.mockImplementationDeferred();
           const getQuotaDeferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressAndCheckQuotaGuardConfig)
+            Promise.resolve(validateIngressAndCheckQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
               expect(context.active().getValue(stanzaTokenContextKey)).toBe(
-                'new-test-token'
+                'new-test-token',
               );
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1478,7 +1478,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           validateDeferred.resolve({ token: 'aToken', valid: true });
@@ -1503,15 +1503,15 @@ describe('stanzaGuard', function () {
             mockHubService.validateToken.mockImplementationDeferred();
           const getQuotaDeferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressAndCheckQuotaGuardConfig)
+            Promise.resolve(validateIngressAndCheckQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
               expect(
-                context.active().getValue(stanzaTokenContextKey)
+                context.active().getValue(stanzaTokenContextKey),
               ).toBeUndefined();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1519,7 +1519,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           validateDeferred.resolve({ token: 'aToken', valid: true });
@@ -1557,12 +1557,12 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               return doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1575,7 +1575,7 @@ describe('stanzaGuard', function () {
           await vi.advanceTimersByTimeAsync(0);
 
           await expect(guardedDoStuffPromise).resolves.toBe(
-            'test-value-token-resolved'
+            'test-value-token-resolved',
           );
 
           vi.useRealTimers();
@@ -1586,12 +1586,12 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1615,12 +1615,12 @@ describe('stanzaGuard', function () {
 
           const deferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(checkQuotaGuardConfig)
+            Promise.resolve(checkQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1659,7 +1659,7 @@ describe('stanzaGuard', function () {
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           configDeferred.resolve(validateIngressTokenGuardConfig);
@@ -1682,12 +1682,12 @@ describe('stanzaGuard', function () {
           const validateDeferred =
             mockHubService.validateToken.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressTokenGuardConfig)
+            Promise.resolve(validateIngressTokenGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               return doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1695,7 +1695,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           validateDeferred.resolve({
@@ -1706,7 +1706,7 @@ describe('stanzaGuard', function () {
           await vi.advanceTimersByTimeAsync(0);
 
           await expect(guardedDoStuffPromise).resolves.toBe(
-            'test-value-token-resolved'
+            'test-value-token-resolved',
           );
 
           vi.useRealTimers();
@@ -1717,12 +1717,12 @@ describe('stanzaGuard', function () {
           const validateDeferred =
             mockHubService.validateToken.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressTokenGuardConfig)
+            Promise.resolve(validateIngressTokenGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1730,7 +1730,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           expect(doStuff).not.toHaveBeenCalled();
@@ -1750,12 +1750,12 @@ describe('stanzaGuard', function () {
           const validateDeferred =
             mockHubService.validateToken.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressTokenGuardConfig)
+            Promise.resolve(validateIngressTokenGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1763,7 +1763,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           expect(doStuff).not.toHaveBeenCalled();
@@ -1785,12 +1785,12 @@ describe('stanzaGuard', function () {
           const validateDeferred =
             mockHubService.validateToken.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressTokenGuardConfig)
+            Promise.resolve(validateIngressTokenGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1798,7 +1798,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           expect(doStuff).not.toHaveBeenCalled();
@@ -1820,12 +1820,12 @@ describe('stanzaGuard', function () {
 
           mockHubService.validateToken.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressTokenGuardConfig)
+            Promise.resolve(validateIngressTokenGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1833,7 +1833,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           expect(doStuff).not.toHaveBeenCalled();
@@ -1864,7 +1864,7 @@ describe('stanzaGuard', function () {
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           configDeferred.resolve(validateIngressAndCheckQuotaGuardConfig);
@@ -1885,12 +1885,12 @@ describe('stanzaGuard', function () {
             mockHubService.validateToken.mockImplementationDeferred();
           getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressAndCheckQuotaGuardConfig)
+            Promise.resolve(validateIngressAndCheckQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               return doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1898,7 +1898,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           validateDeferred.resolve({
@@ -1924,12 +1924,12 @@ describe('stanzaGuard', function () {
             mockHubService.validateToken.mockImplementationDeferred();
           const getQuotaDeferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressAndCheckQuotaGuardConfig)
+            Promise.resolve(validateIngressAndCheckQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               return doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1937,7 +1937,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           validateDeferred.resolve({
@@ -1954,7 +1954,7 @@ describe('stanzaGuard', function () {
           await vi.advanceTimersByTimeAsync(0);
 
           await expect(guardedDoStuffPromise).resolves.toBe(
-            'test-value-token-resolved'
+            'test-value-token-resolved',
           );
 
           vi.useRealTimers();
@@ -1965,12 +1965,12 @@ describe('stanzaGuard', function () {
           const validateDeferred =
             mockHubService.validateToken.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressAndCheckQuotaGuardConfig)
+            Promise.resolve(validateIngressAndCheckQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -1978,7 +1978,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           expect(doStuff).not.toHaveBeenCalled();
@@ -1999,12 +1999,12 @@ describe('stanzaGuard', function () {
             mockHubService.validateToken.mockImplementationDeferred();
           const getQuotaDeferred = getQuotaMock.mockImplementationDeferred();
           mockHubService.fetchGuardConfig.mockImplementation(async () =>
-            Promise.resolve(validateIngressAndCheckQuotaGuardConfig)
+            Promise.resolve(validateIngressAndCheckQuotaGuardConfig),
           );
           const guardedDoStuff = stanzaGuard({ guard: 'testGuard' }).bind(
             () => {
               return doStuff();
-            }
+            },
           );
 
           // wait for guard config to be initialized
@@ -2012,7 +2012,7 @@ describe('stanzaGuard', function () {
 
           const guardedDoStuffPromise = context.with(
             context.active().setValue(stanzaTokenContextKey, 'aToken'),
-            guardedDoStuff
+            guardedDoStuff,
           );
 
           validateDeferred.resolve({

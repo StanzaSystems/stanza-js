@@ -18,6 +18,6 @@ export const startPollingServiceConfig = (clientId: string) => {
 
       return fetchServiceConfig(options);
     },
-    { pollInterval: 15000 }
+    { pollInterval: 15000 },
   );
 };

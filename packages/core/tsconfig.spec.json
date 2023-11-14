@@ -4,7 +4,7 @@
     "outDir": "../../dist/out-tsc",
     "types": ["vitest/globals", "vitest/importMeta", "vite/client", "node"],
     "module": "esnext",
-    "target": "esnext",
+    "target": "esnext"
   },
   "include": [
     "vite.config.ts",

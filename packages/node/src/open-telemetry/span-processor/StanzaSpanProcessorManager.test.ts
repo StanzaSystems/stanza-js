@@ -64,13 +64,13 @@ vi.mock(
       ...original,
       BatchSpanProcessor: MockSpanProcessor,
     };
-  }
+  },
 );
 
 const createSpanExporterMock = vi.fn(
   (config, _serviceName: string, _serviceRelease: string) => {
     return new CustomSpanExporter(config);
-  }
+  },
 );
 
 class CustomSpanExporter extends InMemorySpanExporter {
@@ -132,7 +132,7 @@ beforeEach(async () => {
 describe('StanzaSpanProcessorManager', function () {
   it('should create StanzaSpanProcessorManager', function () {
     expect(
-      () => new StanzaSpanProcessorManager('TestService', '1.0.0')
+      () => new StanzaSpanProcessorManager('TestService', '1.0.0'),
     ).not.toThrow();
   });
 
@@ -141,7 +141,7 @@ describe('StanzaSpanProcessorManager', function () {
       const manager = new StanzaSpanProcessorManager('TestService', '1.0.0');
 
       expect(manager.getSpanProcessor(ROOT_CONTEXT)).toBeInstanceOf(
-        NoopSpanProcessor
+        NoopSpanProcessor,
       );
     });
 
@@ -159,7 +159,7 @@ describe('StanzaSpanProcessorManager', function () {
           overrides: [],
           headerSampleConfig: [],
           paramSampleConfig: [],
-        })
+        }),
       );
     });
 
@@ -177,7 +177,7 @@ describe('StanzaSpanProcessorManager', function () {
           overrides: [],
           headerSampleConfig: [],
           paramSampleConfig: [],
-        })
+        }),
       );
     });
 
@@ -195,7 +195,7 @@ describe('StanzaSpanProcessorManager', function () {
           overrides: [],
           headerSampleConfig: [],
           paramSampleConfig: [],
-        })
+        }),
       );
 
       serviceListener({ initialized: true, data: secondMockServiceConfig });
@@ -209,7 +209,7 @@ describe('StanzaSpanProcessorManager', function () {
           overrides: [],
           headerSampleConfig: [],
           paramSampleConfig: [],
-        })
+        }),
       );
     });
   });
@@ -220,8 +220,8 @@ describe('StanzaSpanProcessorManager', function () {
 
       expect(
         manager.getSpanProcessor(
-          addStanzaGuardToContext('myGuard')(ROOT_CONTEXT)
-        )
+          addStanzaGuardToContext('myGuard')(ROOT_CONTEXT),
+        ),
       ).toBeInstanceOf(NoopSpanProcessor);
     });
 
@@ -231,7 +231,7 @@ describe('StanzaSpanProcessorManager', function () {
       serviceListener({ initialized: true, data: mockServiceConfig });
 
       const spanProcessor = manager.getSpanProcessor(
-        addStanzaGuardToContext('myGuard')(ROOT_CONTEXT)
+        addStanzaGuardToContext('myGuard')(ROOT_CONTEXT),
       );
       expect(spanProcessor).toBeInstanceOf(BatchSpanProcessor);
       expect((spanProcessor as CustomSpanProcessor).exporter).toEqual(
@@ -241,7 +241,7 @@ describe('StanzaSpanProcessorManager', function () {
           overrides: [],
           headerSampleConfig: [],
           paramSampleConfig: [],
-        })
+        }),
       );
     });
   });

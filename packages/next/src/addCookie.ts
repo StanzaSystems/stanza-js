@@ -1,6 +1,6 @@
 export function addCookie(
   existingCookies: number | string | string[] | undefined,
-  cookieValue: string
+  cookieValue: string,
 ): number | string | string[] {
   if (cookieValue === '') {
     return existingCookies ?? '';

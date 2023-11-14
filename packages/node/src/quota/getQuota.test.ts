@@ -30,7 +30,7 @@ beforeEach(() => {
 
   mockTokenStore.getToken.mockImplementation(tokenStore.getToken);
   mockTokenStore.markTokenAsConsumed.mockImplementation(
-    tokenStore.markTokenAsConsumed
+    tokenStore.markTokenAsConsumed,
   );
 });
 describe('getQuota', function () {
@@ -48,7 +48,7 @@ describe('getQuota', function () {
     it('should throw TimeoutError if getting quota times out', async function () {
       const getQuotaPromise = getQuota({ guard: 'testGuard' });
       const expectationPromise = expect(getQuotaPromise).rejects.toThrow(
-        new TimeoutError(1000, 'Check quota timed out')
+        new TimeoutError(1000, 'Check quota timed out'),
       );
       await vi.advanceTimersByTimeAsync(1000);
       await expectationPromise;

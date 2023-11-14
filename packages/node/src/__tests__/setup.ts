@@ -9,19 +9,19 @@ import { expect } from 'vitest';
 expect.extend({
   toHaveBaggage(
     received: Context,
-    expected: Record<string, BaggageEntry>
+    expected: Record<string, BaggageEntry>,
   ): SyncExpectationResult {
     const { equals, isNot, utils } = this;
     const receivedBaggage = propagation.getBaggage(received);
     const compareBaggageEntries = (
       [a]: [string, BaggageEntry],
-      [b]: [string, BaggageEntry]
+      [b]: [string, BaggageEntry],
     ) => a.localeCompare(b);
     const receivedEntries = receivedBaggage
       ?.getAllEntries()
       .sort(compareBaggageEntries);
     const expectedEntries = Object.entries(expected).sort(
-      compareBaggageEntries
+      compareBaggageEntries,
     );
     return {
       pass: equals(receivedEntries, expectedEntries),
@@ -30,7 +30,7 @@ expect.extend({
           isNot ? ' not' : ''
         } contain expected baggage.\n${utils.diff(
           expectedEntries,
-          receivedEntries
+          receivedEntries,
         )}`,
       actual: 'receivedEntries',
       expected: 'expectedEntries',

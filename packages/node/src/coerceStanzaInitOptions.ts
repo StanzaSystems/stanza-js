@@ -3,11 +3,11 @@ import { z } from 'zod';
 import type pino from 'pino';
 
 export type CoerceFn<K extends keyof StanzaInitOptions> = (
-  strValue: string | undefined
+  strValue: string | undefined,
 ) => StanzaInitOptions[K] | undefined;
 
 export const coerceStringToInteger = (
-  v: string | undefined
+  v: string | undefined,
 ): number | undefined => {
   const zNonEmptyString = z.string().nonempty();
   const zCoercedInteger = z.coerce.number().int();
@@ -18,7 +18,7 @@ export const coerceStringToInteger = (
 };
 
 export const coerceStringToBoolean = (
-  v: string | undefined
+  v: string | undefined,
 ): boolean | undefined => {
   const zBooleanString = z.union([z.literal('true'), z.literal('false')]);
   const zCoercedBoolean = zBooleanString.transform((value) => value === 'true');
@@ -27,7 +27,7 @@ export const coerceStringToBoolean = (
 };
 
 export const coerceStringToLogLevel = (
-  v: string | undefined
+  v: string | undefined,
 ): pino.Level | undefined => {
   const zLogLevel = stanzaInitOptions.shape.logLevel;
   const parsedResult = zLogLevel.safeParse(v);

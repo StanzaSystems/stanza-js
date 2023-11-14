@@ -34,6 +34,6 @@ export const getEnvInitOptions = (): Partial<StanzaInitOptions> => {
       resultOptions[optionKey] = coerceFn(process.env[envKey]);
       return resultOptions;
     },
-    {}
+    {},
   );
 };

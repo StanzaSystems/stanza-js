@@ -1,6 +1,6 @@
 export function removeCommonHeaders(
   targetHeaders: Headers,
-  headersToRemove: Headers
+  headersToRemove: Headers,
 ): Headers {
   const result = new Headers(targetHeaders);
   headersToRemove.forEach((value, key) => {

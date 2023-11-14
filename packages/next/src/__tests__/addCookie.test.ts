@@ -19,7 +19,7 @@ describe('addCookie', () => {
 
   it('should append a cookie if more than one already exists', () => {
     expect(
-      addCookie(['existingCookie1', 'existingCookie2'], 'testCookie')
+      addCookie(['existingCookie1', 'existingCookie2'], 'testCookie'),
     ).toEqual(['existingCookie1', 'existingCookie2', 'testCookie']);
   });
 

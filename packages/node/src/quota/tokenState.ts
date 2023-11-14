@@ -17,6 +17,6 @@ export interface TokenState {
   popToken: (query?: TokenQuery) => StanzaTokenLease | null;
   onTokensAvailableRatioChange: (
     expiresOffset: number,
-    listener: AvailableRatioListenerFn
+    listener: AvailableRatioListenerFn,
   ) => void;
 }

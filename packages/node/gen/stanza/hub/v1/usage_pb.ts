@@ -257,28 +257,28 @@ export class GetUsageRequest extends Message<GetUsageRequest> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GetUsageRequest {
     return new GetUsageRequest().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetUsageRequest {
     return new GetUsageRequest().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetUsageRequest {
     return new GetUsageRequest().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: GetUsageRequest | PlainMessage<GetUsageRequest> | undefined,
-    b: GetUsageRequest | PlainMessage<GetUsageRequest> | undefined
+    b: GetUsageRequest | PlainMessage<GetUsageRequest> | undefined,
   ): boolean {
     return proto3.util.equals(GetUsageRequest, a, b);
   }
@@ -312,28 +312,28 @@ export class GetUsageResponse extends Message<GetUsageResponse> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GetUsageResponse {
     return new GetUsageResponse().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetUsageResponse {
     return new GetUsageResponse().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetUsageResponse {
     return new GetUsageResponse().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: GetUsageResponse | PlainMessage<GetUsageResponse> | undefined,
-    b: GetUsageResponse | PlainMessage<GetUsageResponse> | undefined
+    b: GetUsageResponse | PlainMessage<GetUsageResponse> | undefined,
   ): boolean {
     return proto3.util.equals(GetUsageResponse, a, b);
   }
@@ -423,28 +423,28 @@ export class UsageTimeseries extends Message<UsageTimeseries> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): UsageTimeseries {
     return new UsageTimeseries().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): UsageTimeseries {
     return new UsageTimeseries().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): UsageTimeseries {
     return new UsageTimeseries().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: UsageTimeseries | PlainMessage<UsageTimeseries> | undefined,
-    b: UsageTimeseries | PlainMessage<UsageTimeseries> | undefined
+    b: UsageTimeseries | PlainMessage<UsageTimeseries> | undefined,
   ): boolean {
     return proto3.util.equals(UsageTimeseries, a, b);
   }
@@ -560,28 +560,28 @@ export class UsageTSDataPoint extends Message<UsageTSDataPoint> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): UsageTSDataPoint {
     return new UsageTSDataPoint().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): UsageTSDataPoint {
     return new UsageTSDataPoint().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): UsageTSDataPoint {
     return new UsageTSDataPoint().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: UsageTSDataPoint | PlainMessage<UsageTSDataPoint> | undefined,
-    b: UsageTSDataPoint | PlainMessage<UsageTSDataPoint> | undefined
+    b: UsageTSDataPoint | PlainMessage<UsageTSDataPoint> | undefined,
   ): boolean {
     return proto3.util.equals(UsageTSDataPoint, a, b);
   }

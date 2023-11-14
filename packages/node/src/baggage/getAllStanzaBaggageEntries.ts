@@ -8,6 +8,6 @@ export const getAllStanzaBaggageEntries = (baggage: Baggage) => {
     key,
     entry: getStanzaBaggageEntry(key, baggage),
   })).filter((v): v is { key: StanzaKey; entry: BaggageEntry } =>
-    isTruthy(v.entry)
+    isTruthy(v.entry),
   );
 };

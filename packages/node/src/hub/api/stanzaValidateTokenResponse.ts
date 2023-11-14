@@ -6,7 +6,7 @@ export const stanzaValidateTokenResponse = z.object({
     z.object({
       valid: z.boolean(),
       token: z.string(),
-    })
+    }),
   ),
 });
 

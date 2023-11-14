@@ -2,7 +2,7 @@ import { type Context } from '@opentelemetry/api';
 import { stanzaGuardContextKey } from './stanzaGuardContextKey';
 
 export const getStanzaGuardFromContext = (
-  context: Context
+  context: Context,
 ): string | undefined => {
   const contextValue = context.getValue(stanzaGuardContextKey);
 

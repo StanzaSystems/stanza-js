@@ -10,7 +10,7 @@ describe('deletePriorityBoostFromContextBaggage', () => {
         'uberctx-stz-boost': { value: '1' },
         'ot-baggage-stz-boost': { value: '1' },
         foo: { value: 'bar' },
-      })
+      }),
     );
 
     expect(deletePriorityBoostFromContextBaggage(context)).toHaveBaggage({

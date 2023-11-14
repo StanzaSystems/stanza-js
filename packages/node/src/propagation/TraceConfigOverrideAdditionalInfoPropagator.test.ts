@@ -146,7 +146,7 @@ beforeEach(async () => {
 describe('TraceConfigOverrideAdditionalInfoPropagator', () => {
   it('should create TraceConfigOverrideAdditionalInfoPropagator', () => {
     expect(
-      () => new TraceConfigOverrideAdditionalInfoPropagator()
+      () => new TraceConfigOverrideAdditionalInfoPropagator(),
     ).not.toThrow();
   });
 
@@ -166,14 +166,14 @@ describe('TraceConfigOverrideAdditionalInfoPropagator', () => {
         {
           'test-header': 'test-value',
         },
-        recordGetter
+        recordGetter,
       );
       expect(getTraceConfigOverrideAdditionalInfo(newContext)).toEqual({});
     });
 
     it('should return only used headers necessary for trace config overrides if service config is initialized', () => {
       getServiceConfigMock.mockImplementationOnce(
-        () => mockServiceConfigWithOverrides
+        () => mockServiceConfigWithOverrides,
       );
 
       const propagator = new TraceConfigOverrideAdditionalInfoPropagator();
@@ -186,7 +186,7 @@ describe('TraceConfigOverrideAdditionalInfoPropagator', () => {
           'another-test-header-override': 'another-test-value',
           'yet-another-test-header-override': 'yet-another-test-value',
         },
-        recordGetter
+        recordGetter,
       );
       expect(getTraceConfigOverrideAdditionalInfo(newContext)).toEqual({
         headers: {
@@ -199,7 +199,7 @@ describe('TraceConfigOverrideAdditionalInfoPropagator', () => {
 
     it('should return only used headers necessary for trace config overrides after service config is updated', () => {
       getServiceConfigMock.mockImplementationOnce(
-        () => mockServiceConfigWithOverrides
+        () => mockServiceConfigWithOverrides,
       );
 
       const propagator = new TraceConfigOverrideAdditionalInfoPropagator();
@@ -216,7 +216,7 @@ describe('TraceConfigOverrideAdditionalInfoPropagator', () => {
           'second-yet-another-test-header-override':
             'second-yet-another-test-value',
         },
-        recordGetter
+        recordGetter,
       );
       expect(getTraceConfigOverrideAdditionalInfo(newContext)).toEqual({
         headers: {
@@ -243,7 +243,7 @@ describe('TraceConfigOverrideAdditionalInfoPropagator', () => {
           'second-yet-another-test-header-override':
             'second-yet-another-test-value',
         },
-        recordGetter
+        recordGetter,
       );
       expect(getTraceConfigOverrideAdditionalInfo(secondContext)).toEqual({
         headers: {
@@ -259,7 +259,7 @@ describe('TraceConfigOverrideAdditionalInfoPropagator', () => {
 
     it('should return headers that are used in trace config overrides that do not exist in carrier', () => {
       getServiceConfigMock.mockImplementationOnce(
-        () => mockServiceConfigWithOverrides
+        () => mockServiceConfigWithOverrides,
       );
 
       const propagator = new TraceConfigOverrideAdditionalInfoPropagator();
@@ -270,7 +270,7 @@ describe('TraceConfigOverrideAdditionalInfoPropagator', () => {
           'test-header': 'test-value',
           'yet-another-test-header-override': 'yet-another-test-value',
         },
-        recordGetter
+        recordGetter,
       );
       expect(getTraceConfigOverrideAdditionalInfo(newContext)).toEqual({
         headers: {
@@ -289,7 +289,7 @@ describe('TraceConfigOverrideAdditionalInfoPropagator', () => {
 
     it('should return empty fields if service config has no overrides', () => {
       getServiceConfigMock.mockImplementationOnce(
-        () => mockServiceConfigWithoutOverrides
+        () => mockServiceConfigWithoutOverrides,
       );
 
       const propagator = new TraceConfigOverrideAdditionalInfoPropagator();
@@ -299,7 +299,7 @@ describe('TraceConfigOverrideAdditionalInfoPropagator', () => {
 
     it('should return headers that are used in trace config overrides', () => {
       getServiceConfigMock.mockImplementationOnce(
-        () => mockServiceConfigWithOverrides
+        () => mockServiceConfigWithOverrides,
       );
 
       const propagator = new TraceConfigOverrideAdditionalInfoPropagator();
@@ -313,7 +313,7 @@ describe('TraceConfigOverrideAdditionalInfoPropagator', () => {
 
     it('should return headers that are used in trace config overrides after the service config is updated', () => {
       getServiceConfigMock.mockImplementationOnce(
-        () => mockServiceConfigWithOverrides
+        () => mockServiceConfigWithOverrides,
       );
 
       const propagator = new TraceConfigOverrideAdditionalInfoPropagator();

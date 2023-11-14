@@ -38,7 +38,7 @@ export function stanzaSession(options: Partial<StanzaSessionOptions> = {}) {
   };
 
   async function getEnablementNumber(
-    req: Pick<NextApiRequest, 'cookies' | 'headers'>
+    req: Pick<NextApiRequest, 'cookies' | 'headers'>,
   ): Promise<number | undefined> {
     const xStanzaEnablementNumber =
       req.headers[X_STANZA_ENABLEMENT_NUMBER_HEADER];
@@ -53,8 +53,8 @@ export function stanzaSession(options: Partial<StanzaSessionOptions> = {}) {
   function withStanzaSession(
     handler: (
       req: NextApiRequestWithStanzaSession,
-      res: NextApiResponse
-    ) => unknown | Promise<unknown>
+      res: NextApiResponse,
+    ) => unknown | Promise<unknown>,
   ): NextApiHandler {
     return async (req, res) => {
       const enablementNumberMaybe = await getEnablementNumber(req);
@@ -75,7 +75,7 @@ export function stanzaSession(options: Partial<StanzaSessionOptions> = {}) {
   }
 
   function withStanzaSessionMiddleware(
-    nextMiddleware?: NextMiddleware
+    nextMiddleware?: NextMiddleware,
   ): NextMiddleware {
     return async (...args) => {
       const [request] = args;
@@ -88,7 +88,7 @@ export function stanzaSession(options: Partial<StanzaSessionOptions> = {}) {
       const enablementNumberStringValue = enablementNumber.toString();
       headers.set(
         X_STANZA_ENABLEMENT_NUMBER_HEADER,
-        enablementNumberStringValue
+        enablementNumberStringValue,
       );
 
       const nextMiddlewareResult = await nextMiddleware?.(...args);
@@ -113,13 +113,13 @@ export function stanzaSession(options: Partial<StanzaSessionOptions> = {}) {
                   nextMiddlewareResult.headers,
                   removeCommonHeaders(
                     stanzaResponse.headers,
-                    NextResponse.next().headers
-                  )
+                    NextResponse.next().headers,
+                  ),
                 ),
                 status: nextMiddlewareResult?.status ?? stanzaResponse.status,
                 statusText:
                   nextMiddlewareResult?.statusText ?? stanzaResponse.statusText,
-              }
+              },
             );
 
       if (isNaN(enablementNumberMaybe)) {
@@ -139,7 +139,7 @@ export function stanzaSession(options: Partial<StanzaSessionOptions> = {}) {
         sameSite: 'lax',
         secure: true,
         httpOnly: true,
-      }
+      },
     );
 
     const existingSetCookieHeader = res.getHeader('set-cookie');

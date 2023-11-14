@@ -16,7 +16,7 @@ interface ApiFeatureStateCache {
 const browserFeaturesCache: ApiFeatureStateCache = new Map();
 
 export async function fetchApiFeaturesStates(
-  features: string[]
+  features: string[],
 ): Promise<ApiFeatureState[]> {
   const { stanzaApiKey } = getConfig();
   const { url, environment } = getConfig();

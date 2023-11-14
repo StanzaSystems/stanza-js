@@ -23,13 +23,13 @@ export const getQuota = backoffGetQuota(
       const result = await withTimeout(
         STANZA_REQUEST_TIMEOUT,
         'Check quota timed out',
-        getQuotaInternal(options)
+        getQuotaInternal(options),
       );
       eventBus
         .emit(
           result !== null
             ? events.internal.quota.succeeded
-            : events.internal.quota.failed
+            : events.internal.quota.failed,
         )
         .catch(() => {});
       return result;
@@ -37,31 +37,31 @@ export const getQuota = backoffGetQuota(
       eventBus.emit(events.internal.quota.failed).catch(() => {});
       logger.warn(
         'Failed to fetch the token: %o',
-        e instanceof Error ? e.message : e
+        e instanceof Error ? e.message : e,
       );
       throw e;
     }
-  }
+  },
 );
 
 const getQuotaInternal = async (
-  options: GetQuotaOptions
+  options: GetQuotaOptions,
 ): Promise<StanzaToken | null> => {
   const incomingQuotaTags = options.tags ?? [];
   const guardConfig = getGuardConfig(options.guard);
   const validGuardQuotaTags = guardConfig?.config.quotaTags ?? [];
   const validQuotaTags = incomingQuotaTags.filter((incomingTag) =>
-    validGuardQuotaTags.includes(incomingTag.key)
+    validGuardQuotaTags.includes(incomingTag.key),
   );
   const invalidQuotaTags = incomingQuotaTags.filter(
-    (incomingTag) => !validGuardQuotaTags.includes(incomingTag.key)
+    (incomingTag) => !validGuardQuotaTags.includes(incomingTag.key),
   );
 
   if (invalidQuotaTags.length > 0) {
     logger.info(
       "Unused tags in guard '%s'. Tags: %o",
       options.guard,
-      invalidQuotaTags.map((t) => t.key)
+      invalidQuotaTags.map((t) => t.key),
     );
   }
 

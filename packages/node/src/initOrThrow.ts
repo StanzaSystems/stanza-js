@@ -29,7 +29,7 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
       .map(({ key, value }) => `- ${key}: ${value.description}`)
       .join('\n');
     throw new TypeError(
-      `Provided options are invalid. Please provide an object with the following properties:\n${expectedFields}`
+      `Provided options are invalid. Please provide an object with the following properties:\n${expectedFields}`,
     );
   }
   const initOptions = parseResult.data;
@@ -64,7 +64,7 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
           clientId,
           hubUrl: initOptions.hubUrl,
           apiKey: initOptions.apiKey,
-        })
+        }),
   );
 
   startPollingServiceConfig(clientId);

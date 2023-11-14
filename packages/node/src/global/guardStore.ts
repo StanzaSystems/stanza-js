@@ -1,5 +1,5 @@
 const STANZA_GUARD_STORE_SYMBOL = Symbol.for(
-  '[Stanza SDK Internal] Guard store'
+  '[Stanza SDK Internal] Guard store',
 );
 
 interface Guard {

@@ -20,7 +20,7 @@ const ResultPage: NextPage = () => {
       ? // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `/api/checkout_sessions/${router.query.session_id}`
       : null,
-    fetchGetJSON
+    fetchGetJSON,
   );
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const ResultPage: NextPage = () => {
   if (error) return <div>failed to load</div>;
 
   return (
-    <div className='page-container'>
+    <div className="page-container">
       <h1>Checkout Payment Result</h1>
       <h2>Status: {data?.payment_intent?.status ?? 'loading...'}</h2>
       <h3>CheckoutSession response:</h3>

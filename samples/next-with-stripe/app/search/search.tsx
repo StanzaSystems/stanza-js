@@ -14,7 +14,7 @@ const SearchPageComponent = () => {
     (searchValue: string) => {
       router.push(`search?text=${searchValue}`);
     },
-    [router]
+    [router],
   );
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -31,7 +31,7 @@ const SearchPageComponent = () => {
   return (
     <>
       <SearchBar onSearch={handleSearch} />
-      <h2 className='section-title'>Search results for: {searchString}</h2>
+      <h2 className="section-title">Search results for: {searchString}</h2>
       <Products products={products} />
     </>
   );

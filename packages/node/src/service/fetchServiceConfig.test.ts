@@ -22,7 +22,7 @@ vi.mock('../global/serviceConfig', () => {
       updateServiceConfigMock(...args)) satisfies UpdateServiceConfig,
     isServiceConfigInitialized: ((...args) =>
       isServiceConfigInitializedMock(
-        ...args
+        ...args,
       )) satisfies IsServiceConfigInitialized,
   };
 });
@@ -158,7 +158,7 @@ describe('fetchServiceConfig', () => {
     deferred.reject(new Error('kaboom'));
 
     await expect(fetchServiceConfigPromise).rejects.toThrow(
-      new Error('kaboom')
+      new Error('kaboom'),
     );
 
     expect(updateServiceConfigMock).not.toHaveBeenCalled();

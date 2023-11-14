@@ -21,7 +21,7 @@ const CartSummary = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   const handleCheckout: React.FormEventHandler<HTMLFormElement> = async (
-    event
+    event,
   ) => {
     event.preventDefault();
     setLoading(true);
@@ -30,7 +30,7 @@ const CartSummary = () => {
     console.dir(cartDetails);
     const response = await fetchPostJSON(
       '/api/checkout_sessions/cart',
-      cartDetails
+      cartDetails,
     );
 
     if (response.statusCode > 399) {
@@ -44,10 +44,7 @@ const CartSummary = () => {
   };
 
   return (
-    <form
-      onSubmit={handleCheckout}
-      style={{ padding: '16px' }}
-    >
+    <form onSubmit={handleCheckout} style={{ padding: '16px' }}>
       <h2>Cart summary</h2>
       {errorMessage.length > 0 ? (
         <p style={{ color: 'red' }}>Error: {errorMessage}</p>
@@ -79,15 +76,15 @@ const CartSummary = () => {
       {/* Redirects the user to Stripe */}
       <StripeTestCards />
       <button
-        className='cart-style-background'
-        type='submit'
+        className="cart-style-background"
+        type="submit"
         disabled={cartEmpty || loading}
       >
         Checkout
       </button>
       <button
-        className='cart-style-background'
-        type='button'
+        className="cart-style-background"
+        type="button"
         onClick={() => {
           clearCart();
         }}

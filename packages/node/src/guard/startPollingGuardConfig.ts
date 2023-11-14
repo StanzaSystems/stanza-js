@@ -11,6 +11,6 @@ export const startPollingGuardConfig = (guard: string) => {
         guard,
         lastVersionSeen: prevResult?.version,
       }),
-    { pollInterval: 15000 }
+    { pollInterval: 15000 },
   );
 };

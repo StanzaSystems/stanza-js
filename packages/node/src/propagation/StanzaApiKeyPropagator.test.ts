@@ -30,9 +30,9 @@ describe('StanzaApiKeyPropagator', function () {
             {
               'x-stanza-key': 'aToken',
             },
-            recordGetter
+            recordGetter,
           )
-          .getValue(stanzaApiKeyContextKey)
+          .getValue(stanzaApiKeyContextKey),
       ).toEqual('aToken');
     });
 
@@ -45,9 +45,9 @@ describe('StanzaApiKeyPropagator', function () {
             {
               get: () => ['aToken'],
               keys: () => [],
-            }
+            },
           )
-          .getValue(stanzaApiKeyContextKey)
+          .getValue(stanzaApiKeyContextKey),
       ).toEqual('aToken');
     });
 
@@ -60,9 +60,9 @@ describe('StanzaApiKeyPropagator', function () {
             {
               get: () => [],
               keys: () => [],
-            }
+            },
           )
-          .getValue(stanzaApiKeyContextKey)
+          .getValue(stanzaApiKeyContextKey),
       ).toBeUndefined();
     });
 
@@ -70,7 +70,7 @@ describe('StanzaApiKeyPropagator', function () {
       expect(
         propagator
           .extract(ROOT_CONTEXT, {}, recordGetter)
-          .getValue(stanzaApiKeyContextKey)
+          .getValue(stanzaApiKeyContextKey),
       ).toBeUndefined();
     });
   });
@@ -79,7 +79,7 @@ describe('StanzaApiKeyPropagator', function () {
     it('should inject Stanza key into the carrier', function () {
       const initialContext = ROOT_CONTEXT.setValue(
         stanzaApiKeyContextKey,
-        'aToken'
+        'aToken',
       );
       const carrier: Record<string, string> = {};
 

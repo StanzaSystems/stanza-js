@@ -9,5 +9,5 @@ export type HubRequest = <T extends ZodType>(
     searchParams?: Record<string, string | string[] | undefined>;
     body?: unknown;
   },
-  validateRequest: T
+  validateRequest: T,
 ) => Promise<z.infer<T> | null>;

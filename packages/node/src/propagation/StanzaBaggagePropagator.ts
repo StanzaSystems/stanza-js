@@ -21,7 +21,7 @@ export class StanzaBaggagePropagator extends W3CBaggagePropagator {
   override inject(
     context: Context,
     carrier: unknown,
-    setter: TextMapSetter
+    setter: TextMapSetter,
   ): void {
     const currentPriorityBoost = getPriorityBoostFromContext(context);
     pipe(
@@ -30,14 +30,14 @@ export class StanzaBaggagePropagator extends W3CBaggagePropagator {
       enrichContextWithStanzaBaggage,
       (ctx: Context) => {
         super.inject(ctx, carrier, setter);
-      }
+      },
     )(context);
   }
 
   override extract(
     context: Context,
     carrier: unknown,
-    getter: TextMapGetter
+    getter: TextMapGetter,
   ): Context {
     return pipe(
       (ctx: Context): Context => super.extract(ctx, carrier, getter),
@@ -47,7 +47,7 @@ export class StanzaBaggagePropagator extends W3CBaggagePropagator {
           getPriorityBoostFromContextBaggage(contextWithBaggage);
         return addPriorityBoostToContext(priorityBoost)(contextWithBaggage);
       },
-      deletePriorityBoostFromContextBaggage
+      deletePriorityBoostFromContextBaggage,
     )(context);
   }
 }

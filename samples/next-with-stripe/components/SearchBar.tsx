@@ -17,7 +17,7 @@ const SearchBar = ({
     (evt: ChangeEvent<HTMLInputElement>) => {
       setSearchValue(evt.target.value ?? '');
     },
-    []
+    [],
   );
 
   const handleSearch = useCallback(
@@ -26,7 +26,7 @@ const SearchBar = ({
       setSearchValue('');
       onSearch(searchValue);
     },
-    [searchValue, onSearch]
+    [searchValue, onSearch],
   );
 
   return (
@@ -35,16 +35,16 @@ const SearchBar = ({
       onSubmit={(evt) => {
         handleSearch(evt, searchValue);
       }}
-      name='searchForm'
-      autoComplete='off'
+      name="searchForm"
+      autoComplete="off"
     >
-      <WithStanzaFeature name='search'>
+      <WithStanzaFeature name="search">
         {({ disabled, message }) => (
           <>
             <input
               style={{ flexBasis: '75%' }}
-              type='text'
-              name='searchProducts'
+              type="text"
+              name="searchProducts"
               value={searchValue}
               onInput={updateSearchValue}
               disabled={disabled}
@@ -52,7 +52,7 @@ const SearchBar = ({
             />
             <button
               style={{ flexBasis: '25%' }}
-              className='elements-style-background'
+              className="elements-style-background"
               disabled={disabled}
             >
               Search

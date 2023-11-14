@@ -57,7 +57,7 @@ export const createRestHubService = ({
               },
               method: 'POST',
             },
-            serviceConfigResponse
+            serviceConfigResponse,
           );
 
           if (
@@ -89,7 +89,7 @@ export const createRestHubService = ({
               body,
               method: 'POST',
             },
-            guardConfigResponse
+            guardConfigResponse,
           );
 
           logger.debug('fetched guard config result: %o', guardConfigResult);
@@ -119,7 +119,7 @@ export const createRestHubService = ({
                 priorityBoost,
               },
             },
-            stanzaTokenResponse
+            stanzaTokenResponse,
           );
         },
         getTokenLease: async ({ guard, feature, priorityBoost, tags }) => {
@@ -138,7 +138,7 @@ export const createRestHubService = ({
                 priorityBoost,
               },
             },
-            stanzaTokenLeaseResponse
+            stanzaTokenLeaseResponse,
           );
           const now = Date.now();
 
@@ -174,7 +174,7 @@ export const createRestHubService = ({
                 ],
               },
             },
-            stanzaValidateTokenResponse
+            stanzaValidateTokenResponse,
           );
           return response?.tokensValid?.[0] ?? null;
         },
@@ -188,7 +188,7 @@ export const createRestHubService = ({
                 environment,
               },
             },
-            stanzaMarkTokensAsConsumedResponse
+            stanzaMarkTokensAsConsumedResponse,
           );
 
           return response !== null ? { ok: true } : null;
@@ -202,7 +202,7 @@ export const createRestHubService = ({
                 environment,
               },
             },
-            stanzaAuthTokenResponse
+            stanzaAuthTokenResponse,
           );
 
           return response !== null ? { token: response.bearerToken } : null;
@@ -221,14 +221,14 @@ export const createRestHubService = ({
                 },
               },
             },
-            stanzaGuardHealthResponse
+            stanzaGuardHealthResponse,
           );
 
           return response !== null
             ? apiHealthToHealth(response.health)
             : Health.Unspecified;
         },
-      }
-    )
+      },
+    ),
   );
 };

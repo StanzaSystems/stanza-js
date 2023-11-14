@@ -398,28 +398,28 @@ export class GuardSelector extends Message<GuardSelector> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GuardSelector {
     return new GuardSelector().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GuardSelector {
     return new GuardSelector().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GuardSelector {
     return new GuardSelector().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: GuardSelector | PlainMessage<GuardSelector> | undefined,
-    b: GuardSelector | PlainMessage<GuardSelector> | undefined
+    b: GuardSelector | PlainMessage<GuardSelector> | undefined,
   ): boolean {
     return proto3.util.equals(GuardSelector, a, b);
   }
@@ -470,28 +470,28 @@ export class FeatureSelector extends Message<FeatureSelector> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): FeatureSelector {
     return new FeatureSelector().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): FeatureSelector {
     return new FeatureSelector().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): FeatureSelector {
     return new FeatureSelector().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: FeatureSelector | PlainMessage<FeatureSelector> | undefined,
-    b: FeatureSelector | PlainMessage<FeatureSelector> | undefined
+    b: FeatureSelector | PlainMessage<FeatureSelector> | undefined,
   ): boolean {
     return proto3.util.equals(FeatureSelector, a, b);
   }
@@ -548,28 +548,28 @@ export class GuardFeatureSelector extends Message<GuardFeatureSelector> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GuardFeatureSelector {
     return new GuardFeatureSelector().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GuardFeatureSelector {
     return new GuardFeatureSelector().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GuardFeatureSelector {
     return new GuardFeatureSelector().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: GuardFeatureSelector | PlainMessage<GuardFeatureSelector> | undefined,
-    b: GuardFeatureSelector | PlainMessage<GuardFeatureSelector> | undefined
+    b: GuardFeatureSelector | PlainMessage<GuardFeatureSelector> | undefined,
   ): boolean {
     return proto3.util.equals(GuardFeatureSelector, a, b);
   }
@@ -636,28 +636,28 @@ export class GuardServiceSelector extends Message<GuardServiceSelector> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GuardServiceSelector {
     return new GuardServiceSelector().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GuardServiceSelector {
     return new GuardServiceSelector().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GuardServiceSelector {
     return new GuardServiceSelector().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: GuardServiceSelector | PlainMessage<GuardServiceSelector> | undefined,
-    b: GuardServiceSelector | PlainMessage<GuardServiceSelector> | undefined
+    b: GuardServiceSelector | PlainMessage<GuardServiceSelector> | undefined,
   ): boolean {
     return proto3.util.equals(GuardServiceSelector, a, b);
   }
@@ -714,28 +714,28 @@ export class ServiceSelector extends Message<ServiceSelector> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): ServiceSelector {
     return new ServiceSelector().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): ServiceSelector {
     return new ServiceSelector().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): ServiceSelector {
     return new ServiceSelector().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: ServiceSelector | PlainMessage<ServiceSelector> | undefined,
-    b: ServiceSelector | PlainMessage<ServiceSelector> | undefined
+    b: ServiceSelector | PlainMessage<ServiceSelector> | undefined,
   ): boolean {
     return proto3.util.equals(ServiceSelector, a, b);
   }
@@ -769,28 +769,28 @@ export class HealthByPriority extends Message<HealthByPriority> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): HealthByPriority {
     return new HealthByPriority().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): HealthByPriority {
     return new HealthByPriority().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): HealthByPriority {
     return new HealthByPriority().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: HealthByPriority | PlainMessage<HealthByPriority> | undefined,
-    b: HealthByPriority | PlainMessage<HealthByPriority> | undefined
+    b: HealthByPriority | PlainMessage<HealthByPriority> | undefined,
   ): boolean {
     return proto3.util.equals(HealthByPriority, a, b);
   }
@@ -824,28 +824,28 @@ export class Tag extends Message<Tag> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): Tag {
     return new Tag().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): Tag {
     return new Tag().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): Tag {
     return new Tag().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: Tag | PlainMessage<Tag> | undefined,
-    b: Tag | PlainMessage<Tag> | undefined
+    b: Tag | PlainMessage<Tag> | undefined,
   ): boolean {
     return proto3.util.equals(Tag, a, b);
   }

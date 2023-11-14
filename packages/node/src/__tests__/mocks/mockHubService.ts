@@ -5,18 +5,18 @@ import { type HubService } from '../../hub/hubService';
 const hubServiceMockMethod = <TMethod extends keyof HubService>(
   implementation: (
     ...args: Parameters<HubService[TMethod]>
-  ) => ReturnType<HubService[TMethod]>
+  ) => ReturnType<HubService[TMethod]>,
 ) =>
   Object.assign(
     vi.fn<Parameters<HubService[TMethod]>, ReturnType<HubService[TMethod]>>(
-      implementation
+      implementation,
     ),
     {
       mockImplementationDeferred: function (
         this: Mock<
           Parameters<HubService[TMethod]>,
           ReturnType<HubService[TMethod]>
-        >
+        >,
       ) {
         const deferred: {
           resolve: (value: Awaited<ReturnType<HubService[TMethod]>>) => void;
@@ -30,13 +30,13 @@ const hubServiceMockMethod = <TMethod extends keyof HubService>(
             (resolve, reject) => {
               deferred.resolve = resolve;
               deferred.reject = reject;
-            }
+            },
           );
         });
 
         return deferred;
       },
-    }
+    },
   );
 
 const getServiceMetadataMock = hubServiceMockMethod<'getServiceMetadata'>(
@@ -45,31 +45,31 @@ const getServiceMetadataMock = hubServiceMockMethod<'getServiceMetadata'>(
     serviceRelease: '1.0.0',
     environment: 'mockEnvironment',
     clientId: 'mockClientId',
-  })
+  }),
 );
 const fetchServiceConfigMock = hubServiceMockMethod<'fetchServiceConfig'>(
-  async () => new Promise<never>(() => {})
+  async () => new Promise<never>(() => {}),
 );
 const fetchGuardConfigMock = hubServiceMockMethod<'fetchGuardConfig'>(
-  async () => new Promise<never>(() => {})
+  async () => new Promise<never>(() => {}),
 );
 const getTokenMock = hubServiceMockMethod<'getToken'>(
-  async () => new Promise<never>(() => {})
+  async () => new Promise<never>(() => {}),
 );
 const getTokenLeaseMock = hubServiceMockMethod<'getTokenLease'>(
-  async () => new Promise<never>(() => {})
+  async () => new Promise<never>(() => {}),
 );
 const validateTokenMock = hubServiceMockMethod<'validateToken'>(
-  async () => new Promise<never>(() => {})
+  async () => new Promise<never>(() => {}),
 );
 const markTokensAsConsumedMock = hubServiceMockMethod<'markTokensAsConsumed'>(
-  async () => new Promise<never>(() => {})
+  async () => new Promise<never>(() => {}),
 );
 const getAuthTokenMock = hubServiceMockMethod<'getAuthToken'>(
-  async () => new Promise<never>(() => {})
+  async () => new Promise<never>(() => {}),
 );
 const getGuardHealthMock = hubServiceMockMethod<'getGuardHealth'>(
-  async () => new Promise<never>(() => {})
+  async () => new Promise<never>(() => {}),
 );
 
 export const mockHubService = {
@@ -93,23 +93,23 @@ export const mockHubService = {
     getAuthTokenMock.mockReset();
 
     fetchServiceConfigMock.mockImplementation(
-      async () => new Promise<never>(() => {})
+      async () => new Promise<never>(() => {}),
     );
     fetchGuardConfigMock.mockImplementation(
-      async () => new Promise<never>(() => {})
+      async () => new Promise<never>(() => {}),
     );
     getTokenMock.mockImplementation(async () => new Promise<never>(() => {}));
     getTokenLeaseMock.mockImplementation(
-      async () => new Promise<never>(() => {})
+      async () => new Promise<never>(() => {}),
     );
     validateTokenMock.mockImplementation(
-      async () => new Promise<never>(() => {})
+      async () => new Promise<never>(() => {}),
     );
     markTokensAsConsumedMock.mockImplementation(
-      async () => new Promise<never>(() => {})
+      async () => new Promise<never>(() => {}),
     );
     getAuthTokenMock.mockImplementation(
-      async () => new Promise<never>(() => {})
+      async () => new Promise<never>(() => {}),
     );
 
     updateHubService(mockHubService);

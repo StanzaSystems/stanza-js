@@ -24,7 +24,7 @@ describe('featureStatesEqual', () => {
       lastRefreshTime: 123,
     };
     expect(featureStatesEqual(featureStateFirst, featureStateSecond)).toBe(
-      true
+      true,
     );
   });
 
@@ -40,7 +40,7 @@ describe('featureStatesEqual', () => {
       lastRefreshTime: 123,
     };
     expect(featureStatesEqual(featureStateFirst, featureStateSecond)).toBe(
-      false
+      false,
     );
   });
 });

@@ -18,10 +18,10 @@ const FeaturedProducts = () => {
   }, []);
   return (
     <WithStanzaFeature
-      name='featured'
+      name="featured"
       fallback={({ message }) => <p style={{ color: 'red' }}>{message}</p>}
     >
-      <h2 className='section-title'>Stanza&apos;s Kid Picks!</h2>
+      <h2 className="section-title">Stanza&apos;s Kid Picks!</h2>
       <Products products={featuredProducts} />
     </WithStanzaFeature>
   );

@@ -11,7 +11,7 @@ import { isTruthy } from '../utils/isTruthy';
 import { uniq } from 'ramda';
 
 const STANZA_TRACE_CONFIG_OVERRIDE_ADDITIONAL_INFO_KEY_SYMBOL = Symbol.for(
-  'TraceConfigOverrideAdditionalInfo'
+  'TraceConfigOverrideAdditionalInfo',
 );
 
 interface StanzaTraceConfigOverrideAdditionalInfoKeyGlobal {
@@ -40,10 +40,10 @@ type TraceConfigOverrideAdditionalInfo = z.infer<
 >;
 
 export const getTraceConfigOverrideAdditionalInfo = (
-  context: Context
+  context: Context,
 ): TraceConfigOverrideAdditionalInfo => {
   const contextValue = context.getValue(
-    stanzaTraceConfigOverrideAdditionalInfoKey
+    stanzaTraceConfigOverrideAdditionalInfoKey,
   );
   const parsedValue = traceConfigOverrideAdditionalInfo.safeParse(contextValue);
 
@@ -70,9 +70,9 @@ export class TraceConfigOverrideAdditionalInfoPropagator
               (attr) =>
                 /^http.(client|server).header.(?<header>[\w_]+)$/
                   .exec(attr)
-                  ?.groups?.header?.replace(/_/g, '-')
+                  ?.groups?.header?.replace(/_/g, '-'),
             )
-            .filter(isTruthy)
+            .filter(isTruthy),
         ),
       };
     },
@@ -92,7 +92,7 @@ export class TraceConfigOverrideAdditionalInfoPropagator
           resultHeaders[key] = getter.get(carrier, key);
           return resultHeaders;
         },
-        undefined
+        undefined,
       );
     return context.setValue(stanzaTraceConfigOverrideAdditionalInfoKey, {
       headers,

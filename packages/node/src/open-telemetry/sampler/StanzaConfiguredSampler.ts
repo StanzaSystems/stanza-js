@@ -16,7 +16,7 @@ import { getTraceConfigOverrideAdditionalInfo } from '../../propagation/TraceCon
 export class StanzaConfiguredSampler implements Sampler {
   private readonly defaultSampler: Sampler = new ParentBasedSampler({
     root: new TraceIdRatioBasedSampler(
-      this.serviceConfig.traceConfig.sampleRateDefault
+      this.serviceConfig.traceConfig.sampleRateDefault,
     ),
   });
 
@@ -30,7 +30,7 @@ export class StanzaConfiguredSampler implements Sampler {
     spanName: string,
     spanKind: SpanKind,
     attributes: Attributes,
-    links: Link[]
+    links: Link[],
   ): SamplingResult {
     return this.chooseSampler(
       context,
@@ -38,7 +38,7 @@ export class StanzaConfiguredSampler implements Sampler {
       spanName,
       spanKind,
       attributes,
-      links
+      links,
     ).shouldSample(context, traceId, spanName, spanKind, attributes, links);
   }
 
@@ -48,12 +48,13 @@ export class StanzaConfiguredSampler implements Sampler {
     _spanName: string,
     spanKind: SpanKind,
     attributes: Attributes,
-    _links: Link[]
+    _links: Link[],
   ) {
     const { headers = {} } = getTraceConfigOverrideAdditionalInfo(context);
 
     const normalizedHeaders = Object.entries(headers).map(
-      ([name, value]) => [name.toLowerCase().replace(/-/g, '_'), value] as const
+      ([name, value]) =>
+        [name.toLowerCase().replace(/-/g, '_'), value] as const,
     );
 
     const allAttributes = {
@@ -73,7 +74,7 @@ export class StanzaConfiguredSampler implements Sampler {
         return override.spanSelectors.every(({ otelAttribute, value }) => {
           return allAttributes[otelAttribute] === value;
         });
-      }
+      },
     );
 
     if (matchingOverride !== undefined) {

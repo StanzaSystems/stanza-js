@@ -56,7 +56,7 @@ describe('nextRequestErrorHandler', () => {
     });
 
     await expect(wrappedHandler(mockReq, mockRes)).rejects.toThrow(
-      new Error('NonStanzaError')
+      new Error('NonStanzaError'),
     );
   });
 });

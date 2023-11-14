@@ -1,7 +1,7 @@
 import { type HubService } from '../hubService';
-import { createPromiseClient } from '@connectrpc/connect';
+import { createPromiseClient } from '@bufbuild/connect';
 import { ConfigService } from '../../../gen/stanza/hub/v1/config_connect';
-import { createGrpcTransport } from '@connectrpc/connect-node';
+import { createGrpcTransport } from '@bufbuild/connect-node';
 import { type ServiceConfig } from '../model';
 import { serviceConfigResponse } from '../api/serviceConfigResponse';
 import { guardConfigResponse } from '../api/guardConfigResponse';
@@ -50,7 +50,7 @@ export const createGrpcHubService = ({
         req.header.set('X-Stanza-Key', apiKey);
         req.header.set(
           'User-Agent',
-          createUserAgentHeader({ serviceName, serviceRelease })
+          createUserAgentHeader({ serviceName, serviceRelease }),
         );
         return next(req);
       },
@@ -85,7 +85,7 @@ export const createGrpcHubService = ({
                 versionSeen: options?.lastVersionSeen,
                 clientId: options?.clientId,
               }),
-            serviceConfigResponse
+            serviceConfigResponse,
           );
 
           if (data === null || !data.configDataSent) {
@@ -109,7 +109,7 @@ export const createGrpcHubService = ({
                 },
                 versionSeen: options.lastVersionSeen,
               }),
-            guardConfigResponse
+            guardConfigResponse,
           );
 
           if (data === null || !data.configDataSent) {
@@ -134,7 +134,7 @@ export const createGrpcHubService = ({
                   tags: options.tags,
                 },
               }),
-            stanzaTokenResponse
+            stanzaTokenResponse,
           );
         },
         getTokenLease: async (options) => {
@@ -150,7 +150,7 @@ export const createGrpcHubService = ({
                   tags: options.tags,
                 },
               }),
-            stanzaTokenLeaseResponse
+            stanzaTokenLeaseResponse,
           );
 
           if (data === null) {
@@ -187,7 +187,7 @@ export const createGrpcHubService = ({
                   },
                 ],
               }),
-            stanzaValidateTokenResponse
+            stanzaValidateTokenResponse,
           );
 
           return data?.tokensValid?.[0] ?? null;
@@ -199,7 +199,7 @@ export const createGrpcHubService = ({
                 environment,
                 tokens: options.tokens,
               }),
-            stanzaMarkTokensAsConsumedResponse
+            stanzaMarkTokensAsConsumedResponse,
           );
 
           return data === null ? null : { ok: true };
@@ -210,7 +210,7 @@ export const createGrpcHubService = ({
               authClient.getBearerToken({
                 environment,
               }),
-            stanzaAuthTokenResponse
+            stanzaAuthTokenResponse,
           );
 
           return data === null ? null : { token: data.bearerToken };
@@ -226,26 +226,26 @@ export const createGrpcHubService = ({
                   tags: options.tags,
                 },
               }),
-            stanzaGuardHealthResponse
+            stanzaGuardHealthResponse,
           );
 
           return data !== null
             ? apiHealthToHealth(data.health)
             : Health.Unspecified;
         },
-      }
-    )
+      },
+    ),
   );
 };
 
 const grpcRequest = async <T extends ZodType>(
   req: () => Promise<unknown>,
-  validateResult: T
+  validateResult: T,
 ): Promise<z.infer<T> | null> => {
   const response = await withTimeout(
     STANZA_REQUEST_TIMEOUT,
     'Hub request timed out',
-    req()
+    req(),
   );
 
   const parsed = validateResult.safeParse(response);

@@ -12,7 +12,7 @@ export class StanzaSpanExporter extends OTLPTraceExporter {
   constructor(
     traceConfig: { collectorUrl: string },
     serviceName: string,
-    serviceRelease: string
+    serviceRelease: string,
   ) {
     const metadata = new Metadata();
     let authToken = getStanzaAuthToken();
@@ -21,7 +21,7 @@ export class StanzaSpanExporter extends OTLPTraceExporter {
     }
     metadata.set(
       'User-Agent',
-      createUserAgentHeader({ serviceName, serviceRelease })
+      createUserAgentHeader({ serviceName, serviceRelease }),
     );
     super({
       url: traceConfig.collectorUrl,

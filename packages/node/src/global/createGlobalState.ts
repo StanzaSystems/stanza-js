@@ -18,12 +18,12 @@ const globalStatesRecord = createGlobal(
       changeListeners: Array<ChangeListener<any>>;
       state: GlobalState<any>;
     }
-  > => ({})
+  > => ({}),
 );
 
 export const createGlobalState = <S extends string | symbol, T>(
   s: S,
-  createFn: () => T
+  createFn: () => T,
 ): GlobalState<T> => {
   // TODO remove duplication
   type WithGlobalT = Record<S, T | undefined>;

@@ -5,7 +5,7 @@ import { logger } from '../global/logger';
 
 const emitTimes = async (
   count: number,
-  emitFn: () => Promise<unknown>
+  emitFn: () => Promise<unknown>,
 ): Promise<void> => {
   for (let i = 0; i < count; i++) {
     await emitFn();
@@ -13,12 +13,12 @@ const emitTimes = async (
 };
 const emitFailures = async (count: number): Promise<void> => {
   await emitTimes(count, async () =>
-    eventBus.emit(events.internal.quota.failed)
+    eventBus.emit(events.internal.quota.failed),
   );
 };
 const emitSuccesses = async (count: number): Promise<void> => {
   await emitTimes(count, async () =>
-    eventBus.emit(events.internal.quota.succeeded)
+    eventBus.emit(events.internal.quota.succeeded),
   );
 };
 
@@ -757,7 +757,7 @@ describe('backoffGetQuota', () => {
       await vi.advanceTimersByTimeAsync(1000);
       expect(errorSpy).toHaveBeenCalledOnce();
       expect(errorSpy).toHaveBeenCalledWith(
-        'Failed to get more than 10% of get quota requests. Failing open'
+        'Failed to get more than 10% of get quota requests. Failing open',
       );
     });
 
@@ -771,7 +771,7 @@ describe('backoffGetQuota', () => {
 
       expect(errorSpy).toHaveBeenCalledOnce();
       expect(errorSpy).toHaveBeenCalledWith(
-        'Failed to get more than 10% of get quota requests. Failing open'
+        'Failed to get more than 10% of get quota requests. Failing open',
       );
 
       errorSpy.mockClear();
@@ -788,7 +788,7 @@ describe('backoffGetQuota', () => {
 
       expect(errorSpy).toHaveBeenCalledOnce();
       expect(errorSpy).toHaveBeenCalledWith(
-        'Failed to get more than 10% of get quota requests. Failing open'
+        'Failed to get more than 10% of get quota requests. Failing open',
       );
     });
 
@@ -809,7 +809,7 @@ describe('backoffGetQuota', () => {
       expect(infoSpy).toHaveBeenCalledOnce();
       expect(infoSpy).toHaveBeenCalledWith(
         'Enabled %d%% of get quota requests',
-        1
+        1,
       );
 
       infoSpy.mockClear();
@@ -821,7 +821,7 @@ describe('backoffGetQuota', () => {
       expect(infoSpy).toHaveBeenCalledOnce();
       expect(infoSpy).toHaveBeenCalledWith(
         'Enabled %d%% of get quota requests',
-        5
+        5,
       );
 
       infoSpy.mockClear();
@@ -833,7 +833,7 @@ describe('backoffGetQuota', () => {
       expect(infoSpy).toHaveBeenCalledOnce();
       expect(infoSpy).toHaveBeenCalledWith(
         'Enabled %d%% of get quota requests',
-        10
+        10,
       );
 
       infoSpy.mockClear();
@@ -845,7 +845,7 @@ describe('backoffGetQuota', () => {
       expect(infoSpy).toHaveBeenCalledOnce();
       expect(infoSpy).toHaveBeenCalledWith(
         'Enabled %d%% of get quota requests',
-        25
+        25,
       );
 
       infoSpy.mockClear();
@@ -857,7 +857,7 @@ describe('backoffGetQuota', () => {
       expect(infoSpy).toHaveBeenCalledOnce();
       expect(infoSpy).toHaveBeenCalledWith(
         'Enabled %d%% of get quota requests',
-        50
+        50,
       );
 
       infoSpy.mockClear();
@@ -869,7 +869,7 @@ describe('backoffGetQuota', () => {
       expect(infoSpy).toHaveBeenCalledOnce();
       expect(infoSpy).toHaveBeenCalledWith(
         'Enabled %d%% of get quota requests',
-        100
+        100,
       );
 
       infoSpy.mockClear();
@@ -911,7 +911,7 @@ describe('backoffGetQuota', () => {
 
       expect(infoSpy).toHaveBeenCalledWith(
         'Enabled %d%% of get quota requests',
-        100
+        100,
       );
 
       infoSpy.mockClear();

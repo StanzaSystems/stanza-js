@@ -20,7 +20,7 @@ export type StanzaGuardHealthResponse = z.infer<
 >;
 
 export const apiHealthToHealth = (
-  apiHealth: z.infer<typeof zHealth>
+  apiHealth: z.infer<typeof zHealth>,
 ): Health => {
   switch (apiHealth) {
     case 'HEALTH_UNSPECIFIED':

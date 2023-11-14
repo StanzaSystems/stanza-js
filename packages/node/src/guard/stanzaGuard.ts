@@ -19,7 +19,7 @@ import { StanzaGuardError } from './stanzaGuardError';
 import { identity } from 'ramda';
 
 export const stanzaGuard = <TArgs extends any[], TReturn>(
-  options: StanzaGuardOptions
+  options: StanzaGuardOptions,
 ) => {
   const { guard } = createStanzaGuard(options);
 
@@ -35,7 +35,8 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(
           const guardResult = await guard();
 
           const failure = guardResult.find(
-            (r): r is typeof r & { status: 'failure' } => r.status === 'failure'
+            (r): r is typeof r & { status: 'failure' } =>
+              r.status === 'failure',
           );
           if (
             failure !== undefined &&
@@ -53,15 +54,15 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(
                 token?.type === 'QUOTA' && token.status === 'success'
                   ? addStanzaTokenToContext(token.token)
                   : token.type === 'TOKEN_VALIDATE' &&
-                    token.status === 'success'
-                  ? removeStanzaTokenFromContext()
-                  : identity
+                      token.status === 'success'
+                    ? removeStanzaTokenFromContext()
+                    : identity,
               ),
-            fn
+            fn,
           );
 
           return fnWithBoundContext(...args) as Promisify<TReturn>;
-        }
+        },
       );
       return outerFn();
     };
@@ -119,8 +120,8 @@ function getGuardMode(guardName: string) {
   return guardConfig?.reportOnly === true
     ? 'report_only'
     : guardConfig?.reportOnly === false
-    ? 'normal'
-    : 'unspecified';
+      ? 'normal'
+      : 'unspecified';
 }
 
 const createStanzaGuard = (options: StanzaGuardOptions) => {
@@ -136,8 +137,8 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
           result.some((r) => r.status === 'failure')
             ? events.guard.blocked
             : result.some((r) => r.status === 'failOpen')
-            ? events.guard.failOpen
-            : events.guard.allowed,
+              ? events.guard.failOpen
+              : events.guard.allowed,
           {
             serviceName,
             environment,
@@ -148,7 +149,7 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
             customerId,
             ...getReasons(result.filter(isTruthy).map(({ reason }) => reason)),
             mode: getGuardMode(options.guard),
-          }
+          },
         );
       },
       failure: async (err) => {
@@ -173,7 +174,7 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
   };
 
   function getReasons(
-    reasons: Array<Partial<ReasonData> | StanzaGuardError>
+    reasons: Array<Partial<ReasonData> | StanzaGuardError>,
   ): ReasonData {
     return reasons.reduce<ReasonData>(
       (resultReasons, current) => {
@@ -189,7 +190,7 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
         localReason: 'LOCAL_NOT_SUPPORTED',
         tokenReason: 'TOKEN_UNSPECIFIED',
         quotaReason: 'QUOTA_UNSPECIFIED',
-      }
+      },
     );
   }
 };

@@ -10,7 +10,7 @@ export async function initState(element: HTMLDivElement): Promise<void> {
 
 export async function updateState(
   element: HTMLDivElement,
-  message: string
+  message: string,
 ): Promise<void> {
   const text = new Text(JSON.stringify(message));
   element.replaceChildren(text);

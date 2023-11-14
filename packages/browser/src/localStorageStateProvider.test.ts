@@ -37,7 +37,7 @@ describe('localStorageStateProvider', () => {
     expect(() => {
       stateProvider.getFeatureState('test');
     }).toThrow(
-      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
+      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.',
     );
     expect(() => {
       stateProvider.setFeatureState({
@@ -46,22 +46,22 @@ describe('localStorageStateProvider', () => {
         lastRefreshTime: 0,
       });
     }).toThrow(
-      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
+      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.',
     );
     expect(() => {
       stateProvider.getAllFeatureStates();
     }).toThrow(
-      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
+      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.',
     );
     expect(() => {
       stateProvider.addChangeListener(() => {});
     }).toThrow(
-      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
+      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.',
     );
     expect(() => {
       stateProvider.removeChangeListener(() => {});
     }).toThrow(
-      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
+      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.',
     );
   });
 
@@ -108,7 +108,7 @@ describe('localStorageStateProvider', () => {
 
     expect(Object.keys(localStorage)).not.toContain('stanza_feature_test');
     expect(Object.keys(localStorage)).not.toContain(
-      'stanza_feature_another-test'
+      'stanza_feature_another-test',
     );
   });
 
@@ -121,7 +121,7 @@ describe('localStorageStateProvider', () => {
 
     expect(Object.keys(localStorage)).not.toContain('stanza_feature_test');
     expect(Object.keys(localStorage)).not.toContain(
-      'stanza_feature_another-test'
+      'stanza_feature_another-test',
     );
   });
 
@@ -137,7 +137,7 @@ describe('localStorageStateProvider', () => {
     it('should store and retrieve a feature', () => {
       stateProvider.setFeatureState(testFeatures.first);
       expect(stateProvider.getFeatureState('firstFeature')).toEqual(
-        testFeatures.first
+        testFeatures.first,
       );
     });
 

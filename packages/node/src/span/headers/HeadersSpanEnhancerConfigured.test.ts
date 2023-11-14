@@ -13,7 +13,7 @@ const createTestSpan = () => {
   const tracer = new Tracer(
     { name: 'test instrumentation' },
     {},
-    new BasicTracerProvider()
+    new BasicTracerProvider(),
   );
   const span = new Span(
     tracer,
@@ -24,7 +24,7 @@ const createTestSpan = () => {
       spanId: 'testSpanId',
       traceFlags: TraceFlags.SAMPLED,
     },
-    SpanKind.INTERNAL
+    SpanKind.INTERNAL,
   );
   const setAttributeSpy = vi.spyOn(span, 'setAttribute');
   return {
@@ -49,7 +49,7 @@ describe('HeadersSpanEnhancerConfigured', () => {
 
       enhancer.enhanceWithRequest(
         span,
-        getHeader({ testHeader: 'testHeaderValue' })
+        getHeader({ testHeader: 'testHeaderValue' }),
       );
       expect(setAttributeSpy).not.toHaveBeenCalled();
     });
@@ -79,12 +79,12 @@ describe('HeadersSpanEnhancerConfigured', () => {
         getHeader({
           testHeader: 'testHeaderValue',
           'first-header-request': 'first-header-request-value',
-        })
+        }),
       );
       expect(setAttributeSpy).toHaveBeenCalledOnce();
       expect(setAttributeSpy).toHaveBeenCalledWith(
         'http.request.header.first_header_request',
-        ['first-header-request-value']
+        ['first-header-request-value'],
       );
     });
 
@@ -96,12 +96,12 @@ describe('HeadersSpanEnhancerConfigured', () => {
         getHeader({
           testHeader: 'testHeaderValue',
           'first-header-response': 'first-header-response-value',
-        })
+        }),
       );
       expect(setAttributeSpy).toHaveBeenCalledOnce();
       expect(setAttributeSpy).toHaveBeenCalledWith(
         'http.response.header.first_header_response',
-        ['first-header-response-value']
+        ['first-header-response-value'],
       );
     });
   });
@@ -131,16 +131,16 @@ describe('HeadersSpanEnhancerConfigured', () => {
           testHeader: 'testHeaderValue',
           'first-header-request': 'first-header-request-value',
           'common-header': 'common-header-request-value',
-        })
+        }),
       );
       expect(setAttributeSpy).toHaveBeenCalledTimes(2);
       expect(setAttributeSpy).toHaveBeenCalledWith(
         'http.request.header.first_header_request',
-        ['first-header-request-value']
+        ['first-header-request-value'],
       );
       expect(setAttributeSpy).toHaveBeenCalledWith(
         'http.request.header.common_header',
-        ['common-header-request-value']
+        ['common-header-request-value'],
       );
     });
 
@@ -153,16 +153,16 @@ describe('HeadersSpanEnhancerConfigured', () => {
           testHeader: 'testHeaderValue',
           'first-header-response': 'first-header-response-value',
           'common-header': 'common-header-response-value',
-        })
+        }),
       );
       expect(setAttributeSpy).toHaveBeenCalledTimes(2);
       expect(setAttributeSpy).toHaveBeenCalledWith(
         'http.response.header.first_header_response',
-        ['first-header-response-value']
+        ['first-header-response-value'],
       );
       expect(setAttributeSpy).toHaveBeenCalledWith(
         'http.response.header.common_header',
-        ['common-header-response-value']
+        ['common-header-response-value'],
       );
     });
   });
@@ -198,20 +198,20 @@ describe('HeadersSpanEnhancerConfigured', () => {
           'first-header-request': 'first-header-request-value',
           'second-header-request': 'second-header-request-value',
           'common-header': 'common-header-request-value',
-        })
+        }),
       );
       expect(setAttributeSpy).toHaveBeenCalledTimes(3);
       expect(setAttributeSpy).toHaveBeenCalledWith(
         'http.request.header.first_header_request',
-        ['first-header-request-value']
+        ['first-header-request-value'],
       );
       expect(setAttributeSpy).toHaveBeenCalledWith(
         'http.request.header.second_header_request',
-        ['second-header-request-value']
+        ['second-header-request-value'],
       );
       expect(setAttributeSpy).toHaveBeenCalledWith(
         'http.request.header.common_header',
-        ['common-header-request-value']
+        ['common-header-request-value'],
       );
     });
 
@@ -225,20 +225,20 @@ describe('HeadersSpanEnhancerConfigured', () => {
           'first-header-response': 'first-header-response-value',
           'second-header-response': 'second-header-response-value',
           'common-header': 'common-header-response-value',
-        })
+        }),
       );
       expect(setAttributeSpy).toHaveBeenCalledTimes(3);
       expect(setAttributeSpy).toHaveBeenCalledWith(
         'http.response.header.first_header_response',
-        ['first-header-response-value']
+        ['first-header-response-value'],
       );
       expect(setAttributeSpy).toHaveBeenCalledWith(
         'http.response.header.second_header_response',
-        ['second-header-response-value']
+        ['second-header-response-value'],
       );
       expect(setAttributeSpy).toHaveBeenCalledWith(
         'http.response.header.common_header',
-        ['common-header-response-value']
+        ['common-header-response-value'],
       );
     });
   });

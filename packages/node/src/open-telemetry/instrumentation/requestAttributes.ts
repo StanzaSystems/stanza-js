@@ -21,7 +21,7 @@ export type RequestAttributes = DefaultContextAttributes &
   FeatureAttributes;
 
 export const eventDataToRequestAttributes = (
-  data: DefaultContextData & GuardData & FeatureData
+  data: DefaultContextData & GuardData & FeatureData,
 ): RequestAttributes => ({
   ...eventDataToDefaultContextAttributes(data),
   ...eventDataToGuardAttributes(data),

@@ -59,7 +59,7 @@ export const initQuotaChecker = (options: QuotaCheckerOptions) => {
 
 function quotaFailure(
   quotaReason: QuotaReason,
-  message: string
+  message: string,
 ): CheckQuotaResponse {
   return {
     type: 'QUOTA',
@@ -73,7 +73,7 @@ function quotaFailure(
 
 function quotaSuccess(
   quotaReason: QuotaReason,
-  token: string
+  token: string,
 ): CheckQuotaResponse {
   return {
     type: 'QUOTA',

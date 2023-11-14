@@ -22,5 +22,5 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <StanzaProvider instance={stanzaInstance}>
       <App />
     </StanzaProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

@@ -25,7 +25,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method === 'POST') {
     try {
@@ -40,7 +40,7 @@ export default async function handler(
         (item: { price_data: { recurring: any } }) => {
           // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
           return !!item.price_data.recurring;
-        }
+        },
       );
       // Create Checkout Sessions from body params.
       const params: Stripe.Checkout.SessionCreateParams = {

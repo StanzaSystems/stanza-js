@@ -38,7 +38,7 @@ const PaymentStatus = (props: PaymentStatusProps) => {
   return (
     <>
       <h2>Error 😭</h2>
-      <p className='error-message'>{errorMessage}</p>
+      <p className="error-message">{errorMessage}</p>
     </>
   );
 };
@@ -116,8 +116,8 @@ const ElementsForm: FC<{
     <>
       <form onSubmit={handleSubmit}>
         <CustomDonationInput
-          className='elements-style'
-          name='customDonation'
+          className="elements-style"
+          name="customDonation"
           value={input.customDonation}
           min={config.MIN_AMOUNT}
           max={config.MAX_AMOUNT}
@@ -126,19 +126,19 @@ const ElementsForm: FC<{
           onChange={handleInputChange}
         />
         <StripeTestCards />
-        <fieldset className='elements-style'>
+        <fieldset className="elements-style">
           <legend>Your payment details:</legend>
           {paymentType === 'card' ? (
             <input
-              placeholder='Cardholder name'
-              className='elements-style'
-              type='Text'
-              name='cardholderName'
+              placeholder="Cardholder name"
+              className="elements-style"
+              type="Text"
+              name="cardholderName"
               onChange={handleInputChange}
               required
             />
           ) : null}
-          <div className='FormRow elements-style'>
+          <div className="FormRow elements-style">
             <PaymentElement
               onChange={(e) => {
                 setPaymentType(e.value.type);
@@ -147,8 +147,8 @@ const ElementsForm: FC<{
           </div>
         </fieldset>
         <button
-          className='elements-style-background'
-          type='submit'
+          className="elements-style-background"
+          type="submit"
           disabled={
             !['initial', 'succeeded', 'error'].includes(payment.status) ||
             stripe == null
@@ -157,10 +157,7 @@ const ElementsForm: FC<{
           Donate {formatAmountForDisplay(input.customDonation, config.CURRENCY)}
         </button>
       </form>
-      <PaymentStatus
-        status={payment.status}
-        errorMessage={errorMessage}
-      />
+      <PaymentStatus status={payment.status} errorMessage={errorMessage} />
       <PrintObject content={payment} />
     </>
   );

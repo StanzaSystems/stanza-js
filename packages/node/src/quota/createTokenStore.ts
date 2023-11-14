@@ -55,7 +55,7 @@ function createGuardTokenStore(guard: string): GuardTokenStore {
   return { fetchTokensIfNecessary };
 
   async function fetchTokensIfNecessary(
-    query: TokenQuery
+    query: TokenQuery,
   ): Promise<StanzaToken | null> {
     const tokenInState = state.popToken(query);
     if (tokenInState !== null) {
@@ -77,7 +77,7 @@ function createGuardTokenStore(guard: string): GuardTokenStore {
   }
 
   async function getTokenLease(
-    query: TokenQuery = {}
+    query: TokenQuery = {},
   ): Promise<StanzaToken | null> {
     const tokenLeases = await fetchMoreTokenLeases(query);
 
@@ -111,7 +111,7 @@ function createGuardTokenStore(guard: string): GuardTokenStore {
   }
 
   async function requestTokenLease(
-    query: TokenQuery
+    query: TokenQuery,
   ): Promise<StanzaToken | null> {
     const tokenLease = await getTokenLease(query);
 

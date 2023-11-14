@@ -5,12 +5,12 @@ export interface GuardAttributes extends Attributes {
   guard: string;
 }
 export const eventDataToGuardAttributes = (
-  data: GuardData
+  data: GuardData,
 ): GuardAttributes => ({
   guard: data.guardName,
 });
 export const eventDataToOptionalGuardAttributes = (
-  data: OptionalGuardData
+  data: OptionalGuardData,
 ): Partial<GuardAttributes> => ({
   guard: data.guardName,
 });

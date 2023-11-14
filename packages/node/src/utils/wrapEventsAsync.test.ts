@@ -103,7 +103,7 @@ describe('wrapEventsAsync', () => {
     };
 
     const successCallback = vi.fn(async () =>
-      Promise.reject(new Error('kaboom'))
+      Promise.reject(new Error('kaboom')),
     );
 
     const wrappedFn = wrapEventsAsync(fn, {
@@ -139,7 +139,7 @@ describe('wrapEventsAsync', () => {
     };
 
     const durationCallback = vi.fn(async () =>
-      Promise.reject(new Error('kaboom'))
+      Promise.reject(new Error('kaboom')),
     );
 
     const wrappedFn = wrapEventsAsync(fn, {
@@ -175,7 +175,7 @@ describe('wrapEventsAsync', () => {
     };
 
     const failureCallback = vi.fn(async () =>
-      Promise.reject(new Error('kaboom'))
+      Promise.reject(new Error('kaboom')),
     );
 
     const wrappedFn = wrapEventsAsync(fn, {

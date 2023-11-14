@@ -9,7 +9,7 @@ import { stanzaSession } from '../stanzaSession';
 
 const createMockApiRequest = (
   cookies: Partial<Record<string, string>> = {},
-  headers: Partial<Record<string, string | string[] | undefined>> = {}
+  headers: Partial<Record<string, string | string[] | undefined>> = {},
 ): NextApiRequest =>
   ({
     cookies,
@@ -18,7 +18,7 @@ const createMockApiRequest = (
 
 const createMockNextRequest = (
   cookies: Record<string, string> = {},
-  headers: Record<string, string> = {}
+  headers: Record<string, string> = {},
 ): NextRequest =>
   ({
     cookies: {
@@ -133,7 +133,7 @@ describe('stanzaSession', () => {
       assert(res instanceof NextResponse);
 
       expect(
-        res.cookies.get('stanza-enablement-number')?.value
+        res.cookies.get('stanza-enablement-number')?.value,
       ).toBeUndefined();
     });
 
@@ -207,7 +207,7 @@ describe('stanzaSession', () => {
         {},
         {
           'x-stanza-enablement-number': '50',
-        }
+        },
       );
       const res = createMockApiResponse();
 
@@ -242,7 +242,7 @@ describe('stanzaSession', () => {
         },
         {
           'x-stanza-enablement-number': '60',
-        }
+        },
       );
       const res = createMockApiResponse();
 

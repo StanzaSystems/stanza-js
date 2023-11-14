@@ -26,7 +26,7 @@ export const createHubRequest = ({
       searchParams?: Record<string, string | string[] | undefined>;
       body?: unknown;
     },
-    validateRequest: T
+    validateRequest: T,
   ): Promise<z.infer<T> | null> {
     const requestUrl = new URL(`${hubUrl}/${apiPath}`);
 
@@ -36,7 +36,7 @@ export const createHubRequest = ({
       .map(([key, value]) =>
         typeof value === 'object'
           ? value.map((v) => [key, v] as const)
-          : [[key, value] as const]
+          : [[key, value] as const],
       )
       .flat(1)
       .filter((entry): entry is [string, string] => {
@@ -57,7 +57,7 @@ export const createHubRequest = ({
         },
         method,
         ...(body != null ? { body: JSON.stringify(body) } : {}),
-      })
+      }),
     );
 
     const data = await response.json();
@@ -68,7 +68,7 @@ export const createHubRequest = ({
       logger.debug(
         'request to hub (%s) failed %o',
         requestUrl,
-        parsedResult.error
+        parsedResult.error,
       );
       logger.debug('raw response: %o', data);
       return null;

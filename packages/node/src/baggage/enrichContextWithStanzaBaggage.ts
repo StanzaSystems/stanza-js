@@ -13,12 +13,12 @@ export const enrichContextWithStanzaBaggage = (context: Context): Context => {
 
   const newBaggage = stanzaEntries
     .map(({ key: stanzaKey, entry }) =>
-      getStanzaBaggageKeys(stanzaKey).map((key) => ({ key, entry }))
+      getStanzaBaggageKeys(stanzaKey).map((key) => ({ key, entry })),
     )
     .flat()
     .reduce(
       (currentBaggage, { key, entry }) => currentBaggage.setEntry(key, entry),
-      baggage
+      baggage,
     );
 
   return propagation.setBaggage(context, newBaggage);

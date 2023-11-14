@@ -32,7 +32,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       event = stripe.webhooks.constructEvent(
         buf.toString(),
         sig,
-        webhookSecret
+        webhookSecret,
       );
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
@@ -53,7 +53,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     } else if (event.type === 'payment_intent.payment_failed') {
       const paymentIntent = event.data.object as Stripe.PaymentIntent;
       console.log(
-        `❌ Payment failed: ${paymentIntent.last_payment_error?.message}`
+        `❌ Payment failed: ${paymentIntent.last_payment_error?.message}`,
       );
     } else if (event.type === 'charge.succeeded') {
       const charge = event.data.object as Stripe.Charge;

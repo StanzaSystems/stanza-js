@@ -13,7 +13,7 @@ describe('global', function () {
 
     it('should throw initially', async function () {
       await expect(hubService.fetchServiceConfig()).rejects.toThrow(
-        'Hub Service not initialized yet'
+        'Hub Service not initialized yet',
       );
     });
 

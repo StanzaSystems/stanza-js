@@ -2,7 +2,7 @@ import Emittery from 'emittery';
 
 const EVENT_BUS_SYMBOL = Symbol.for('[Stanza SDK Internal] Event Bus');
 const EVENT_BUS_EVENTS_SYMBOL = Symbol.for(
-  '[Stanza SDK Internal] Event Bus Events'
+  '[Stanza SDK Internal] Event Bus Events',
 );
 
 const guardAllowed = Symbol('stanza.guard.allowed');
@@ -15,7 +15,7 @@ const guardFailOpen = Symbol('stanza.guard.failopen');
 const configServiceFetchSuccess = Symbol('stanza.config.service.fetch.success');
 const configServiceFetchFailure = Symbol('stanza.config.service.fetch.failure');
 const configServiceFetchDuration = Symbol(
-  'stanza.config.service.fetch.duration'
+  'stanza.config.service.fetch.duration',
 );
 
 const configGuardFetchSuccess = Symbol('stanza.config.guard.fetch.success');
@@ -88,8 +88,8 @@ const eventBusEvents = {
 type GetKeys<T> = T extends Record<infer K, symbol>
   ? T[K]
   : T extends Record<infer K, unknown>
-  ? GetKeys<T[K]>
-  : never;
+    ? GetKeys<T[K]>
+    : never;
 
 type EventKeys = GetKeys<typeof eventBusEvents>;
 

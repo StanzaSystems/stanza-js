@@ -20,7 +20,7 @@ type TokenValidateResponse = CheckerResponse<
   reason: Pick<ReasonData, 'tokenReason'>;
 };
 export const initIngressTokenValidator = (
-  options: IngressTokenValidatorOptions
+  options: IngressTokenValidatorOptions,
 ) => {
   return { shouldValidateIngressToken, validateIngressToken };
 
@@ -35,7 +35,7 @@ export const initIngressTokenValidator = (
     if (typeof token !== 'string' || token === '') {
       return validateFailure(
         'TOKEN_NOT_VALID',
-        'Valid Stanza token was not provided in the incoming header'
+        'Valid Stanza token was not provided in the incoming header',
       );
     }
 
@@ -46,7 +46,7 @@ export const initIngressTokenValidator = (
         hubService.validateToken({
           guard: options.guard,
           token,
-        })
+        }),
       );
       if (validatedToken === null) {
         return validateFailOpen('TOKEN_VALIDATION_ERROR');
@@ -60,7 +60,7 @@ export const initIngressTokenValidator = (
     } catch (e) {
       logger.warn(
         'Failed to validate the token: %o',
-        e instanceof Error ? e.message : e
+        e instanceof Error ? e.message : e,
       );
       if (e instanceof TimeoutError) {
         return validateFailOpen('TOKEN_VALIDATION_TIMEOUT');
@@ -72,7 +72,7 @@ export const initIngressTokenValidator = (
 
 function validateFailure(
   tokenReason: TokenReason,
-  message: string
+  message: string,
 ): TokenValidateResponse {
   return {
     type: 'TOKEN_VALIDATE',

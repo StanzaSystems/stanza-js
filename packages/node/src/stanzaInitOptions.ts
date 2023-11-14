@@ -25,7 +25,7 @@ export const stanzaInitOptions = z.object({
         z.ZodLiteral<pino.Level>,
         z.ZodLiteral<pino.Level>,
         ...Array<z.ZodLiteral<pino.Level>>,
-      ]
+      ],
     )
     .optional(),
 });

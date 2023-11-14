@@ -192,7 +192,7 @@ describe('quotaChecker', () => {
       expect(infoSpy).toHaveBeenCalledWith(
         "Unused tags in guard '%s'. Tags: %o",
         'testGuard',
-        ['invalidQuotaTag', 'anotherInvalidQuotaTag']
+        ['invalidQuotaTag', 'anotherInvalidQuotaTag'],
       );
     });
 

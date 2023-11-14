@@ -74,7 +74,7 @@ describe('createTokenState', function () {
         ]);
 
         expect(tokenState.hasToken(query)).toBe(true);
-      }
+      },
     );
 
     it.each([
@@ -98,7 +98,7 @@ describe('createTokenState', function () {
         ]);
 
         expect(tokenState.hasToken(query)).toBe(false);
-      }
+      },
     );
 
     it.each([
@@ -124,7 +124,7 @@ describe('createTokenState', function () {
         vi.setSystemTime(300);
 
         expect(tokenState.hasToken(query)).toBe(false);
-      }
+      },
     );
   });
 
@@ -181,7 +181,7 @@ describe('createTokenState', function () {
           priorityBoost: 0,
           expiresAt: 200,
         });
-      }
+      },
     );
 
     it('should return token more than once if it was added and no query is provided', function () {
@@ -277,7 +277,7 @@ describe('createTokenState', function () {
         });
 
         expect(tokenState.popToken(query)).toBe(null);
-      }
+      },
     );
 
     it.each([
@@ -301,7 +301,7 @@ describe('createTokenState', function () {
         ]);
 
         expect(tokenState.popToken(query)).toBe(null);
-      }
+      },
     );
 
     it.each([
@@ -327,7 +327,7 @@ describe('createTokenState', function () {
         vi.setSystemTime(300);
 
         expect(tokenState.popToken(query)).toBe(null);
-      }
+      },
     );
   });
 

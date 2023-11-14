@@ -30,8 +30,8 @@ describe('context', () => {
               lastRefreshTime: 456,
             },
           ],
-          100
-        )
+          100,
+        ),
       ).toEqual([
         {
           name: 'aFeature',
@@ -56,8 +56,8 @@ describe('context', () => {
             enabledPercent: 100,
             lastRefreshTime: 123,
           },
-          100
-        )
+          100,
+        ),
       ).toEqual({
         name: 'aFeature',
         disabled: false,
@@ -74,8 +74,8 @@ describe('context', () => {
             lastRefreshTime: 123,
             messageEnabled: 'messageEnabled',
           },
-          80
-        )
+          80,
+        ),
       ).toEqual({
         name: 'aFeature',
         disabled: false,
@@ -93,8 +93,8 @@ describe('context', () => {
             lastRefreshTime: 123,
             messageDisabled: 'messageDisabled',
           },
-          90
-        )
+          90,
+        ),
       ).toEqual({
         name: 'aFeature',
         disabled: true,
@@ -134,8 +134,8 @@ describe('context', () => {
               lastRefreshTime: 123,
             },
           ],
-          100
-        )
+          100,
+        ),
       ).toEqual({
         name: 'aContext',
         features: {
@@ -166,8 +166,8 @@ describe('context', () => {
               lastRefreshTime: 456,
             },
           ],
-          100
-        )
+          100,
+        ),
       ).toEqual({
         name: 'aContext',
         features: {
@@ -203,8 +203,8 @@ describe('context', () => {
               lastRefreshTime: 456,
             },
           ],
-          100
-        )
+          100,
+        ),
       ).toEqual({
         name: 'aContext',
         features: {
@@ -238,13 +238,13 @@ describe('context', () => {
         'aContext',
         [aFeature],
         100,
-        true
+        true,
       );
       const context2: StanzaContext = createContext(
         'aContext',
         [aFeature],
         100,
-        true
+        true,
       );
 
       expect(equals(context1, context2)).toBe(true);
@@ -260,13 +260,13 @@ describe('context', () => {
         'aContext1',
         [aFeature],
         100,
-        true
+        true,
       );
       const context2: StanzaContext = createContext(
         'aContext2',
         [aFeature],
         100,
-        true
+        true,
       );
 
       expect(equals(context1, context2)).toBe(false);
@@ -287,13 +287,13 @@ describe('context', () => {
         'aContext',
         [aFeature],
         100,
-        true
+        true,
       );
       const context2: StanzaContext = createContext(
         'aContext',
         [aFeature, anotherFeature],
         100,
-        true
+        true,
       );
 
       expect(equals(context1, context2)).toBe(false);
@@ -314,13 +314,13 @@ describe('context', () => {
         'aContext',
         [aFeature],
         100,
-        true
+        true,
       );
       const context2: StanzaContext = createContext(
         'aContext',
         [anotherFeature],
         100,
-        true
+        true,
       );
 
       expect(equals(context1, context2)).toBe(false);

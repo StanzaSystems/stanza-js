@@ -129,28 +129,28 @@ export class GetTokenRequest extends Message<GetTokenRequest> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GetTokenRequest {
     return new GetTokenRequest().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetTokenRequest {
     return new GetTokenRequest().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetTokenRequest {
     return new GetTokenRequest().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: GetTokenRequest | PlainMessage<GetTokenRequest> | undefined,
-    b: GetTokenRequest | PlainMessage<GetTokenRequest> | undefined
+    b: GetTokenRequest | PlainMessage<GetTokenRequest> | undefined,
   ): boolean {
     return proto3.util.equals(GetTokenRequest, a, b);
   }
@@ -216,28 +216,28 @@ export class GetTokenResponse extends Message<GetTokenResponse> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GetTokenResponse {
     return new GetTokenResponse().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetTokenResponse {
     return new GetTokenResponse().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetTokenResponse {
     return new GetTokenResponse().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: GetTokenResponse | PlainMessage<GetTokenResponse> | undefined,
-    b: GetTokenResponse | PlainMessage<GetTokenResponse> | undefined
+    b: GetTokenResponse | PlainMessage<GetTokenResponse> | undefined,
   ): boolean {
     return proto3.util.equals(GetTokenResponse, a, b);
   }
@@ -314,28 +314,28 @@ export class GetTokenLeaseRequest extends Message<GetTokenLeaseRequest> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GetTokenLeaseRequest {
     return new GetTokenLeaseRequest().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetTokenLeaseRequest {
     return new GetTokenLeaseRequest().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetTokenLeaseRequest {
     return new GetTokenLeaseRequest().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: GetTokenLeaseRequest | PlainMessage<GetTokenLeaseRequest> | undefined,
-    b: GetTokenLeaseRequest | PlainMessage<GetTokenLeaseRequest> | undefined
+    b: GetTokenLeaseRequest | PlainMessage<GetTokenLeaseRequest> | undefined,
   ): boolean {
     return proto3.util.equals(GetTokenLeaseRequest, a, b);
   }
@@ -371,28 +371,28 @@ export class GetTokenLeaseResponse extends Message<GetTokenLeaseResponse> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GetTokenLeaseResponse {
     return new GetTokenLeaseResponse().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetTokenLeaseResponse {
     return new GetTokenLeaseResponse().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetTokenLeaseResponse {
     return new GetTokenLeaseResponse().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: GetTokenLeaseResponse | PlainMessage<GetTokenLeaseResponse> | undefined,
-    b: GetTokenLeaseResponse | PlainMessage<GetTokenLeaseResponse> | undefined
+    b: GetTokenLeaseResponse | PlainMessage<GetTokenLeaseResponse> | undefined,
   ): boolean {
     return proto3.util.equals(GetTokenLeaseResponse, a, b);
   }
@@ -482,28 +482,28 @@ export class TokenLease extends Message<TokenLease> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): TokenLease {
     return new TokenLease().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): TokenLease {
     return new TokenLease().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): TokenLease {
     return new TokenLease().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: TokenLease | PlainMessage<TokenLease> | undefined,
-    b: TokenLease | PlainMessage<TokenLease> | undefined
+    b: TokenLease | PlainMessage<TokenLease> | undefined,
   ): boolean {
     return proto3.util.equals(TokenLease, a, b);
   }
@@ -566,25 +566,25 @@ export class SetTokenLeaseConsumedRequest extends Message<SetTokenLeaseConsumedR
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): SetTokenLeaseConsumedRequest {
     return new SetTokenLeaseConsumedRequest().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): SetTokenLeaseConsumedRequest {
     return new SetTokenLeaseConsumedRequest().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): SetTokenLeaseConsumedRequest {
     return new SetTokenLeaseConsumedRequest().fromJsonString(
       jsonString,
-      options
+      options,
     );
   }
 
@@ -596,7 +596,7 @@ export class SetTokenLeaseConsumedRequest extends Message<SetTokenLeaseConsumedR
     b:
       | SetTokenLeaseConsumedRequest
       | PlainMessage<SetTokenLeaseConsumedRequest>
-      | undefined
+      | undefined,
   ): boolean {
     return proto3.util.equals(SetTokenLeaseConsumedRequest, a, b);
   }
@@ -619,25 +619,25 @@ export class SetTokenLeaseConsumedResponse extends Message<SetTokenLeaseConsumed
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): SetTokenLeaseConsumedResponse {
     return new SetTokenLeaseConsumedResponse().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): SetTokenLeaseConsumedResponse {
     return new SetTokenLeaseConsumedResponse().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): SetTokenLeaseConsumedResponse {
     return new SetTokenLeaseConsumedResponse().fromJsonString(
       jsonString,
-      options
+      options,
     );
   }
 
@@ -649,7 +649,7 @@ export class SetTokenLeaseConsumedResponse extends Message<SetTokenLeaseConsumed
     b:
       | SetTokenLeaseConsumedResponse
       | PlainMessage<SetTokenLeaseConsumedResponse>
-      | undefined
+      | undefined,
   ): boolean {
     return proto3.util.equals(SetTokenLeaseConsumedResponse, a, b);
   }
@@ -679,28 +679,28 @@ export class ValidateTokenRequest extends Message<ValidateTokenRequest> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): ValidateTokenRequest {
     return new ValidateTokenRequest().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): ValidateTokenRequest {
     return new ValidateTokenRequest().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): ValidateTokenRequest {
     return new ValidateTokenRequest().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: ValidateTokenRequest | PlainMessage<ValidateTokenRequest> | undefined,
-    b: ValidateTokenRequest | PlainMessage<ValidateTokenRequest> | undefined
+    b: ValidateTokenRequest | PlainMessage<ValidateTokenRequest> | undefined,
   ): boolean {
     return proto3.util.equals(ValidateTokenRequest, a, b);
   }
@@ -734,28 +734,28 @@ export class TokenInfo extends Message<TokenInfo> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): TokenInfo {
     return new TokenInfo().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): TokenInfo {
     return new TokenInfo().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): TokenInfo {
     return new TokenInfo().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: TokenInfo | PlainMessage<TokenInfo> | undefined,
-    b: TokenInfo | PlainMessage<TokenInfo> | undefined
+    b: TokenInfo | PlainMessage<TokenInfo> | undefined,
   ): boolean {
     return proto3.util.equals(TokenInfo, a, b);
   }
@@ -799,28 +799,28 @@ export class ValidateTokenResponse extends Message<ValidateTokenResponse> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): ValidateTokenResponse {
     return new ValidateTokenResponse().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): ValidateTokenResponse {
     return new ValidateTokenResponse().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): ValidateTokenResponse {
     return new ValidateTokenResponse().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: ValidateTokenResponse | PlainMessage<ValidateTokenResponse> | undefined,
-    b: ValidateTokenResponse | PlainMessage<ValidateTokenResponse> | undefined
+    b: ValidateTokenResponse | PlainMessage<ValidateTokenResponse> | undefined,
   ): boolean {
     return proto3.util.equals(ValidateTokenResponse, a, b);
   }
@@ -854,28 +854,28 @@ export class TokenValid extends Message<TokenValid> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): TokenValid {
     return new TokenValid().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): TokenValid {
     return new TokenValid().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): TokenValid {
     return new TokenValid().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: TokenValid | PlainMessage<TokenValid> | undefined,
-    b: TokenValid | PlainMessage<TokenValid> | undefined
+    b: TokenValid | PlainMessage<TokenValid> | undefined,
   ): boolean {
     return proto3.util.equals(TokenValid, a, b);
   }

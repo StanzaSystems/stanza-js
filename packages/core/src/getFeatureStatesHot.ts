@@ -3,7 +3,7 @@ import { type FeatureState } from './models/featureState';
 import { fetchFeatureStates } from './utils/fetchFeatureStates';
 
 export async function getFeatureStatesHot(
-  features: string[]
+  features: string[],
 ): Promise<FeatureState[]> {
   const featureStates = await fetchFeatureStates(features);
   const stateProvider = getStateProvider();

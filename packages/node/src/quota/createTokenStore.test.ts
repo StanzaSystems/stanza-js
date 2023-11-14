@@ -46,13 +46,13 @@ describe('tokenStore', () => {
 
     it('should return token returned from getTokenLeases', async () => {
       let resolveTokenLeases: (
-        config: StanzaTokenLeasesResult | null
+        config: StanzaTokenLeasesResult | null,
       ) => void = () => {};
       mockHubService.getTokenLease.mockImplementationOnce(
         async () =>
           new Promise<StanzaTokenLeasesResult | null>((resolve) => {
             resolveTokenLeases = resolve;
-          })
+          }),
       );
 
       const getTokenFromStorePromise = tokenStore.getToken({
@@ -83,13 +83,13 @@ describe('tokenStore', () => {
 
     it('should return token second token without calling hub again', async () => {
       let resolveTokenLeases: (
-        config: StanzaTokenLeasesResult | null
+        config: StanzaTokenLeasesResult | null,
       ) => void = () => {};
       mockHubService.getTokenLease.mockImplementationOnce(
         async () =>
           new Promise<StanzaTokenLeasesResult | null>((resolve) => {
             resolveTokenLeases = resolve;
-          })
+          }),
       );
 
       void tokenStore.getToken({
@@ -134,13 +134,13 @@ describe('tokenStore', () => {
 
     it('should fetch new token leases if current state does not contain token for a given query', async () => {
       let resolveTokenLeases: (
-        config: StanzaTokenLeasesResult | null
+        config: StanzaTokenLeasesResult | null,
       ) => void = () => {};
       mockHubService.getTokenLease.mockImplementation(
         async () =>
           new Promise<StanzaTokenLeasesResult | null>((resolve) => {
             resolveTokenLeases = resolve;
-          })
+          }),
       );
 
       void tokenStore.getToken({
@@ -212,7 +212,7 @@ describe('tokenStore', () => {
         async () =>
           new Promise<StanzaTokenLeasesResult | null>((resolve) => {
             resolveTokenLeases.push(resolve);
-          })
+          }),
       );
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
@@ -261,22 +261,22 @@ describe('tokenStore', () => {
 
     it('should get tokens for 2 different guards separately', async () => {
       let resolveFirstTokenLeases: (
-        config: StanzaTokenLeasesResult | null
+        config: StanzaTokenLeasesResult | null,
       ) => void = () => {};
       let resolveSecondTokenLeases: (
-        config: StanzaTokenLeasesResult | null
+        config: StanzaTokenLeasesResult | null,
       ) => void = () => {};
       mockHubService.getTokenLease.mockImplementationOnce(
         async () =>
           new Promise<StanzaTokenLeasesResult | null>((resolve) => {
             resolveFirstTokenLeases = resolve;
-          })
+          }),
       );
       mockHubService.getTokenLease.mockImplementationOnce(
         async () =>
           new Promise<StanzaTokenLeasesResult | null>((resolve) => {
             resolveSecondTokenLeases = resolve;
-          })
+          }),
       );
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
@@ -332,7 +332,7 @@ describe('tokenStore', () => {
         async () =>
           new Promise<StanzaTokenLeasesResult | null>((resolve) => {
             resolveTokenLeases.push(resolve);
-          })
+          }),
       );
 
       const getTokenFromStoreBatchFirst = [
@@ -471,13 +471,13 @@ describe('tokenStore', () => {
 
     it('should fail the getToken if token batch is not granted', async () => {
       let resolveTokenLeases: (
-        config: StanzaTokenLeasesResult | null
+        config: StanzaTokenLeasesResult | null,
       ) => void = () => {};
       mockHubService.getTokenLease.mockImplementation(
         async () =>
           new Promise<StanzaTokenLeasesResult | null>((resolve) => {
             resolveTokenLeases = resolve;
-          })
+          }),
       );
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
@@ -503,7 +503,7 @@ describe('tokenStore', () => {
         async () =>
           new Promise<StanzaTokenLeasesResult | null>((resolve) => {
             resolveTokenLeases.push(resolve);
-          })
+          }),
       );
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
@@ -539,7 +539,7 @@ describe('tokenStore', () => {
         async () =>
           new Promise<StanzaTokenLeasesResult | null>((resolve) => {
             resolveTokenLeases.push(resolve);
-          })
+          }),
       );
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
@@ -587,13 +587,13 @@ describe('tokenStore', () => {
 
     it('should return null if token batch returns null', async () => {
       let resolveTokenLeases: (
-        config: StanzaTokenLeasesResult | null
+        config: StanzaTokenLeasesResult | null,
       ) => void = () => {};
       mockHubService.getTokenLease.mockImplementation(
         async () =>
           new Promise<StanzaTokenLeasesResult | null>((resolve) => {
             resolveTokenLeases = resolve;
-          })
+          }),
       );
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
@@ -613,7 +613,7 @@ describe('tokenStore', () => {
         async () =>
           new Promise<StanzaTokenLeasesResult | null>((_resolve, reject) => {
             rejectTokenLeases = reject;
-          })
+          }),
       );
 
       const getTokenFromStorePromiseFirst = tokenStore.getToken({
@@ -713,25 +713,25 @@ describe('tokenStore', () => {
       tokenStore.markTokenAsConsumed('aToken1');
 
       await vi.advanceTimersByTimeAsync(
-        MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY / 4
+        MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY / 4,
       );
 
       tokenStore.markTokenAsConsumed('aToken2');
 
       await vi.advanceTimersByTimeAsync(
-        MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY / 4
+        MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY / 4,
       );
 
       tokenStore.markTokenAsConsumed('aToken3');
 
       await vi.advanceTimersByTimeAsync(
-        MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY / 4
+        MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY / 4,
       );
 
       tokenStore.markTokenAsConsumed('aToken4');
 
       await vi.advanceTimersByTimeAsync(
-        MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY / 4
+        MARK_TOKENS_AS_CONSUMED_EXPECTED_DELAY / 4,
       );
 
       expect(mockHubService.markTokensAsConsumed).toHaveBeenCalledOnce();

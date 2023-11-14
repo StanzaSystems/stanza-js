@@ -1,7 +1,7 @@
 import { beforeEach, describe, it } from 'vitest';
 
 const REQUEST_TIMEOUT_SYMBOL: unique symbol = Symbol.for(
-  '[Stanza SDK Internal] Request timeout'
+  '[Stanza SDK Internal] Request timeout',
 );
 describe('requestTimeout', () => {
   beforeEach(() => {

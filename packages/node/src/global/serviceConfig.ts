@@ -11,7 +11,7 @@ interface ServiceStateInitialized {
 type ServiceState = ServiceStateUninitialized | ServiceStateInitialized;
 const state = createGlobalState(
   Symbol.for('[Stanza SDK Internal] Service Config'),
-  (): ServiceState => ({ initialized: false })
+  (): ServiceState => ({ initialized: false }),
 );
 
 export type ServiceConfigListener = (config: ServiceState) => void;

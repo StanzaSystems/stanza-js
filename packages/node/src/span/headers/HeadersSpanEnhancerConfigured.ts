@@ -13,7 +13,7 @@ export class HeadersSpanEnhancerConfigured implements SpanEnhancer {
         otelAttribute: string;
         value: string;
       }>;
-    }>
+    }>,
   ) {}
 
   enhanceWithRequest(span: Span, getHeaderValue: HeaderGetter): void {
@@ -52,7 +52,7 @@ export class HeadersSpanEnhancerConfigured implements SpanEnhancer {
       getAttributeKey: (headerName: string) => string;
       getHeaderValue: HeaderGetter;
       type: 'response' | 'request';
-    }
+    },
   ) {
     const headersToAdd = this.traceConfigs
       .map(
@@ -67,11 +67,11 @@ export class HeadersSpanEnhancerConfigured implements SpanEnhancer {
             span instanceof SpanClass &&
             spanSelectors.every(
               ({ otelAttribute, value }) =>
-                span.attributes[otelAttribute] === value
+                span.attributes[otelAttribute] === value,
             );
 
           return spanSelected ? headers : undefined;
-        }
+        },
       )
       .filter(isTruthy)
       .flat();
@@ -83,8 +83,8 @@ export class HeadersSpanEnhancerConfigured implements SpanEnhancer {
         typeof rawValue === 'string'
           ? [rawValue]
           : typeof rawValue === 'number'
-          ? [rawValue.toString()]
-          : rawValue;
+            ? [rawValue.toString()]
+            : rawValue;
 
       if (value === undefined) {
         return;

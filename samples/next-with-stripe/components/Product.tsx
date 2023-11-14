@@ -14,11 +14,8 @@ const Product: React.FC<ProductProps> = ({
   removeProduct = () => {},
 }) => {
   return (
-    <div
-      key={product.id}
-      className='product'
-    >
-      <div className='product-image-container'>
+    <div key={product.id} className="product">
+      <div className="product-image-container">
         <img
           src={
             product.image ?? 'https://actogmbh.com/files/no-product-image.png'
@@ -27,14 +24,14 @@ const Product: React.FC<ProductProps> = ({
         />
       </div>
       <h2>{product.name}</h2>
-      <p className='price'>
+      <p className="price">
         {formatCurrencyString({
           value: product.price,
           currency: product.currency,
         })}
       </p>
       <button
-        className='cart-style-background'
+        className="cart-style-background"
         onClick={() => {
           addProduct(product);
         }}
@@ -42,7 +39,7 @@ const Product: React.FC<ProductProps> = ({
         Add to cart
       </button>
       <button
-        className='cart-style-background'
+        className="cart-style-background"
         onClick={() => {
           removeProduct(product.id);
         }}

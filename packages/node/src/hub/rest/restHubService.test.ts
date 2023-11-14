@@ -75,7 +75,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
           },
           body: JSON.stringify({
             service: {
@@ -85,7 +85,7 @@ describe('createRestHubService', async () => {
             },
           }),
           method: 'POST',
-        }
+        },
       );
     });
 
@@ -101,7 +101,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
           },
           body: JSON.stringify({
             versionSeen: '123',
@@ -113,7 +113,7 @@ describe('createRestHubService', async () => {
             clientId: '456',
           }),
           method: 'POST',
-        }
+        },
       );
     });
 
@@ -235,7 +235,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
           },
           body: JSON.stringify({
             selector: {
@@ -246,7 +246,7 @@ describe('createRestHubService', async () => {
             },
           }),
           method: 'POST',
-        }
+        },
       );
     });
 
@@ -262,7 +262,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
           },
           body: JSON.stringify({
             versionSeen: '123',
@@ -274,7 +274,7 @@ describe('createRestHubService', async () => {
             },
           }),
           method: 'POST',
-        }
+        },
       );
     });
 
@@ -374,7 +374,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
           },
           body: JSON.stringify({
             selector: {
@@ -386,7 +386,7 @@ describe('createRestHubService', async () => {
             priorityBoost: 5,
           }),
           method: 'POST',
-        }
+        },
       );
     });
 
@@ -413,7 +413,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
           },
           body: JSON.stringify({
             selector: {
@@ -435,7 +435,7 @@ describe('createRestHubService', async () => {
             priorityBoost: 5,
           }),
           method: 'POST',
-        }
+        },
       );
     });
 
@@ -523,7 +523,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
           },
           body: JSON.stringify({
             selector: {
@@ -535,7 +535,7 @@ describe('createRestHubService', async () => {
             priorityBoost: 5,
           }),
           method: 'POST',
-        }
+        },
       );
     });
 
@@ -562,7 +562,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
           },
           body: JSON.stringify({
             selector: {
@@ -584,7 +584,7 @@ describe('createRestHubService', async () => {
             priorityBoost: 5,
           }),
           method: 'POST',
-        }
+        },
       );
     });
 
@@ -687,7 +687,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
           },
           body: JSON.stringify({
             tokens: [
@@ -698,7 +698,7 @@ describe('createRestHubService', async () => {
             ],
           }),
           method: 'POST',
-        }
+        },
       );
     });
 
@@ -772,7 +772,7 @@ describe('createRestHubService', async () => {
       void validateToken({ guard: 'test-guard', token: 'test-token' }).catch(
         (e) => {
           expect(e).toEqual(new Error('Hub request timed out'));
-        }
+        },
       );
 
       await vi.advanceTimersByTimeAsync(1000);
@@ -807,14 +807,14 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
           },
           body: JSON.stringify({
             tokens: ['test-token-one', 'test-token-two'],
             environment: 'test',
           }),
           method: 'POST',
-        }
+        },
       );
     });
 
@@ -903,7 +903,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
           },
           body: JSON.stringify({
             selector: {
@@ -919,7 +919,7 @@ describe('createRestHubService', async () => {
             },
           }),
           method: 'POST',
-        }
+        },
       );
     });
 

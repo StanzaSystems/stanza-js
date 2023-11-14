@@ -73,28 +73,28 @@ export class UpdateStreamsRequest extends Message<UpdateStreamsRequest> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): UpdateStreamsRequest {
     return new UpdateStreamsRequest().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): UpdateStreamsRequest {
     return new UpdateStreamsRequest().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): UpdateStreamsRequest {
     return new UpdateStreamsRequest().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: UpdateStreamsRequest | PlainMessage<UpdateStreamsRequest> | undefined,
-    b: UpdateStreamsRequest | PlainMessage<UpdateStreamsRequest> | undefined
+    b: UpdateStreamsRequest | PlainMessage<UpdateStreamsRequest> | undefined,
   ): boolean {
     return proto3.util.equals(UpdateStreamsRequest, a, b);
   }
@@ -128,28 +128,28 @@ export class UpdateStreamsResponse extends Message<UpdateStreamsResponse> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): UpdateStreamsResponse {
     return new UpdateStreamsResponse().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): UpdateStreamsResponse {
     return new UpdateStreamsResponse().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): UpdateStreamsResponse {
     return new UpdateStreamsResponse().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: UpdateStreamsResponse | PlainMessage<UpdateStreamsResponse> | undefined,
-    b: UpdateStreamsResponse | PlainMessage<UpdateStreamsResponse> | undefined
+    b: UpdateStreamsResponse | PlainMessage<UpdateStreamsResponse> | undefined,
   ): boolean {
     return proto3.util.equals(UpdateStreamsResponse, a, b);
   }
@@ -225,28 +225,28 @@ export class StreamRequest extends Message<StreamRequest> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): StreamRequest {
     return new StreamRequest().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): StreamRequest {
     return new StreamRequest().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): StreamRequest {
     return new StreamRequest().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: StreamRequest | PlainMessage<StreamRequest> | undefined,
-    b: StreamRequest | PlainMessage<StreamRequest> | undefined
+    b: StreamRequest | PlainMessage<StreamRequest> | undefined,
   ): boolean {
     return proto3.util.equals(StreamRequest, a, b);
   }
@@ -289,28 +289,28 @@ export class StreamResult extends Message<StreamResult> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): StreamResult {
     return new StreamResult().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): StreamResult {
     return new StreamResult().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): StreamResult {
     return new StreamResult().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: StreamResult | PlainMessage<StreamResult> | undefined,
-    b: StreamResult | PlainMessage<StreamResult> | undefined
+    b: StreamResult | PlainMessage<StreamResult> | undefined,
   ): boolean {
     return proto3.util.equals(StreamResult, a, b);
   }

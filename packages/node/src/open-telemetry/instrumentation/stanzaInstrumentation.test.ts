@@ -62,7 +62,7 @@ describe('StanzaInstrumentation', () => {
               return histogram;
             } satisfies Meter['createHistogram'],
           },
-          meter
+          meter,
         );
       },
     } satisfies IMeterProvider;
@@ -259,7 +259,7 @@ describe('StanzaInstrumentation', () => {
         expect(metricSpy).toHaveBeenCalledWith(...expected.data);
 
         vi.useRealTimers();
-      }
+      },
     );
 
     it.each([
@@ -414,7 +414,7 @@ describe('StanzaInstrumentation', () => {
         expect(metricSpy).toHaveBeenCalledWith(...expected.data);
 
         vi.useRealTimers();
-      }
+      },
     );
 
     it.each([
@@ -641,7 +641,7 @@ describe('StanzaInstrumentation', () => {
         expect(metricSpy).toHaveBeenCalledWith(...expected.data);
 
         vi.useRealTimers();
-      }
+      },
     );
   });
 
@@ -847,7 +847,7 @@ describe('StanzaInstrumentation', () => {
         expect(metricSpy).toHaveBeenCalledWith(...expected.data);
 
         vi.useRealTimers();
-      }
+      },
     );
 
     it.each([
@@ -1014,7 +1014,7 @@ describe('StanzaInstrumentation', () => {
         expect(metricSpy).toHaveBeenCalledWith(...expected.data);
 
         vi.useRealTimers();
-      }
+      },
     );
 
     it.each([
@@ -1257,7 +1257,7 @@ describe('StanzaInstrumentation', () => {
         expect(metricSpy).toHaveBeenCalledWith(...expected.data);
 
         vi.useRealTimers();
-      }
+      },
     );
   });
 });

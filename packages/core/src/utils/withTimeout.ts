@@ -7,7 +7,7 @@
 export const withTimeout = async <T>(
   timeout: number,
   timeoutMessage: string,
-  aPromise: Promise<T>
+  aPromise: Promise<T>,
 ): Promise<T> => {
   let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
   try {
@@ -27,7 +27,7 @@ export const withTimeout = async <T>(
 export class TimeoutError extends Error {
   constructor(
     public readonly timeout: number,
-    message?: string
+    message?: string,
   ) {
     super(message);
   }

@@ -4,7 +4,7 @@ import { type FeatureState } from './models/featureState';
 import { isFeatureStateFresh } from './models/isFeatureStateFresh';
 
 export async function getFeatureStates(
-  features: string[]
+  features: string[],
 ): Promise<FeatureState[]> {
   const featureStates = getFeatureStatesStale(features);
   if (
@@ -12,8 +12,8 @@ export async function getFeatureStates(
     features.every(
       (featureName) =>
         featureStates.findIndex(
-          (state) => state.featureName === featureName
-        ) !== -1
+          (state) => state.featureName === featureName,
+        ) !== -1,
     )
   ) {
     return featureStates;

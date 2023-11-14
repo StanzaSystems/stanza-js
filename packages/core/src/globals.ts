@@ -22,7 +22,7 @@ export const enablementNumberChanges = new StanzaChangeTarget<number>();
 
 export function init(
   config: StanzaCoreConfig,
-  provider: LocalStateProvider
+  provider: LocalStateProvider,
 ): void {
   if (stanzaConfig !== undefined || localStateProvider !== undefined) {
     throw new Error('Stanza is already initialized');
@@ -33,7 +33,7 @@ export function init(
       config.enablementNumberGenerator ?? getEnablementNumberSimple,
     contextConfigs: config.contextConfigs.reduce(
       groupBy('name', ({ features }) => ({ features })),
-      {}
+      {},
     ),
   };
   localStateProvider = provider;

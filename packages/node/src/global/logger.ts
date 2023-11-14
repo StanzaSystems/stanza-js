@@ -5,7 +5,7 @@ import { getEnvInitOptions } from '../getEnvInitOptions';
 const loggerWrapper = {
   wrap: <T>(
     { prefix, level = 'debug' }: { prefix?: string; level?: pino.Level },
-    obj: T
+    obj: T,
   ) => {
     const prefixTrimmed = prefix?.trim();
     const childLogger = logger.child(
@@ -15,7 +15,7 @@ const loggerWrapper = {
           prefixTrimmed !== undefined && prefixTrimmed !== ''
             ? prefixTrimmed + ' '
             : undefined,
-      }
+      },
     );
 
     if (typeof obj !== 'object' || obj === null) {
@@ -37,7 +37,7 @@ const loggerWrapper = {
                 },
                 (err) => {
                   childLogger[level]('%s errored with: %o', key, err);
-                }
+                },
               );
             } else {
               childLogger[level]('%s returned with: %o', key, result);
@@ -48,7 +48,7 @@ const loggerWrapper = {
         }
         return res;
       },
-      { ...obj }
+      { ...obj },
     );
   },
 };
@@ -65,5 +65,5 @@ export const logger: pino.Logger & typeof loggerWrapper = createGlobal(
     });
 
     return Object.assign(pinoLogger, loggerWrapper);
-  }
+  },
 );

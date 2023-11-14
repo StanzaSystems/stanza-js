@@ -13,14 +13,14 @@ describe('mergeHeaders', () => {
           firstTestHeader: 'firstTestHeaderValue',
           firstAnotherTestHeader: 'firstAnotherTestHeaderValue',
           firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue',
-        })
-      )
+        }),
+      ),
     ).toEqual(
       new Headers({
         firstTestHeader: 'firstTestHeaderValue',
         firstAnotherTestHeader: 'firstAnotherTestHeaderValue',
         firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue',
-      })
+      }),
     );
   });
 
@@ -36,8 +36,8 @@ describe('mergeHeaders', () => {
           secondTestHeader: 'secondTestHeaderValue',
           secondAnotherTestHeader: 'secondAnotherTestHeaderValue',
           secondYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue',
-        })
-      )
+        }),
+      ),
     ).toEqual(
       new Headers({
         firstTestHeader: 'firstTestHeaderValue',
@@ -46,7 +46,7 @@ describe('mergeHeaders', () => {
         secondTestHeader: 'secondTestHeaderValue',
         secondAnotherTestHeader: 'secondAnotherTestHeaderValue',
         secondYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue',
-      })
+      }),
     );
   });
 
@@ -62,14 +62,14 @@ describe('mergeHeaders', () => {
           firstTestHeader: 'secondTestHeaderValue',
           firstAnotherTestHeader: 'secondAnotherTestHeaderValue',
           firstYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue',
-        })
-      )
+        }),
+      ),
     ).toEqual(
       new Headers({
         firstTestHeader: 'secondTestHeaderValue',
         firstAnotherTestHeader: 'secondAnotherTestHeaderValue',
         firstYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue',
-      })
+      }),
     );
   });
 });

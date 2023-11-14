@@ -58,28 +58,28 @@ export class GetGuardConfigRequest extends Message<GetGuardConfigRequest> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GetGuardConfigRequest {
     return new GetGuardConfigRequest().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetGuardConfigRequest {
     return new GetGuardConfigRequest().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetGuardConfigRequest {
     return new GetGuardConfigRequest().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: GetGuardConfigRequest | PlainMessage<GetGuardConfigRequest> | undefined,
-    b: GetGuardConfigRequest | PlainMessage<GetGuardConfigRequest> | undefined
+    b: GetGuardConfigRequest | PlainMessage<GetGuardConfigRequest> | undefined,
   ): boolean {
     return proto3.util.equals(GetGuardConfigRequest, a, b);
   }
@@ -126,21 +126,21 @@ export class GetGuardConfigResponse extends Message<GetGuardConfigResponse> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GetGuardConfigResponse {
     return new GetGuardConfigResponse().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetGuardConfigResponse {
     return new GetGuardConfigResponse().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetGuardConfigResponse {
     return new GetGuardConfigResponse().fromJsonString(jsonString, options);
   }
@@ -150,7 +150,10 @@ export class GetGuardConfigResponse extends Message<GetGuardConfigResponse> {
       | GetGuardConfigResponse
       | PlainMessage<GetGuardConfigResponse>
       | undefined,
-    b: GetGuardConfigResponse | PlainMessage<GetGuardConfigResponse> | undefined
+    b:
+      | GetGuardConfigResponse
+      | PlainMessage<GetGuardConfigResponse>
+      | undefined,
   ): boolean {
     return proto3.util.equals(GetGuardConfigResponse, a, b);
   }
@@ -224,28 +227,28 @@ export class GuardConfig extends Message<GuardConfig> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GuardConfig {
     return new GuardConfig().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GuardConfig {
     return new GuardConfig().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GuardConfig {
     return new GuardConfig().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: GuardConfig | PlainMessage<GuardConfig> | undefined,
-    b: GuardConfig | PlainMessage<GuardConfig> | undefined
+    b: GuardConfig | PlainMessage<GuardConfig> | undefined,
   ): boolean {
     return proto3.util.equals(GuardConfig, a, b);
   }
@@ -277,21 +280,21 @@ export class GetBrowserContextRequest extends Message<GetBrowserContextRequest> 
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GetBrowserContextRequest {
     return new GetBrowserContextRequest().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetBrowserContextRequest {
     return new GetBrowserContextRequest().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetBrowserContextRequest {
     return new GetBrowserContextRequest().fromJsonString(jsonString, options);
   }
@@ -304,7 +307,7 @@ export class GetBrowserContextRequest extends Message<GetBrowserContextRequest> 
     b:
       | GetBrowserContextRequest
       | PlainMessage<GetBrowserContextRequest>
-      | undefined
+      | undefined,
   ): boolean {
     return proto3.util.equals(GetBrowserContextRequest, a, b);
   }
@@ -340,21 +343,21 @@ export class GetBrowserContextResponse extends Message<GetBrowserContextResponse
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GetBrowserContextResponse {
     return new GetBrowserContextResponse().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetBrowserContextResponse {
     return new GetBrowserContextResponse().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetBrowserContextResponse {
     return new GetBrowserContextResponse().fromJsonString(jsonString, options);
   }
@@ -367,7 +370,7 @@ export class GetBrowserContextResponse extends Message<GetBrowserContextResponse
     b:
       | GetBrowserContextResponse
       | PlainMessage<GetBrowserContextResponse>
-      | undefined
+      | undefined,
   ): boolean {
     return proto3.util.equals(GetBrowserContextResponse, a, b);
   }
@@ -401,28 +404,28 @@ export class FeatureConfig extends Message<FeatureConfig> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): FeatureConfig {
     return new FeatureConfig().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): FeatureConfig {
     return new FeatureConfig().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): FeatureConfig {
     return new FeatureConfig().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: FeatureConfig | PlainMessage<FeatureConfig> | undefined,
-    b: FeatureConfig | PlainMessage<FeatureConfig> | undefined
+    b: FeatureConfig | PlainMessage<FeatureConfig> | undefined,
   ): boolean {
     return proto3.util.equals(FeatureConfig, a, b);
   }
@@ -517,28 +520,28 @@ export class BrowserConfig extends Message<BrowserConfig> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): BrowserConfig {
     return new BrowserConfig().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): BrowserConfig {
     return new BrowserConfig().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): BrowserConfig {
     return new BrowserConfig().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: BrowserConfig | PlainMessage<BrowserConfig> | undefined,
-    b: BrowserConfig | PlainMessage<BrowserConfig> | undefined
+    b: BrowserConfig | PlainMessage<BrowserConfig> | undefined,
   ): boolean {
     return proto3.util.equals(BrowserConfig, a, b);
   }
@@ -598,21 +601,21 @@ export class GetServiceConfigRequest extends Message<GetServiceConfigRequest> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GetServiceConfigRequest {
     return new GetServiceConfigRequest().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetServiceConfigRequest {
     return new GetServiceConfigRequest().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetServiceConfigRequest {
     return new GetServiceConfigRequest().fromJsonString(jsonString, options);
   }
@@ -625,7 +628,7 @@ export class GetServiceConfigRequest extends Message<GetServiceConfigRequest> {
     b:
       | GetServiceConfigRequest
       | PlainMessage<GetServiceConfigRequest>
-      | undefined
+      | undefined,
   ): boolean {
     return proto3.util.equals(GetServiceConfigRequest, a, b);
   }
@@ -672,21 +675,21 @@ export class GetServiceConfigResponse extends Message<GetServiceConfigResponse> 
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GetServiceConfigResponse {
     return new GetServiceConfigResponse().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetServiceConfigResponse {
     return new GetServiceConfigResponse().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetServiceConfigResponse {
     return new GetServiceConfigResponse().fromJsonString(jsonString, options);
   }
@@ -699,7 +702,7 @@ export class GetServiceConfigResponse extends Message<GetServiceConfigResponse> 
     b:
       | GetServiceConfigResponse
       | PlainMessage<GetServiceConfigResponse>
-      | undefined
+      | undefined,
   ): boolean {
     return proto3.util.equals(GetServiceConfigResponse, a, b);
   }
@@ -765,28 +768,28 @@ export class ServiceConfig extends Message<ServiceConfig> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): ServiceConfig {
     return new ServiceConfig().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): ServiceConfig {
     return new ServiceConfig().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): ServiceConfig {
     return new ServiceConfig().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: ServiceConfig | PlainMessage<ServiceConfig> | undefined,
-    b: ServiceConfig | PlainMessage<ServiceConfig> | undefined
+    b: ServiceConfig | PlainMessage<ServiceConfig> | undefined,
   ): boolean {
     return proto3.util.equals(ServiceConfig, a, b);
   }
@@ -878,28 +881,28 @@ export class TraceConfig extends Message<TraceConfig> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): TraceConfig {
     return new TraceConfig().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): TraceConfig {
     return new TraceConfig().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): TraceConfig {
     return new TraceConfig().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: TraceConfig | PlainMessage<TraceConfig> | undefined,
-    b: TraceConfig | PlainMessage<TraceConfig> | undefined
+    b: TraceConfig | PlainMessage<TraceConfig> | undefined,
   ): boolean {
     return proto3.util.equals(TraceConfig, a, b);
   }
@@ -935,28 +938,28 @@ export class MetricConfig extends Message<MetricConfig> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): MetricConfig {
     return new MetricConfig().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): MetricConfig {
     return new MetricConfig().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): MetricConfig {
     return new MetricConfig().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: MetricConfig | PlainMessage<MetricConfig> | undefined,
-    b: MetricConfig | PlainMessage<MetricConfig> | undefined
+    b: MetricConfig | PlainMessage<MetricConfig> | undefined,
   ): boolean {
     return proto3.util.equals(MetricConfig, a, b);
   }
@@ -1028,28 +1031,28 @@ export class SentinelConfig extends Message<SentinelConfig> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): SentinelConfig {
     return new SentinelConfig().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): SentinelConfig {
     return new SentinelConfig().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): SentinelConfig {
     return new SentinelConfig().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: SentinelConfig | PlainMessage<SentinelConfig> | undefined,
-    b: SentinelConfig | PlainMessage<SentinelConfig> | undefined
+    b: SentinelConfig | PlainMessage<SentinelConfig> | undefined,
   ): boolean {
     return proto3.util.equals(SentinelConfig, a, b);
   }
@@ -1091,28 +1094,28 @@ export class TraceConfigOverride extends Message<TraceConfigOverride> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): TraceConfigOverride {
     return new TraceConfigOverride().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): TraceConfigOverride {
     return new TraceConfigOverride().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): TraceConfigOverride {
     return new TraceConfigOverride().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: TraceConfigOverride | PlainMessage<TraceConfigOverride> | undefined,
-    b: TraceConfigOverride | PlainMessage<TraceConfigOverride> | undefined
+    b: TraceConfigOverride | PlainMessage<TraceConfigOverride> | undefined,
   ): boolean {
     return proto3.util.equals(TraceConfigOverride, a, b);
   }
@@ -1157,28 +1160,28 @@ export class SpanSelector extends Message<SpanSelector> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): SpanSelector {
     return new SpanSelector().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): SpanSelector {
     return new SpanSelector().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): SpanSelector {
     return new SpanSelector().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: SpanSelector | PlainMessage<SpanSelector> | undefined,
-    b: SpanSelector | PlainMessage<SpanSelector> | undefined
+    b: SpanSelector | PlainMessage<SpanSelector> | undefined,
   ): boolean {
     return proto3.util.equals(SpanSelector, a, b);
   }
@@ -1244,28 +1247,28 @@ export class HeaderTraceConfig extends Message<HeaderTraceConfig> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): HeaderTraceConfig {
     return new HeaderTraceConfig().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): HeaderTraceConfig {
     return new HeaderTraceConfig().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): HeaderTraceConfig {
     return new HeaderTraceConfig().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: HeaderTraceConfig | PlainMessage<HeaderTraceConfig> | undefined,
-    b: HeaderTraceConfig | PlainMessage<HeaderTraceConfig> | undefined
+    b: HeaderTraceConfig | PlainMessage<HeaderTraceConfig> | undefined,
   ): boolean {
     return proto3.util.equals(HeaderTraceConfig, a, b);
   }
@@ -1317,28 +1320,28 @@ export class ParamTraceConfig extends Message<ParamTraceConfig> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): ParamTraceConfig {
     return new ParamTraceConfig().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): ParamTraceConfig {
     return new ParamTraceConfig().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): ParamTraceConfig {
     return new ParamTraceConfig().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: ParamTraceConfig | PlainMessage<ParamTraceConfig> | undefined,
-    b: ParamTraceConfig | PlainMessage<ParamTraceConfig> | undefined
+    b: ParamTraceConfig | PlainMessage<ParamTraceConfig> | undefined,
   ): boolean {
     return proto3.util.equals(ParamTraceConfig, a, b);
   }

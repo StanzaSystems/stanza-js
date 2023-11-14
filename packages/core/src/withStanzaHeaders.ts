@@ -6,11 +6,11 @@ function withStanzaHeaders(options: {
 }): Record<string, string>;
 function withStanzaHeaders<H extends HeadersInit = Record<string, string>>(
   { feature }: { feature: string },
-  headers: H
+  headers: H,
 ): H;
 function withStanzaHeaders(
   { feature }: { feature: string },
-  headers?: HeadersInit
+  headers?: HeadersInit,
 ): HeadersInit {
   // @ts-expect-error: if we don't pass initial headers we return Record<string, string> object
   let initHeaders: H = headers ?? {};

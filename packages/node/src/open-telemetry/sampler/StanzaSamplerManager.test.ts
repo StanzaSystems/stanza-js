@@ -79,7 +79,7 @@ describe('StanzaSamplerManager', function () {
 
       const sampler = manager.getSampler(ROOT_CONTEXT);
       expect(sampler).toEqual(
-        new StanzaConfiguredSampler(mockServiceConfig.config)
+        new StanzaConfiguredSampler(mockServiceConfig.config),
       );
     });
 
@@ -90,7 +90,7 @@ describe('StanzaSamplerManager', function () {
 
       const sampler = manager.getSampler(ROOT_CONTEXT);
       expect(sampler).toEqual(
-        new StanzaConfiguredSampler(mockServiceConfig.config)
+        new StanzaConfiguredSampler(mockServiceConfig.config),
       );
     });
 
@@ -101,14 +101,14 @@ describe('StanzaSamplerManager', function () {
 
       const sampler1 = manager.getSampler(ROOT_CONTEXT);
       expect(sampler1).toEqual(
-        new StanzaConfiguredSampler(mockServiceConfig.config)
+        new StanzaConfiguredSampler(mockServiceConfig.config),
       );
 
       serviceListener({ initialized: true, data: secondMockServiceConfig });
 
       const sampler2 = manager.getSampler(ROOT_CONTEXT);
       expect(sampler2).toEqual(
-        new StanzaConfiguredSampler(secondMockServiceConfig.config)
+        new StanzaConfiguredSampler(secondMockServiceConfig.config),
       );
     });
   });
@@ -118,7 +118,7 @@ describe('StanzaSamplerManager', function () {
       const manager = new StanzaSamplerManager();
 
       expect(
-        manager.getSampler(addStanzaGuardToContext('myGuard')(ROOT_CONTEXT))
+        manager.getSampler(addStanzaGuardToContext('myGuard')(ROOT_CONTEXT)),
       ).toBeInstanceOf(AlwaysOffSampler);
     });
 
@@ -128,10 +128,10 @@ describe('StanzaSamplerManager', function () {
       serviceListener({ initialized: true, data: mockServiceConfig });
 
       const sampler = manager.getSampler(
-        addStanzaGuardToContext('myGuard')(ROOT_CONTEXT)
+        addStanzaGuardToContext('myGuard')(ROOT_CONTEXT),
       );
       expect(sampler).toEqual(
-        new StanzaConfiguredSampler(mockServiceConfig.config)
+        new StanzaConfiguredSampler(mockServiceConfig.config),
       );
     });
   });

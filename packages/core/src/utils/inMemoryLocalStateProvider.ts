@@ -35,7 +35,7 @@ export const createInMemoryLocalStateProvider = (): LocalStateProvider => {
   function assertInitialized() {
     if (!initialized) {
       throw new Error(
-        'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
+        'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.',
       );
     }
   }

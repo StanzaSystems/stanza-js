@@ -8,7 +8,7 @@ export interface DefaultContextAttributes extends Attributes {
   customer_id?: string;
 }
 export const eventDataToDefaultContextAttributes = (
-  data: DefaultContextData
+  data: DefaultContextData,
 ): DefaultContextAttributes => ({
   service: data.serviceName,
   environment: data.environment,

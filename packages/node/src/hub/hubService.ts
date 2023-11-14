@@ -60,20 +60,20 @@ export interface HubService {
     clientId: string;
   };
   fetchServiceConfig: (
-    options?: FetchServiceConfigOptions
+    options?: FetchServiceConfigOptions,
   ) => Promise<ServiceConfig | null>;
   fetchGuardConfig: (
-    options: FetchGuardConfigOptions
+    options: FetchGuardConfigOptions,
   ) => Promise<GuardConfig | null>;
   getToken: (options: GetTokenOptions) => Promise<StanzaToken | null>;
   getTokenLease: (
-    options: GetTokenLeaseOptions
+    options: GetTokenLeaseOptions,
   ) => Promise<StanzaTokenLeasesResult | null>;
   validateToken: (
-    options: ValidateTokenOptions
+    options: ValidateTokenOptions,
   ) => Promise<ValidatedToken | null>;
   markTokensAsConsumed: (
-    options: MarkTokensAsConsumedOptions
+    options: MarkTokensAsConsumedOptions,
   ) => Promise<{ ok: boolean } | null>;
   getAuthToken: () => Promise<{ token: string } | null>;
   getGuardHealth: (options: GetGuardHealthOptions) => Promise<Health>;

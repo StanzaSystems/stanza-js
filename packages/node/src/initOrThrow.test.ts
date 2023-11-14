@@ -29,11 +29,11 @@ vi.mock('./global/logger', async () => {
 
 const createGrpcHubServiceMock = vi.spyOn(
   createGrpcHubServiceModule,
-  'createGrpcHubService'
+  'createGrpcHubService',
 );
 const createRestHubServiceMock = vi.spyOn(
   createRestHubServiceModule,
-  'createRestHubService'
+  'createRestHubService',
 );
 
 const getEnvInitOptionsMock = vi.fn();
@@ -62,7 +62,7 @@ describe('Stanza init', function () {
 - apiKey: string (API key for a Hub instance)
 - serviceName: string (Name of the service)
 - serviceRelease: string (A version of the service)
-- environment: string (An environment to use)`)
+- environment: string (An environment to use)`),
       );
     });
 
@@ -73,7 +73,7 @@ describe('Stanza init', function () {
 - apiKey: string (API key for a Hub instance)
 - serviceName: string (Name of the service)
 - serviceRelease: string (A version of the service)
-- environment: string (An environment to use)`)
+- environment: string (An environment to use)`),
       );
     });
   });
@@ -92,13 +92,13 @@ describe('Stanza init', function () {
             serviceName: 'dummyStanzaService',
             serviceRelease: 'dummyStanzaRelease',
             environment: 'testEnvironment',
-          })
+          }),
         ).resolves.toBeUndefined();
       },
       {
         // first init takes longer due to dynamic imports in addInstrumentation.ts
         timeout: 10000,
-      }
+      },
     );
 
     it('should resolve if valid config is provided', async () => {
@@ -112,7 +112,7 @@ describe('Stanza init', function () {
           serviceName: 'dummyStanzaService',
           serviceRelease: 'dummyStanzaRelease',
           environment: 'testEnvironment',
-        })
+        }),
       ).resolves.toBeUndefined();
     });
 
@@ -144,7 +144,7 @@ describe('Stanza init', function () {
           serviceName: 'dummyStanzaService',
           serviceRelease: 'dummyStanzaRelease',
           environment: 'testEnvironment',
-        })
+        }),
       ).resolves.toBeUndefined();
 
       expect(createGrpcHubServiceMock).toHaveBeenCalledOnce();
@@ -163,7 +163,7 @@ describe('Stanza init', function () {
           serviceRelease: 'dummyStanzaRelease',
           environment: 'testEnvironment',
           useRestHubApi: true,
-        })
+        }),
       ).resolves.toBeUndefined();
 
       expect(createRestHubServiceMock).toHaveBeenCalled();

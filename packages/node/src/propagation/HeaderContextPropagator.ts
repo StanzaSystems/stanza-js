@@ -8,9 +8,8 @@ import {
 export class HeaderContextPropagator implements TextMapPropagator {
   constructor(
     private readonly headerName: string,
-    private readonly contextKey: symbol
+    private readonly contextKey: symbol,
   ) {}
-
   inject(context: Context, carrier: unknown, setter: TextMapSetter): void {
     const stanzaApiKey = context.getValue(this.contextKey);
     if (typeof stanzaApiKey === 'string' && stanzaApiKey !== '') {
@@ -24,8 +23,8 @@ export class HeaderContextPropagator implements TextMapPropagator {
       Array.isArray(headerValue) && headerValue.length > 0
         ? headerValue[0]
         : typeof headerValue === 'string' && headerValue !== ''
-        ? headerValue
-        : undefined;
+          ? headerValue
+          : undefined;
 
     return apiKey !== undefined
       ? context.setValue(this.contextKey, apiKey)

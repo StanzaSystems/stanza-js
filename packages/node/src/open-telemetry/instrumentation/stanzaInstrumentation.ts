@@ -94,19 +94,19 @@ export class StanzaInstrumentation extends InstrumentationBase {
     eventBus.on(events.guard.allowed, (data) => {
       this.metrics.guard.allowed.add(
         1,
-        eventDataToGuardResolutionAttributes(data)
+        eventDataToGuardResolutionAttributes(data),
       );
     });
     eventBus.on(events.guard.failOpen, (data) => {
       this.metrics.guard.failOpen.add(
         1,
-        eventDataToGuardResolutionAttributes(data)
+        eventDataToGuardResolutionAttributes(data),
       );
     });
     eventBus.on(events.guard.blocked, (data) => {
       this.metrics.guard.blocked.add(
         1,
-        eventDataToGuardResolutionAttributes(data)
+        eventDataToGuardResolutionAttributes(data),
       );
     });
     eventBus.on(events.guard.failed, (data) => {
@@ -118,7 +118,7 @@ export class StanzaInstrumentation extends InstrumentationBase {
     eventBus.on(events.guard.duration, ({ duration, ...data }) => {
       this.metrics.guard.duration.record(
         duration,
-        eventDataToRequestAttributes(data)
+        eventDataToRequestAttributes(data),
       );
     });
   }
@@ -128,38 +128,38 @@ export class StanzaInstrumentation extends InstrumentationBase {
       allowed: this.meter.createCounter(
         events.guard.allowed.description ?? '',
         stanzaCounterMetricOptions(
-          'Count of requests permitted to execute on a given Guard'
-        )
+          'Count of requests permitted to execute on a given Guard',
+        ),
       ),
       blocked: this.meter.createCounter(
         events.guard.blocked.description ?? '',
         stanzaCounterMetricOptions(
-          'Count of requests not permitted to execute on a given Guard'
-        )
+          'Count of requests not permitted to execute on a given Guard',
+        ),
       ),
       failOpen: this.meter.createCounter(
         events.guard.failOpen.description ?? '',
         stanzaCounterMetricOptions(
-          'Count of requests which encountered an error condition, but were allowed to proceed anyway'
-        )
+          'Count of requests which encountered an error condition, but were allowed to proceed anyway',
+        ),
       ),
       failed: this.meter.createCounter(
         events.guard.failed.description ?? '',
         stanzaCounterMetricOptions(
-          'Count of failed requests traversing a particular Guard'
-        )
+          'Count of failed requests traversing a particular Guard',
+        ),
       ),
       succeeded: this.meter.createCounter(
         events.guard.succeeded.description ?? '',
         stanzaCounterMetricOptions(
-          'Count of successful requests traversing a particular Guard'
-        )
+          'Count of successful requests traversing a particular Guard',
+        ),
       ),
       duration: this.meter.createHistogram(
         events.guard.duration.description ?? '',
         stanzaHistogramMetricOptions(
-          'Duration histogram for execution time for a particular Guard'
-        )
+          'Duration histogram for execution time for a particular Guard',
+        ),
       ),
     };
   }
@@ -168,13 +168,13 @@ export class StanzaInstrumentation extends InstrumentationBase {
     eventBus.on(events.config.service.fetchOk, (data) => {
       this.metrics.config.service.fetchOk.add(
         1,
-        eventDataToDefaultContextAttributes(data)
+        eventDataToDefaultContextAttributes(data),
       );
     });
     eventBus.on(events.config.service.fetchFailed, (data) => {
       this.metrics.config.service.fetchFailed.add(
         1,
-        eventDataToDefaultContextAttributes(data)
+        eventDataToDefaultContextAttributes(data),
       );
     });
     eventBus.on(
@@ -182,9 +182,9 @@ export class StanzaInstrumentation extends InstrumentationBase {
       ({ duration, ...data }) => {
         this.metrics.config.service.fetchDuration.record(
           duration,
-          eventDataToDefaultContextAttributes(data)
+          eventDataToDefaultContextAttributes(data),
         );
-      }
+      },
     );
     eventBus.on(events.config.guard.fetchOk, (data) => {
       this.metrics.config.guard.fetchOk.add(1, {
@@ -195,13 +195,13 @@ export class StanzaInstrumentation extends InstrumentationBase {
     eventBus.on(events.config.guard.fetchFailed, (data) => {
       this.metrics.config.guard.fetchFailed.add(
         1,
-        eventDataToDefaultContextAttributes(data)
+        eventDataToDefaultContextAttributes(data),
       );
     });
     eventBus.on(events.config.guard.fetchDuration, ({ duration, ...data }) => {
       this.metrics.config.guard.fetchDuration.record(
         duration,
-        eventDataToDefaultContextAttributes(data)
+        eventDataToDefaultContextAttributes(data),
       );
     });
   }
@@ -212,40 +212,40 @@ export class StanzaInstrumentation extends InstrumentationBase {
         fetchOk: this.meter.createCounter(
           events.config.service.fetchOk.description ?? '',
           stanzaCounterMetricOptions(
-            'Count of successful fetches of service configuration'
-          )
+            'Count of successful fetches of service configuration',
+          ),
         ),
         fetchFailed: this.meter.createCounter(
           events.config.service.fetchFailed.description ?? '',
           stanzaCounterMetricOptions(
-            'Count of unsuccessful fetches of service configuration'
-          )
+            'Count of unsuccessful fetches of service configuration',
+          ),
         ),
         fetchDuration: this.meter.createHistogram(
           events.config.service.fetchDuration.description ?? '',
           stanzaHistogramMetricOptions(
-            'Duration histogram for time to fetch service configuration'
-          )
+            'Duration histogram for time to fetch service configuration',
+          ),
         ),
       },
       guard: {
         fetchOk: this.meter.createCounter(
           events.config.guard.fetchOk.description ?? '',
           stanzaCounterMetricOptions(
-            'Count of successful fetches of guard configuration'
-          )
+            'Count of successful fetches of guard configuration',
+          ),
         ),
         fetchFailed: this.meter.createCounter(
           events.config.guard.fetchFailed.description ?? '',
           stanzaCounterMetricOptions(
-            'Count of unsuccessful fetches of guard configuration'
-          )
+            'Count of unsuccessful fetches of guard configuration',
+          ),
         ),
         fetchDuration: this.meter.createHistogram(
           events.config.guard.fetchDuration.description ?? '',
           stanzaHistogramMetricOptions(
-            'Duration histogram for time to fetch guard configuration'
-          )
+            'Duration histogram for time to fetch guard configuration',
+          ),
         ),
       },
     };
@@ -280,13 +280,13 @@ export class StanzaInstrumentation extends InstrumentationBase {
     eventBus.on(events.quota.validateFailed, (data) => {
       this.metrics.quota.validateFailed.add(
         1,
-        eventDataToDefaultContextAttributes(data)
+        eventDataToDefaultContextAttributes(data),
       );
     });
     eventBus.on(events.quota.validateDuration, ({ duration, ...data }) => {
       this.metrics.quota.validateDuration.record(
         duration,
-        eventDataToDefaultContextAttributes(data)
+        eventDataToDefaultContextAttributes(data),
       );
     });
   }
@@ -295,31 +295,31 @@ export class StanzaInstrumentation extends InstrumentationBase {
     return {
       fetchOk: this.meter.createCounter(
         events.quota.fetchOk.description ?? '',
-        stanzaCounterMetricOptions('Count of successful fetches of quota')
+        stanzaCounterMetricOptions('Count of successful fetches of quota'),
       ),
       fetchFailed: this.meter.createCounter(
         events.quota.fetchFailed.description ?? '',
-        stanzaCounterMetricOptions('Count of unsuccessful fetches quota')
+        stanzaCounterMetricOptions('Count of unsuccessful fetches quota'),
       ),
       fetchDuration: this.meter.createHistogram(
         events.quota.fetchDuration.description ?? '',
         stanzaHistogramMetricOptions(
-          'Duration histogram for time to fetch quota'
-        )
+          'Duration histogram for time to fetch quota',
+        ),
       ),
       validateOk: this.meter.createCounter(
         events.quota.validateOk.description ?? '',
-        stanzaCounterMetricOptions('Count of successful token validations')
+        stanzaCounterMetricOptions('Count of successful token validations'),
       ),
       validateFailed: this.meter.createCounter(
         events.quota.validateFailed.description ?? '',
-        stanzaCounterMetricOptions('Count of unsuccessful token validations')
+        stanzaCounterMetricOptions('Count of unsuccessful token validations'),
       ),
       validateDuration: this.meter.createHistogram(
         events.quota.validateDuration.description ?? '',
         stanzaHistogramMetricOptions(
-          'Duration histogram for time to perform token validations'
-        )
+          'Duration histogram for time to perform token validations',
+        ),
       ),
     };
   }
@@ -343,13 +343,13 @@ export class StanzaInstrumentation extends InstrumentationBase {
     return {
       sendOk: this.meter.createCounter(
         events.telemetry.sendOk.description ?? '',
-        stanzaCounterMetricOptions('Count of successful telemetry send events')
+        stanzaCounterMetricOptions('Count of successful telemetry send events'),
       ),
       sendFailed: this.meter.createCounter(
         events.telemetry.sendFailed.description ?? '',
         stanzaCounterMetricOptions(
-          'Count of unsuccessful telemetry send events'
-        )
+          'Count of unsuccessful telemetry send events',
+        ),
       ),
     };
   }

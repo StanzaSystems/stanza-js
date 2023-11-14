@@ -14,14 +14,14 @@ describe('removeCommonHeaders', () => {
           secondTestHeader: 'secondTestHeaderValue',
           secondAnotherTestHeader: 'secondAnotherTestHeaderValue',
           secondYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue',
-        })
-      )
+        }),
+      ),
     ).toEqual(
       new Headers({
         firstTestHeader: 'firstTestHeaderValue',
         firstAnotherTestHeader: 'firstAnotherTestHeaderValue',
         firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue',
-      })
+      }),
     );
   });
 
@@ -39,14 +39,14 @@ describe('removeCommonHeaders', () => {
           secondAnotherTestHeader: 'secondAnotherTestHeaderValue',
           secondYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue',
           commonHeader: 'commonHeaderValue',
-        })
-      )
+        }),
+      ),
     ).toEqual(
       new Headers({
         firstTestHeader: 'firstTestHeaderValue',
         firstAnotherTestHeader: 'firstAnotherTestHeaderValue',
         firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue',
-      })
+      }),
     );
   });
 });

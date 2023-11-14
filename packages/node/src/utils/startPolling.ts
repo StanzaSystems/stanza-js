@@ -7,7 +7,7 @@ export const startPolling = <T = unknown>(
   fn: AsyncFunction<T>,
   options: { pollInterval: number; onError?: (e: unknown) => void } = {
     pollInterval: DEFAULT_POLL_INTERVAL,
-  }
+  },
 ) => {
   let shouldStop = false;
   let prevResult: T | null = null;
@@ -27,7 +27,7 @@ export const startPolling = <T = unknown>(
         } else {
           logger.warn(
             'Error occurred while polling: %o',
-            e instanceof Error ? e.message : e
+            e instanceof Error ? e.message : e,
           );
         }
       }

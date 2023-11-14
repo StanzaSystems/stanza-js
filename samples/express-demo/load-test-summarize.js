@@ -22,7 +22,7 @@ function summarizeLastRun() {
   };
 
   enterprise.successPct = Math.round(
-    (enterprise.success / enterprise.total) * 100
+    (enterprise.success / enterprise.total) * 100,
   );
   pro.successPct = Math.round((pro.success / pro.total) * 100);
   free.successPct = Math.round((free.success / free.total) * 100);

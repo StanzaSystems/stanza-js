@@ -74,13 +74,13 @@ describe('Stanza init', function () {
             serviceName: 'dummyStanzaService',
             serviceRelease: 'dummyStanzaRelease',
             environment: 'testEnvironment',
-          })
+          }),
         ).resolves.toBeUndefined();
       },
       {
         // first init takes longer due to dynamic imports in addInstrumentation.ts
         timeout: 10000,
-      }
+      },
     );
 
     it('should not warn if valid config is provided', async () => {

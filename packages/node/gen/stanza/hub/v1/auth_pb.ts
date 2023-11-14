@@ -44,28 +44,28 @@ export class GetBearerTokenRequest extends Message<GetBearerTokenRequest> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GetBearerTokenRequest {
     return new GetBearerTokenRequest().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetBearerTokenRequest {
     return new GetBearerTokenRequest().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetBearerTokenRequest {
     return new GetBearerTokenRequest().fromJsonString(jsonString, options);
   }
 
   static equals(
     a: GetBearerTokenRequest | PlainMessage<GetBearerTokenRequest> | undefined,
-    b: GetBearerTokenRequest | PlainMessage<GetBearerTokenRequest> | undefined
+    b: GetBearerTokenRequest | PlainMessage<GetBearerTokenRequest> | undefined,
   ): boolean {
     return proto3.util.equals(GetBearerTokenRequest, a, b);
   }
@@ -100,21 +100,21 @@ export class GetBearerTokenResponse extends Message<GetBearerTokenResponse> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): GetBearerTokenResponse {
     return new GetBearerTokenResponse().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetBearerTokenResponse {
     return new GetBearerTokenResponse().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): GetBearerTokenResponse {
     return new GetBearerTokenResponse().fromJsonString(jsonString, options);
   }
@@ -124,7 +124,10 @@ export class GetBearerTokenResponse extends Message<GetBearerTokenResponse> {
       | GetBearerTokenResponse
       | PlainMessage<GetBearerTokenResponse>
       | undefined,
-    b: GetBearerTokenResponse | PlainMessage<GetBearerTokenResponse> | undefined
+    b:
+      | GetBearerTokenResponse
+      | PlainMessage<GetBearerTokenResponse>
+      | undefined,
   ): boolean {
     return proto3.util.equals(GetBearerTokenResponse, a, b);
   }

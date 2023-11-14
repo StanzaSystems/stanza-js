@@ -15,12 +15,12 @@ const apiFeatureStateToFeatureState =
   });
 
 export async function fetchFeatureStates(
-  features: string[]
+  features: string[],
 ): Promise<FeatureState[]> {
   const apiFeatureStates = await withTimeout(
     1000,
     '',
-    fetchApiFeaturesStates(features)
+    fetchApiFeaturesStates(features),
   ).catch(() => []);
   const refreshTime = Date.now();
   const groupedFeatures = apiFeatureStates
@@ -30,6 +30,6 @@ export async function fetchFeatureStates(
   return features.map(
     (featureName): FeatureState =>
       groupedFeatures[featureName] ??
-      createFeatureState(featureName, refreshTime)
+      createFeatureState(featureName, refreshTime),
   );
 }

@@ -56,21 +56,21 @@ export class QueryGuardHealthRequest extends Message<QueryGuardHealthRequest> {
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): QueryGuardHealthRequest {
     return new QueryGuardHealthRequest().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): QueryGuardHealthRequest {
     return new QueryGuardHealthRequest().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): QueryGuardHealthRequest {
     return new QueryGuardHealthRequest().fromJsonString(jsonString, options);
   }
@@ -83,7 +83,7 @@ export class QueryGuardHealthRequest extends Message<QueryGuardHealthRequest> {
     b:
       | QueryGuardHealthRequest
       | PlainMessage<QueryGuardHealthRequest>
-      | undefined
+      | undefined,
   ): boolean {
     return proto3.util.equals(QueryGuardHealthRequest, a, b);
   }
@@ -111,21 +111,21 @@ export class QueryGuardHealthResponse extends Message<QueryGuardHealthResponse> 
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>
+    options?: Partial<BinaryReadOptions>,
   ): QueryGuardHealthResponse {
     return new QueryGuardHealthResponse().fromBinary(bytes, options);
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): QueryGuardHealthResponse {
     return new QueryGuardHealthResponse().fromJson(jsonValue, options);
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>
+    options?: Partial<JsonReadOptions>,
   ): QueryGuardHealthResponse {
     return new QueryGuardHealthResponse().fromJsonString(jsonString, options);
   }
@@ -138,7 +138,7 @@ export class QueryGuardHealthResponse extends Message<QueryGuardHealthResponse> 
     b:
       | QueryGuardHealthResponse
       | PlainMessage<QueryGuardHealthResponse>
-      | undefined
+      | undefined,
   ): boolean {
     return proto3.util.equals(QueryGuardHealthResponse, a, b);
   }

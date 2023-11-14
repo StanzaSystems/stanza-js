@@ -66,7 +66,7 @@ export const createTokenState = (): TokenState => {
   }
   function onTokensAvailableRatioChange(
     expiresOffset: number,
-    listener: AvailableRatioListenerFn
+    listener: AvailableRatioListenerFn,
   ) {
     availableRatioListeners.push({
       listener,
@@ -100,7 +100,7 @@ export const createTokenState = (): TokenState => {
         tokenLeases.map(({ expiresAt }) => ({
           ...listener,
           notifyAt: expiresAt - listener.expiresOffset,
-        }))
+        })),
       )
       .flat(1)
       .filter(({ notifyAt }) => notifyAt - now > 0);
@@ -110,10 +110,10 @@ export const createTokenState = (): TokenState => {
     }
 
     const earliestNotifyAt = Math.min(
-      ...tokensNotifyAt.map(({ notifyAt }) => notifyAt)
+      ...tokensNotifyAt.map(({ notifyAt }) => notifyAt),
     );
     const listeners = tokensNotifyAt.filter(
-      ({ notifyAt }) => notifyAt === earliestNotifyAt
+      ({ notifyAt }) => notifyAt === earliestNotifyAt,
     );
     const timeout = earliestNotifyAt - now;
 
@@ -134,7 +134,7 @@ export const createTokenState = (): TokenState => {
         groups[key].push(value);
         return groups;
       },
-      [[], []]
+      [[], []],
     );
 
     tokenLeases = validTokenLeases;
@@ -146,7 +146,7 @@ export const createTokenState = (): TokenState => {
     const totalCount = tokenLeases.length + tokensUsed.length;
     listeners.forEach(({ listener, expiresOffset }) => {
       const stanzaTokenLeasesValid = tokenLeases.filter(
-        isTokenValidAfter(now + expiresOffset)
+        isTokenValidAfter(now + expiresOffset),
       );
       const availableCount = stanzaTokenLeasesValid.length;
       const availableRatio = totalCount !== 0 ? availableCount / totalCount : 0;

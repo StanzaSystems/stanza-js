@@ -1,6 +1,6 @@
 function getPaymentStatus(
   status: string,
-  errorMessage: string | null | undefined = 'Try again later'
+  errorMessage: string | null | undefined = 'Try again later',
 ) {
   switch (status) {
     case 'processing':

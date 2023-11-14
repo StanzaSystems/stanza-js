@@ -2,7 +2,7 @@ import { type NextApiHandler } from 'next';
 import { StanzaGuardError } from '@getstanza/node';
 
 export const nextRequestErrorHandler = (
-  handler: NextApiHandler
+  handler: NextApiHandler,
 ): NextApiHandler => {
   return async (req, res) => {
     try {

@@ -11,8 +11,8 @@ describe('withStanzaHeaders', () => {
     expect(
       withStanzaHeaders(
         { feature: 'testFeature' },
-        { existingHeader: 'existingHeaderValue' }
-      )
+        { existingHeader: 'existingHeaderValue' },
+      ),
     ).toEqual({
       existingHeader: 'existingHeaderValue',
       baggage: 'stz-feat=testFeature',
@@ -23,13 +23,13 @@ describe('withStanzaHeaders', () => {
     expect(
       withStanzaHeaders(
         { feature: 'testFeature' },
-        new Headers({ existingHeader: 'existingHeaderValue' })
-      )
+        new Headers({ existingHeader: 'existingHeaderValue' }),
+      ),
     ).toEqual(
       new Headers({
         existingHeader: 'existingHeaderValue',
         baggage: 'stz-feat=testFeature',
-      })
+      }),
     );
   });
 
@@ -37,7 +37,7 @@ describe('withStanzaHeaders', () => {
     expect(
       withStanzaHeaders({ feature: 'testFeature' }, [
         ['existingHeader', 'existingHeaderValue'],
-      ])
+      ]),
     ).toEqual([
       ['existingHeader', 'existingHeaderValue'],
       ['baggage', 'stz-feat=testFeature'],
@@ -56,7 +56,7 @@ describe('withStanzaHeaders', () => {
     });
     withStanzaHeaders({ feature: 'testFeature' }, initialHeaders);
     expect(initialHeaders).toEqual(
-      new Headers({ existingHeader: 'existingHeaderValue' })
+      new Headers({ existingHeader: 'existingHeaderValue' }),
     );
   });
 

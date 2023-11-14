@@ -37,7 +37,7 @@ const featureConfigs = new Map<string, ApiFeatureState>(
       messageEnabled:
         'We are having intermittent issues loading product summaries',
     },
-  ].map((f) => [f.featureName, f])
+  ].map((f) => [f.featureName, f]),
 );
 
 app.get('/ping', (req, res) => {

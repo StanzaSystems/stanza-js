@@ -7,60 +7,60 @@ describe('addPriorityBoostToContext', function () {
   it("should set priority boost if it didn't exist already", function () {
     expect(
       addPriorityBoostToContext(1)(ROOT_CONTEXT).getValue(
-        stanzaPriorityBoostContextKey
-      )
+        stanzaPriorityBoostContextKey,
+      ),
     ).toEqual(1);
   });
 
   it("should set negative priority boost if it didn't exist already", function () {
     expect(
       addPriorityBoostToContext(-1)(ROOT_CONTEXT).getValue(
-        stanzaPriorityBoostContextKey
-      )
+        stanzaPriorityBoostContextKey,
+      ),
     ).toEqual(-1);
   });
 
   it('should not set a boost value of 0', function () {
     expect(
       addPriorityBoostToContext(0)(ROOT_CONTEXT).getValue(
-        stanzaPriorityBoostContextKey
-      )
+        stanzaPriorityBoostContextKey,
+      ),
     ).toBeUndefined();
   });
 
   it('should add priority boost if it exists already', function () {
     const existingContext = ROOT_CONTEXT.setValue(
       stanzaPriorityBoostContextKey,
-      2
+      2,
     );
     expect(
       addPriorityBoostToContext(1)(existingContext).getValue(
-        stanzaPriorityBoostContextKey
-      )
+        stanzaPriorityBoostContextKey,
+      ),
     ).toEqual(3);
   });
 
   it('should add negative priority boost if it exists already', function () {
     const existingContext = ROOT_CONTEXT.setValue(
       stanzaPriorityBoostContextKey,
-      2
+      2,
     );
     expect(
       addPriorityBoostToContext(1)(existingContext).getValue(
-        stanzaPriorityBoostContextKey
-      )
+        stanzaPriorityBoostContextKey,
+      ),
     ).toEqual(3);
   });
 
   it('should remove priority boost if it cancels out the existing boost value', function () {
     const existingContext = ROOT_CONTEXT.setValue(
       stanzaPriorityBoostContextKey,
-      2
+      2,
     );
     expect(
       addPriorityBoostToContext(-2)(existingContext).getValue(
-        stanzaPriorityBoostContextKey
-      )
+        stanzaPriorityBoostContextKey,
+      ),
     ).toBeUndefined();
   });
 });

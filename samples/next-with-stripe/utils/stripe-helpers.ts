@@ -2,7 +2,7 @@ import { type StripeAPIProduct } from './stripe-api';
 
 export function formatAmountForDisplay(
   amount: number,
-  currency: string
+  currency: string,
 ): string {
   const numberFormat = new Intl.NumberFormat(['en-US'], {
     style: 'currency',
@@ -14,7 +14,7 @@ export function formatAmountForDisplay(
 
 export function formatAmountForStripe(
   amount: number,
-  currency: string
+  currency: string,
 ): number {
   const numberFormat = new Intl.NumberFormat(['en-US'], {
     style: 'currency',
@@ -33,7 +33,7 @@ export function formatAmountForStripe(
 
 export function formatAmountFromStripe(
   amount: number,
-  currency: string
+  currency: string,
 ): number {
   const numberFormat = new Intl.NumberFormat(['en-US'], {
     style: 'currency',

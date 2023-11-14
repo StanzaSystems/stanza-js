@@ -24,17 +24,17 @@ describe('enrichContextWithStanzaBaggage', function () {
     function (baggageEntries) {
       const contextWithFeatureBaggage = propagation.setBaggage(
         EMPTY_CONTEXT,
-        propagation.createBaggage(baggageEntries)
+        propagation.createBaggage(baggageEntries),
       );
 
       expect(
-        enrichContextWithStanzaBaggage(contextWithFeatureBaggage)
+        enrichContextWithStanzaBaggage(contextWithFeatureBaggage),
       ).toHaveBaggage({
         'stz-feat': { value: 'testFeature' },
         'uberctx-stz-feat': { value: 'testFeature' },
         'ot-baggage-stz-feat': { value: 'testFeature' },
       });
-    }
+    },
   );
 
   it.each([
@@ -55,22 +55,22 @@ describe('enrichContextWithStanzaBaggage', function () {
     function (baggageEntries) {
       const contextWithFeatureBaggage = propagation.setBaggage(
         EMPTY_CONTEXT,
-        propagation.createBaggage(baggageEntries)
+        propagation.createBaggage(baggageEntries),
       );
 
       expect(
-        enrichContextWithStanzaBaggage(contextWithFeatureBaggage)
+        enrichContextWithStanzaBaggage(contextWithFeatureBaggage),
       ).toHaveBaggage({
         'stz-feat': { value: 'testFeature' },
         'uberctx-stz-feat': { value: 'testFeature' },
         'ot-baggage-stz-feat': { value: 'testFeature' },
       });
-    }
+    },
   );
 
   it('should not enrich an empty context', function () {
     expect(enrichContextWithStanzaBaggage(EMPTY_CONTEXT)).toEqual(
-      EMPTY_CONTEXT
+      EMPTY_CONTEXT,
     );
   });
 
@@ -79,10 +79,10 @@ describe('enrichContextWithStanzaBaggage', function () {
       EMPTY_CONTEXT,
       propagation.createBaggage({
         'another-baggage': { value: 'test value' },
-      })
+      }),
     );
     expect(
-      enrichContextWithStanzaBaggage(contextWithNonStanzaBaggage)
+      enrichContextWithStanzaBaggage(contextWithNonStanzaBaggage),
     ).toHaveBaggage({
       'another-baggage': { value: 'test value' },
     });

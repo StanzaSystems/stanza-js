@@ -15,7 +15,7 @@ type AsyncFn<TArgs extends any[], TResult> = (
 export const wrapEventsAsync =
   <TArgs extends any[], TResult>(
     fn: AsyncFn<TArgs, TResult>,
-    events: WrapEvents<TResult, TArgs> = {}
+    events: WrapEvents<TResult, TArgs> = {},
   ): AsyncFn<TArgs, TResult> =>
   async (...args: TArgs): Promise<TResult> => {
     const fetchGuardStart = performance.now();
@@ -30,7 +30,7 @@ export const wrapEventsAsync =
     } finally {
       const fetchGuardEnd = performance.now();
       Promise.resolve(
-        events.duration?.(fetchGuardEnd - fetchGuardStart, result, ...args)
+        events.duration?.(fetchGuardEnd - fetchGuardStart, result, ...args),
       ).catch(() => {});
     }
   };

@@ -26,7 +26,7 @@ export const eventDataToGuardResolutionAttributes = (
   data: DefaultContextData &
     GuardData &
     FeatureData &
-    ReasonData & { mode: GuardMode }
+    ReasonData & { mode: GuardMode },
 ): GuardResolutionAttributes => ({
   ...eventDataToRequestAttributes(data),
   config_state: data.configState,

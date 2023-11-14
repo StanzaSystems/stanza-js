@@ -16,14 +16,14 @@ export class HeadersSpanEnhancer implements SpanEnhancer {
 
   enhanceWithRequest(span: Span, getHeaderValue: HeaderGetter): void {
     const enhancer = this.headersSpanEnhancerConfiguredManager.getEntity(
-      context.active()
+      context.active(),
     );
     enhancer.enhanceWithRequest(span, getHeaderValue);
   }
 
   enhanceWithResponse(span: Span, getHeaderValue: HeaderGetter): void {
     const enhancer = this.headersSpanEnhancerConfiguredManager.getEntity(
-      context.active()
+      context.active(),
     );
     enhancer.enhanceWithResponse(span, getHeaderValue);
   }

@@ -24,11 +24,10 @@ import { createUserAgentHeader } from '../../utils/userAgentHeader';
 export class StanzaMetricExporter implements PushMetricExporter {
   private exporter: InMemoryMetricExporter | OTLPMetricExporter =
     new InMemoryMetricExporter(AggregationTemporality.CUMULATIVE);
-
   private collectorUrl = '';
   constructor(
     private readonly serviceName: string,
-    private readonly serviceRelease: string
+    private readonly serviceRelease: string,
   ) {
     let serviceConfig = getServiceConfig();
     let authToken = getStanzaAuthToken();
@@ -51,7 +50,7 @@ export class StanzaMetricExporter implements PushMetricExporter {
 
   private updateExporter(
     { config: { metricConfig } }: ServiceConfig,
-    authToken: string
+    authToken: string,
   ) {
     const metadata = new Metadata();
     metadata.add('Authorization', `bearer ${authToken}`);
@@ -60,7 +59,7 @@ export class StanzaMetricExporter implements PushMetricExporter {
       createUserAgentHeader({
         serviceName: this.serviceName,
         serviceRelease: this.serviceRelease,
-      })
+      }),
     );
     const prevExporter = this.exporter;
     this.exporter = new OTLPMetricExporter({
@@ -94,7 +93,7 @@ export class StanzaMetricExporter implements PushMetricExporter {
           {
             ...hubService.getServiceMetadata(),
             oTelAddress,
-          }
+          },
         )
         .catch(() => {});
       originalCallback(result);

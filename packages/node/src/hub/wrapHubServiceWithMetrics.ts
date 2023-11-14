@@ -174,7 +174,7 @@ export function wrapHubServiceWithMetrics(hubService: HubService): HubService {
             clientId,
             environment,
             customerId,
-          }
+          },
         );
       },
       failure: async () => {

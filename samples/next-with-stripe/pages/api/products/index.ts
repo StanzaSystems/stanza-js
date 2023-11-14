@@ -21,8 +21,8 @@ const handler: NextApiHandler = async (req, res) => {
   const searchString = req.query.search?.toString() ?? '';
   res.json(
     resultProducts.filter(({ name }) =>
-      name.toLowerCase().includes(searchString.toLowerCase())
-    )
+      name.toLowerCase().includes(searchString.toLowerCase()),
+    ),
   );
 };
 

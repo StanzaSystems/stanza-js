@@ -8,7 +8,7 @@ import { TraceConfigOverrideAdditionalInfoPropagator } from './propagation/Trace
 
 export const addInstrumentation = async (
   serviceName: string,
-  serviceRelease: string
+  serviceRelease: string,
 ) => {
   const { HttpInstrumentation } = await import(
     '@opentelemetry/instrumentation-http'

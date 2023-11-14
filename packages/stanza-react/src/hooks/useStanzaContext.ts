@@ -4,7 +4,7 @@ import { StanzaReactContext } from '../context/StanzaContext';
 import { StanzaContextName } from '../context/StanzaContextName';
 
 export const useStanzaContext = (
-  contextName?: string
+  contextName?: string,
 ): StanzaContext | undefined => {
   const providedContextName = useContext(StanzaContextName);
   const [state, setState] = useState<StanzaContext | undefined>();
@@ -20,7 +20,7 @@ export const useStanzaContext = (
 
   if (resultContextName === undefined) {
     throw Error(
-      'Component needs to be wrapped with WithStanzaContextName to use useStanzaContext without a contextName parameter'
+      'Component needs to be wrapped with WithStanzaContextName to use useStanzaContext without a contextName parameter',
     );
   }
 

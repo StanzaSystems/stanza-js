@@ -12,11 +12,11 @@ export const createContext = (
   name: string,
   featureStates: FeatureState[],
   enablementNumber: number,
-  ready = false
+  ready = false,
 ): StanzaContext => {
   const features = createFeaturesFromFeatureState(
     featureStates,
-    enablementNumber
+    enablementNumber,
   ).reduce(groupBy('name', identity), {});
 
   return {
@@ -48,11 +48,11 @@ export function equals(context: StanzaContext, other: StanzaContext): boolean {
 
 export function createFeaturesFromFeatureState(
   featureResponse: FeatureState[],
-  enablementNumber: number
+  enablementNumber: number,
 ): StanzaFeature[] {
   return featureResponse
     .map((featureState) =>
-      createFeatureFromFeatureState(featureState, enablementNumber)
+      createFeatureFromFeatureState(featureState, enablementNumber),
     )
     .filter((feature): feature is StanzaFeature => feature !== undefined);
 }
@@ -65,7 +65,7 @@ export function createFeatureFromFeatureState(
     messageDisabled,
     lastRefreshTime,
   }: FeatureState,
-  enablementNumber: number
+  enablementNumber: number,
 ): StanzaFeature | undefined {
   if (enabledPercent >= 100) {
     return {

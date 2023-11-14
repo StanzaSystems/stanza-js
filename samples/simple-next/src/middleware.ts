@@ -35,7 +35,7 @@ export default stanzaSession().withStanzaSessionMiddleware((req) => {
         headers: {
           testRewriteResponseHeader: 'testRewriteResponseHeaderValue',
         },
-      }
+      },
     );
   }
   if (req.nextUrl.pathname === '/api/test/redirect') {
@@ -46,7 +46,7 @@ export default stanzaSession().withStanzaSessionMiddleware((req) => {
         headers: {
           testRewriteResponseHeader: 'testRewriteResponseHeaderValue',
         },
-      }
+      },
     );
   }
   if (req.nextUrl.pathname === '/api/test/json') {
@@ -56,7 +56,7 @@ export default stanzaSession().withStanzaSessionMiddleware((req) => {
         headers: {
           testRewriteJsonHeader: 'testRewriteJsonHeaderValue',
         },
-      }
+      },
     );
   }
   return undefined;

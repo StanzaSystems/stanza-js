@@ -5,7 +5,7 @@ type GuardConfigModule = typeof guardConfigModuleImport;
 
 const STANZA_GUARD_CONFIG_SYMBOL = Symbol.for('Guard Config');
 const STANZA_GUARD_CONFIG_LISTENERS_SYMBOL = Symbol.for(
-  'Guard Config Listeners'
+  'Guard Config Listeners',
 );
 describe('guardConfig', function () {
   let guardConfigModule: GuardConfigModule;
@@ -113,7 +113,7 @@ describe('guardConfig', function () {
 
     const unsubscribe1 = guardConfigModule.addGuardConfigListener(
       'testGuard',
-      listener1
+      listener1,
     );
     guardConfigModule.addGuardConfigListener('testGuard', listener2);
 
@@ -151,7 +151,7 @@ describe('guardConfig', function () {
 
     const unsubscribe = guardConfigModule.addGuardConfigListener(
       'testGuard',
-      listener
+      listener,
     );
 
     expect(unsubscribe).not.toThrow();

@@ -15,7 +15,7 @@ export class StanzaConfigEntityManager<T> {
       state.initialized &&
         state.data !== undefined &&
         this.updateServiceEntity(state.data.config);
-    }
+    },
   );
 
   private readonly unsubscribeGuardConfigListeners: Array<() => void> = [];
@@ -24,13 +24,13 @@ export class StanzaConfigEntityManager<T> {
     private readonly options: {
       getInitial: () => T;
       createWithServiceConfig: (
-        serviceConfig: NonNullable<ServiceConfig['config']>
+        serviceConfig: NonNullable<ServiceConfig['config']>,
       ) => T;
       createWithGuardConfig?: (
-        guardConfig: NonNullable<GuardConfig['config']>
+        guardConfig: NonNullable<GuardConfig['config']>,
       ) => T | undefined;
       cleanup: (entity: T) => Promise<void>;
-    }
+    },
   ) {
     this.serviceEntity = this.options.getInitial();
 
@@ -51,7 +51,7 @@ export class StanzaConfigEntityManager<T> {
       u();
     });
     await Promise.all(
-      this.getAllEntities().map(async (entity) => this.options.cleanup(entity))
+      this.getAllEntities().map(async (entity) => this.options.cleanup(entity)),
     );
   }
 
@@ -63,7 +63,7 @@ export class StanzaConfigEntityManager<T> {
   }
 
   private updateServiceEntity(
-    serviceConfig: NonNullable<ServiceConfig['config']>
+    serviceConfig: NonNullable<ServiceConfig['config']>,
   ) {
     this.serviceEntity = this.options.createWithServiceConfig(serviceConfig);
   }
@@ -87,14 +87,14 @@ export class StanzaConfigEntityManager<T> {
             this.guardEntities[guardName] = guardEntity;
           }
         }
-      })
+      }),
     );
 
     const guardConfig = getGuardConfig(guardName);
 
     if (guardConfig?.config !== undefined) {
       const guardEntity = this.options.createWithGuardConfig?.(
-        guardConfig.config
+        guardConfig.config,
       );
       if (this.guardEntities[guardName] !== undefined) {
         void this.options.cleanup(this.guardEntities[guardName]);

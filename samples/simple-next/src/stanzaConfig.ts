@@ -6,7 +6,7 @@ const stanzaBrowserKey = process.env.NEXT_PUBLIC_STANZA_BROWSER_KEY;
 
 if (typeof stanzaBrowserKey !== 'string') {
   throw new Error(
-    'The NEXT_PUBLIC_STANZA_BROWSER_KEY environment variable has not been set. It must be set to a valid key at build time for this sample application to work correctly.'
+    'The NEXT_PUBLIC_STANZA_BROWSER_KEY environment variable has not been set. It must be set to a valid key at build time for this sample application to work correctly.',
   );
 }
 
@@ -14,7 +14,7 @@ const stanzaApiKey = process.env.NEXT_PUBLIC_STANZA_API_KEY;
 
 if (typeof stanzaApiKey !== 'string') {
   throw new Error(
-    'NEXT_PUBLIC_STANZA_API_KEY is a required environment variable'
+    'NEXT_PUBLIC_STANZA_API_KEY is a required environment variable',
   );
 }
 

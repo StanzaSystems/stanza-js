@@ -68,7 +68,7 @@ describe('getFeatureStates', () => {
     mockIsFeatureFresh.mockImplementation(() => true);
 
     await expect(
-      getFeatureStates(['testFeature1', 'testFeature2'])
+      getFeatureStates(['testFeature1', 'testFeature2']),
     ).resolves.toBe(staleFeatureStates);
   });
 
@@ -76,7 +76,7 @@ describe('getFeatureStates', () => {
     mockIsFeatureFresh.mockImplementation(() => false);
 
     await expect(
-      getFeatureStates(['testFeature1', 'testFeature2'])
+      getFeatureStates(['testFeature1', 'testFeature2']),
     ).resolves.toBe(hotFeatureStates);
   });
 
@@ -85,7 +85,7 @@ describe('getFeatureStates', () => {
     mockGetFeaturesStatesStale.mockImplementation(() => []);
 
     await expect(
-      getFeatureStates(['testFeature1', 'testFeature2'])
+      getFeatureStates(['testFeature1', 'testFeature2']),
     ).resolves.toBe(hotFeatureStates);
   });
 });

@@ -11,7 +11,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -29,16 +29,15 @@ export default async function handler(
   }
   if (paymentIntentId !== undefined) {
     try {
-      const currentIntent = await stripe.paymentIntents.retrieve(
-        paymentIntentId
-      );
+      const currentIntent =
+        await stripe.paymentIntents.retrieve(paymentIntentId);
       // If PaymentIntent has been created, just update the amount.
       if (currentIntent !== undefined) {
         const updatedIntent = await stripe.paymentIntents.update(
           paymentIntentId,
           {
             amount: formatAmountForStripe(amount, CURRENCY),
-          }
+          },
         );
         res.status(200).json(updatedIntent);
         return;

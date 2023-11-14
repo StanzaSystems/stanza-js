@@ -43,7 +43,7 @@ StanzaBrowser.contextChanges.addChangeListener(async function (change) {
   const text = context.features.search.message ?? '';
   await updateState(
     document.querySelector<HTMLDivElement>('#stanzaState')!,
-    text
+    text,
   );
   void new Notification('Status Notifications', { body: text });
 });

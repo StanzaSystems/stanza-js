@@ -39,7 +39,7 @@ describe('fetchFeatureStates', () => {
           enabledPercent: 100,
           lastRefreshTime: 123,
         },
-      ]
+      ],
     );
   });
 
@@ -97,7 +97,7 @@ describe('fetchFeatureStates', () => {
           enabledPercent: 100,
           lastRefreshTime: 123,
         },
-      ]
+      ],
     );
   });
 
@@ -135,7 +135,7 @@ describe('fetchFeatureStates', () => {
           enabledPercent: 80,
           lastRefreshTime: 123,
         },
-      ] satisfies FeatureState[]
+      ] satisfies FeatureState[],
     );
   });
 
@@ -167,7 +167,7 @@ describe('fetchFeatureStates', () => {
           enabledPercent: 100,
           lastRefreshTime: 123,
         },
-      ]
+      ],
     );
   });
 
@@ -211,7 +211,7 @@ describe('fetchFeatureStates', () => {
           enabledPercent: 80,
           lastRefreshTime: 123,
         },
-      ]
+      ],
     );
   });
 });

@@ -42,7 +42,7 @@ vi.mock('./guard/ingressTokenValidator', async (importOriginal) => {
   return {
     ...original,
     initIngressTokenValidator: vi.fn((...args) =>
-      original.initIngressTokenValidator(...args)
+      original.initIngressTokenValidator(...args),
     ),
   } satisfies IngressTokenValidatorModule;
 });
@@ -60,7 +60,7 @@ const getQuotaMock = Object.assign(
   }),
   {
     mockImplementationDeferred: function (
-      this: Mock<GetQuotaFnParameters, GetQuotaFnReturnType>
+      this: Mock<GetQuotaFnParameters, GetQuotaFnReturnType>,
     ) {
       const deferred: {
         resolve: (value: Awaited<GetQuotaFnReturnType>) => void;
@@ -78,7 +78,7 @@ const getQuotaMock = Object.assign(
 
       return deferred;
     },
-  }
+  },
 );
 
 beforeEach(() => {
@@ -151,7 +151,7 @@ describe('stanzaGuard', () => {
                 tokenReason: 'TOKEN_EVAL_DISABLED',
                 quotaReason: 'QUOTA_GRANTED',
                 mode: reportOnly ? 'report_only' : 'normal',
-              }
+              },
             );
           });
 
@@ -190,7 +190,7 @@ describe('stanzaGuard', () => {
                 tokenReason: 'TOKEN_EVAL_DISABLED',
                 quotaReason: 'QUOTA_GRANTED',
                 mode: reportOnly ? 'report_only' : 'normal',
-              }
+              },
             );
           });
 
@@ -213,12 +213,12 @@ describe('stanzaGuard', () => {
               ROOT_CONTEXT,
               propagation.createBaggage({
                 'stz-feat': { value: 'testBaggageFeature' },
-              })
+              }),
             );
 
             const guardStuffPromise = context.with(
               contextWithBaggage,
-              guardedDoStuff
+              guardedDoStuff,
             );
 
             deferred.resolve({ granted: true, token: 'testToken' });
@@ -238,7 +238,7 @@ describe('stanzaGuard', () => {
                 tokenReason: 'TOKEN_EVAL_DISABLED',
                 quotaReason: 'QUOTA_GRANTED',
                 mode: reportOnly ? 'report_only' : 'normal',
-              }
+              },
             );
           });
         });
@@ -266,7 +266,7 @@ describe('stanzaGuard', () => {
                 tokenReason: 'TOKEN_NOT_EVAL',
                 quotaReason: 'QUOTA_NOT_EVAL',
                 mode: 'unspecified',
-              }
+              },
             );
           });
 
@@ -304,7 +304,7 @@ describe('stanzaGuard', () => {
                 tokenReason: 'TOKEN_EVAL_DISABLED',
                 quotaReason: 'QUOTA_ERROR',
                 mode: reportOnly ? 'report_only' : 'normal',
-              }
+              },
             );
           });
 
@@ -342,7 +342,7 @@ describe('stanzaGuard', () => {
                 tokenReason: 'TOKEN_EVAL_DISABLED',
                 quotaReason: 'QUOTA_TIMEOUT',
                 mode: reportOnly ? 'report_only' : 'normal',
-              }
+              },
             );
           });
 
@@ -383,7 +383,7 @@ describe('stanzaGuard', () => {
                 tokenReason: 'TOKEN_EVAL_DISABLED',
                 quotaReason: 'QUOTA_LOCAL_ERROR',
                 mode: reportOnly ? 'report_only' : 'normal',
-              }
+              },
             );
           });
 
@@ -406,7 +406,7 @@ describe('stanzaGuard', () => {
 
             const guardStuffPromise = context.with(
               context.active().setValue(stanzaTokenContextKey, 'tokenKey'),
-              guardedDoStuff
+              guardedDoStuff,
             );
 
             await vi.advanceTimersByTimeAsync(1000);
@@ -426,7 +426,7 @@ describe('stanzaGuard', () => {
                 tokenReason: 'TOKEN_VALIDATION_TIMEOUT',
                 quotaReason: 'QUOTA_EVAL_DISABLED',
                 mode: reportOnly ? 'report_only' : 'normal',
-              }
+              },
             );
           });
 
@@ -467,7 +467,7 @@ describe('stanzaGuard', () => {
                 tokenReason: 'TOKEN_VALIDATION_ERROR',
                 quotaReason: 'QUOTA_EVAL_DISABLED',
                 mode: reportOnly ? 'report_only' : 'normal',
-              }
+              },
             );
           });
 
@@ -515,7 +515,7 @@ describe('stanzaGuard', () => {
                 tokenReason: 'TOKEN_VALIDATION_ERROR',
                 quotaReason: 'QUOTA_LOCAL_ERROR',
                 mode: reportOnly ? 'report_only' : 'normal',
-              }
+              },
             );
           });
 
@@ -570,7 +570,7 @@ describe('stanzaGuard', () => {
                 tokenReason: 'TOKEN_VALIDATION_ERROR',
                 quotaReason: 'QUOTA_GRANTED',
                 mode: reportOnly ? 'report_only' : 'normal',
-              }
+              },
             );
           });
 
@@ -624,7 +624,7 @@ describe('stanzaGuard', () => {
                 tokenReason: 'TOKEN_VALID',
                 quotaReason: 'QUOTA_LOCAL_ERROR',
                 mode: reportOnly ? 'report_only' : 'normal',
-              }
+              },
             );
           });
         });
@@ -668,7 +668,7 @@ describe('stanzaGuard', () => {
                 tokenReason: 'TOKEN_EVAL_DISABLED',
                 quotaReason: 'QUOTA_BLOCKED',
                 mode: reportOnly ? 'report_only' : 'normal',
-              }
+              },
             );
           });
 
@@ -711,7 +711,7 @@ describe('stanzaGuard', () => {
                 tokenReason: 'TOKEN_EVAL_DISABLED',
                 quotaReason: 'QUOTA_BLOCKED',
                 mode: reportOnly ? 'report_only' : 'normal',
-              }
+              },
             );
           });
 
@@ -734,12 +734,12 @@ describe('stanzaGuard', () => {
               ROOT_CONTEXT,
               propagation.createBaggage({
                 'stz-feat': { value: 'testBaggageFeature' },
-              })
+              }),
             );
 
             const guardStuffPromise = context.with(
               contextWithBaggage,
-              guardedDoStuff
+              guardedDoStuff,
             );
 
             deferred.resolve({ granted: false });
@@ -763,7 +763,7 @@ describe('stanzaGuard', () => {
                 tokenReason: 'TOKEN_EVAL_DISABLED',
                 quotaReason: 'QUOTA_BLOCKED',
                 mode: reportOnly ? 'report_only' : 'normal',
-              }
+              },
             );
           });
         });
@@ -800,7 +800,7 @@ describe('stanzaGuard', () => {
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
-              }
+              },
             );
           });
 
@@ -836,7 +836,7 @@ describe('stanzaGuard', () => {
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
-              }
+              },
             );
           });
 
@@ -859,12 +859,12 @@ describe('stanzaGuard', () => {
               ROOT_CONTEXT,
               propagation.createBaggage({
                 'stz-feat': { value: 'testBaggageFeature' },
-              })
+              }),
             );
 
             const guardStuffPromise = context.with(
               contextWithBaggage,
-              guardedDoStuff
+              guardedDoStuff,
             );
 
             mockMessageBusEmit.mockReset();
@@ -881,7 +881,7 @@ describe('stanzaGuard', () => {
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
-              }
+              },
             );
           });
         });
@@ -918,7 +918,7 @@ describe('stanzaGuard', () => {
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
-              }
+              },
             );
           });
 
@@ -954,7 +954,7 @@ describe('stanzaGuard', () => {
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
-              }
+              },
             );
           });
 
@@ -979,12 +979,12 @@ describe('stanzaGuard', () => {
               ROOT_CONTEXT,
               propagation.createBaggage({
                 'stz-feat': { value: 'testBaggageFeature' },
-              })
+              }),
             );
 
             const guardStuffPromise = context.with(
               contextWithBaggage,
-              guardedDoStuff
+              guardedDoStuff,
             );
 
             deferred.resolve({ granted: true, token: 'testToken' });
@@ -999,7 +999,7 @@ describe('stanzaGuard', () => {
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
-              }
+              },
             );
           });
         });
@@ -1040,7 +1040,7 @@ describe('stanzaGuard', () => {
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
-              }
+              },
             );
 
             vi.useRealTimers();
@@ -1082,7 +1082,7 @@ describe('stanzaGuard', () => {
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
-              }
+              },
             );
 
             vi.useRealTimers();
@@ -1110,12 +1110,12 @@ describe('stanzaGuard', () => {
               ROOT_CONTEXT,
               propagation.createBaggage({
                 'stz-feat': { value: 'testBaggageFeature' },
-              })
+              }),
             );
 
             const guardStuffPromise = context.with(
               contextWithBaggage,
-              guardedDoStuff
+              guardedDoStuff,
             );
 
             await vi.advanceTimersByTimeAsync(123.456);
@@ -1133,13 +1133,13 @@ describe('stanzaGuard', () => {
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
-              }
+              },
             );
 
             vi.useRealTimers();
           });
         });
-      }
+      },
     );
   });
 });

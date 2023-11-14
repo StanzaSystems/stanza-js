@@ -31,21 +31,21 @@ describe('features', () => {
 
   it('gets a hot features', async () => {
     const features = ['featured', 'search', 'checkout'].sort((a, b) =>
-      a.localeCompare(b)
+      a.localeCompare(b),
     );
     const hotFeatureStates = (await Stanza.getFeatureStatesHot(features)).sort(
-      (a, b) => a.featureName.localeCompare(b.featureName)
+      (a, b) => a.featureName.localeCompare(b.featureName),
     );
     const cachedFeatures = features
       .map((feature) =>
-        utils.globals.getStateProvider().getFeatureState(feature)
+        utils.globals.getStateProvider().getFeatureState(feature),
       )
       .filter(Boolean);
 
     assert.deepEqual(
       cachedFeatures,
       hotFeatureStates,
-      'cached context equals result of get context hot'
+      'cached context equals result of get context hot',
     );
   });
 
@@ -85,13 +85,13 @@ describe('features', () => {
       expect.objectContaining({
         featureName: 'productSummary',
         enabledPercent: 100,
-      })
+      }),
     );
     expect(browserFeatures).toContainEqual(
       expect.objectContaining({
         featureName: 'shipping',
         enabledPercent: 0,
-      })
+      }),
     );
   });
 });

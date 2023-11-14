@@ -7,7 +7,7 @@ interface WithStanzaContextNameProps {
 }
 
 export const WithStanzaContextName: React.FC<WithStanzaContextNameProps> = (
-  props
+  props,
 ) => {
   const { children, name } = props;
 

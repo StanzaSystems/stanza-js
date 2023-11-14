@@ -6,7 +6,7 @@ export interface FeatureAttributes extends Attributes {
 }
 
 export const eventDataToFeatureAttributes = (
-  data: FeatureData
+  data: FeatureData,
 ): FeatureAttributes => ({
   feature: data.featureName,
 });

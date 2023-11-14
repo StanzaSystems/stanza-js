@@ -5,7 +5,7 @@ import { type StanzaKey } from './model';
 
 export const getStanzaBaggageEntry = (
   key: StanzaKey,
-  baggage: Baggage
+  baggage: Baggage,
 ): BaggageEntry | undefined => {
   return getStanzaBaggageKeys(key)
     .map((key) => baggage.getEntry(key))

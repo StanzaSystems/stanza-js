@@ -1,7 +1,7 @@
 import * as oTelApi from '@opentelemetry/api';
 
 const STANZA_PRIORITY_BOOST_CONTEXT_KEY_SYMBOL = Symbol.for(
-  'Stanza Priority Boost Context Key'
+  'Stanza Priority Boost Context Key',
 );
 
 interface StanzaPriorityBoostContextKeyGlobal {

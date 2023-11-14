@@ -34,7 +34,7 @@ describe('InMemoryLocalStateProvider', () => {
     expect(() => {
       stateProvider.getFeatureState('test');
     }).toThrow(
-      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
+      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.',
     );
     expect(() => {
       stateProvider.setFeatureState({
@@ -43,22 +43,22 @@ describe('InMemoryLocalStateProvider', () => {
         lastRefreshTime: 0,
       });
     }).toThrow(
-      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
+      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.',
     );
     expect(() => {
       stateProvider.getAllFeatureStates();
     }).toThrow(
-      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
+      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.',
     );
     expect(() => {
       stateProvider.addChangeListener(() => {});
     }).toThrow(
-      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
+      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.',
     );
     expect(() => {
       stateProvider.removeChangeListener(() => {});
     }).toThrow(
-      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
+      'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.',
     );
   });
 
@@ -98,7 +98,7 @@ describe('InMemoryLocalStateProvider', () => {
     it('should store and retrieve a feature', () => {
       stateProvider.setFeatureState(testFeatures.first);
       expect(stateProvider.getFeatureState('firstFeature')).toBe(
-        testFeatures.first
+        testFeatures.first,
       );
     });
 

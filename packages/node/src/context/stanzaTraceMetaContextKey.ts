@@ -1,7 +1,7 @@
 import * as oTelApi from '@opentelemetry/api';
 
 const STANZA_TRACE_META_CONTEXT_KEY_SYMBOL = Symbol.for(
-  'StanzaTraceMetaContextKey'
+  'StanzaTraceMetaContextKey',
 );
 
 interface StanzaTraceMetaContextKeyGlobal {

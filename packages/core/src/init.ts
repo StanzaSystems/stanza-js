@@ -6,7 +6,7 @@ import { createInMemoryLocalStateProvider } from './utils/inMemoryLocalStateProv
 
 export const init = (
   config: StanzaCoreConfig,
-  provider?: LocalStateProvider
+  provider?: LocalStateProvider,
 ): void => {
   try {
     void new URL(config.url);

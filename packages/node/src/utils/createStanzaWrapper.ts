@@ -5,7 +5,7 @@ export const createStanzaWrapper = <
   TReturn,
   TBoundReturn = TReturn,
 >(
-  bind: (fn: Fn<TArgs, TReturn>) => Fn<TArgs, TBoundReturn>
+  bind: (fn: Fn<TArgs, TReturn>) => Fn<TArgs, TBoundReturn>,
 ) => {
   return {
     bind,
@@ -24,7 +24,7 @@ export const createStanzaWrapper = <
   function apply(
     fn: Fn<TArgs, TReturn>,
     thisArg?: ThisParameterType<Fn<TArgs, TReturn>>,
-    args?: TArgs
+    args?: TArgs,
   ): TBoundReturn {
     return args !== undefined
       ? bind(fn).apply(thisArg, args)
