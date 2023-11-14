@@ -1,7 +1,7 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nx"],
+  "plugins": ["@nx", "plugin:prettier/recommended"],
   "overrides": [
     {
       "files": ["*.json"],
