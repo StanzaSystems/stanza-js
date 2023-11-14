@@ -1,9 +1,8 @@
 import express from 'express';
-import * as dotenv from 'dotenv';
+import 'dotenv/config';
 import cors from 'cors';
 
 const app = express();
-dotenv.config();
 
 const corsOptions = {
   origin: 'http://localhost:3000',
