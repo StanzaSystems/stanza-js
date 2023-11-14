@@ -6,7 +6,6 @@
   "author": "Stanza",
   "license": "Apache-2.0",
   "dependencies": {
-    "cross-fetch": "^4.0.0",
     "@getstanza/core": "0.0.6-beta"
   },
   "devDependencies": {

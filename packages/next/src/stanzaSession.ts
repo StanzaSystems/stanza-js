@@ -41,7 +41,7 @@ export function stanzaSession (options: Partial<StanzaSessionOptions> = {
   function withStanzaSession (handler: ((req: NextApiRequestWithStanzaSession, res: NextApiResponse) => unknown | Promise<unknown>)): NextApiHandler {
     return async (req, res) => {
       const enablementNumberMaybe = await getEnablementNumber(req)
-      const enablementNumber = enablementNumberMaybe !== undefined ? enablementNumberMaybe : await generateEnablementNumber()
+      const enablementNumber = enablementNumberMaybe ?? await generateEnablementNumber()
       if (enablementNumberMaybe === undefined) commitHeader(res, enablementNumber)
 
       const reqWithStanzaSession: NextApiRequestWithStanzaSession = Object.assign(req, {

@@ -7,7 +7,9 @@
       "files": ["*.json"],
       "parser": "jsonc-eslint-parser",
       "rules": {
-        "@nx/dependency-checks": "error"
+        "@nx/dependency-checks": ["error", {
+          "ignoredFiles": ["**/*.test.(ts|js)", "**/__tests__/**", "**/vite.config.ts", "**/*.d.ts"]
+        }]
       }
     },
     {

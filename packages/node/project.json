@@ -16,7 +16,7 @@
         "format": ["esm", "cjs"],
         "compiler": "babel",
         "external": "all",
-        "updateBuildableProjectDepsInPackageJson": false
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "publish": {
@@ -24,7 +24,7 @@
       "dependsOn": ["build"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
@@ -35,7 +35,7 @@
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["coverage/packages/node"],
+      "outputs": ["{workspaceRoot}/coverage/packages/node"],
       "options": {
         "passWithNoTests": true,
         "reportsDirectory": "../../coverage/packages/node"
