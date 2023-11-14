@@ -1,18 +1,18 @@
-import { getFeatureStates } from './getFeatureStates';
-import { getFeatureStatesHot } from './getFeatureStatesHot';
-import { getFeatureStatesStale } from './getFeatureStatesStale';
-import * as globals from './globals';
-import { init } from './init';
-export * from './eventEmitter';
-export * from './withStanzaHeaders';
+import { getFeatureStates } from './getFeatureStates'
+import { getFeatureStatesHot } from './getFeatureStatesHot'
+import { getFeatureStatesStale } from './getFeatureStatesStale'
+import * as globals from './globals'
+import { init } from './init'
+export * from './eventEmitter'
+export * from './withStanzaHeaders'
 
-export type { FeatureState } from './models/featureState';
-export type { LocalStateProvider } from './models/localStateProvider';
-export type { StanzaCoreConfig } from './models/stanzaCoreConfig';
+export type { FeatureState } from './models/featureState'
+export type { LocalStateProvider } from './models/localStateProvider'
+export type { StanzaCoreConfig } from './models/stanzaCoreConfig'
 
 export const utils = {
-  globals,
-};
+  globals
+}
 
 export const Stanza = {
   init,
@@ -20,10 +20,10 @@ export const Stanza = {
   getFeatureStatesStale,
   getFeatureStates,
   featureChanges: globals.featureChanges,
-  enablementNumberChanges: globals.enablementNumberChanges,
-};
+  enablementNumberChanges: globals.enablementNumberChanges
+}
 
-export { identity } from './identity';
-export { groupBy } from './groupBy';
+export { identity } from './identity'
+export { groupBy } from './groupBy'
 
-export default Stanza;
+export default Stanza

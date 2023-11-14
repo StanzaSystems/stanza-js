@@ -1,4 +1,4 @@
-import { init } from '@getstanza/node';
+import { init } from '@getstanza/node'
 
 init({
   hubUrl: process.env.STANZA_HUB_ADDRESS,
@@ -7,5 +7,5 @@ init({
   serviceRelease: process.env.STANZA_SERVICE_RELEASE,
   environment: process.env.STANZA_ENVIRONMENT,
   requestTimeout: 2000,
-  skipTokenCache: true,
-}).catch(() => {});
+  skipTokenCache: true
+}).catch(() => {})

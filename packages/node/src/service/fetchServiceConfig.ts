@@ -1,21 +1,21 @@
-import { hubService } from '../global/hubService';
+import { hubService } from '../global/hubService'
 import {
   isServiceConfigInitialized,
-  updateServiceConfig,
-} from '../global/serviceConfig';
-import { type FetchServiceConfigOptions } from '../hub/hubService';
-import { type ServiceConfig } from '../hub/model';
+  updateServiceConfig
+} from '../global/serviceConfig'
+import { type FetchServiceConfigOptions } from '../hub/hubService'
+import { type ServiceConfig } from '../hub/model'
 
 export async function fetchServiceConfig(
-  options?: FetchServiceConfigOptions,
+  options?: FetchServiceConfigOptions
 ): Promise<ServiceConfig | null> {
-  let serviceConfig: ServiceConfig | null = null;
+  let serviceConfig: ServiceConfig | null = null
   try {
-    serviceConfig = await hubService.fetchServiceConfig(options);
+    serviceConfig = await hubService.fetchServiceConfig(options)
   } finally {
     if (!isServiceConfigInitialized() || serviceConfig !== null) {
-      updateServiceConfig(serviceConfig ?? undefined);
+      updateServiceConfig(serviceConfig ?? undefined)
     }
   }
-  return serviceConfig;
+  return serviceConfig
 }

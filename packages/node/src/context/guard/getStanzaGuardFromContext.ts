@@ -1,12 +1,12 @@
-import { type Context } from '@opentelemetry/api';
-import { stanzaGuardContextKey } from './stanzaGuardContextKey';
+import { type Context } from '@opentelemetry/api'
+import { stanzaGuardContextKey } from './stanzaGuardContextKey'
 
 export const getStanzaGuardFromContext = (
-  context: Context,
+  context: Context
 ): string | undefined => {
-  const contextValue = context.getValue(stanzaGuardContextKey);
+  const contextValue = context.getValue(stanzaGuardContextKey)
 
   return typeof contextValue === 'string' && contextValue !== ''
     ? contextValue
-    : undefined;
-};
+    : undefined
+}

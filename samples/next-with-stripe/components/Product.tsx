@@ -1,17 +1,17 @@
-import React from 'react';
-import { formatCurrencyString } from 'use-shopping-cart';
-import { type Product as DataProduct } from '../data/product';
+import React from 'react'
+import { formatCurrencyString } from 'use-shopping-cart'
+import { type Product as DataProduct } from '../data/product'
 
 interface ProductProps {
-  product: DataProduct;
-  addProduct?: (item: DataProduct) => void;
-  removeProduct?: (id: string) => void;
+  product: DataProduct
+  addProduct?: (item: DataProduct) => void
+  removeProduct?: (id: string) => void
 }
 
 const Product: React.FC<ProductProps> = ({
   product,
   addProduct = () => {},
-  removeProduct = () => {},
+  removeProduct = () => {}
 }) => {
   return (
     <div key={product.id} className="product">
@@ -27,13 +27,13 @@ const Product: React.FC<ProductProps> = ({
       <p className="price">
         {formatCurrencyString({
           value: product.price,
-          currency: product.currency,
+          currency: product.currency
         })}
       </p>
       <button
         className="cart-style-background"
         onClick={() => {
-          addProduct(product);
+          addProduct(product)
         }}
       >
         Add to cart
@@ -41,13 +41,13 @@ const Product: React.FC<ProductProps> = ({
       <button
         className="cart-style-background"
         onClick={() => {
-          removeProduct(product.id);
+          removeProduct(product.id)
         }}
       >
         Remove
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default Product;
+export default Product

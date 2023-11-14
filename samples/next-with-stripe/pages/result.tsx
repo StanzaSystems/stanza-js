@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react';
-import { type NextPage } from 'next';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import { useEffect, useState } from 'react'
+import { type NextPage } from 'next'
+import { useRouter } from 'next/router'
+import useSWR from 'swr'
 
-import PrintObject from '../components/PrintObject';
+import PrintObject from '../components/PrintObject'
 
-import { fetchGetJSON } from '../utils/api-helpers';
-import { useShoppingCart } from 'use-shopping-cart';
+import { fetchGetJSON } from '../utils/api-helpers'
+import { useShoppingCart } from 'use-shopping-cart'
 
 const ResultPage: NextPage = () => {
-  const [hasClearedCart, setHasClearedCart] = useState(false);
-  const router = useRouter();
-  const { clearCart } = useShoppingCart();
+  const [hasClearedCart, setHasClearedCart] = useState(false)
+  const router = useRouter()
+  const { clearCart } = useShoppingCart()
 
   // Fetch CheckoutSession from static page via
   // https://nextjs.org/docs/basic-features/data-fetching#static-generation
@@ -20,18 +20,18 @@ const ResultPage: NextPage = () => {
       ? // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `/api/checkout_sessions/${router.query.session_id}`
       : null,
-    fetchGetJSON,
-  );
+    fetchGetJSON
+  )
 
   useEffect(() => {
     if (data !== undefined && !hasClearedCart) {
-      setHasClearedCart(true);
-      clearCart();
+      setHasClearedCart(true)
+      clearCart()
     }
-  }, [data, clearCart, hasClearedCart]);
+  }, [data, clearCart, hasClearedCart])
 
   // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-  if (error) return <div>failed to load</div>;
+  if (error) return <div>failed to load</div>
 
   return (
     <div className="page-container">
@@ -41,7 +41,7 @@ const ResultPage: NextPage = () => {
       <PrintObject content={data ?? 'loading...'} />
       {hasClearedCart && <p>Cart cleared</p>}
     </div>
-  );
-};
+  )
+}
 
-export default ResultPage;
+export default ResultPage

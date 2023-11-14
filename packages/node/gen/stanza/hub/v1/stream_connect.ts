@@ -3,8 +3,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { UpdateStreamsRequest, UpdateStreamsResponse } from './stream_pb.js';
-import { MethodKind } from '@bufbuild/protobuf';
+import { UpdateStreamsRequest, UpdateStreamsResponse } from './stream_pb.js'
+import { MethodKind } from '@bufbuild/protobuf'
 
 /**
  * Experimental feature for fair prioritised balancing of streaming activities.
@@ -21,7 +21,7 @@ export const StreamBalancerService = {
       name: 'UpdateStreams',
       I: UpdateStreamsRequest,
       O: UpdateStreamsResponse,
-      kind: MethodKind.Unary,
-    },
-  },
-} as const;
+      kind: MethodKind.Unary
+    }
+  }
+} as const

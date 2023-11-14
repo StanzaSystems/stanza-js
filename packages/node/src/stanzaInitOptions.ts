@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import type pino from 'pino';
+import { z } from 'zod'
+import type pino from 'pino'
 
 const LOG_LEVELS = Object.keys({
   fatal: true,
@@ -7,8 +7,8 @@ const LOG_LEVELS = Object.keys({
   warn: true,
   info: true,
   debug: true,
-  trace: true,
-} satisfies Record<pino.Level, true>) as pino.Level[];
+  trace: true
+} satisfies Record<pino.Level, true>) as pino.Level[]
 
 export const stanzaInitOptions = z.object({
   hubUrl: z.string().url().describe('string (URL to a Hub instance)'),
@@ -24,10 +24,10 @@ export const stanzaInitOptions = z.object({
       LOG_LEVELS.map((v) => z.literal(v)) as [
         z.ZodLiteral<pino.Level>,
         z.ZodLiteral<pino.Level>,
-        ...Array<z.ZodLiteral<pino.Level>>,
-      ],
+        ...Array<z.ZodLiteral<pino.Level>>
+      ]
     )
-    .optional(),
-});
+    .optional()
+})
 
-export type StanzaInitOptions = z.infer<typeof stanzaInitOptions>;
+export type StanzaInitOptions = z.infer<typeof stanzaInitOptions>

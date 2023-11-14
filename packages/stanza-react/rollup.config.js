@@ -3,7 +3,7 @@ module.exports = function (config) {
     ...config,
     output: {
       ...config.output,
-      banner: () => '"use client";',
-    },
-  };
-};
+      banner: () => '"use client";'
+    }
+  }
+}

@@ -1,13 +1,13 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { type StanzaCoreConfig } from '../models/stanzaCoreConfig';
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { type StanzaCoreConfig } from '../models/stanzaCoreConfig'
 
-let { Stanza } = await import('../index');
+let { Stanza } = await import('../index')
 
 describe('init stanza', () => {
   beforeEach(async () => {
-    vi.resetModules();
-    Stanza = (await import('../index')).Stanza;
-  });
+    vi.resetModules()
+    Stanza = (await import('../index')).Stanza
+  })
 
   it('validates URL', () => {
     const config: StanzaCoreConfig = {
@@ -17,19 +17,19 @@ describe('init stanza', () => {
       contextConfigs: [
         {
           name: 'main',
-          features: ['featured', 'search', 'checkout'],
+          features: ['featured', 'search', 'checkout']
         },
         {
           name: 'details',
-          features: ['productSummary', 'pricing', 'shipping', 'checkout'],
-        },
-      ],
-    };
+          features: ['productSummary', 'pricing', 'shipping', 'checkout']
+        }
+      ]
+    }
 
     expect(() => {
-      Stanza.init(config);
-    }).toThrow('is not a valid url');
-  });
+      Stanza.init(config)
+    }).toThrow('is not a valid url')
+  })
 
   it('configures a stanza instance', () => {
     const config: StanzaCoreConfig = {
@@ -39,19 +39,19 @@ describe('init stanza', () => {
       contextConfigs: [
         {
           name: 'main',
-          features: ['featured', 'search', 'checkout'],
+          features: ['featured', 'search', 'checkout']
         },
         {
           name: 'details',
-          features: ['productSummary', 'pricing', 'shipping', 'checkout'],
-        },
-      ],
-    };
+          features: ['productSummary', 'pricing', 'shipping', 'checkout']
+        }
+      ]
+    }
 
     expect(() => {
-      Stanza.init(config);
-    }).not.toThrow();
-  });
+      Stanza.init(config)
+    }).not.toThrow()
+  })
 
   it('configures only one stanza', () => {
     const config: StanzaCoreConfig = {
@@ -61,19 +61,19 @@ describe('init stanza', () => {
       contextConfigs: [
         {
           name: 'main',
-          features: ['featured', 'search', 'checkout'],
+          features: ['featured', 'search', 'checkout']
         },
         {
           name: 'details',
-          features: ['productSummary', 'pricing', 'shipping', 'checkout'],
-        },
-      ],
-    };
+          features: ['productSummary', 'pricing', 'shipping', 'checkout']
+        }
+      ]
+    }
     expect(() => {
-      Stanza.init(config);
-    }).not.toThrow();
+      Stanza.init(config)
+    }).not.toThrow()
     expect(() => {
-      Stanza.init(config);
-    }).toThrow();
-  });
-});
+      Stanza.init(config)
+    }).toThrow()
+  })
+})

@@ -1,10 +1,10 @@
-import packageJson from '../../package.json';
+import packageJson from '../../package.json'
 
-const { version: sdkVersion } = packageJson;
+const { version: sdkVersion } = packageJson
 export const createUserAgentHeader = ({
   serviceName,
-  serviceRelease,
+  serviceRelease
 }: {
-  serviceName: string;
-  serviceRelease: string;
-}) => `${serviceName}/${serviceRelease} StanzaNodeSDK/${sdkVersion}`;
+  serviceName: string
+  serviceRelease: string
+}) => `${serviceName}/${serviceRelease} StanzaNodeSDK/${sdkVersion}`

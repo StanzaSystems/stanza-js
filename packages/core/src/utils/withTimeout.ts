@@ -7,28 +7,28 @@
 export const withTimeout = async <T>(
   timeout: number,
   timeoutMessage: string,
-  aPromise: Promise<T>,
+  aPromise: Promise<T>
 ): Promise<T> => {
-  let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+  let timeoutHandle: ReturnType<typeof setTimeout> | undefined
   try {
     return await Promise.race([
       aPromise,
       new Promise<T>((_resolve, reject) => {
         timeoutHandle = setTimeout(() => {
-          reject(new TimeoutError(timeout, timeoutMessage));
-        }, timeout);
-      }),
-    ]);
+          reject(new TimeoutError(timeout, timeoutMessage))
+        }, timeout)
+      })
+    ])
   } finally {
-    clearTimeout(timeoutHandle);
+    clearTimeout(timeoutHandle)
   }
-};
+}
 
 export class TimeoutError extends Error {
   constructor(
     public readonly timeout: number,
-    message?: string,
+    message?: string
   ) {
-    super(message);
+    super(message)
   }
 }

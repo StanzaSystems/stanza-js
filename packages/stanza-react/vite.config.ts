@@ -1,14 +1,14 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vitest/config'
 
-import viteTsConfigPaths from 'vite-tsconfig-paths';
+import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/stanza-react',
 
   plugins: [
     viteTsConfigPaths({
-      root: '../../',
-    }),
+      root: '../../'
+    })
   ],
 
   // Uncomment this if you are using workers.
@@ -23,13 +23,13 @@ export default defineConfig({
   test: {
     globals: true,
     cache: {
-      dir: '../../node_modules/.vitest',
+      dir: '../../node_modules/.vitest'
     },
     environment: 'jsdom',
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     coverage: {
       reporter: [['lcov', { projectRoot: '.' }]],
-      reportsDirectory: '../../coverage/packages/stanza-react',
-    },
-  },
-});
+      reportsDirectory: '../../coverage/packages/stanza-react'
+    }
+  }
+})

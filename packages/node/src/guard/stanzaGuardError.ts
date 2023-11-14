@@ -1,10 +1,10 @@
-export type StanzaGuardErrorReasons = 'NoQuota' | 'InvalidToken';
+export type StanzaGuardErrorReasons = 'NoQuota' | 'InvalidToken'
 
 export class StanzaGuardError extends Error {
   constructor(
     public readonly reason: StanzaGuardErrorReasons,
-    message: string,
+    message: string
   ) {
-    super(`${reason}: ${message}`);
+    super(`${reason}: ${message}`)
   }
 }

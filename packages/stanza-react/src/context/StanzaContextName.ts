@@ -1,3 +1,3 @@
-import { createContext } from 'react';
+import { createContext } from 'react'
 
-export const StanzaContextName = createContext<string | undefined>(undefined);
+export const StanzaContextName = createContext<string | undefined>(undefined)

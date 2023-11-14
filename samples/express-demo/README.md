@@ -122,5 +122,5 @@ For this example, these plans and their priorities were established in the sourc
 function in [`main.ts`](./src/main.ts).
 
 ```ts
-const priorityBoost = plan === 'free' ? -1 : plan === 'enterprise' ? 1 : 0;
+const priorityBoost = plan === 'free' ? -1 : plan === 'enterprise' ? 1 : 0
 ```

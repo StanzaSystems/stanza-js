@@ -1,2 +1,2 @@
-'use client';
-export * from './src';
+'use client'
+export * from './src'

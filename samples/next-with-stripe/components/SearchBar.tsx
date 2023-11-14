@@ -1,39 +1,39 @@
-import { WithStanzaFeature } from '@getstanza/react';
+import { WithStanzaFeature } from '@getstanza/react'
 import React, {
   type ChangeEvent,
   type FormEvent,
   useCallback,
-  useState,
-} from 'react';
+  useState
+} from 'react'
 
 const SearchBar = ({
-  onSearch = () => {},
+  onSearch = () => {}
 }: {
-  onSearch?: (searchValue: string) => void;
+  onSearch?: (searchValue: string) => void
 }) => {
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState('')
 
   const updateSearchValue = useCallback(
     (evt: ChangeEvent<HTMLInputElement>) => {
-      setSearchValue(evt.target.value ?? '');
+      setSearchValue(evt.target.value ?? '')
     },
-    [],
-  );
+    []
+  )
 
   const handleSearch = useCallback(
     (event: FormEvent<HTMLFormElement>, searchValue: string) => {
-      event.preventDefault();
-      setSearchValue('');
-      onSearch(searchValue);
+      event.preventDefault()
+      setSearchValue('')
+      onSearch(searchValue)
     },
-    [searchValue, onSearch],
-  );
+    [searchValue, onSearch]
+  )
 
   return (
     <form
       style={{ display: 'flex', gap: '1rem' }}
       onSubmit={(evt) => {
-        handleSearch(evt, searchValue);
+        handleSearch(evt, searchValue)
       }}
       name="searchForm"
       autoComplete="off"
@@ -61,7 +61,7 @@ const SearchBar = ({
         )}
       </WithStanzaFeature>
     </form>
-  );
-};
+  )
+}
 
-export default SearchBar;
+export default SearchBar

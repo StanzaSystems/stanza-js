@@ -1,22 +1,22 @@
-import { type StanzaTokenLease } from '../hub/model';
+import { type StanzaTokenLease } from '../hub/model'
 
 export interface TokenQuery {
-  feature?: string;
-  priorityBoost?: number;
+  feature?: string
+  priorityBoost?: number
 }
 
-export type AvailableRatioListenerFn = (ratioAvailable: number) => void;
+export type AvailableRatioListenerFn = (ratioAvailable: number) => void
 
 export interface AvailableRatioListener {
-  listener: AvailableRatioListenerFn;
-  expiresOffset: number;
+  listener: AvailableRatioListenerFn
+  expiresOffset: number
 }
 export interface TokenState {
-  addTokens: (leases: StanzaTokenLease[]) => void;
-  hasToken: (query?: TokenQuery) => boolean;
-  popToken: (query?: TokenQuery) => StanzaTokenLease | null;
+  addTokens: (leases: StanzaTokenLease[]) => void
+  hasToken: (query?: TokenQuery) => boolean
+  popToken: (query?: TokenQuery) => StanzaTokenLease | null
   onTokensAvailableRatioChange: (
     expiresOffset: number,
-    listener: AvailableRatioListenerFn,
-  ) => void;
+    listener: AvailableRatioListenerFn
+  ) => void
 }

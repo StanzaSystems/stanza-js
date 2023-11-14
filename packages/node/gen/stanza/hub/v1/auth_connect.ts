@@ -3,8 +3,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { GetBearerTokenRequest, GetBearerTokenResponse } from './auth_pb.js';
-import { MethodKind } from '@bufbuild/protobuf';
+import { GetBearerTokenRequest, GetBearerTokenResponse } from './auth_pb.js'
+import { MethodKind } from '@bufbuild/protobuf'
 
 /**
  * @generated from service stanza.hub.v1.AuthService
@@ -19,7 +19,7 @@ export const AuthService = {
       name: 'GetBearerToken',
       I: GetBearerTokenRequest,
       O: GetBearerTokenResponse,
-      kind: MethodKind.Unary,
-    },
-  },
-} as const;
+      kind: MethodKind.Unary
+    }
+  }
+} as const

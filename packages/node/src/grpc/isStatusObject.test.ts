@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
-import { isStatusObject } from './isStatusObject';
-import { Metadata, status } from '@grpc/grpc-js';
+import { describe, expect, it } from 'vitest'
+import { isStatusObject } from './isStatusObject'
+import { Metadata, status } from '@grpc/grpc-js'
 
 describe('isStatusObject', () => {
   it.each([
@@ -18,45 +18,45 @@ describe('isStatusObject', () => {
     Object.assign(Error('boo'), {
       code: '2',
       details: 'some details',
-      metadata: new Metadata(),
+      metadata: new Metadata()
     }),
     Object.assign(Error('boo'), {
       code: status.UNKNOWN,
       details: true,
-      metadata: new Metadata(),
+      metadata: new Metadata()
     }),
     Object.assign(Error('boo'), {
       code: status.UNKNOWN,
       details: 'some details',
-      metadata: { foo: 'not metadata' },
+      metadata: { foo: 'not metadata' }
     }),
     // code is not one of status enum possible values
     Object.assign(Error('boo'), {
       code: -1,
       details: true,
-      metadata: new Metadata(),
+      metadata: new Metadata()
     }),
     Object.assign(Error('boo'), {
       code: 17,
       details: true,
-      metadata: new Metadata(),
-    }),
+      metadata: new Metadata()
+    })
   ])('should return false for non status object: %j', (obj) => {
-    expect(isStatusObject(obj)).toBe(false);
-  });
+    expect(isStatusObject(obj)).toBe(false)
+  })
 
   it.each([
     Object.assign(Error('boo'), {
       code: status.UNKNOWN,
       details: 'some details of unknown error',
-      metadata: new Metadata(),
+      metadata: new Metadata()
     }),
     Object.assign(Error('boo'), {
       code: status.UNAUTHENTICATED,
       details: 'unauthenticated request',
-      metadata: new Metadata(),
-    }),
+      metadata: new Metadata()
+    })
   ])('should return true for status object: %j', (obj) => {
-    expect(isStatusObject(obj)).toBe(true);
-  });
-});
+    expect(isStatusObject(obj)).toBe(true)
+  })
+})

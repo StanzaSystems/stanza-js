@@ -1,15 +1,15 @@
-import React from 'react';
-import { formatAmountForDisplay } from '../utils/stripe-helpers';
+import React from 'react'
+import { formatAmountForDisplay } from '../utils/stripe-helpers'
 
 interface Props {
-  name: string;
-  value: number;
-  min: number;
-  max: number;
-  currency: string;
-  step: number;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  className?: string;
+  name: string
+  value: number
+  min: number
+  max: number
+  currency: string
+  step: number
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  className?: string
 }
 
 const CustomDonationInput = ({
@@ -20,7 +20,7 @@ const CustomDonationInput = ({
   currency,
   step,
   onChange,
-  className,
+  className
 }: Props) => (
   <label>
     Custom donation amount ({formatAmountForDisplay(min, currency)}-
@@ -45,6 +45,6 @@ const CustomDonationInput = ({
       onChange={onChange}
     ></input>
   </label>
-);
+)
 
-export default CustomDonationInput;
+export default CustomDonationInput

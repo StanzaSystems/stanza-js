@@ -9,10 +9,10 @@ import type {
   JsonReadOptions,
   JsonValue,
   PartialMessage,
-  PlainMessage,
-} from '@bufbuild/protobuf';
-import { Message, proto3 } from '@bufbuild/protobuf';
-import { GuardFeatureSelector, Health } from './common_pb.js';
+  PlainMessage
+} from '@bufbuild/protobuf'
+import { Message, proto3 } from '@bufbuild/protobuf'
+import { GuardFeatureSelector, Health } from './common_pb.js'
 
 /**
  * Called by SDK to determine whether a Guard is overloaded at a given Feature's priority level. Used so that customer code can make good decisions about fail-fast or graceful degradation as high up the stack as possible. SDK may cache the result for up to 10 seconds.
@@ -27,22 +27,22 @@ export class QueryGuardHealthRequest extends Message<QueryGuardHealthRequest> {
    *
    * @generated from field: stanza.hub.v1.GuardFeatureSelector selector = 1;
    */
-  selector?: GuardFeatureSelector;
+  selector?: GuardFeatureSelector
 
   /**
    * Used to boost priority - SDK can increase or decrease priority of request, relative to normal feature priority. For instance, a customer may wish to boost the priority of paid user traffic over free tier. Priority boosts may also be negative - for example, one might deprioritise bot traffic.
    *
    * @generated from field: optional int32 priority_boost = 4;
    */
-  priorityBoost?: number;
+  priorityBoost?: number
 
   constructor(data?: PartialMessage<QueryGuardHealthRequest>) {
-    super();
-    proto3.util.initPartial(data, this);
+    super()
+    proto3.util.initPartial(data, this)
   }
 
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = 'stanza.hub.v1.QueryGuardHealthRequest';
+  static readonly runtime: typeof proto3 = proto3
+  static readonly typeName = 'stanza.hub.v1.QueryGuardHealthRequest'
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: 'selector', kind: 'message', T: GuardFeatureSelector },
     {
@@ -50,29 +50,29 @@ export class QueryGuardHealthRequest extends Message<QueryGuardHealthRequest> {
       name: 'priority_boost',
       kind: 'scalar',
       T: 5 /* ScalarType.INT32 */,
-      opt: true,
-    },
-  ]);
+      opt: true
+    }
+  ])
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>,
+    options?: Partial<BinaryReadOptions>
   ): QueryGuardHealthRequest {
-    return new QueryGuardHealthRequest().fromBinary(bytes, options);
+    return new QueryGuardHealthRequest().fromBinary(bytes, options)
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>,
+    options?: Partial<JsonReadOptions>
   ): QueryGuardHealthRequest {
-    return new QueryGuardHealthRequest().fromJson(jsonValue, options);
+    return new QueryGuardHealthRequest().fromJson(jsonValue, options)
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>,
+    options?: Partial<JsonReadOptions>
   ): QueryGuardHealthRequest {
-    return new QueryGuardHealthRequest().fromJsonString(jsonString, options);
+    return new QueryGuardHealthRequest().fromJsonString(jsonString, options)
   }
 
   static equals(
@@ -83,9 +83,9 @@ export class QueryGuardHealthRequest extends Message<QueryGuardHealthRequest> {
     b:
       | QueryGuardHealthRequest
       | PlainMessage<QueryGuardHealthRequest>
-      | undefined,
+      | undefined
   ): boolean {
-    return proto3.util.equals(QueryGuardHealthRequest, a, b);
+    return proto3.util.equals(QueryGuardHealthRequest, a, b)
   }
 }
 
@@ -96,38 +96,38 @@ export class QueryGuardHealthResponse extends Message<QueryGuardHealthResponse> 
   /**
    * @generated from field: stanza.hub.v1.Health health = 1;
    */
-  health = Health.UNSPECIFIED;
+  health = Health.UNSPECIFIED
 
   constructor(data?: PartialMessage<QueryGuardHealthResponse>) {
-    super();
-    proto3.util.initPartial(data, this);
+    super()
+    proto3.util.initPartial(data, this)
   }
 
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = 'stanza.hub.v1.QueryGuardHealthResponse';
+  static readonly runtime: typeof proto3 = proto3
+  static readonly typeName = 'stanza.hub.v1.QueryGuardHealthResponse'
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: 'health', kind: 'enum', T: proto3.getEnumType(Health) },
-  ]);
+    { no: 1, name: 'health', kind: 'enum', T: proto3.getEnumType(Health) }
+  ])
 
   static fromBinary(
     bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>,
+    options?: Partial<BinaryReadOptions>
   ): QueryGuardHealthResponse {
-    return new QueryGuardHealthResponse().fromBinary(bytes, options);
+    return new QueryGuardHealthResponse().fromBinary(bytes, options)
   }
 
   static fromJson(
     jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>,
+    options?: Partial<JsonReadOptions>
   ): QueryGuardHealthResponse {
-    return new QueryGuardHealthResponse().fromJson(jsonValue, options);
+    return new QueryGuardHealthResponse().fromJson(jsonValue, options)
   }
 
   static fromJsonString(
     jsonString: string,
-    options?: Partial<JsonReadOptions>,
+    options?: Partial<JsonReadOptions>
   ): QueryGuardHealthResponse {
-    return new QueryGuardHealthResponse().fromJsonString(jsonString, options);
+    return new QueryGuardHealthResponse().fromJsonString(jsonString, options)
   }
 
   static equals(
@@ -138,8 +138,8 @@ export class QueryGuardHealthResponse extends Message<QueryGuardHealthResponse> 
     b:
       | QueryGuardHealthResponse
       | PlainMessage<QueryGuardHealthResponse>
-      | undefined,
+      | undefined
   ): boolean {
-    return proto3.util.equals(QueryGuardHealthResponse, a, b);
+    return proto3.util.equals(QueryGuardHealthResponse, a, b)
   }
 }

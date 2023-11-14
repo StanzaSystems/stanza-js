@@ -1,12 +1,12 @@
-import { type Attributes } from '@opentelemetry/api';
-import { type FeatureData } from '../../global/eventBus';
+import { type Attributes } from '@opentelemetry/api'
+import { type FeatureData } from '../../global/eventBus'
 
 export interface FeatureAttributes extends Attributes {
-  feature: string;
+  feature: string
 }
 
 export const eventDataToFeatureAttributes = (
-  data: FeatureData,
+  data: FeatureData
 ): FeatureAttributes => ({
-  feature: data.featureName,
-});
+  feature: data.featureName
+})

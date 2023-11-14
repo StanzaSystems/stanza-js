@@ -1,11 +1,11 @@
-import { WithStanzaContextName } from '@getstanza/react';
-import { type AppProps } from 'next/app';
-import React from 'react';
-import Layout from '../components/Layout';
-import StripeCartProvider from '../components/StripeCartProvider';
+import { WithStanzaContextName } from '@getstanza/react'
+import { type AppProps } from 'next/app'
+import React from 'react'
+import Layout from '../components/Layout'
+import StripeCartProvider from '../components/StripeCartProvider'
 
-import '../styles.css';
-import WithStanza from '../components/WithStanza';
+import '../styles.css'
+import WithStanza from '../components/WithStanza'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -20,7 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         </StripeCartProvider>
       </WithStanzaContextName>
     </WithStanza>
-  );
+  )
 }
 
-export default MyApp;
+export default MyApp

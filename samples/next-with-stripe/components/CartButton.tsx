@@ -1,12 +1,12 @@
-import * as Popover from '@radix-ui/react-popover';
-import React from 'react';
-import { AiOutlineShoppingCart } from 'react-icons/ai';
-import { useShoppingCart } from 'use-shopping-cart';
-import CartSummary from './CartSummary';
-import { WithStanzaFeature } from '@getstanza/react';
+import * as Popover from '@radix-ui/react-popover'
+import React from 'react'
+import { AiOutlineShoppingCart } from 'react-icons/ai'
+import { useShoppingCart } from 'use-shopping-cart'
+import CartSummary from './CartSummary'
+import { WithStanzaFeature } from '@getstanza/react'
 
 const CartButton = () => {
-  const { cartCount = 0 } = useShoppingCart();
+  const { cartCount = 0 } = useShoppingCart()
   return (
     <Popover.Root>
       <WithStanzaFeature name="checkout">
@@ -38,7 +38,7 @@ const CartButton = () => {
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>
-  );
-};
+  )
+}
 
-export default CartButton;
+export default CartButton

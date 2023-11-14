@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
-import { Stanza } from '../index';
-import { type StanzaCoreConfig } from '../models/stanzaCoreConfig';
+import { describe, expect, it } from 'vitest'
+import { Stanza } from '../index'
+import { type StanzaCoreConfig } from '../models/stanzaCoreConfig'
 
 describe('saveState', () => {
   it('configures a stanza instance', () => {
@@ -11,19 +11,19 @@ describe('saveState', () => {
       contextConfigs: [
         {
           name: 'main',
-          features: ['featured', 'search', 'checkout'],
+          features: ['featured', 'search', 'checkout']
         },
         {
           name: 'details',
-          features: ['productSummary', 'pricing', 'shipping', 'checkout'],
-        },
-      ],
-    };
+          features: ['productSummary', 'pricing', 'shipping', 'checkout']
+        }
+      ]
+    }
 
     expect(() => {
-      Stanza.init(config);
-    }).not.toThrow();
-  });
+      Stanza.init(config)
+    }).not.toThrow()
+  })
 
   // it('fetches correct feature list', async () => {
   //   const browserFeatures = await utils.getContextBrowserFeatures('details')
@@ -48,4 +48,4 @@ describe('saveState', () => {
   //   assert.deepEqual(shippingFeature, { name: 'shipping', code: 1, message: 'We are unable to pre-load shipping costs right now, but if you continue your order will still process' })
   //   assert.deepEqual(productSummary, { name: 'productSummary', code: 0, message: 'We are having intermittent issues loading product summaries' })
   // })
-});
+})
