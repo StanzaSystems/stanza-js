@@ -24,6 +24,7 @@ import { createUserAgentHeader } from '../../utils/userAgentHeader'
 export class StanzaMetricExporter implements PushMetricExporter {
   private exporter: InMemoryMetricExporter | OTLPMetricExporter =
     new InMemoryMetricExporter(AggregationTemporality.CUMULATIVE)
+
   private collectorUrl = ''
   constructor(
     private readonly serviceName: string,

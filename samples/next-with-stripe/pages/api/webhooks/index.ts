@@ -5,7 +5,7 @@ import { type NextApiRequest, type NextApiResponse } from 'next'
 import Stripe from 'stripe'
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
   // https://github.com/stripe/stripe-node#configuration
-  apiVersion: '2022-08-01'
+  apiVersion: '2023-10-16'
 })
 
 const webhookSecret: string = process.env.STRIPE_WEBHOOK_SECRET ?? ''
@@ -44,15 +44,15 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // Cast event data to Stripe object.
     if (event.type === 'payment_intent.succeeded') {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent
+      const paymentIntent = event.data.object
       console.log(`💰 PaymentIntent status: ${paymentIntent.status}`)
     } else if (event.type === 'payment_intent.payment_failed') {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent
+      const paymentIntent = event.data.object
       console.log(
         `❌ Payment failed: ${paymentIntent.last_payment_error?.message}`
       )
     } else if (event.type === 'charge.succeeded') {
-      const charge = event.data.object as Stripe.Charge
+      const charge = event.data.object
       console.log(`💵 Charge id: ${charge.id}`)
     } else {
       console.warn(`🤷‍♀️ Unhandled event type: ${event.type}`)

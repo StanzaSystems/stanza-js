@@ -6,7 +6,7 @@
   "author": "Stanza",
   "license": "Apache-2.0",
   "dependencies": {
-    "cookie": "^0.5.0",
+    "cookie": "^0.6.0",
     "next": "13.5.3"
   },
   "devDependencies": {

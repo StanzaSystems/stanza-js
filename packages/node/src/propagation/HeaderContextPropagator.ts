@@ -10,6 +10,7 @@ export class HeaderContextPropagator implements TextMapPropagator {
     private readonly headerName: string,
     private readonly contextKey: symbol
   ) {}
+
   inject(context: Context, carrier: unknown, setter: TextMapSetter): void {
     const stanzaApiKey = context.getValue(this.contextKey)
     if (typeof stanzaApiKey === 'string' && stanzaApiKey !== '') {
