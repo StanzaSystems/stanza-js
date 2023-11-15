@@ -1,7 +1,7 @@
-import SearchPageComponent from './search'
+import SearchPageComponent from './search';
 
 const SearchPage = () => {
-  return <SearchPageComponent/>
-}
+  return <SearchPageComponent />;
+};
 
-export default SearchPage
+export default SearchPage;

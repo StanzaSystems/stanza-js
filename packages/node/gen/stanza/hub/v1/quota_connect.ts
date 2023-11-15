@@ -3,8 +3,17 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { GetTokenLeaseRequest, GetTokenLeaseResponse, GetTokenRequest, GetTokenResponse, SetTokenLeaseConsumedRequest, SetTokenLeaseConsumedResponse, ValidateTokenRequest, ValidateTokenResponse } from "./quota_pb.js";
-import { MethodKind } from "@bufbuild/protobuf";
+import {
+  GetTokenLeaseRequest,
+  GetTokenLeaseResponse,
+  GetTokenRequest,
+  GetTokenResponse,
+  SetTokenLeaseConsumedRequest,
+  SetTokenLeaseConsumedResponse,
+  ValidateTokenRequest,
+  ValidateTokenResponse,
+} from './quota_pb.js';
+import { MethodKind } from '@bufbuild/protobuf';
 
 /**
  * The Quota service definition. This service is used by the Stanza and Browser SDKs to determine whether quota is available to use services which are subject to centralised ratelimiting.
@@ -14,13 +23,13 @@ import { MethodKind } from "@bufbuild/protobuf";
  * @generated from service stanza.hub.v1.QuotaService
  */
 export const QuotaService = {
-  typeName: "stanza.hub.v1.QuotaService",
+  typeName: 'stanza.hub.v1.QuotaService',
   methods: {
     /**
      * @generated from rpc stanza.hub.v1.QuotaService.GetToken
      */
     getToken: {
-      name: "GetToken",
+      name: 'GetToken',
       I: GetTokenRequest,
       O: GetTokenResponse,
       kind: MethodKind.Unary,
@@ -29,7 +38,7 @@ export const QuotaService = {
      * @generated from rpc stanza.hub.v1.QuotaService.GetTokenLease
      */
     getTokenLease: {
-      name: "GetTokenLease",
+      name: 'GetTokenLease',
       I: GetTokenLeaseRequest,
       O: GetTokenLeaseResponse,
       kind: MethodKind.Unary,
@@ -38,7 +47,7 @@ export const QuotaService = {
      * @generated from rpc stanza.hub.v1.QuotaService.SetTokenLeaseConsumed
      */
     setTokenLeaseConsumed: {
-      name: "SetTokenLeaseConsumed",
+      name: 'SetTokenLeaseConsumed',
       I: SetTokenLeaseConsumedRequest,
       O: SetTokenLeaseConsumedResponse,
       kind: MethodKind.Unary,
@@ -49,11 +58,10 @@ export const QuotaService = {
      * @generated from rpc stanza.hub.v1.QuotaService.ValidateToken
      */
     validateToken: {
-      name: "ValidateToken",
+      name: 'ValidateToken',
       I: ValidateTokenRequest,
       O: ValidateTokenResponse,
       kind: MethodKind.Unary,
     },
-  }
+  },
 } as const;
-

@@ -1,28 +1,42 @@
-import { type Context } from '@opentelemetry/api'
-import { BatchSpanProcessor, NoopSpanProcessor, type SpanProcessor } from '@opentelemetry/sdk-trace-node'
-import { createSpanExporter } from './createSpanExporter'
-import { type SpanProcessorManager } from './SpanProcessorManager'
-import { StanzaConfigEntityManager } from '../StanzaConfigEntityManager'
+import { type Context } from '@opentelemetry/api';
+import {
+  BatchSpanProcessor,
+  NoopSpanProcessor,
+  type SpanProcessor,
+} from '@opentelemetry/sdk-trace-node';
+import { createSpanExporter } from './createSpanExporter';
+import { type SpanProcessorManager } from './SpanProcessorManager';
+import { StanzaConfigEntityManager } from '../StanzaConfigEntityManager';
 
 export class StanzaSpanProcessorManager implements SpanProcessorManager {
-  private readonly traceConfigManager = new StanzaConfigEntityManager<SpanProcessor>(
-    {
+  private readonly traceConfigManager =
+    new StanzaConfigEntityManager<SpanProcessor>({
       getInitial: () => new NoopSpanProcessor(),
-      createWithServiceConfig: ({ traceConfig }) => new BatchSpanProcessor(createSpanExporter(traceConfig, this.serviceName, this.serviceRelease)),
-      cleanup: async spanProcessor => spanProcessor.shutdown()
-    })
+      createWithServiceConfig: ({ traceConfig }) =>
+        new BatchSpanProcessor(
+          createSpanExporter(traceConfig, this.serviceName, this.serviceRelease)
+        ),
+      cleanup: async (spanProcessor) => spanProcessor.shutdown(),
+    });
 
-  constructor (private readonly serviceName: string, private readonly serviceRelease: string) {}
+  constructor(
+    private readonly serviceName: string,
+    private readonly serviceRelease: string
+  ) {}
 
-  async forceFlushAllSpanProcessors (): Promise<void> {
-    await Promise.all(this.traceConfigManager.getAllEntities().map(async processor => processor.forceFlush()))
+  async forceFlushAllSpanProcessors(): Promise<void> {
+    await Promise.all(
+      this.traceConfigManager
+        .getAllEntities()
+        .map(async (processor) => processor.forceFlush())
+    );
   }
 
-  async shutdownAllSpanProcessors (): Promise<void> {
-    await this.traceConfigManager.shutdown()
+  async shutdownAllSpanProcessors(): Promise<void> {
+    await this.traceConfigManager.shutdown();
   }
 
-  getSpanProcessor (context: Context): SpanProcessor {
-    return this.traceConfigManager.getEntity(context)
+  getSpanProcessor(context: Context): SpanProcessor {
+    return this.traceConfigManager.getEntity(context);
   }
 }

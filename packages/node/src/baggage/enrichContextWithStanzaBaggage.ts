@@ -1,20 +1,25 @@
-import { type Context, propagation } from '@opentelemetry/api'
-import { getAllStanzaBaggageEntries } from './getAllStanzaBaggageEntries'
-import { getStanzaBaggageKeys } from './getStanzaBaggageKeys'
+import { type Context, propagation } from '@opentelemetry/api';
+import { getAllStanzaBaggageEntries } from './getAllStanzaBaggageEntries';
+import { getStanzaBaggageKeys } from './getStanzaBaggageKeys';
 
 export const enrichContextWithStanzaBaggage = (context: Context): Context => {
-  const baggage = propagation.getBaggage(context)
+  const baggage = propagation.getBaggage(context);
 
   if (baggage === undefined) {
-    return context
+    return context;
   }
 
-  const stanzaEntries = getAllStanzaBaggageEntries(baggage)
+  const stanzaEntries = getAllStanzaBaggageEntries(baggage);
 
   const newBaggage = stanzaEntries
-    .map(({ key: stanzaKey, entry }) => getStanzaBaggageKeys(stanzaKey).map(key => ({ key, entry })))
+    .map(({ key: stanzaKey, entry }) =>
+      getStanzaBaggageKeys(stanzaKey).map((key) => ({ key, entry }))
+    )
     .flat()
-    .reduce((currentBaggage, { key, entry }) => currentBaggage.setEntry(key, entry), baggage)
+    .reduce(
+      (currentBaggage, { key, entry }) => currentBaggage.setEntry(key, entry),
+      baggage
+    );
 
-  return propagation.setBaggage(context, newBaggage)
-}
+  return propagation.setBaggage(context, newBaggage);
+};

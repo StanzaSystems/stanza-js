@@ -3,8 +3,11 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { QueryGuardHealthRequest, QueryGuardHealthResponse } from "./health_pb.js";
-import { MethodKind } from "@bufbuild/protobuf";
+import {
+  QueryGuardHealthRequest,
+  QueryGuardHealthResponse,
+} from './health_pb.js';
+import { MethodKind } from '@bufbuild/protobuf';
 
 /**
  * The Health service definition. This service is used by the Stanza SDK to allow devs to
@@ -20,17 +23,16 @@ import { MethodKind } from "@bufbuild/protobuf";
  * @generated from service stanza.hub.v1.HealthService
  */
 export const HealthService = {
-  typeName: "stanza.hub.v1.HealthService",
+  typeName: 'stanza.hub.v1.HealthService',
   methods: {
     /**
      * @generated from rpc stanza.hub.v1.HealthService.QueryGuardHealth
      */
     queryGuardHealth: {
-      name: "QueryGuardHealth",
+      name: 'QueryGuardHealth',
       I: QueryGuardHealthRequest,
       O: QueryGuardHealthResponse,
       kind: MethodKind.Unary,
     },
-  }
+  },
 } as const;
-

@@ -3,8 +3,15 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { GetBrowserContextRequest, GetBrowserContextResponse, GetGuardConfigRequest, GetGuardConfigResponse, GetServiceConfigRequest, GetServiceConfigResponse } from "./config_pb.js";
-import { MethodKind } from "@bufbuild/protobuf";
+import {
+  GetBrowserContextRequest,
+  GetBrowserContextResponse,
+  GetGuardConfigRequest,
+  GetGuardConfigResponse,
+  GetServiceConfigRequest,
+  GetServiceConfigResponse,
+} from './config_pb.js';
+import { MethodKind } from '@bufbuild/protobuf';
 
 /**
  * The Config service definition.
@@ -14,13 +21,13 @@ import { MethodKind } from "@bufbuild/protobuf";
  * @generated from service stanza.hub.v1.ConfigService
  */
 export const ConfigService = {
-  typeName: "stanza.hub.v1.ConfigService",
+  typeName: 'stanza.hub.v1.ConfigService',
   methods: {
     /**
      * @generated from rpc stanza.hub.v1.ConfigService.GetGuardConfig
      */
     getGuardConfig: {
-      name: "GetGuardConfig",
+      name: 'GetGuardConfig',
       I: GetGuardConfigRequest,
       O: GetGuardConfigResponse,
       kind: MethodKind.Unary,
@@ -29,7 +36,7 @@ export const ConfigService = {
      * @generated from rpc stanza.hub.v1.ConfigService.GetBrowserContext
      */
     getBrowserContext: {
-      name: "GetBrowserContext",
+      name: 'GetBrowserContext',
       I: GetBrowserContextRequest,
       O: GetBrowserContextResponse,
       kind: MethodKind.Unary,
@@ -38,11 +45,10 @@ export const ConfigService = {
      * @generated from rpc stanza.hub.v1.ConfigService.GetServiceConfig
      */
     getServiceConfig: {
-      name: "GetServiceConfig",
+      name: 'GetServiceConfig',
       I: GetServiceConfigRequest,
       O: GetServiceConfigResponse,
       kind: MethodKind.Unary,
     },
-  }
+  },
 } as const;
-

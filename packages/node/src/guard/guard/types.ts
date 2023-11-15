@@ -7,5 +7,5 @@ export type CheckerResponse<
   | ({ status: 'success' } & TSuccess)
   | ({ status: 'failure' } & TFailure)
   | ({ status: 'failOpen' } & TFailOpen)
-  | ({ status: 'disabled' })
-)
+  | { status: 'disabled' }
+);

@@ -1,9 +1,9 @@
-import * as crypto from 'crypto'
+import * as crypto from 'crypto';
 
 export const generateClientId = (): string => {
   try {
-    return crypto.randomUUID()
+    return crypto.randomUUID();
   } catch {
-    return ''
+    return '';
   }
-}
+};

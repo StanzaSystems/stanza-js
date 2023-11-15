@@ -3,9 +3,16 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
-import { GuardFeatureSelector, GuardSelector, Mode } from "./common_pb.js";
+import type {
+  BinaryReadOptions,
+  FieldList,
+  JsonReadOptions,
+  JsonValue,
+  PartialMessage,
+  PlainMessage,
+} from '@bufbuild/protobuf';
+import { Message, proto3, Timestamp } from '@bufbuild/protobuf';
+import { GuardFeatureSelector, GuardSelector, Mode } from './common_pb.js';
 
 /**
  * @generated from enum stanza.hub.v1.Reason
@@ -42,13 +49,13 @@ export enum Reason {
   BEST_EFFORT = 5,
 }
 // Retrieve enum metadata with: proto3.getEnumType(Reason)
-proto3.util.setEnumType(Reason, "stanza.hub.v1.Reason", [
-  { no: 0, name: "REASON_UNSPECIFIED" },
-  { no: 1, name: "REASON_SUFFICIENT_QUOTA" },
-  { no: 2, name: "REASON_INSUFFICIENT_QUOTA" },
-  { no: 3, name: "REASON_INSUFFICIENT_QUOTA_PARENT" },
-  { no: 4, name: "REASON_BURST" },
-  { no: 5, name: "REASON_BEST_EFFORT" },
+proto3.util.setEnumType(Reason, 'stanza.hub.v1.Reason', [
+  { no: 0, name: 'REASON_UNSPECIFIED' },
+  { no: 1, name: 'REASON_SUFFICIENT_QUOTA' },
+  { no: 2, name: 'REASON_INSUFFICIENT_QUOTA' },
+  { no: 3, name: 'REASON_INSUFFICIENT_QUOTA_PARENT' },
+  { no: 4, name: 'REASON_BURST' },
+  { no: 5, name: 'REASON_BEST_EFFORT' },
 ]);
 
 /**
@@ -94,27 +101,57 @@ export class GetTokenRequest extends Message<GetTokenRequest> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GetTokenRequest";
+  static readonly typeName = 'stanza.hub.v1.GetTokenRequest';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "selector", kind: "message", T: GuardFeatureSelector },
-    { no: 4, name: "client_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 5, name: "priority_boost", kind: "scalar", T: 5 /* ScalarType.INT32 */, opt: true },
-    { no: 7, name: "weight", kind: "scalar", T: 2 /* ScalarType.FLOAT */, opt: true },
+    { no: 1, name: 'selector', kind: 'message', T: GuardFeatureSelector },
+    {
+      no: 4,
+      name: 'client_id',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 5,
+      name: 'priority_boost',
+      kind: 'scalar',
+      T: 5 /* ScalarType.INT32 */,
+      opt: true,
+    },
+    {
+      no: 7,
+      name: 'weight',
+      kind: 'scalar',
+      T: 2 /* ScalarType.FLOAT */,
+      opt: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetTokenRequest {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GetTokenRequest {
     return new GetTokenRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetTokenRequest {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GetTokenRequest {
     return new GetTokenRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetTokenRequest {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GetTokenRequest {
     return new GetTokenRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetTokenRequest | PlainMessage<GetTokenRequest> | undefined, b: GetTokenRequest | PlainMessage<GetTokenRequest> | undefined): boolean {
+  static equals(
+    a: GetTokenRequest | PlainMessage<GetTokenRequest> | undefined,
+    b: GetTokenRequest | PlainMessage<GetTokenRequest> | undefined
+  ): boolean {
     return proto3.util.equals(GetTokenRequest, a, b);
   }
 }
@@ -151,27 +188,57 @@ export class GetTokenResponse extends Message<GetTokenResponse> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GetTokenResponse";
+  static readonly typeName = 'stanza.hub.v1.GetTokenResponse';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "granted", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 2, name: "token", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 3, name: "reason", kind: "enum", T: proto3.getEnumType(Reason), opt: true },
-    { no: 4, name: "mode", kind: "enum", T: proto3.getEnumType(Mode), opt: true },
+    { no: 1, name: 'granted', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
+    {
+      no: 2,
+      name: 'token',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 3,
+      name: 'reason',
+      kind: 'enum',
+      T: proto3.getEnumType(Reason),
+      opt: true,
+    },
+    {
+      no: 4,
+      name: 'mode',
+      kind: 'enum',
+      T: proto3.getEnumType(Mode),
+      opt: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetTokenResponse {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GetTokenResponse {
     return new GetTokenResponse().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetTokenResponse {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GetTokenResponse {
     return new GetTokenResponse().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetTokenResponse {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GetTokenResponse {
     return new GetTokenResponse().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetTokenResponse | PlainMessage<GetTokenResponse> | undefined, b: GetTokenResponse | PlainMessage<GetTokenResponse> | undefined): boolean {
+  static equals(
+    a: GetTokenResponse | PlainMessage<GetTokenResponse> | undefined,
+    b: GetTokenResponse | PlainMessage<GetTokenResponse> | undefined
+  ): boolean {
     return proto3.util.equals(GetTokenResponse, a, b);
   }
 }
@@ -219,27 +286,57 @@ export class GetTokenLeaseRequest extends Message<GetTokenLeaseRequest> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GetTokenLeaseRequest";
+  static readonly typeName = 'stanza.hub.v1.GetTokenLeaseRequest';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "selector", kind: "message", T: GuardFeatureSelector },
-    { no: 4, name: "client_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 5, name: "priority_boost", kind: "scalar", T: 5 /* ScalarType.INT32 */, opt: true },
-    { no: 7, name: "default_weight", kind: "scalar", T: 2 /* ScalarType.FLOAT */, opt: true },
+    { no: 1, name: 'selector', kind: 'message', T: GuardFeatureSelector },
+    {
+      no: 4,
+      name: 'client_id',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 5,
+      name: 'priority_boost',
+      kind: 'scalar',
+      T: 5 /* ScalarType.INT32 */,
+      opt: true,
+    },
+    {
+      no: 7,
+      name: 'default_weight',
+      kind: 'scalar',
+      T: 2 /* ScalarType.FLOAT */,
+      opt: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetTokenLeaseRequest {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GetTokenLeaseRequest {
     return new GetTokenLeaseRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetTokenLeaseRequest {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GetTokenLeaseRequest {
     return new GetTokenLeaseRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetTokenLeaseRequest {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GetTokenLeaseRequest {
     return new GetTokenLeaseRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetTokenLeaseRequest | PlainMessage<GetTokenLeaseRequest> | undefined, b: GetTokenLeaseRequest | PlainMessage<GetTokenLeaseRequest> | undefined): boolean {
+  static equals(
+    a: GetTokenLeaseRequest | PlainMessage<GetTokenLeaseRequest> | undefined,
+    b: GetTokenLeaseRequest | PlainMessage<GetTokenLeaseRequest> | undefined
+  ): boolean {
     return proto3.util.equals(GetTokenLeaseRequest, a, b);
   }
 }
@@ -266,25 +363,37 @@ export class GetTokenLeaseResponse extends Message<GetTokenLeaseResponse> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GetTokenLeaseResponse";
+  static readonly typeName = 'stanza.hub.v1.GetTokenLeaseResponse';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "granted", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 2, name: "leases", kind: "message", T: TokenLease, repeated: true },
+    { no: 1, name: 'granted', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
+    { no: 2, name: 'leases', kind: 'message', T: TokenLease, repeated: true },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetTokenLeaseResponse {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GetTokenLeaseResponse {
     return new GetTokenLeaseResponse().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetTokenLeaseResponse {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GetTokenLeaseResponse {
     return new GetTokenLeaseResponse().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetTokenLeaseResponse {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GetTokenLeaseResponse {
     return new GetTokenLeaseResponse().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetTokenLeaseResponse | PlainMessage<GetTokenLeaseResponse> | undefined, b: GetTokenLeaseResponse | PlainMessage<GetTokenLeaseResponse> | undefined): boolean {
+  static equals(
+    a: GetTokenLeaseResponse | PlainMessage<GetTokenLeaseResponse> | undefined,
+    b: GetTokenLeaseResponse | PlainMessage<GetTokenLeaseResponse> | undefined
+  ): boolean {
     return proto3.util.equals(GetTokenLeaseResponse, a, b);
   }
 }
@@ -303,12 +412,12 @@ export class TokenLease extends Message<TokenLease> {
   /**
    * @generated from field: string token = 2;
    */
-  token = "";
+  token = '';
 
   /**
    * @generated from field: string feature = 3;
    */
-  feature = "";
+  feature = '';
 
   /**
    * @generated from field: int32 priority_boost = 4;
@@ -343,31 +452,59 @@ export class TokenLease extends Message<TokenLease> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.TokenLease";
+  static readonly typeName = 'stanza.hub.v1.TokenLease';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "duration_msec", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "feature", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "priority_boost", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 5, name: "weight", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
-    { no: 6, name: "reason", kind: "enum", T: proto3.getEnumType(Reason) },
-    { no: 7, name: "expires_at", kind: "message", T: Timestamp, opt: true },
-    { no: 8, name: "mode", kind: "enum", T: proto3.getEnumType(Mode), opt: true },
+    {
+      no: 1,
+      name: 'duration_msec',
+      kind: 'scalar',
+      T: 5 /* ScalarType.INT32 */,
+    },
+    { no: 2, name: 'token', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: 'feature', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 4,
+      name: 'priority_boost',
+      kind: 'scalar',
+      T: 5 /* ScalarType.INT32 */,
+    },
+    { no: 5, name: 'weight', kind: 'scalar', T: 2 /* ScalarType.FLOAT */ },
+    { no: 6, name: 'reason', kind: 'enum', T: proto3.getEnumType(Reason) },
+    { no: 7, name: 'expires_at', kind: 'message', T: Timestamp, opt: true },
+    {
+      no: 8,
+      name: 'mode',
+      kind: 'enum',
+      T: proto3.getEnumType(Mode),
+      opt: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TokenLease {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): TokenLease {
     return new TokenLease().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TokenLease {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): TokenLease {
     return new TokenLease().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TokenLease {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): TokenLease {
     return new TokenLease().fromJsonString(jsonString, options);
   }
 
-  static equals(a: TokenLease | PlainMessage<TokenLease> | undefined, b: TokenLease | PlainMessage<TokenLease> | undefined): boolean {
+  static equals(
+    a: TokenLease | PlainMessage<TokenLease> | undefined,
+    b: TokenLease | PlainMessage<TokenLease> | undefined
+  ): boolean {
     return proto3.util.equals(TokenLease, a, b);
   }
 }
@@ -395,7 +532,7 @@ export class SetTokenLeaseConsumedRequest extends Message<SetTokenLeaseConsumedR
    *
    * @generated from field: string environment = 3;
    */
-  environment = "";
+  environment = '';
 
   constructor(data?: PartialMessage<SetTokenLeaseConsumedRequest>) {
     super();
@@ -403,26 +540,64 @@ export class SetTokenLeaseConsumedRequest extends Message<SetTokenLeaseConsumedR
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.SetTokenLeaseConsumedRequest";
+  static readonly typeName = 'stanza.hub.v1.SetTokenLeaseConsumedRequest';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "tokens", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
-    { no: 2, name: "weight_correction", kind: "scalar", T: 2 /* ScalarType.FLOAT */, opt: true },
-    { no: 3, name: "environment", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    {
+      no: 1,
+      name: 'tokens',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      repeated: true,
+    },
+    {
+      no: 2,
+      name: 'weight_correction',
+      kind: 'scalar',
+      T: 2 /* ScalarType.FLOAT */,
+      opt: true,
+    },
+    {
+      no: 3,
+      name: 'environment',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SetTokenLeaseConsumedRequest {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): SetTokenLeaseConsumedRequest {
     return new SetTokenLeaseConsumedRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): SetTokenLeaseConsumedRequest {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): SetTokenLeaseConsumedRequest {
     return new SetTokenLeaseConsumedRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SetTokenLeaseConsumedRequest {
-    return new SetTokenLeaseConsumedRequest().fromJsonString(jsonString, options);
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): SetTokenLeaseConsumedRequest {
+    return new SetTokenLeaseConsumedRequest().fromJsonString(
+      jsonString,
+      options
+    );
   }
 
-  static equals(a: SetTokenLeaseConsumedRequest | PlainMessage<SetTokenLeaseConsumedRequest> | undefined, b: SetTokenLeaseConsumedRequest | PlainMessage<SetTokenLeaseConsumedRequest> | undefined): boolean {
+  static equals(
+    a:
+      | SetTokenLeaseConsumedRequest
+      | PlainMessage<SetTokenLeaseConsumedRequest>
+      | undefined,
+    b:
+      | SetTokenLeaseConsumedRequest
+      | PlainMessage<SetTokenLeaseConsumedRequest>
+      | undefined
+  ): boolean {
     return proto3.util.equals(SetTokenLeaseConsumedRequest, a, b);
   }
 }
@@ -439,23 +614,43 @@ export class SetTokenLeaseConsumedResponse extends Message<SetTokenLeaseConsumed
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.SetTokenLeaseConsumedResponse";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-  ]);
+  static readonly typeName = 'stanza.hub.v1.SetTokenLeaseConsumedResponse';
+  static readonly fields: FieldList = proto3.util.newFieldList(() => []);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SetTokenLeaseConsumedResponse {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): SetTokenLeaseConsumedResponse {
     return new SetTokenLeaseConsumedResponse().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): SetTokenLeaseConsumedResponse {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): SetTokenLeaseConsumedResponse {
     return new SetTokenLeaseConsumedResponse().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SetTokenLeaseConsumedResponse {
-    return new SetTokenLeaseConsumedResponse().fromJsonString(jsonString, options);
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): SetTokenLeaseConsumedResponse {
+    return new SetTokenLeaseConsumedResponse().fromJsonString(
+      jsonString,
+      options
+    );
   }
 
-  static equals(a: SetTokenLeaseConsumedResponse | PlainMessage<SetTokenLeaseConsumedResponse> | undefined, b: SetTokenLeaseConsumedResponse | PlainMessage<SetTokenLeaseConsumedResponse> | undefined): boolean {
+  static equals(
+    a:
+      | SetTokenLeaseConsumedResponse
+      | PlainMessage<SetTokenLeaseConsumedResponse>
+      | undefined,
+    b:
+      | SetTokenLeaseConsumedResponse
+      | PlainMessage<SetTokenLeaseConsumedResponse>
+      | undefined
+  ): boolean {
     return proto3.util.equals(SetTokenLeaseConsumedResponse, a, b);
   }
 }
@@ -477,24 +672,36 @@ export class ValidateTokenRequest extends Message<ValidateTokenRequest> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.ValidateTokenRequest";
+  static readonly typeName = 'stanza.hub.v1.ValidateTokenRequest';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "tokens", kind: "message", T: TokenInfo, repeated: true },
+    { no: 1, name: 'tokens', kind: 'message', T: TokenInfo, repeated: true },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ValidateTokenRequest {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): ValidateTokenRequest {
     return new ValidateTokenRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ValidateTokenRequest {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): ValidateTokenRequest {
     return new ValidateTokenRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ValidateTokenRequest {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): ValidateTokenRequest {
     return new ValidateTokenRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: ValidateTokenRequest | PlainMessage<ValidateTokenRequest> | undefined, b: ValidateTokenRequest | PlainMessage<ValidateTokenRequest> | undefined): boolean {
+  static equals(
+    a: ValidateTokenRequest | PlainMessage<ValidateTokenRequest> | undefined,
+    b: ValidateTokenRequest | PlainMessage<ValidateTokenRequest> | undefined
+  ): boolean {
     return proto3.util.equals(ValidateTokenRequest, a, b);
   }
 }
@@ -506,7 +713,7 @@ export class TokenInfo extends Message<TokenInfo> {
   /**
    * @generated from field: string token = 1;
    */
-  token = "";
+  token = '';
 
   /**
    * @generated from field: stanza.hub.v1.GuardSelector guard = 2;
@@ -519,25 +726,37 @@ export class TokenInfo extends Message<TokenInfo> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.TokenInfo";
+  static readonly typeName = 'stanza.hub.v1.TokenInfo';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "guard", kind: "message", T: GuardSelector },
+    { no: 1, name: 'token', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: 'guard', kind: 'message', T: GuardSelector },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TokenInfo {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): TokenInfo {
     return new TokenInfo().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TokenInfo {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): TokenInfo {
     return new TokenInfo().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TokenInfo {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): TokenInfo {
     return new TokenInfo().fromJsonString(jsonString, options);
   }
 
-  static equals(a: TokenInfo | PlainMessage<TokenInfo> | undefined, b: TokenInfo | PlainMessage<TokenInfo> | undefined): boolean {
+  static equals(
+    a: TokenInfo | PlainMessage<TokenInfo> | undefined,
+    b: TokenInfo | PlainMessage<TokenInfo> | undefined
+  ): boolean {
     return proto3.util.equals(TokenInfo, a, b);
   }
 }
@@ -566,25 +785,43 @@ export class ValidateTokenResponse extends Message<ValidateTokenResponse> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.ValidateTokenResponse";
+  static readonly typeName = 'stanza.hub.v1.ValidateTokenResponse';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "valid", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 2, name: "tokens_valid", kind: "message", T: TokenValid, repeated: true },
+    { no: 1, name: 'valid', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
+    {
+      no: 2,
+      name: 'tokens_valid',
+      kind: 'message',
+      T: TokenValid,
+      repeated: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ValidateTokenResponse {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): ValidateTokenResponse {
     return new ValidateTokenResponse().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ValidateTokenResponse {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): ValidateTokenResponse {
     return new ValidateTokenResponse().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ValidateTokenResponse {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): ValidateTokenResponse {
     return new ValidateTokenResponse().fromJsonString(jsonString, options);
   }
 
-  static equals(a: ValidateTokenResponse | PlainMessage<ValidateTokenResponse> | undefined, b: ValidateTokenResponse | PlainMessage<ValidateTokenResponse> | undefined): boolean {
+  static equals(
+    a: ValidateTokenResponse | PlainMessage<ValidateTokenResponse> | undefined,
+    b: ValidateTokenResponse | PlainMessage<ValidateTokenResponse> | undefined
+  ): boolean {
     return proto3.util.equals(ValidateTokenResponse, a, b);
   }
 }
@@ -596,7 +833,7 @@ export class TokenValid extends Message<TokenValid> {
   /**
    * @generated from field: string token = 1;
    */
-  token = "";
+  token = '';
 
   /**
    * @generated from field: bool valid = 2;
@@ -609,26 +846,37 @@ export class TokenValid extends Message<TokenValid> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.TokenValid";
+  static readonly typeName = 'stanza.hub.v1.TokenValid';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "valid", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 1, name: 'token', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: 'valid', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TokenValid {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): TokenValid {
     return new TokenValid().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TokenValid {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): TokenValid {
     return new TokenValid().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TokenValid {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): TokenValid {
     return new TokenValid().fromJsonString(jsonString, options);
   }
 
-  static equals(a: TokenValid | PlainMessage<TokenValid> | undefined, b: TokenValid | PlainMessage<TokenValid> | undefined): boolean {
+  static equals(
+    a: TokenValid | PlainMessage<TokenValid> | undefined,
+    b: TokenValid | PlainMessage<TokenValid> | undefined
+  ): boolean {
     return proto3.util.equals(TokenValid, a, b);
   }
 }
-

@@ -3,9 +3,16 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3 } from "@bufbuild/protobuf";
-import { GuardFeatureSelector, Health } from "./common_pb.js";
+import type {
+  BinaryReadOptions,
+  FieldList,
+  JsonReadOptions,
+  JsonValue,
+  PartialMessage,
+  PlainMessage,
+} from '@bufbuild/protobuf';
+import { Message, proto3 } from '@bufbuild/protobuf';
+import { GuardFeatureSelector, Health } from './common_pb.js';
 
 /**
  * Called by SDK to determine whether a Guard is overloaded at a given Feature's priority level. Used so that customer code can make good decisions about fail-fast or graceful degradation as high up the stack as possible. SDK may cache the result for up to 10 seconds.
@@ -35,25 +42,49 @@ export class QueryGuardHealthRequest extends Message<QueryGuardHealthRequest> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.QueryGuardHealthRequest";
+  static readonly typeName = 'stanza.hub.v1.QueryGuardHealthRequest';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "selector", kind: "message", T: GuardFeatureSelector },
-    { no: 4, name: "priority_boost", kind: "scalar", T: 5 /* ScalarType.INT32 */, opt: true },
+    { no: 1, name: 'selector', kind: 'message', T: GuardFeatureSelector },
+    {
+      no: 4,
+      name: 'priority_boost',
+      kind: 'scalar',
+      T: 5 /* ScalarType.INT32 */,
+      opt: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): QueryGuardHealthRequest {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): QueryGuardHealthRequest {
     return new QueryGuardHealthRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): QueryGuardHealthRequest {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): QueryGuardHealthRequest {
     return new QueryGuardHealthRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): QueryGuardHealthRequest {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): QueryGuardHealthRequest {
     return new QueryGuardHealthRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: QueryGuardHealthRequest | PlainMessage<QueryGuardHealthRequest> | undefined, b: QueryGuardHealthRequest | PlainMessage<QueryGuardHealthRequest> | undefined): boolean {
+  static equals(
+    a:
+      | QueryGuardHealthRequest
+      | PlainMessage<QueryGuardHealthRequest>
+      | undefined,
+    b:
+      | QueryGuardHealthRequest
+      | PlainMessage<QueryGuardHealthRequest>
+      | undefined
+  ): boolean {
     return proto3.util.equals(QueryGuardHealthRequest, a, b);
   }
 }
@@ -73,25 +104,42 @@ export class QueryGuardHealthResponse extends Message<QueryGuardHealthResponse> 
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.QueryGuardHealthResponse";
+  static readonly typeName = 'stanza.hub.v1.QueryGuardHealthResponse';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "health", kind: "enum", T: proto3.getEnumType(Health) },
+    { no: 1, name: 'health', kind: 'enum', T: proto3.getEnumType(Health) },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): QueryGuardHealthResponse {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): QueryGuardHealthResponse {
     return new QueryGuardHealthResponse().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): QueryGuardHealthResponse {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): QueryGuardHealthResponse {
     return new QueryGuardHealthResponse().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): QueryGuardHealthResponse {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): QueryGuardHealthResponse {
     return new QueryGuardHealthResponse().fromJsonString(jsonString, options);
   }
 
-  static equals(a: QueryGuardHealthResponse | PlainMessage<QueryGuardHealthResponse> | undefined, b: QueryGuardHealthResponse | PlainMessage<QueryGuardHealthResponse> | undefined): boolean {
+  static equals(
+    a:
+      | QueryGuardHealthResponse
+      | PlainMessage<QueryGuardHealthResponse>
+      | undefined,
+    b:
+      | QueryGuardHealthResponse
+      | PlainMessage<QueryGuardHealthResponse>
+      | undefined
+  ): boolean {
     return proto3.util.equals(QueryGuardHealthResponse, a, b);
   }
 }
-

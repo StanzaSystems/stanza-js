@@ -3,8 +3,15 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3 } from "@bufbuild/protobuf";
+import type {
+  BinaryReadOptions,
+  FieldList,
+  JsonReadOptions,
+  JsonValue,
+  PartialMessage,
+  PlainMessage,
+} from '@bufbuild/protobuf';
+import { Message, proto3 } from '@bufbuild/protobuf';
 
 /**
  * @generated from enum stanza.hub.v1.Health
@@ -31,11 +38,11 @@ export enum Health {
   DOWN = 3,
 }
 // Retrieve enum metadata with: proto3.getEnumType(Health)
-proto3.util.setEnumType(Health, "stanza.hub.v1.Health", [
-  { no: 0, name: "HEALTH_UNSPECIFIED" },
-  { no: 1, name: "HEALTH_OK" },
-  { no: 2, name: "HEALTH_OVERLOAD" },
-  { no: 3, name: "HEALTH_DOWN" },
+proto3.util.setEnumType(Health, 'stanza.hub.v1.Health', [
+  { no: 0, name: 'HEALTH_UNSPECIFIED' },
+  { no: 1, name: 'HEALTH_OK' },
+  { no: 2, name: 'HEALTH_OVERLOAD' },
+  { no: 3, name: 'HEALTH_DOWN' },
 ]);
 
 /**
@@ -58,10 +65,10 @@ export enum State {
   DISABLED = 2,
 }
 // Retrieve enum metadata with: proto3.getEnumType(State)
-proto3.util.setEnumType(State, "stanza.hub.v1.State", [
-  { no: 0, name: "STATE_UNSPECIFIED" },
-  { no: 1, name: "STATE_ENABLED" },
-  { no: 2, name: "STATE_DISABLED" },
+proto3.util.setEnumType(State, 'stanza.hub.v1.State', [
+  { no: 0, name: 'STATE_UNSPECIFIED' },
+  { no: 1, name: 'STATE_ENABLED' },
+  { no: 2, name: 'STATE_DISABLED' },
 ]);
 
 /**
@@ -111,13 +118,13 @@ export enum Config {
   FETCH_TIMEOUT = 5,
 }
 // Retrieve enum metadata with: proto3.getEnumType(Config)
-proto3.util.setEnumType(Config, "stanza.hub.v1.Config", [
-  { no: 0, name: "CONFIG_UNSPECIFIED" },
-  { no: 1, name: "CONFIG_CACHED_OK" },
-  { no: 2, name: "CONFIG_FETCHED_OK" },
-  { no: 3, name: "CONFIG_NOT_FOUND" },
-  { no: 4, name: "CONFIG_FETCH_ERROR" },
-  { no: 5, name: "CONFIG_FETCH_TIMEOUT" },
+proto3.util.setEnumType(Config, 'stanza.hub.v1.Config', [
+  { no: 0, name: 'CONFIG_UNSPECIFIED' },
+  { no: 1, name: 'CONFIG_CACHED_OK' },
+  { no: 2, name: 'CONFIG_FETCHED_OK' },
+  { no: 3, name: 'CONFIG_NOT_FOUND' },
+  { no: 4, name: 'CONFIG_FETCH_ERROR' },
+  { no: 5, name: 'CONFIG_FETCH_TIMEOUT' },
 ]);
 
 /**
@@ -174,14 +181,14 @@ export enum Local {
   ERROR = 6,
 }
 // Retrieve enum metadata with: proto3.getEnumType(Local)
-proto3.util.setEnumType(Local, "stanza.hub.v1.Local", [
-  { no: 0, name: "LOCAL_UNSPECIFIED" },
-  { no: 1, name: "LOCAL_NOT_SUPPORTED" },
-  { no: 2, name: "LOCAL_NOT_EVAL" },
-  { no: 3, name: "LOCAL_EVAL_DISABLED" },
-  { no: 4, name: "LOCAL_ALLOWED" },
-  { no: 5, name: "LOCAL_BLOCKED" },
-  { no: 6, name: "LOCAL_ERROR" },
+proto3.util.setEnumType(Local, 'stanza.hub.v1.Local', [
+  { no: 0, name: 'LOCAL_UNSPECIFIED' },
+  { no: 1, name: 'LOCAL_NOT_SUPPORTED' },
+  { no: 2, name: 'LOCAL_NOT_EVAL' },
+  { no: 3, name: 'LOCAL_EVAL_DISABLED' },
+  { no: 4, name: 'LOCAL_ALLOWED' },
+  { no: 5, name: 'LOCAL_BLOCKED' },
+  { no: 6, name: 'LOCAL_ERROR' },
 ]);
 
 /**
@@ -238,14 +245,14 @@ export enum Token {
   VALIDATION_TIMEOUT = 6,
 }
 // Retrieve enum metadata with: proto3.getEnumType(Token)
-proto3.util.setEnumType(Token, "stanza.hub.v1.Token", [
-  { no: 0, name: "TOKEN_UNSPECIFIED" },
-  { no: 1, name: "TOKEN_NOT_EVAL" },
-  { no: 2, name: "TOKEN_EVAL_DISABLED" },
-  { no: 3, name: "TOKEN_NOT_VALID" },
-  { no: 4, name: "TOKEN_VALID" },
-  { no: 5, name: "TOKEN_VALIDATION_ERROR" },
-  { no: 6, name: "TOKEN_VALIDATION_TIMEOUT" },
+proto3.util.setEnumType(Token, 'stanza.hub.v1.Token', [
+  { no: 0, name: 'TOKEN_UNSPECIFIED' },
+  { no: 1, name: 'TOKEN_NOT_EVAL' },
+  { no: 2, name: 'TOKEN_EVAL_DISABLED' },
+  { no: 3, name: 'TOKEN_NOT_VALID' },
+  { no: 4, name: 'TOKEN_VALID' },
+  { no: 5, name: 'TOKEN_VALIDATION_ERROR' },
+  { no: 6, name: 'TOKEN_VALIDATION_TIMEOUT' },
 ]);
 
 /**
@@ -309,15 +316,15 @@ export enum Quota {
   TIMEOUT = 7,
 }
 // Retrieve enum metadata with: proto3.getEnumType(Quota)
-proto3.util.setEnumType(Quota, "stanza.hub.v1.Quota", [
-  { no: 0, name: "QUOTA_UNSPECIFIED" },
-  { no: 1, name: "QUOTA_NOT_EVAL" },
-  { no: 2, name: "QUOTA_EVAL_DISABLED" },
-  { no: 3, name: "QUOTA_LOCAL_ERROR" },
-  { no: 4, name: "QUOTA_BLOCKED" },
-  { no: 5, name: "QUOTA_GRANTED" },
-  { no: 6, name: "QUOTA_ERROR" },
-  { no: 7, name: "QUOTA_TIMEOUT" },
+proto3.util.setEnumType(Quota, 'stanza.hub.v1.Quota', [
+  { no: 0, name: 'QUOTA_UNSPECIFIED' },
+  { no: 1, name: 'QUOTA_NOT_EVAL' },
+  { no: 2, name: 'QUOTA_EVAL_DISABLED' },
+  { no: 3, name: 'QUOTA_LOCAL_ERROR' },
+  { no: 4, name: 'QUOTA_BLOCKED' },
+  { no: 5, name: 'QUOTA_GRANTED' },
+  { no: 6, name: 'QUOTA_ERROR' },
+  { no: 7, name: 'QUOTA_TIMEOUT' },
 ]);
 
 /**
@@ -346,10 +353,10 @@ export enum Mode {
   REPORT_ONLY = 2,
 }
 // Retrieve enum metadata with: proto3.getEnumType(Mode)
-proto3.util.setEnumType(Mode, "stanza.hub.v1.Mode", [
-  { no: 0, name: "MODE_UNSPECIFIED" },
-  { no: 1, name: "MODE_NORMAL" },
-  { no: 2, name: "MODE_REPORT_ONLY" },
+proto3.util.setEnumType(Mode, 'stanza.hub.v1.Mode', [
+  { no: 0, name: 'MODE_UNSPECIFIED' },
+  { no: 1, name: 'MODE_NORMAL' },
+  { no: 2, name: 'MODE_REPORT_ONLY' },
 ]);
 
 /**
@@ -359,12 +366,12 @@ export class GuardSelector extends Message<GuardSelector> {
   /**
    * @generated from field: string environment = 1;
    */
-  environment = "";
+  environment = '';
 
   /**
    * @generated from field: string name = 2;
    */
-  name = "";
+  name = '';
 
   /**
    * @generated from field: repeated stanza.hub.v1.Tag tags = 6;
@@ -377,26 +384,43 @@ export class GuardSelector extends Message<GuardSelector> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GuardSelector";
+  static readonly typeName = 'stanza.hub.v1.GuardSelector';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "environment", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 6, name: "tags", kind: "message", T: Tag, repeated: true },
+    {
+      no: 1,
+      name: 'environment',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+    { no: 2, name: 'name', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: 'tags', kind: 'message', T: Tag, repeated: true },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GuardSelector {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GuardSelector {
     return new GuardSelector().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GuardSelector {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GuardSelector {
     return new GuardSelector().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GuardSelector {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GuardSelector {
     return new GuardSelector().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GuardSelector | PlainMessage<GuardSelector> | undefined, b: GuardSelector | PlainMessage<GuardSelector> | undefined): boolean {
+  static equals(
+    a: GuardSelector | PlainMessage<GuardSelector> | undefined,
+    b: GuardSelector | PlainMessage<GuardSelector> | undefined
+  ): boolean {
     return proto3.util.equals(GuardSelector, a, b);
   }
 }
@@ -408,7 +432,7 @@ export class FeatureSelector extends Message<FeatureSelector> {
   /**
    * @generated from field: string environment = 1;
    */
-  environment = "";
+  environment = '';
 
   /**
    * @generated from field: repeated string names = 2;
@@ -426,26 +450,49 @@ export class FeatureSelector extends Message<FeatureSelector> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.FeatureSelector";
+  static readonly typeName = 'stanza.hub.v1.FeatureSelector';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "environment", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "names", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
-    { no: 6, name: "tags", kind: "message", T: Tag, repeated: true },
+    {
+      no: 1,
+      name: 'environment',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+    {
+      no: 2,
+      name: 'names',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      repeated: true,
+    },
+    { no: 6, name: 'tags', kind: 'message', T: Tag, repeated: true },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): FeatureSelector {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): FeatureSelector {
     return new FeatureSelector().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): FeatureSelector {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): FeatureSelector {
     return new FeatureSelector().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): FeatureSelector {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): FeatureSelector {
     return new FeatureSelector().fromJsonString(jsonString, options);
   }
 
-  static equals(a: FeatureSelector | PlainMessage<FeatureSelector> | undefined, b: FeatureSelector | PlainMessage<FeatureSelector> | undefined): boolean {
+  static equals(
+    a: FeatureSelector | PlainMessage<FeatureSelector> | undefined,
+    b: FeatureSelector | PlainMessage<FeatureSelector> | undefined
+  ): boolean {
     return proto3.util.equals(FeatureSelector, a, b);
   }
 }
@@ -457,12 +504,12 @@ export class GuardFeatureSelector extends Message<GuardFeatureSelector> {
   /**
    * @generated from field: string environment = 1;
    */
-  environment = "";
+  environment = '';
 
   /**
    * @generated from field: string guard_name = 2;
    */
-  guardName = "";
+  guardName = '';
 
   /**
    * @generated from field: optional string feature_name = 3;
@@ -480,27 +527,50 @@ export class GuardFeatureSelector extends Message<GuardFeatureSelector> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GuardFeatureSelector";
+  static readonly typeName = 'stanza.hub.v1.GuardFeatureSelector';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "environment", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "guard_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "feature_name", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 6, name: "tags", kind: "message", T: Tag, repeated: true },
+    {
+      no: 1,
+      name: 'environment',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+    { no: 2, name: 'guard_name', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 3,
+      name: 'feature_name',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    { no: 6, name: 'tags', kind: 'message', T: Tag, repeated: true },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GuardFeatureSelector {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GuardFeatureSelector {
     return new GuardFeatureSelector().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GuardFeatureSelector {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GuardFeatureSelector {
     return new GuardFeatureSelector().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GuardFeatureSelector {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GuardFeatureSelector {
     return new GuardFeatureSelector().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GuardFeatureSelector | PlainMessage<GuardFeatureSelector> | undefined, b: GuardFeatureSelector | PlainMessage<GuardFeatureSelector> | undefined): boolean {
+  static equals(
+    a: GuardFeatureSelector | PlainMessage<GuardFeatureSelector> | undefined,
+    b: GuardFeatureSelector | PlainMessage<GuardFeatureSelector> | undefined
+  ): boolean {
     return proto3.util.equals(GuardFeatureSelector, a, b);
   }
 }
@@ -512,22 +582,22 @@ export class GuardServiceSelector extends Message<GuardServiceSelector> {
   /**
    * @generated from field: string environment = 1;
    */
-  environment = "";
+  environment = '';
 
   /**
    * @generated from field: string guard_name = 2;
    */
-  guardName = "";
+  guardName = '';
 
   /**
    * @generated from field: string service_name = 3;
    */
-  serviceName = "";
+  serviceName = '';
 
   /**
    * @generated from field: string service_release = 4;
    */
-  serviceRelease = "";
+  serviceRelease = '';
 
   /**
    * @generated from field: repeated stanza.hub.v1.Tag tags = 6;
@@ -540,28 +610,55 @@ export class GuardServiceSelector extends Message<GuardServiceSelector> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GuardServiceSelector";
+  static readonly typeName = 'stanza.hub.v1.GuardServiceSelector';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "environment", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "guard_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "service_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "service_release", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 6, name: "tags", kind: "message", T: Tag, repeated: true },
+    {
+      no: 1,
+      name: 'environment',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+    { no: 2, name: 'guard_name', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 3,
+      name: 'service_name',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+    {
+      no: 4,
+      name: 'service_release',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+    { no: 6, name: 'tags', kind: 'message', T: Tag, repeated: true },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GuardServiceSelector {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GuardServiceSelector {
     return new GuardServiceSelector().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GuardServiceSelector {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GuardServiceSelector {
     return new GuardServiceSelector().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GuardServiceSelector {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GuardServiceSelector {
     return new GuardServiceSelector().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GuardServiceSelector | PlainMessage<GuardServiceSelector> | undefined, b: GuardServiceSelector | PlainMessage<GuardServiceSelector> | undefined): boolean {
+  static equals(
+    a: GuardServiceSelector | PlainMessage<GuardServiceSelector> | undefined,
+    b: GuardServiceSelector | PlainMessage<GuardServiceSelector> | undefined
+  ): boolean {
     return proto3.util.equals(GuardServiceSelector, a, b);
   }
 }
@@ -573,12 +670,12 @@ export class ServiceSelector extends Message<ServiceSelector> {
   /**
    * @generated from field: string environment = 1;
    */
-  environment = "";
+  environment = '';
 
   /**
    * @generated from field: string name = 2;
    */
-  name = "";
+  name = '';
 
   /**
    * @generated from field: optional string release = 3;
@@ -596,27 +693,50 @@ export class ServiceSelector extends Message<ServiceSelector> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.ServiceSelector";
+  static readonly typeName = 'stanza.hub.v1.ServiceSelector';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "environment", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "release", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 6, name: "tags", kind: "message", T: Tag, repeated: true },
+    {
+      no: 1,
+      name: 'environment',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+    { no: 2, name: 'name', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 3,
+      name: 'release',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    { no: 6, name: 'tags', kind: 'message', T: Tag, repeated: true },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ServiceSelector {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): ServiceSelector {
     return new ServiceSelector().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ServiceSelector {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): ServiceSelector {
     return new ServiceSelector().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ServiceSelector {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): ServiceSelector {
     return new ServiceSelector().fromJsonString(jsonString, options);
   }
 
-  static equals(a: ServiceSelector | PlainMessage<ServiceSelector> | undefined, b: ServiceSelector | PlainMessage<ServiceSelector> | undefined): boolean {
+  static equals(
+    a: ServiceSelector | PlainMessage<ServiceSelector> | undefined,
+    b: ServiceSelector | PlainMessage<ServiceSelector> | undefined
+  ): boolean {
     return proto3.util.equals(ServiceSelector, a, b);
   }
 }
@@ -641,25 +761,37 @@ export class HealthByPriority extends Message<HealthByPriority> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.HealthByPriority";
+  static readonly typeName = 'stanza.hub.v1.HealthByPriority';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "priority", kind: "scalar", T: 13 /* ScalarType.UINT32 */ },
-    { no: 2, name: "health", kind: "enum", T: proto3.getEnumType(Health) },
+    { no: 1, name: 'priority', kind: 'scalar', T: 13 /* ScalarType.UINT32 */ },
+    { no: 2, name: 'health', kind: 'enum', T: proto3.getEnumType(Health) },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): HealthByPriority {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): HealthByPriority {
     return new HealthByPriority().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): HealthByPriority {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): HealthByPriority {
     return new HealthByPriority().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): HealthByPriority {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): HealthByPriority {
     return new HealthByPriority().fromJsonString(jsonString, options);
   }
 
-  static equals(a: HealthByPriority | PlainMessage<HealthByPriority> | undefined, b: HealthByPriority | PlainMessage<HealthByPriority> | undefined): boolean {
+  static equals(
+    a: HealthByPriority | PlainMessage<HealthByPriority> | undefined,
+    b: HealthByPriority | PlainMessage<HealthByPriority> | undefined
+  ): boolean {
     return proto3.util.equals(HealthByPriority, a, b);
   }
 }
@@ -671,12 +803,12 @@ export class Tag extends Message<Tag> {
   /**
    * @generated from field: string key = 1;
    */
-  key = "";
+  key = '';
 
   /**
    * @generated from field: string value = 2;
    */
-  value = "";
+  value = '';
 
   constructor(data?: PartialMessage<Tag>) {
     super();
@@ -684,26 +816,37 @@ export class Tag extends Message<Tag> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.Tag";
+  static readonly typeName = 'stanza.hub.v1.Tag';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "key", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "value", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: 'key', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: 'value', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Tag {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): Tag {
     return new Tag().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Tag {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): Tag {
     return new Tag().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Tag {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): Tag {
     return new Tag().fromJsonString(jsonString, options);
   }
 
-  static equals(a: Tag | PlainMessage<Tag> | undefined, b: Tag | PlainMessage<Tag> | undefined): boolean {
+  static equals(
+    a: Tag | PlainMessage<Tag> | undefined,
+    b: Tag | PlainMessage<Tag> | undefined
+  ): boolean {
     return proto3.util.equals(Tag, a, b);
   }
 }
-

@@ -1,34 +1,34 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // import type Crypto from 'crypto'
-import { generateClientId } from './generateClientId'
+import { generateClientId } from './generateClientId';
 // import * as crypto from 'crypto'
 
 vi.mock('crypto', async (importOriginal) => {
-  const original = await importOriginal<typeof Crypto>()
+  const original = await importOriginal<typeof Crypto>();
   return {
     ...original,
-    randomUUID: () => mockRandomUUID()
-  }
-})
+    randomUUID: () => mockRandomUUID(),
+  };
+});
 
-type RandomUUID = Crypto['randomUUID']
-const mockRandomUUID = vi.fn<Parameters<RandomUUID>, ReturnType<RandomUUID>>()
+type RandomUUID = Crypto['randomUUID'];
+const mockRandomUUID = vi.fn<Parameters<RandomUUID>, ReturnType<RandomUUID>>();
 
 beforeEach(() => {
-  mockRandomUUID.mockReset()
-})
+  mockRandomUUID.mockReset();
+});
 describe('generateClientId', function () {
   it('should generate client id', function () {
-    mockRandomUUID.mockImplementation(() => 'test-uuid')
+    mockRandomUUID.mockImplementation(() => 'test-uuid');
 
-    expect(generateClientId()).toEqual('test-uuid')
-  })
+    expect(generateClientId()).toEqual('test-uuid');
+  });
 
   it('should return empty string if crypto.randomUUID throws', function () {
     mockRandomUUID.mockImplementationOnce(() => {
-      throw new Error('kaboom')
-    })
-    expect(generateClientId()).toEqual('')
-  })
-})
+      throw new Error('kaboom');
+    });
+    expect(generateClientId()).toEqual('');
+  });
+});

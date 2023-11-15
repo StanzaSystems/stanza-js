@@ -1,3 +1,3 @@
-import nodeFetch from 'node-fetch'
+import nodeFetch from 'node-fetch';
 
-export const fetch = globalThis.fetch ?? nodeFetch
+export const fetch = globalThis.fetch ?? nodeFetch;

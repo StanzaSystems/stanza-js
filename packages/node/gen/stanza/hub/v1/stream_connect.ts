@@ -3,8 +3,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { UpdateStreamsRequest, UpdateStreamsResponse } from "./stream_pb.js";
-import { MethodKind } from "@bufbuild/protobuf";
+import { UpdateStreamsRequest, UpdateStreamsResponse } from './stream_pb.js';
+import { MethodKind } from '@bufbuild/protobuf';
 
 /**
  * Experimental feature for fair prioritised balancing of streaming activities.
@@ -12,17 +12,16 @@ import { MethodKind } from "@bufbuild/protobuf";
  * @generated from service stanza.hub.v1.StreamBalancerService
  */
 export const StreamBalancerService = {
-  typeName: "stanza.hub.v1.StreamBalancerService",
+  typeName: 'stanza.hub.v1.StreamBalancerService',
   methods: {
     /**
      * @generated from rpc stanza.hub.v1.StreamBalancerService.UpdateStreams
      */
     updateStreams: {
-      name: "UpdateStreams",
+      name: 'UpdateStreams',
       I: UpdateStreamsRequest,
       O: UpdateStreamsResponse,
       kind: MethodKind.Unary,
     },
-  }
+  },
 } as const;
-

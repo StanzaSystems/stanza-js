@@ -3,7 +3,8 @@
 
 const { composePlugins, withNx } = require('@nx/next');
 
-const COOKIE_PREFIX = process.env.NODE_ENV === 'development' ? '__Dev-' : '__Host-'
+const COOKIE_PREFIX =
+  process.env.NODE_ENV === 'development' ? '__Dev-' : '__Host-';
 
 /**
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
@@ -21,14 +22,10 @@ const nextConfig = {
   experimental: {
     instrumentationHook: true,
     outputFileTracingExcludes: {
-      "*": ["**swc/core**"]
-    }
+      '*': ['**swc/core**'],
+    },
   },
-  transpilePackages: [
-    '@getstanza/react',
-    '@getstanza/next',
-    '@getstanza/node'
-  ],
+  transpilePackages: ['@getstanza/react', '@getstanza/next', '@getstanza/node'],
   webpack: (config) => {
     config.resolve = {
       ...config.resolve,
@@ -37,7 +34,7 @@ const nextConfig = {
       },
     };
 
-    return config
+    return config;
   },
 };
 

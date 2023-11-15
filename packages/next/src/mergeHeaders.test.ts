@@ -1,63 +1,75 @@
-import { mergeHeaders } from './mergeHeaders'
-import { expect } from 'vitest'
+import { mergeHeaders } from './mergeHeaders';
+import { expect } from 'vitest';
 
 describe('mergeHeaders', () => {
   it('should return empty headers if not arguments provided', () => {
-    expect(mergeHeaders()).toEqual(new Headers())
-  })
+    expect(mergeHeaders()).toEqual(new Headers());
+  });
 
   it('should return same headers if only one argument provided', () => {
-    expect(mergeHeaders(
+    expect(
+      mergeHeaders(
+        new Headers({
+          firstTestHeader: 'firstTestHeaderValue',
+          firstAnotherTestHeader: 'firstAnotherTestHeaderValue',
+          firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue',
+        })
+      )
+    ).toEqual(
       new Headers({
         firstTestHeader: 'firstTestHeaderValue',
         firstAnotherTestHeader: 'firstAnotherTestHeaderValue',
-        firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue'
+        firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue',
       })
-    )).toEqual(new Headers({
-      firstTestHeader: 'firstTestHeaderValue',
-      firstAnotherTestHeader: 'firstAnotherTestHeaderValue',
-      firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue'
-    }))
-  })
+    );
+  });
 
   it('should return merge two distinct headers', () => {
-    expect(mergeHeaders(
+    expect(
+      mergeHeaders(
+        new Headers({
+          firstTestHeader: 'firstTestHeaderValue',
+          firstAnotherTestHeader: 'firstAnotherTestHeaderValue',
+          firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue',
+        }),
+        new Headers({
+          secondTestHeader: 'secondTestHeaderValue',
+          secondAnotherTestHeader: 'secondAnotherTestHeaderValue',
+          secondYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue',
+        })
+      )
+    ).toEqual(
       new Headers({
         firstTestHeader: 'firstTestHeaderValue',
         firstAnotherTestHeader: 'firstAnotherTestHeaderValue',
-        firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue'
-      }),
-      new Headers({
+        firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue',
         secondTestHeader: 'secondTestHeaderValue',
         secondAnotherTestHeader: 'secondAnotherTestHeaderValue',
-        secondYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue'
+        secondYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue',
       })
-    )).toEqual(new Headers({
-      firstTestHeader: 'firstTestHeaderValue',
-      firstAnotherTestHeader: 'firstAnotherTestHeaderValue',
-      firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue',
-      secondTestHeader: 'secondTestHeaderValue',
-      secondAnotherTestHeader: 'secondAnotherTestHeaderValue',
-      secondYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue'
-    }))
-  })
+    );
+  });
 
   it('should return merge two headers with common header keys', () => {
-    expect(mergeHeaders(
-      new Headers({
-        firstTestHeader: 'firstTestHeaderValue',
-        firstAnotherTestHeader: 'firstAnotherTestHeaderValue',
-        firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue'
-      }),
+    expect(
+      mergeHeaders(
+        new Headers({
+          firstTestHeader: 'firstTestHeaderValue',
+          firstAnotherTestHeader: 'firstAnotherTestHeaderValue',
+          firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue',
+        }),
+        new Headers({
+          firstTestHeader: 'secondTestHeaderValue',
+          firstAnotherTestHeader: 'secondAnotherTestHeaderValue',
+          firstYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue',
+        })
+      )
+    ).toEqual(
       new Headers({
         firstTestHeader: 'secondTestHeaderValue',
         firstAnotherTestHeader: 'secondAnotherTestHeaderValue',
-        firstYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue'
+        firstYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue',
       })
-    )).toEqual(new Headers({
-      firstTestHeader: 'secondTestHeaderValue',
-      firstAnotherTestHeader: 'secondAnotherTestHeaderValue',
-      firstYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue'
-    }))
-  })
-})
+    );
+  });
+});

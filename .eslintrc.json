@@ -34,7 +34,10 @@
       "files": ["*.ts", "*.tsx"],
       "extends": [
         "plugin:@nx/typescript",
-        "standard-with-typescript"
+        "standard-with-typescript",
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier"
       ],
       "parserOptions": {
         "ecmaVersion": "latest",
