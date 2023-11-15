@@ -33,19 +33,19 @@ describe('localStorageStateProvider', () => {
     localStorage.clear();
   });
 
-  it('should throw before initialized', () => {
+  it('should throw before initialized', async () => {
     expect(() => {
       stateProvider.getFeatureState('test');
     }).toThrow(
       'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
     );
-    expect(async () => {
+    await expect(async () => {
       await stateProvider.setFeatureState({
         featureName: 'test',
         enabledPercent: 100,
         lastRefreshTime: 0,
       });
-    }).toThrow(
+    }).rejects.toThrow(
       'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
     );
     expect(() => {
