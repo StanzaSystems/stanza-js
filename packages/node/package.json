@@ -1,12 +1,12 @@
 {
   "name": "@getstanza/node",
   "type": "commonjs",
-  "version": "0.0.6-beta",
+  "version": "0.0.7-beta",
   "description": "Stanza Node SDK",
   "author": "Stanza",
   "license": "Apache-2.0",
   "dependencies": {
-    "@getstanza/core": "0.0.6-beta",
+    "@getstanza/core": "0.0.7-beta",
     "@opentelemetry/exporter-trace-otlp-grpc": "~0.45.1",
     "@opentelemetry/api": "~1.7.0",
     "@opentelemetry/instrumentation-http": "~0.45.1",
