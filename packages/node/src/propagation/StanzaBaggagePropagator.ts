@@ -1,21 +1,21 @@
 import {
   type Context,
   type TextMapGetter,
-  type TextMapSetter
-} from '@opentelemetry/api'
-import { W3CBaggagePropagator } from '@opentelemetry/core'
+  type TextMapSetter,
+} from '@opentelemetry/api';
+import { W3CBaggagePropagator } from '@opentelemetry/core';
 import {
   addPriorityBoostToContext,
   deletePriorityBoostFromContext,
-  getPriorityBoostFromContext
-} from '../context/priorityBoost'
-import { enrichContextWithStanzaBaggage } from '../baggage/enrichContextWithStanzaBaggage'
+  getPriorityBoostFromContext,
+} from '../context/priorityBoost';
+import { enrichContextWithStanzaBaggage } from '../baggage/enrichContextWithStanzaBaggage';
 import {
   setPriorityBoostInContextBaggage,
   deletePriorityBoostFromContextBaggage,
-  getPriorityBoostFromContextBaggage
-} from '../baggage/priorityBoost'
-import { pipe } from 'ramda'
+  getPriorityBoostFromContextBaggage,
+} from '../baggage/priorityBoost';
+import { pipe } from 'ramda';
 
 export class StanzaBaggagePropagator extends W3CBaggagePropagator {
   override inject(
@@ -23,15 +23,15 @@ export class StanzaBaggagePropagator extends W3CBaggagePropagator {
     carrier: unknown,
     setter: TextMapSetter
   ): void {
-    const currentPriorityBoost = getPriorityBoostFromContext(context)
+    const currentPriorityBoost = getPriorityBoostFromContext(context);
     pipe(
       deletePriorityBoostFromContext,
       setPriorityBoostInContextBaggage(currentPriorityBoost),
       enrichContextWithStanzaBaggage,
       (ctx: Context) => {
-        super.inject(ctx, carrier, setter)
+        super.inject(ctx, carrier, setter);
       }
-    )(context)
+    )(context);
   }
 
   override extract(
@@ -44,10 +44,10 @@ export class StanzaBaggagePropagator extends W3CBaggagePropagator {
       enrichContextWithStanzaBaggage,
       (contextWithBaggage: Context) => {
         const priorityBoost =
-          getPriorityBoostFromContextBaggage(contextWithBaggage)
-        return addPriorityBoostToContext(priorityBoost)(contextWithBaggage)
+          getPriorityBoostFromContextBaggage(contextWithBaggage);
+        return addPriorityBoostToContext(priorityBoost)(contextWithBaggage);
       },
       deletePriorityBoostFromContextBaggage
-    )(context)
+    )(context);
   }
 }

@@ -1,20 +1,20 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { getTraceConfig } from './getTraceConfig'
-import { type ServiceConfig } from '../hub/model'
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { getTraceConfig } from './getTraceConfig';
+import { type ServiceConfig } from '../hub/model';
 
-type TraceConfig = ReturnType<typeof getTraceConfig>
+type TraceConfig = ReturnType<typeof getTraceConfig>;
 
 vi.mock('./serviceConfig', () => {
   return {
-    getServiceConfig: () => getServiceConfigMock()
-  }
-})
+    getServiceConfig: () => getServiceConfigMock(),
+  };
+});
 
-const getServiceConfigMock = vi.fn()
+const getServiceConfigMock = vi.fn();
 
 beforeEach(() => {
-  getServiceConfigMock.mockReset()
-})
+  getServiceConfigMock.mockReset();
+});
 
 describe('getTraceConfig', function () {
   it('should get empty trace config when it is not available yet', function () {
@@ -23,9 +23,9 @@ describe('getTraceConfig', function () {
       collectorUrl: '',
       overrides: [],
       headerSampleConfig: [],
-      paramSampleConfig: []
-    } satisfies TraceConfig)
-  })
+      paramSampleConfig: [],
+    } satisfies TraceConfig);
+  });
 
   it('should get empty trace config when it is not available yet', function () {
     getServiceConfigMock.mockImplementation(() => {
@@ -36,20 +36,20 @@ describe('getTraceConfig', function () {
             sampleRateDefault: 0.05,
             overrides: [],
             headerSampleConfig: [],
-            paramSampleConfig: []
+            paramSampleConfig: [],
           },
-          ...({} as any)
+          ...({} as any),
         },
-        version: '1'
-      } satisfies ServiceConfig
-    })
+        version: '1',
+      } satisfies ServiceConfig;
+    });
 
     expect(getTraceConfig()).toEqual({
       collectorUrl: 'https://test.collector',
       sampleRateDefault: 0.05,
       overrides: [],
       headerSampleConfig: [],
-      paramSampleConfig: []
-    } satisfies TraceConfig)
-  })
-})
+      paramSampleConfig: [],
+    } satisfies TraceConfig);
+  });
+});

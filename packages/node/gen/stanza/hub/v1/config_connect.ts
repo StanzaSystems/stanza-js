@@ -9,9 +9,9 @@ import {
   GetGuardConfigRequest,
   GetGuardConfigResponse,
   GetServiceConfigRequest,
-  GetServiceConfigResponse
-} from './config_pb.js'
-import { MethodKind } from '@bufbuild/protobuf'
+  GetServiceConfigResponse,
+} from './config_pb.js';
+import { MethodKind } from '@bufbuild/protobuf';
 
 /**
  * The Config service definition.
@@ -30,7 +30,7 @@ export const ConfigService = {
       name: 'GetGuardConfig',
       I: GetGuardConfigRequest,
       O: GetGuardConfigResponse,
-      kind: MethodKind.Unary
+      kind: MethodKind.Unary,
     },
     /**
      * @generated from rpc stanza.hub.v1.ConfigService.GetBrowserContext
@@ -39,7 +39,7 @@ export const ConfigService = {
       name: 'GetBrowserContext',
       I: GetBrowserContextRequest,
       O: GetBrowserContextResponse,
-      kind: MethodKind.Unary
+      kind: MethodKind.Unary,
     },
     /**
      * @generated from rpc stanza.hub.v1.ConfigService.GetServiceConfig
@@ -48,7 +48,7 @@ export const ConfigService = {
       name: 'GetServiceConfig',
       I: GetServiceConfigRequest,
       O: GetServiceConfigResponse,
-      kind: MethodKind.Unary
-    }
-  }
-} as const
+      kind: MethodKind.Unary,
+    },
+  },
+} as const;

@@ -1,14 +1,14 @@
-import { WithStanzaContextName } from '@getstanza/react'
-import WithStanza from '../components/WithStanza'
-import StripeCartProvider from '../components/StripeCartProvider'
-import Layout from '../components/Layout'
+import { WithStanzaContextName } from '@getstanza/react';
+import WithStanza from '../components/WithStanza';
+import StripeCartProvider from '../components/StripeCartProvider';
+import Layout from '../components/Layout';
 
-import '../styles.css'
+import '../styles.css';
 
 export default function RootLayout({
-  children
+  children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang='en'>
@@ -24,5 +24,5 @@ export default function RootLayout({
         </WithStanza>
       </body>
     </html>
-  )
+  );
 }

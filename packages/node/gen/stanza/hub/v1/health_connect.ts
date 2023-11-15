@@ -5,9 +5,9 @@
 
 import {
   QueryGuardHealthRequest,
-  QueryGuardHealthResponse
-} from './health_pb.js'
-import { MethodKind } from '@bufbuild/protobuf'
+  QueryGuardHealthResponse,
+} from './health_pb.js';
+import { MethodKind } from '@bufbuild/protobuf';
 
 /**
  * The Health service definition. This service is used by the Stanza SDK to allow devs to
@@ -32,7 +32,7 @@ export const HealthService = {
       name: 'QueryGuardHealth',
       I: QueryGuardHealthRequest,
       O: QueryGuardHealthResponse,
-      kind: MethodKind.Unary
-    }
-  }
-} as const
+      kind: MethodKind.Unary,
+    },
+  },
+} as const;

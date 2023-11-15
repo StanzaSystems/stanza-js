@@ -1,14 +1,14 @@
-import { defineConfig } from 'vitest/config'
+import { defineConfig } from 'vitest/config';
 
-import viteTsConfigPaths from 'vite-tsconfig-paths'
+import viteTsConfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/node',
 
   plugins: [
     viteTsConfigPaths({
-      root: '../../'
-    })
+      root: '../../',
+    }),
   ],
 
   // Uncomment this if you are using workers.
@@ -24,7 +24,7 @@ export default defineConfig({
     setupFiles: ['./src/__tests__/setup.ts'],
     globals: true,
     cache: {
-      dir: '../../node_modules/.vitest'
+      dir: '../../node_modules/.vitest',
     },
     environment: 'jsdom',
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
@@ -44,8 +44,8 @@ export default defineConfig({
         '**/*{.,-}spec.{js,cjs,mjs,ts,tsx,jsx}',
         '**/__tests__/**',
         '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
-        '**/.{eslint,mocha,prettier}rc.{js,cjs,yml}'
-      ]
-    }
-  }
-})
+        '**/.{eslint,mocha,prettier}rc.{js,cjs,yml}',
+      ],
+    },
+  },
+});

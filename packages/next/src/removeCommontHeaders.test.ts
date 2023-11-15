@@ -1,5 +1,5 @@
-import { expect } from 'vitest'
-import { removeCommonHeaders } from './removeCommonHeaders'
+import { expect } from 'vitest';
+import { removeCommonHeaders } from './removeCommonHeaders';
 
 describe('removeCommonHeaders', () => {
   it('should not remove any headers if no common headers present', () => {
@@ -8,22 +8,22 @@ describe('removeCommonHeaders', () => {
         new Headers({
           firstTestHeader: 'firstTestHeaderValue',
           firstAnotherTestHeader: 'firstAnotherTestHeaderValue',
-          firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue'
+          firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue',
         }),
         new Headers({
           secondTestHeader: 'secondTestHeaderValue',
           secondAnotherTestHeader: 'secondAnotherTestHeaderValue',
-          secondYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue'
+          secondYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue',
         })
       )
     ).toEqual(
       new Headers({
         firstTestHeader: 'firstTestHeaderValue',
         firstAnotherTestHeader: 'firstAnotherTestHeaderValue',
-        firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue'
+        firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue',
       })
-    )
-  })
+    );
+  });
 
   it('should remove common headers', () => {
     expect(
@@ -32,21 +32,21 @@ describe('removeCommonHeaders', () => {
           firstTestHeader: 'firstTestHeaderValue',
           firstAnotherTestHeader: 'firstAnotherTestHeaderValue',
           firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue',
-          commonHeader: 'commonHeaderValue'
+          commonHeader: 'commonHeaderValue',
         }),
         new Headers({
           secondTestHeader: 'secondTestHeaderValue',
           secondAnotherTestHeader: 'secondAnotherTestHeaderValue',
           secondYetAnotherTestHeader: 'secondYetAnotherTestHeaderValue',
-          commonHeader: 'commonHeaderValue'
+          commonHeader: 'commonHeaderValue',
         })
       )
     ).toEqual(
       new Headers({
         firstTestHeader: 'firstTestHeaderValue',
         firstAnotherTestHeader: 'firstAnotherTestHeaderValue',
-        firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue'
+        firstYetAnotherTestHeader: 'firstYetAnotherTestHeaderValue',
       })
-    )
-  })
-})
+    );
+  });
+});

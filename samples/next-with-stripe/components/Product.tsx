@@ -1,21 +1,24 @@
-import React from 'react'
-import { formatCurrencyString } from 'use-shopping-cart'
-import { type Product as DataProduct } from '../data/product'
+import React from 'react';
+import { formatCurrencyString } from 'use-shopping-cart';
+import { type Product as DataProduct } from '../data/product';
 
 interface ProductProps {
-  product: DataProduct
-  addProduct?: (item: DataProduct) => void
-  removeProduct?: (id: string) => void
+  product: DataProduct;
+  addProduct?: (item: DataProduct) => void;
+  removeProduct?: (id: string) => void;
 }
 
 const Product: React.FC<ProductProps> = ({
   product,
   addProduct = () => {},
-  removeProduct = () => {}
+  removeProduct = () => {},
 }) => {
   return (
-    <div key={product.id} className="product">
-      <div className="product-image-container">
+    <div
+      key={product.id}
+      className='product'
+    >
+      <div className='product-image-container'>
         <img
           src={
             product.image ?? 'https://actogmbh.com/files/no-product-image.png'
@@ -24,30 +27,30 @@ const Product: React.FC<ProductProps> = ({
         />
       </div>
       <h2>{product.name}</h2>
-      <p className="price">
+      <p className='price'>
         {formatCurrencyString({
           value: product.price,
-          currency: product.currency
+          currency: product.currency,
         })}
       </p>
       <button
-        className="cart-style-background"
+        className='cart-style-background'
         onClick={() => {
-          addProduct(product)
+          addProduct(product);
         }}
       >
         Add to cart
       </button>
       <button
-        className="cart-style-background"
+        className='cart-style-background'
         onClick={() => {
-          removeProduct(product.id)
+          removeProduct(product.id);
         }}
       >
         Remove
       </button>
     </div>
-  )
-}
+  );
+};
 
-export default Product
+export default Product;

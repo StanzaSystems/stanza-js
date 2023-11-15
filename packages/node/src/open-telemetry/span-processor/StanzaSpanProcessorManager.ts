@@ -1,12 +1,12 @@
-import { type Context } from '@opentelemetry/api'
+import { type Context } from '@opentelemetry/api';
 import {
   BatchSpanProcessor,
   NoopSpanProcessor,
-  type SpanProcessor
-} from '@opentelemetry/sdk-trace-node'
-import { createSpanExporter } from './createSpanExporter'
-import { type SpanProcessorManager } from './SpanProcessorManager'
-import { StanzaConfigEntityManager } from '../StanzaConfigEntityManager'
+  type SpanProcessor,
+} from '@opentelemetry/sdk-trace-node';
+import { createSpanExporter } from './createSpanExporter';
+import { type SpanProcessorManager } from './SpanProcessorManager';
+import { StanzaConfigEntityManager } from '../StanzaConfigEntityManager';
 
 export class StanzaSpanProcessorManager implements SpanProcessorManager {
   private readonly traceConfigManager =
@@ -16,8 +16,8 @@ export class StanzaSpanProcessorManager implements SpanProcessorManager {
         new BatchSpanProcessor(
           createSpanExporter(traceConfig, this.serviceName, this.serviceRelease)
         ),
-      cleanup: async (spanProcessor) => spanProcessor.shutdown()
-    })
+      cleanup: async (spanProcessor) => spanProcessor.shutdown(),
+    });
 
   constructor(
     private readonly serviceName: string,
@@ -29,14 +29,14 @@ export class StanzaSpanProcessorManager implements SpanProcessorManager {
       this.traceConfigManager
         .getAllEntities()
         .map(async (processor) => processor.forceFlush())
-    )
+    );
   }
 
   async shutdownAllSpanProcessors(): Promise<void> {
-    await this.traceConfigManager.shutdown()
+    await this.traceConfigManager.shutdown();
   }
 
   getSpanProcessor(context: Context): SpanProcessor {
-    return this.traceConfigManager.getEntity(context)
+    return this.traceConfigManager.getEntity(context);
   }
 }

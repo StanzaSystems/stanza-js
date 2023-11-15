@@ -1,4 +1,4 @@
-import { type StatusObject, Metadata, status } from '@grpc/grpc-js'
+import { type StatusObject, Metadata, status } from '@grpc/grpc-js';
 
 export const isStatusObject = (error: unknown): error is StatusObject => {
   return (
@@ -10,5 +10,5 @@ export const isStatusObject = (error: unknown): error is StatusObject => {
     typeof error.details === 'string' &&
     'metadata' in error &&
     error.metadata instanceof Metadata
-  )
-}
+  );
+};

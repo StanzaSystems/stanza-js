@@ -1,13 +1,13 @@
-import { nextApiRequestGuard } from '@getstanza/next-node'
-import { type NextApiHandler } from 'next'
-import { type Product } from '../../../data/product'
-import getStripeAPI from '../../../utils/stripe-api'
+import { nextApiRequestGuard } from '@getstanza/next-node';
+import { type NextApiHandler } from 'next';
+import { type Product } from '../../../data/product';
+import getStripeAPI from '../../../utils/stripe-api';
 
 const handler: NextApiHandler = async (req, res) => {
-  const stripeAPI = await getStripeAPI()
+  const stripeAPI = await getStripeAPI();
 
-  const result = await stripeAPI.getProducts()
-  const products = result.data
+  const result = await stripeAPI.getProducts();
+  const products = result.data;
 
   const resultProducts: Product[] = products
     .map((apiProduct) => ({
@@ -18,14 +18,14 @@ const handler: NextApiHandler = async (req, res) => {
       tags: [],
       price: apiProduct.default_price.unit_amount,
       description: apiProduct.description,
-      attribution: ''
+      attribution: '',
     }))
-    .filter((_, index) => index < 2)
-  res.json(resultProducts)
-}
+    .filter((_, index) => index < 2);
+  res.json(resultProducts);
+};
 
 const nextApiRequestStripeProductsApiGuard = nextApiRequestGuard({
   guard: 'Stripe_Products_API',
-  feature: 'featured'
-})
-export default nextApiRequestStripeProductsApiGuard(handler)
+  feature: 'featured',
+});
+export default nextApiRequestStripeProductsApiGuard(handler);

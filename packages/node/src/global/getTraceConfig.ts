@@ -1,7 +1,7 @@
-import { type ServiceConfig } from '../hub/model'
-import { getServiceConfig } from './serviceConfig'
+import { type ServiceConfig } from '../hub/model';
+import { getServiceConfig } from './serviceConfig';
 
-type TraceConfig = ServiceConfig['config']['traceConfig']
+type TraceConfig = ServiceConfig['config']['traceConfig'];
 export const getTraceConfig = (): TraceConfig => {
   return (
     getServiceConfig()?.config?.traceConfig ?? {
@@ -9,7 +9,7 @@ export const getTraceConfig = (): TraceConfig => {
       sampleRateDefault: 0,
       overrides: [],
       headerSampleConfig: [],
-      paramSampleConfig: []
+      paramSampleConfig: [],
     }
-  )
-}
+  );
+};

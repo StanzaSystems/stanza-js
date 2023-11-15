@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import './style.css'
-import StanzaBrowser from '@getstanza/browser'
-import { initState, updateState } from './stanzaState'
-import { worker } from '@getstanza/mocks-browser'
+import './style.css';
+import StanzaBrowser from '@getstanza/browser';
+import { initState, updateState } from './stanzaState';
+import { worker } from '@getstanza/mocks-browser';
 
-let loadPromise: Promise<any>
+let loadPromise: Promise<any>;
 
 if (import.meta.env.MODE === 'development') {
-  loadPromise = worker.start()
+  loadPromise = worker.start();
 } else {
-  loadPromise = Promise.resolve()
+  loadPromise = Promise.resolve();
 }
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
@@ -18,32 +18,32 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <div class="card" id="stanzaState">
     </div>
   </div>
-`
+`;
 
 loadPromise
   .then(() => {
-    void initState(document.querySelector<HTMLDivElement>('#stanzaState')!)
+    void initState(document.querySelector<HTMLDivElement>('#stanzaState')!);
   })
   .catch(() => {
-    console.log('mock service worker failed to load')
-  })
+    console.log('mock service worker failed to load');
+  });
 void Notification.requestPermission().then((result) => {
-  console.log(result)
-})
+  console.log(result);
+});
 
 StanzaBrowser.contextChanges.addChangeListener(async function (change) {
   if (change.name !== 'main') {
-    return
+    return;
   }
-  const context = change
+  const context = change;
   // TODO: FIX - this seems to trigger the request to hub instead of just using cached values
   // const context = await StanzaBrowser.getContext('main')
 
-  console.log('change', change)
-  const text = context.features.search.message ?? ''
+  console.log('change', change);
+  const text = context.features.search.message ?? '';
   await updateState(
     document.querySelector<HTMLDivElement>('#stanzaState')!,
     text
-  )
-  void new Notification('Status Notifications', { body: text })
-})
+  );
+  void new Notification('Status Notifications', { body: text });
+});

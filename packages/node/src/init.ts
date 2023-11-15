@@ -1,19 +1,19 @@
-import { initOrThrow } from './initOrThrow'
-import { type StanzaInitOptions } from './stanzaInitOptions'
-import { logger } from './global/logger'
+import { initOrThrow } from './initOrThrow';
+import { type StanzaInitOptions } from './stanzaInitOptions';
+import { logger } from './global/logger';
 
 export const init = async (options: Partial<StanzaInitOptions> = {}) => {
   try {
-    await initOrThrow(options)
+    await initOrThrow(options);
   } catch (e) {
     if (e instanceof TypeError) {
-      logger.warn(e.message)
+      logger.warn(e.message);
     } else {
       logger.warn(
         'Failed to init the Stanza SDK: %o',
         e instanceof Error ? e.message : e
-      )
+      );
     }
   }
-  logger.debug('Stanza initialized')
-}
+  logger.debug('Stanza initialized');
+};

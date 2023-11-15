@@ -1,26 +1,26 @@
 if (global.fetch === undefined) {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { fetch, Headers, Request, Response } = require('cross-fetch')
+  const { fetch, Headers, Request, Response } = require('cross-fetch');
 
-  global.fetch = fetch
+  global.fetch = fetch;
 
   Object.defineProperties(global, {
     Headers: {
       get() {
-        return Headers
-      }
+        return Headers;
+      },
     },
     Request: {
       get() {
-        return Request
-      }
+        return Request;
+      },
     },
     Response: {
       get() {
-        return Response
-      }
-    }
-  })
+        return Response;
+      },
+    },
+  });
 }
 
-export {}
+export {};

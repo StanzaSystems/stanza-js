@@ -1,10 +1,10 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 const guardConfigNoData = z.object({
   version: z.string(),
   configDataSent: z.literal(false),
-  config: z.null().optional()
-})
+  config: z.null().optional(),
+});
 
 const guardConfigWithData = z.object({
   version: z.string(),
@@ -13,12 +13,12 @@ const guardConfigWithData = z.object({
     checkQuota: z.boolean(),
     quotaTags: z.array(z.string()),
     validateIngressTokens: z.boolean(),
-    reportOnly: z.boolean()
-  })
-})
+    reportOnly: z.boolean(),
+  }),
+});
 export const guardConfigResponse = z.union([
   guardConfigWithData,
-  guardConfigNoData
-])
+  guardConfigNoData,
+]);
 
-export type GuardConfigResponse = z.infer<typeof guardConfigResponse>
+export type GuardConfigResponse = z.infer<typeof guardConfigResponse>;

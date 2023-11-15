@@ -1,19 +1,19 @@
-import { type StanzaInitOptions } from './stanzaInitOptions'
+import { type StanzaInitOptions } from './stanzaInitOptions';
 import {
   type CoerceFn,
   coerceStringToBoolean,
   coerceStringToInteger,
-  coerceStringToLogLevel
-} from './coerceStanzaInitOptions'
-import { identity } from '@getstanza/core'
+  coerceStringToLogLevel,
+} from './coerceStanzaInitOptions';
+import { identity } from '@getstanza/core';
 
 type StanzaInitOptionsFromEnv = Exclude<
   keyof StanzaInitOptions,
   'useRestHubApi'
->
+>;
 
 const stanzaEnvOptionsMap: {
-  [P in StanzaInitOptionsFromEnv]: [string, CoerceFn<P>]
+  [P in StanzaInitOptionsFromEnv]: [string, CoerceFn<P>];
 } = {
   hubUrl: ['STANZA_HUB_ADDRESS', identity],
   apiKey: ['STANZA_API_KEY', identity],
@@ -22,8 +22,8 @@ const stanzaEnvOptionsMap: {
   environment: ['STANZA_ENVIRONMENT', identity],
   skipTokenCache: ['STANZA_SKIP_TOKEN_CACHE', coerceStringToBoolean],
   requestTimeout: ['STANZA_REQUEST_TIMEOUT', coerceStringToInteger],
-  logLevel: ['STANZA_LOG_LEVEL', coerceStringToLogLevel]
-}
+  logLevel: ['STANZA_LOG_LEVEL', coerceStringToLogLevel],
+};
 export const getEnvInitOptions = (): Partial<StanzaInitOptions> => {
   return (
     Object.entries(stanzaEnvOptionsMap) as Array<
@@ -31,9 +31,9 @@ export const getEnvInitOptions = (): Partial<StanzaInitOptions> => {
     >
   ).reduce<Partial<StanzaInitOptions>>(
     (resultOptions, [optionKey, [envKey, coerceFn]]) => {
-      resultOptions[optionKey] = coerceFn(process.env[envKey])
-      return resultOptions
+      resultOptions[optionKey] = coerceFn(process.env[envKey]);
+      return resultOptions;
     },
     {}
-  )
-}
+  );
+};

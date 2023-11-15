@@ -3,23 +3,23 @@ import {
   createContextKey,
   ROOT_CONTEXT,
   type TextMapGetter,
-  type TextMapPropagator
-} from '@opentelemetry/api'
-import { z } from 'zod'
-import { StanzaConfigEntityManager } from '../open-telemetry/StanzaConfigEntityManager'
-import { isTruthy } from '../utils/isTruthy'
-import { uniq } from 'ramda'
+  type TextMapPropagator,
+} from '@opentelemetry/api';
+import { z } from 'zod';
+import { StanzaConfigEntityManager } from '../open-telemetry/StanzaConfigEntityManager';
+import { isTruthy } from '../utils/isTruthy';
+import { uniq } from 'ramda';
 
 const STANZA_TRACE_CONFIG_OVERRIDE_ADDITIONAL_INFO_KEY_SYMBOL = Symbol.for(
   'TraceConfigOverrideAdditionalInfo'
-)
+);
 
 interface StanzaTraceConfigOverrideAdditionalInfoKeyGlobal {
-  [STANZA_TRACE_CONFIG_OVERRIDE_ADDITIONAL_INFO_KEY_SYMBOL]: symbol | undefined
+  [STANZA_TRACE_CONFIG_OVERRIDE_ADDITIONAL_INFO_KEY_SYMBOL]: symbol | undefined;
 }
 
 const stanzaTraceConfigOverrideAdditionalInfoKeyGlobal =
-  global as unknown as StanzaTraceConfigOverrideAdditionalInfoKeyGlobal
+  global as unknown as StanzaTraceConfigOverrideAdditionalInfoKeyGlobal;
 
 const stanzaTraceConfigOverrideAdditionalInfoKey =
   (stanzaTraceConfigOverrideAdditionalInfoKeyGlobal[
@@ -27,37 +27,37 @@ const stanzaTraceConfigOverrideAdditionalInfoKey =
   ] =
     stanzaTraceConfigOverrideAdditionalInfoKeyGlobal[
       STANZA_TRACE_CONFIG_OVERRIDE_ADDITIONAL_INFO_KEY_SYMBOL
-    ] ?? createContextKey('Stanza Trace Config Override Additional Info Key'))
+    ] ?? createContextKey('Stanza Trace Config Override Additional Info Key'));
 
 const traceConfigOverrideAdditionalInfo = z.object({
   headers: z
     .record(z.union([z.string(), z.array(z.string())]).optional())
-    .optional()
-})
+    .optional(),
+});
 
 type TraceConfigOverrideAdditionalInfo = z.infer<
   typeof traceConfigOverrideAdditionalInfo
->
+>;
 
 export const getTraceConfigOverrideAdditionalInfo = (
   context: Context
 ): TraceConfigOverrideAdditionalInfo => {
   const contextValue = context.getValue(
     stanzaTraceConfigOverrideAdditionalInfoKey
-  )
-  const parsedValue = traceConfigOverrideAdditionalInfo.safeParse(contextValue)
+  );
+  const parsedValue = traceConfigOverrideAdditionalInfo.safeParse(contextValue);
 
   if (parsedValue.success) {
-    return parsedValue.data
+    return parsedValue.data;
   }
-  return {}
-}
+  return {};
+};
 
 export class TraceConfigOverrideAdditionalInfoPropagator
   implements TextMapPropagator
 {
   private readonly usedOtelData = new StanzaConfigEntityManager<{
-    headers: string[]
+    headers: string[];
   }>({
     getInitial: () => ({ headers: [] }),
     createWithServiceConfig: (serviceConfig) => {
@@ -73,11 +73,11 @@ export class TraceConfigOverrideAdditionalInfoPropagator
                   ?.groups?.header?.replace(/_/g, '-')
             )
             .filter(isTruthy)
-        )
-      }
+        ),
+      };
     },
-    cleanup: async () => {}
-  })
+    cleanup: async () => {},
+  });
 
   inject(): void {
     // do nothing
@@ -88,18 +88,18 @@ export class TraceConfigOverrideAdditionalInfoPropagator
       .getEntity(ROOT_CONTEXT)
       .headers.reduce<TraceConfigOverrideAdditionalInfo['headers']>(
         (resultHeaders, key) => {
-          resultHeaders = resultHeaders ?? {}
-          resultHeaders[key] = getter.get(carrier, key)
-          return resultHeaders
+          resultHeaders = resultHeaders ?? {};
+          resultHeaders[key] = getter.get(carrier, key);
+          return resultHeaders;
         },
         undefined
-      )
+      );
     return context.setValue(stanzaTraceConfigOverrideAdditionalInfoKey, {
-      headers
-    } satisfies TraceConfigOverrideAdditionalInfo)
+      headers,
+    } satisfies TraceConfigOverrideAdditionalInfo);
   }
 
   fields(): string[] {
-    return this.usedOtelData.getEntity(ROOT_CONTEXT).headers
+    return this.usedOtelData.getEntity(ROOT_CONTEXT).headers;
   }
 }

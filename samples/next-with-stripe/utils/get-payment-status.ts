@@ -6,20 +6,20 @@ function getPaymentStatus(
     case 'processing':
     case 'requires_payment_method':
     case 'requires_confirmation':
-      return 'Processing...'
+      return 'Processing...';
 
     case 'requires_action':
-      return 'Authenticating...'
+      return 'Authenticating...';
 
     case 'succeeded':
-      return 'Payment Succeeded 🥳'
+      return 'Payment Succeeded 🥳';
 
     case 'error':
-      return errorMessage
+      return errorMessage;
 
     default:
-      return null
+      return null;
   }
 }
 
-export { getPaymentStatus }
+export { getPaymentStatus };

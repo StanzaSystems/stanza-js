@@ -1,1 +1,1 @@
-export { handlers } from '@getstanza/mocks-handlers'
+export { handlers } from '@getstanza/mocks-handlers';

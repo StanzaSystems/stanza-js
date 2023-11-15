@@ -1,8 +1,8 @@
-import * as oTelApi from '@opentelemetry/api'
-import { type Context } from '@opentelemetry/api'
-import { type Fn } from '../utils/fn'
+import * as oTelApi from '@opentelemetry/api';
+import { type Context } from '@opentelemetry/api';
+import { type Fn } from '../utils/fn';
 
-type ContextMapFunction = (context: Context) => Context
+type ContextMapFunction = (context: Context) => Context;
 export const bindContext = <TArgs extends any[], TReturn>(
   mapFns: ContextMapFunction[],
   fn: Fn<TArgs, TReturn>
@@ -15,5 +15,5 @@ export const bindContext = <TArgs extends any[], TReturn>(
         ),
         fn
       )
-    : fn
-}
+    : fn;
+};

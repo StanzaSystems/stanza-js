@@ -1,12 +1,12 @@
-import { getFeatureStatesHot } from './getFeatureStatesHot'
-import { getFeatureStatesStale } from './getFeatureStatesStale'
-import { type FeatureState } from './models/featureState'
-import { isFeatureStateFresh } from './models/isFeatureStateFresh'
+import { getFeatureStatesHot } from './getFeatureStatesHot';
+import { getFeatureStatesStale } from './getFeatureStatesStale';
+import { type FeatureState } from './models/featureState';
+import { isFeatureStateFresh } from './models/isFeatureStateFresh';
 
 export async function getFeatureStates(
   features: string[]
 ): Promise<FeatureState[]> {
-  const featureStates = getFeatureStatesStale(features)
+  const featureStates = getFeatureStatesStale(features);
   if (
     featureStates.every(isFeatureStateFresh) &&
     features.every(
@@ -16,7 +16,7 @@ export async function getFeatureStates(
         ) !== -1
     )
   ) {
-    return featureStates
+    return featureStates;
   }
-  return getFeatureStatesHot(features)
+  return getFeatureStatesHot(features);
 }

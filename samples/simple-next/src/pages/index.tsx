@@ -1,10 +1,10 @@
-import { useStanzaContext } from '@getstanza/react'
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import { Fragment } from 'react'
+import { useStanzaContext } from '@getstanza/react';
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import { Fragment } from 'react';
 
 const Home: NextPage = () => {
-  const stanzaContext = useStanzaContext('main')
+  const stanzaContext = useStanzaContext('main');
   return (
     <Fragment>
       <Head>
@@ -24,14 +24,14 @@ const Home: NextPage = () => {
         </h1>
         <pre
           style={{
-            textAlign: 'left'
+            textAlign: 'left',
           }}
         >
           {JSON.stringify(stanzaContext, undefined, 2)}
         </pre>
       </header>
     </Fragment>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

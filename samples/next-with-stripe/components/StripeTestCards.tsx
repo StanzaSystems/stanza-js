@@ -15,7 +15,7 @@ const StripeTestCards = () => {
       </div>
       .
     </div>
-  )
-}
+  );
+};
 
-export default StripeTestCards
+export default StripeTestCards;

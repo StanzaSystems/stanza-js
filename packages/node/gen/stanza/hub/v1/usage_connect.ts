@@ -3,8 +3,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { GetUsageRequest, GetUsageResponse } from './usage_pb.js'
-import { MethodKind } from '@bufbuild/protobuf'
+import { GetUsageRequest, GetUsageResponse } from './usage_pb.js';
+import { MethodKind } from '@bufbuild/protobuf';
 
 /**
  * Used to get statistics on usage from Stanza, sliced and diced in various ways.
@@ -21,7 +21,7 @@ export const UsageService = {
       name: 'GetUsage',
       I: GetUsageRequest,
       O: GetUsageResponse,
-      kind: MethodKind.Unary
-    }
-  }
-} as const
+      kind: MethodKind.Unary,
+    },
+  },
+} as const;

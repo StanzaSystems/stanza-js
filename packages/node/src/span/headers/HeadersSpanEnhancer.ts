@@ -1,9 +1,9 @@
-import { context } from '@opentelemetry/api'
-import { StanzaConfigEntityManager } from '../../open-telemetry/StanzaConfigEntityManager'
-import { HeadersSpanEnhancerConfigured } from './HeadersSpanEnhancerConfigured'
-import { type Span } from '@opentelemetry/api'
-import { NoopSpanEnhancer } from '../NoopSpanEnhancer'
-import { type HeaderGetter, type SpanEnhancer } from '../SpanEnhancer'
+import { context } from '@opentelemetry/api';
+import { StanzaConfigEntityManager } from '../../open-telemetry/StanzaConfigEntityManager';
+import { HeadersSpanEnhancerConfigured } from './HeadersSpanEnhancerConfigured';
+import { type Span } from '@opentelemetry/api';
+import { NoopSpanEnhancer } from '../NoopSpanEnhancer';
+import { type HeaderGetter, type SpanEnhancer } from '../SpanEnhancer';
 
 export class HeadersSpanEnhancer implements SpanEnhancer {
   private readonly headersSpanEnhancerConfiguredManager =
@@ -11,20 +11,20 @@ export class HeadersSpanEnhancer implements SpanEnhancer {
       getInitial: () => new NoopSpanEnhancer(),
       createWithServiceConfig: ({ traceConfig }) =>
         new HeadersSpanEnhancerConfigured(traceConfig.headerSampleConfig),
-      cleanup: async () => {}
-    })
+      cleanup: async () => {},
+    });
 
   enhanceWithRequest(span: Span, getHeaderValue: HeaderGetter): void {
     const enhancer = this.headersSpanEnhancerConfiguredManager.getEntity(
       context.active()
-    )
-    enhancer.enhanceWithRequest(span, getHeaderValue)
+    );
+    enhancer.enhanceWithRequest(span, getHeaderValue);
   }
 
   enhanceWithResponse(span: Span, getHeaderValue: HeaderGetter): void {
     const enhancer = this.headersSpanEnhancerConfiguredManager.getEntity(
       context.active()
-    )
-    enhancer.enhanceWithResponse(span, getHeaderValue)
+    );
+    enhancer.enhanceWithResponse(span, getHeaderValue);
   }
 }

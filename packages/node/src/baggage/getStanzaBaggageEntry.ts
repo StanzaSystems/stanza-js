@@ -1,7 +1,7 @@
-import { type Baggage, type BaggageEntry } from '@opentelemetry/api'
-import { isTruthy } from '../utils/isTruthy'
-import { getStanzaBaggageKeys } from './getStanzaBaggageKeys'
-import { type StanzaKey } from './model'
+import { type Baggage, type BaggageEntry } from '@opentelemetry/api';
+import { isTruthy } from '../utils/isTruthy';
+import { getStanzaBaggageKeys } from './getStanzaBaggageKeys';
+import { type StanzaKey } from './model';
 
 export const getStanzaBaggageEntry = (
   key: StanzaKey,
@@ -9,5 +9,5 @@ export const getStanzaBaggageEntry = (
 ): BaggageEntry | undefined => {
   return getStanzaBaggageKeys(key)
     .map((key) => baggage.getEntry(key))
-    .filter(isTruthy)[0]
-}
+    .filter(isTruthy)[0];
+};

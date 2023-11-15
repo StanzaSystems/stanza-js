@@ -11,9 +11,9 @@ import {
   SetTokenLeaseConsumedRequest,
   SetTokenLeaseConsumedResponse,
   ValidateTokenRequest,
-  ValidateTokenResponse
-} from './quota_pb.js'
-import { MethodKind } from '@bufbuild/protobuf'
+  ValidateTokenResponse,
+} from './quota_pb.js';
+import { MethodKind } from '@bufbuild/protobuf';
 
 /**
  * The Quota service definition. This service is used by the Stanza and Browser SDKs to determine whether quota is available to use services which are subject to centralised ratelimiting.
@@ -32,7 +32,7 @@ export const QuotaService = {
       name: 'GetToken',
       I: GetTokenRequest,
       O: GetTokenResponse,
-      kind: MethodKind.Unary
+      kind: MethodKind.Unary,
     },
     /**
      * @generated from rpc stanza.hub.v1.QuotaService.GetTokenLease
@@ -41,7 +41,7 @@ export const QuotaService = {
       name: 'GetTokenLease',
       I: GetTokenLeaseRequest,
       O: GetTokenLeaseResponse,
-      kind: MethodKind.Unary
+      kind: MethodKind.Unary,
     },
     /**
      * @generated from rpc stanza.hub.v1.QuotaService.SetTokenLeaseConsumed
@@ -50,7 +50,7 @@ export const QuotaService = {
       name: 'SetTokenLeaseConsumed',
       I: SetTokenLeaseConsumedRequest,
       O: SetTokenLeaseConsumedResponse,
-      kind: MethodKind.Unary
+      kind: MethodKind.Unary,
     },
     /**
      * Used by ingress Guards to validate Hub-generated tokens.
@@ -61,7 +61,7 @@ export const QuotaService = {
       name: 'ValidateToken',
       I: ValidateTokenRequest,
       O: ValidateTokenResponse,
-      kind: MethodKind.Unary
-    }
-  }
-} as const
+      kind: MethodKind.Unary,
+    },
+  },
+} as const;

@@ -1,3 +1,3 @@
-import { stanzaSession } from '@getstanza/next'
+import { stanzaSession } from '@getstanza/next';
 
-export default stanzaSession().middleware
+export default stanzaSession().middleware;

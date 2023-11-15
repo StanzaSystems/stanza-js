@@ -1,84 +1,84 @@
-import { InstrumentationBase } from '@opentelemetry/instrumentation'
+import { InstrumentationBase } from '@opentelemetry/instrumentation';
 import {
   type Counter,
   type Histogram,
   type MetricOptions,
-  ValueType
-} from '@opentelemetry/api'
-import { eventBus, events } from '../../global/eventBus'
+  ValueType,
+} from '@opentelemetry/api';
+import { eventBus, events } from '../../global/eventBus';
 import {
   eventDataToRequestAttributes,
-  type RequestAttributes
-} from './requestAttributes'
+  type RequestAttributes,
+} from './requestAttributes';
 import {
   eventDataToGuardResolutionAttributes,
-  type GuardResolutionAttributes
-} from './guardResolutionAttributes'
+  type GuardResolutionAttributes,
+} from './guardResolutionAttributes';
 import {
   type DefaultContextAttributes,
-  eventDataToDefaultContextAttributes
-} from './defaultContextAttributes'
+  eventDataToDefaultContextAttributes,
+} from './defaultContextAttributes';
 import {
   type GuardAttributes,
   eventDataToGuardAttributes,
-  eventDataToOptionalGuardAttributes
-} from './guardAttributes'
-import { packageName, packageVersion } from '../../meta'
+  eventDataToOptionalGuardAttributes,
+} from './guardAttributes';
+import { packageName, packageVersion } from '../../meta';
 
-type QuotaEndpoint = 'GetToken' | 'GetTokenLease' | 'SetTokenLeaseConsumed'
+type QuotaEndpoint = 'GetToken' | 'GetTokenLease' | 'SetTokenLeaseConsumed';
 
 export class StanzaInstrumentation extends InstrumentationBase {
   private metrics!: {
     guard: {
-      allowed: Counter<GuardResolutionAttributes>
-      blocked: Counter<GuardResolutionAttributes>
-      failOpen: Counter<GuardResolutionAttributes>
-      failed: Counter<RequestAttributes>
-      succeeded: Counter<RequestAttributes>
-      duration: Histogram<RequestAttributes>
-    }
+      allowed: Counter<GuardResolutionAttributes>;
+      blocked: Counter<GuardResolutionAttributes>;
+      failOpen: Counter<GuardResolutionAttributes>;
+      failed: Counter<RequestAttributes>;
+      succeeded: Counter<RequestAttributes>;
+      duration: Histogram<RequestAttributes>;
+    };
     config: {
       service: {
-        fetchOk: Counter<DefaultContextAttributes>
-        fetchFailed: Counter<DefaultContextAttributes>
-        fetchDuration: Histogram<DefaultContextAttributes>
-      }
+        fetchOk: Counter<DefaultContextAttributes>;
+        fetchFailed: Counter<DefaultContextAttributes>;
+        fetchDuration: Histogram<DefaultContextAttributes>;
+      };
       guard: {
-        fetchOk: Counter<DefaultContextAttributes & GuardAttributes>
-        fetchFailed: Counter<DefaultContextAttributes>
-        fetchDuration: Histogram<DefaultContextAttributes>
-      }
-    }
+        fetchOk: Counter<DefaultContextAttributes & GuardAttributes>;
+        fetchFailed: Counter<DefaultContextAttributes>;
+        fetchDuration: Histogram<DefaultContextAttributes>;
+      };
+    };
     quota: {
       fetchOk: Counter<
         DefaultContextAttributes &
           Partial<GuardAttributes> & { endpoint: QuotaEndpoint }
-      >
+      >;
       fetchFailed: Counter<
         DefaultContextAttributes & { endpoint: QuotaEndpoint }
-      >
+      >;
       fetchDuration: Histogram<
         DefaultContextAttributes & { endpoint: QuotaEndpoint }
-      >
-      validateOk: Counter<DefaultContextAttributes & GuardAttributes>
-      validateFailed: Counter<DefaultContextAttributes>
-      validateDuration: Histogram<DefaultContextAttributes>
-    }
+      >;
+      validateOk: Counter<DefaultContextAttributes & GuardAttributes>;
+      validateFailed: Counter<DefaultContextAttributes>;
+      validateDuration: Histogram<DefaultContextAttributes>;
+    };
     telemetry: {
-      sendOk: Counter<DefaultContextAttributes & { otel_address: string }>
-      sendFailed: Counter<DefaultContextAttributes & { otel_address: string }>
-    }
-  }
+      sendOk: Counter<DefaultContextAttributes & { otel_address: string }>;
+      sendFailed: Counter<DefaultContextAttributes & { otel_address: string }>;
+    };
+  };
 
   constructor() {
-    super(packageName, packageVersion)
+    super(packageName, packageVersion);
   }
 
   protected init(): void {
-    this.initRequestMetrics()
-    this.initConfigMetrics()
-    this.initQuotaMetrics()
-    this.initTelemetryMetrics()
+    this.initRequestMetrics();
+    this.initConfigMetrics();
+    this.initQuotaMetrics();
+    this.initTelemetryMetrics();
   }
 
   protected override _updateMetricInstruments() {
@@ -86,8 +86,8 @@ export class StanzaInstrumentation extends InstrumentationBase {
       guard: this.updateRequestMetrics(),
       config: this.updateConfigMetrics(),
       quota: this.updateQuotaMetrics(),
-      telemetry: this.updateTelemetryMetrics()
-    }
+      telemetry: this.updateTelemetryMetrics(),
+    };
   }
 
   private initRequestMetrics() {
@@ -95,32 +95,32 @@ export class StanzaInstrumentation extends InstrumentationBase {
       this.metrics.guard.allowed.add(
         1,
         eventDataToGuardResolutionAttributes(data)
-      )
-    })
+      );
+    });
     eventBus.on(events.guard.failOpen, (data) => {
       this.metrics.guard.failOpen.add(
         1,
         eventDataToGuardResolutionAttributes(data)
-      )
-    })
+      );
+    });
     eventBus.on(events.guard.blocked, (data) => {
       this.metrics.guard.blocked.add(
         1,
         eventDataToGuardResolutionAttributes(data)
-      )
-    })
+      );
+    });
     eventBus.on(events.guard.failed, (data) => {
-      this.metrics.guard.failed.add(1, eventDataToRequestAttributes(data))
-    })
+      this.metrics.guard.failed.add(1, eventDataToRequestAttributes(data));
+    });
     eventBus.on(events.guard.succeeded, (data) => {
-      this.metrics.guard.succeeded.add(1, eventDataToRequestAttributes(data))
-    })
+      this.metrics.guard.succeeded.add(1, eventDataToRequestAttributes(data));
+    });
     eventBus.on(events.guard.duration, ({ duration, ...data }) => {
       this.metrics.guard.duration.record(
         duration,
         eventDataToRequestAttributes(data)
-      )
-    })
+      );
+    });
   }
 
   private updateRequestMetrics(): typeof this.metrics.guard {
@@ -160,8 +160,8 @@ export class StanzaInstrumentation extends InstrumentationBase {
         stanzaHistogramMetricOptions(
           'Duration histogram for execution time for a particular Guard'
         )
-      )
-    }
+      ),
+    };
   }
 
   private initConfigMetrics() {
@@ -169,41 +169,41 @@ export class StanzaInstrumentation extends InstrumentationBase {
       this.metrics.config.service.fetchOk.add(
         1,
         eventDataToDefaultContextAttributes(data)
-      )
-    })
+      );
+    });
     eventBus.on(events.config.service.fetchFailed, (data) => {
       this.metrics.config.service.fetchFailed.add(
         1,
         eventDataToDefaultContextAttributes(data)
-      )
-    })
+      );
+    });
     eventBus.on(
       events.config.service.fetchDuration,
       ({ duration, ...data }) => {
         this.metrics.config.service.fetchDuration.record(
           duration,
           eventDataToDefaultContextAttributes(data)
-        )
+        );
       }
-    )
+    );
     eventBus.on(events.config.guard.fetchOk, (data) => {
       this.metrics.config.guard.fetchOk.add(1, {
         ...eventDataToDefaultContextAttributes(data),
-        ...eventDataToGuardAttributes(data)
-      })
-    })
+        ...eventDataToGuardAttributes(data),
+      });
+    });
     eventBus.on(events.config.guard.fetchFailed, (data) => {
       this.metrics.config.guard.fetchFailed.add(
         1,
         eventDataToDefaultContextAttributes(data)
-      )
-    })
+      );
+    });
     eventBus.on(events.config.guard.fetchDuration, ({ duration, ...data }) => {
       this.metrics.config.guard.fetchDuration.record(
         duration,
         eventDataToDefaultContextAttributes(data)
-      )
-    })
+      );
+    });
   }
 
   private updateConfigMetrics(): typeof this.metrics.config {
@@ -226,7 +226,7 @@ export class StanzaInstrumentation extends InstrumentationBase {
           stanzaHistogramMetricOptions(
             'Duration histogram for time to fetch service configuration'
           )
-        )
+        ),
       },
       guard: {
         fetchOk: this.meter.createCounter(
@@ -246,9 +246,9 @@ export class StanzaInstrumentation extends InstrumentationBase {
           stanzaHistogramMetricOptions(
             'Duration histogram for time to fetch guard configuration'
           )
-        )
-      }
-    }
+        ),
+      },
+    };
   }
 
   private initQuotaMetrics() {
@@ -256,39 +256,39 @@ export class StanzaInstrumentation extends InstrumentationBase {
       this.metrics.quota.fetchOk.add(1, {
         ...eventDataToDefaultContextAttributes(data),
         ...eventDataToOptionalGuardAttributes(data),
-        endpoint: data.endpoint
-      })
-    })
+        endpoint: data.endpoint,
+      });
+    });
     eventBus.on(events.quota.fetchFailed, (data) => {
       this.metrics.quota.fetchFailed.add(1, {
         ...eventDataToDefaultContextAttributes(data),
-        endpoint: data.endpoint
-      })
-    })
+        endpoint: data.endpoint,
+      });
+    });
     eventBus.on(events.quota.fetchDuration, ({ duration, ...data }) => {
       this.metrics.quota.fetchDuration.record(duration, {
         ...eventDataToDefaultContextAttributes(data),
-        endpoint: data.endpoint
-      })
-    })
+        endpoint: data.endpoint,
+      });
+    });
     eventBus.on(events.quota.validateOk, (data) => {
       this.metrics.quota.validateOk.add(1, {
         ...eventDataToDefaultContextAttributes(data),
-        ...eventDataToGuardAttributes(data)
-      })
-    })
+        ...eventDataToGuardAttributes(data),
+      });
+    });
     eventBus.on(events.quota.validateFailed, (data) => {
       this.metrics.quota.validateFailed.add(
         1,
         eventDataToDefaultContextAttributes(data)
-      )
-    })
+      );
+    });
     eventBus.on(events.quota.validateDuration, ({ duration, ...data }) => {
       this.metrics.quota.validateDuration.record(
         duration,
         eventDataToDefaultContextAttributes(data)
-      )
-    })
+      );
+    });
   }
 
   private updateQuotaMetrics(): typeof this.metrics.quota {
@@ -320,23 +320,23 @@ export class StanzaInstrumentation extends InstrumentationBase {
         stanzaHistogramMetricOptions(
           'Duration histogram for time to perform token validations'
         )
-      )
-    }
+      ),
+    };
   }
 
   private initTelemetryMetrics() {
     eventBus.on(events.telemetry.sendOk, (data) => {
       this.metrics.telemetry.sendOk.add(1, {
         ...eventDataToDefaultContextAttributes(data),
-        otel_address: data.oTelAddress
-      })
-    })
+        otel_address: data.oTelAddress,
+      });
+    });
     eventBus.on(events.telemetry.sendFailed, (data) => {
       this.metrics.telemetry.sendFailed.add(1, {
         ...eventDataToDefaultContextAttributes(data),
-        otel_address: data.oTelAddress
-      })
-    })
+        otel_address: data.oTelAddress,
+      });
+    });
   }
 
   private updateTelemetryMetrics(): typeof this.metrics.telemetry {
@@ -350,18 +350,18 @@ export class StanzaInstrumentation extends InstrumentationBase {
         stanzaCounterMetricOptions(
           'Count of unsuccessful telemetry send events'
         )
-      )
-    }
+      ),
+    };
   }
 }
 
 const stanzaCounterMetricOptions = (description: string): MetricOptions => ({
   description,
   unit: 'count',
-  valueType: ValueType.INT
-})
+  valueType: ValueType.INT,
+});
 const stanzaHistogramMetricOptions = (description: string): MetricOptions => ({
   description,
   unit: 'milliseconds',
-  valueType: ValueType.DOUBLE
-})
+  valueType: ValueType.DOUBLE,
+});
