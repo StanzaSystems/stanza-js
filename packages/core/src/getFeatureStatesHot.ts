@@ -7,8 +7,11 @@ export async function getFeatureStatesHot(
 ): Promise<FeatureState[]> {
   const featureStates = await fetchFeatureStates(features);
   const stateProvider = getStateProvider();
-  featureStates.forEach((featureState) => {
-    stateProvider.setFeatureState(featureState);
-  });
+  await Promise.all(
+    featureStates.map(async (featureState) => {
+      await stateProvider.setFeatureState(featureState);
+    })
+  );
+
   return featureStates;
 }

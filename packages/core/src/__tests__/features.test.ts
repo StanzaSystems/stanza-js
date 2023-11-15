@@ -49,8 +49,8 @@ describe('features', () => {
     );
   });
 
-  it('returns an enabled feature when features not found', () => {
-    const featureStatesStale = Stanza.getFeatureStatesStale(['fake']);
+  it('returns an enabled feature when features not found', async () => {
+    const featureStatesStale = await Stanza.getFeatureStatesStale(['fake']);
     expect(featureStatesStale).toEqual([
       {
         featureName: 'fake',
