@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createGrpcHubService } from './createGrpcHubService'
-import type * as connectNodeModule from '@bufbuild/connect'
+import type * as connectNodeModule from '@connectrpc/connect'
 import { type ConfigService } from '../../../gen/stanza/hub/v1/config_connect'
 import { type QuotaService } from '../../../gen/stanza/hub/v1/quota_connect'
 import {
@@ -21,7 +21,7 @@ import { Health } from '../../guard/model'
 
 type ConnectNodeModule = typeof connectNodeModule
 
-vi.mock('@bufbuild/connect', async (importOriginal) => {
+vi.mock('@connectrpc/connect', async (importOriginal) => {
   const original = await importOriginal<ConnectNodeModule>()
   return {
     ...original,
