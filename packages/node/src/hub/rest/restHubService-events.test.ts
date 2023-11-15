@@ -49,7 +49,6 @@ describe('hubService', () => {
     afterEach(() => {
       vi.useRealTimers();
 
-      // @ts-expect-error: reset service config
       updateServiceConfig(undefined);
     });
 

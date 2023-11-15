@@ -75,7 +75,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
           },
           body: JSON.stringify({
             service: {
@@ -101,7 +101,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
           },
           body: JSON.stringify({
             versionSeen: '123',
@@ -235,7 +235,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
           },
           body: JSON.stringify({
             selector: {
@@ -262,7 +262,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
           },
           body: JSON.stringify({
             versionSeen: '123',
@@ -374,7 +374,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
           },
           body: JSON.stringify({
             selector: {
@@ -413,7 +413,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
           },
           body: JSON.stringify({
             selector: {
@@ -523,7 +523,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
           },
           body: JSON.stringify({
             selector: {
@@ -562,7 +562,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
           },
           body: JSON.stringify({
             selector: {
@@ -687,7 +687,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
           },
           body: JSON.stringify({
             tokens: [
@@ -807,7 +807,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
           },
           body: JSON.stringify({
             tokens: ['test-token-one', 'test-token-two'],
@@ -903,7 +903,7 @@ describe('createRestHubService', async () => {
         {
           headers: {
             'X-Stanza-Key': 'testApiKey',
-            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.6-beta',
+            'User-Agent': 'TestService/1.0.0 StanzaNodeSDK/0.0.7-beta',
           },
           body: JSON.stringify({
             selector: {
