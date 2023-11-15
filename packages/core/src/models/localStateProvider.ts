@@ -7,7 +7,7 @@ type LocalStateChangeListener = (event: {
 
 export interface LocalStateProvider {
   init: (config: unknown) => void;
-  setFeatureState: (context: FeatureState) => void;
+  setFeatureState: (context: FeatureState) => Promise<void>;
   getFeatureState: (name: string) => FeatureState | undefined;
   getAllFeatureStates: () => FeatureState[];
   addChangeListener: (callback: LocalStateChangeListener) => () => void;

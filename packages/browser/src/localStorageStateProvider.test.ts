@@ -39,8 +39,8 @@ describe('localStorageStateProvider', () => {
     }).toThrow(
       'Local Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
     );
-    expect(() => {
-      stateProvider.setFeatureState({
+    expect(async () => {
+      await stateProvider.setFeatureState({
         featureName: 'test',
         enabledPercent: 100,
         lastRefreshTime: 0,
@@ -71,8 +71,8 @@ describe('localStorageStateProvider', () => {
     expect(() => {
       stateProvider.getFeatureState('test');
     }).not.toThrow();
-    expect(() => {
-      stateProvider.setFeatureState({
+    expect(async () => {
+      await stateProvider.setFeatureState({
         featureName: 'test',
         enabledPercent: 100,
         lastRefreshTime: 0,
@@ -134,27 +134,27 @@ describe('localStorageStateProvider', () => {
       expect(stateProvider.getFeatureState('firstFeature')).toBeUndefined();
     });
 
-    it('should store and retrieve a feature', () => {
-      stateProvider.setFeatureState(testFeatures.first);
+    it('should store and retrieve a feature', async () => {
+      await stateProvider.setFeatureState(testFeatures.first);
       expect(stateProvider.getFeatureState('firstFeature')).toEqual(
         testFeatures.first
       );
     });
 
-    it("should return undefined if feature doesn't exist in store", () => {
-      stateProvider.setFeatureState(testFeatures.first);
+    it("should return undefined if feature doesn't exist in store", async () => {
+      await stateProvider.setFeatureState(testFeatures.first);
       expect(stateProvider.getFeatureState('secondFeature')).toBeUndefined();
     });
 
-    it("should return undefined if feature doesn't exist in store", () => {
-      stateProvider.setFeatureState(testFeatures.first);
+    it("should return undefined if feature doesn't exist in store", async () => {
+      await stateProvider.setFeatureState(testFeatures.first);
       expect(stateProvider.getFeatureState('secondFeature')).toBeUndefined();
     });
 
-    it('should return all features from the store', () => {
-      stateProvider.setFeatureState(testFeatures.first);
-      stateProvider.setFeatureState(testFeatures.second);
-      stateProvider.setFeatureState(testFeatures.third);
+    it('should return all features from the store', async () => {
+      await stateProvider.setFeatureState(testFeatures.first);
+      await stateProvider.setFeatureState(testFeatures.second);
+      await stateProvider.setFeatureState(testFeatures.third);
       expect(stateProvider.getAllFeatureStates()).toEqual([
         testFeatures.first,
         testFeatures.second,

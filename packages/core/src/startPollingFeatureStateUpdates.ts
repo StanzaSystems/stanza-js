@@ -4,7 +4,9 @@ import { featureChanges, getConfig, getStateProvider } from './globals';
 export async function startPollingFeatureStateUpdates(): Promise<void> {
   const stateProvider = getStateProvider();
   stateProvider.addChangeListener(({ newValue }) => {
-    featureChanges.dispatchChange(newValue);
+    featureChanges.dispatchChange(newValue).catch((e) => {
+      console.warn('Failed to dispatch feature change', e);
+    });
   });
 
   while (true) {

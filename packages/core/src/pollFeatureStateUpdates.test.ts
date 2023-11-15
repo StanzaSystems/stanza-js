@@ -66,9 +66,9 @@ describe('pollFeatureStateUpdates', () => {
     expect(mockGetFeaturesStatesHot).toHaveBeenCalledWith([]);
   });
 
-  it('should poll only features that exist in localStateProvider', () => {
+  it('should poll only features that exist in localStateProvider', async () => {
     vi.useFakeTimers();
-    localStateProvider.setFeatureState({
+    await localStateProvider.setFeatureState({
       featureName: 'testFeature1',
       enabledPercent: 100,
       lastRefreshTime: 123,
@@ -81,7 +81,7 @@ describe('pollFeatureStateUpdates', () => {
 
   it('should poll for new changes after refresh time has passed', async () => {
     vi.useFakeTimers();
-    localStateProvider.setFeatureState({
+    await localStateProvider.setFeatureState({
       featureName: 'testFeature1',
       enabledPercent: 100,
       lastRefreshTime: 123,

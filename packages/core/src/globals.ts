@@ -60,9 +60,9 @@ export function getStateProvider(): LocalStateProvider {
 }
 
 export async function getEnablementNumber(): Promise<number> {
-  return stanzaConfig.enablementNumberGenerator().then((nr) => {
+  return stanzaConfig.enablementNumberGenerator().then(async (nr) => {
     enablementNumber = nr;
-    enablementNumberChanges.dispatchChange(nr);
+    await enablementNumberChanges.dispatchChange(nr);
     return nr;
   });
 }

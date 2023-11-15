@@ -44,7 +44,7 @@ const featureStateChangeEmitter = new StanzaChangeTarget<{
 
 export const createLocalStorageStateProvider = (): LocalStateProvider => {
   let initialized = false;
-  function setFeatureState(featureState: FeatureState): void {
+  async function setFeatureState(featureState: FeatureState): Promise<void> {
     assertInitialized();
     const name = featureState.featureName ?? '';
     const key = createStanzaFeatureKey(name);
@@ -55,7 +55,7 @@ export const createLocalStorageStateProvider = (): LocalStateProvider => {
     }
     const oldValue = getFeatureState(name);
     localStorage.setItem(key, newFeatureStringValue);
-    featureStateChangeEmitter.dispatchChange({
+    await featureStateChangeEmitter.dispatchChange({
       oldValue,
       newValue: featureState,
     });
@@ -109,10 +109,15 @@ export const createLocalStorageStateProvider = (): LocalStateProvider => {
             oldValue !== newValue &&
             newValue !== null
           ) {
-            featureStateChangeEmitter.dispatchChange({
-              oldValue: oldValue !== null ? parseFeature(oldValue) : undefined,
-              newValue: parseFeature(newValue),
-            });
+            featureStateChangeEmitter
+              .dispatchChange({
+                oldValue:
+                  oldValue !== null ? parseFeature(oldValue) : undefined,
+                newValue: parseFeature(newValue),
+              })
+              .catch((e) => {
+                console.warn('Failed to dispatch change', e);
+              });
           }
         }
       );

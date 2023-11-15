@@ -6,20 +6,25 @@ export const createInMemoryLocalStateProvider = (): LocalStateProvider => {
   const localState = new Map<string, FeatureState>();
   let initialized = false;
 
-  function setFeatureState(featureState: FeatureState): void {
-    assertInitialized();
-    const { featureName } = featureState;
-    const oldValue = localState.get(featureName);
+  async function setFeatureState(featureState: FeatureState): Promise<void> {
+    try {
+      assertInitialized();
+      const { featureName } = featureState;
+      const oldValue = localState.get(featureName);
 
-    if (oldValue === featureState) {
-      return;
+      if (oldValue === featureState) {
+        return;
+      }
+
+      localState.set(featureName, featureState);
+      await featureStateChangeEmitter.dispatchChange({
+        oldValue,
+        newValue: featureState,
+      });
+    } catch (e) {
+      console.error(e);
+      throw new Error('Failed to set feature state');
     }
-
-    localState.set(featureName, featureState);
-    featureStateChangeEmitter.dispatchChange({
-      oldValue,
-      newValue: featureState,
-    });
   }
 
   function getFeatureState(name?: string): FeatureState | undefined {

@@ -6,37 +6,48 @@ type StanzaListener<StanzaEvent, ListenerReturnValue = unknown> = (
 
 export interface StanzaChangeEmitter<StanzaEvent> {
   addChangeListener: (
-    callback: StanzaListener<StanzaEvent, void | Promise<void>>
+    callback: StanzaListener<StanzaEvent, Promise<void> | void>
   ) => () => void;
-  removeChangeListener: (
-    callback: StanzaListener<StanzaEvent, void | Promise<void>>
-  ) => void;
-  dispatchChange: (state: StanzaEvent) => void;
+  removeChangeListener: (callback: StanzaListener<StanzaEvent, void>) => void;
+  dispatchChange: (state?: StanzaEvent) => Promise<void>;
 }
 
 export class StanzaChangeTarget<StanzaEvent>
   implements StanzaChangeEmitter<StanzaEvent>
 {
-  private readonly emitter = new Emittery();
+  private readonly eventTarget = new Emittery();
+  private readonly unsubscribeMap = new Map<
+    StanzaListener<StanzaEvent>,
+    () => void
+  >();
 
   addChangeListener(
-    callback: StanzaListener<StanzaEvent, void | Promise<void>>
+    callback: StanzaListener<StanzaEvent, Promise<void> | void>
   ) {
-    this.emitter.on('change', callback);
-    return () => {
-      this.emitter.off('change', callback);
+    const unsubscribe = (): void => {
+      this.unsubscribeMap.delete(callback);
+      this.eventTarget.off('stanzaStateChanged', callback);
     };
+
+    this.unsubscribeMap.set(callback, unsubscribe);
+    this.eventTarget.on('stanzaStateChanged', callback);
+
+    return unsubscribe;
   }
 
   removeChangeListener(
     callback: StanzaListener<StanzaEvent, void | Promise<void>>
   ) {
-    this.emitter.off('change', callback);
+    const unsubscribe = this.unsubscribeMap.get(callback);
+
+    if (typeof unsubscribe === 'function') {
+      unsubscribe();
+    }
+
+    this.unsubscribeMap.delete(callback);
   }
 
-  dispatchChange(state: StanzaEvent) {
-    this.emitter.emit('change', state).catch((error) => {
-      console.error(error);
-    });
+  async dispatchChange(state?: StanzaEvent) {
+    await this.eventTarget.emit('stanzaStateChanged', state);
   }
 }

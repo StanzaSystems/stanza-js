@@ -34,18 +34,17 @@ export const init = (initialConfig: StanzaCoreConfig): void => {
   }, {});
 
   Stanza.featureChanges.addChangeListener((featureState) => {
-    featureToContextMap[featureState.featureName].forEach((contextName) => {
-      contextChanges.dispatchChange(getContextStale(contextName));
+    featureToContextMap[featureState.featureName].map(async (contextName) => {
+      await contextChanges.dispatchChange(getContextStale(contextName));
     });
   });
 
-  Stanza.enablementNumberChanges.addChangeListener(() => {
-    new Set(Object.values(featureToContextMap).flat()).forEach(
-      (contextName) => {
-        contextChanges.dispatchChange(getContextStale(contextName));
-      }
-    );
-  });
+  Stanza.enablementNumberChanges.addChangeListener(async () => {
+    const contextNames = new Set(Object.values(featureToContextMap).flat());
+    for (const contextName of contextNames) {
+      await contextChanges.dispatchChange(getContextStale(contextName));
+    }
+  }) as () => Promise<void>;
 };
 
 export async function getContextHot(name: string): Promise<StanzaContext> {

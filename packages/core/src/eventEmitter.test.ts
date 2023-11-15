@@ -5,43 +5,53 @@ describe('eventEmitter', () => {
   it('should dispatch event without any listeners', () => {
     const eventEmitter = new StanzaChangeTarget<string>();
 
-    expect(() => {
-      eventEmitter.dispatchChange('My change');
+    expect(async () => {
+      await eventEmitter.dispatchChange();
     }).not.toThrow();
   });
 
-  it('should listen to a dispatched change event', () => {
+  it('should listen to a dispatched change event', async () => {
     const eventEmitter = new StanzaChangeTarget<string>();
 
-    const listener = vi.fn();
+    const calls: number[] = [];
+    const listener1 = () => {
+      calls.push(1);
+    };
 
-    eventEmitter.addChangeListener(listener);
+    eventEmitter.addChangeListener(listener1);
 
-    eventEmitter.dispatchChange('My change');
+    await eventEmitter.dispatchChange();
 
-    expect(listener).toHaveBeenCalledOnce();
-    expect(listener).toHaveBeenCalledWith('My change');
+    expect(calls).toEqual([1]);
   });
 
-  it('should listen to a dispatched change event - multiple listeners', () => {
+  it('should listen to a dispatched change event - multiple listeners', async () => {
     const eventEmitter = new StanzaChangeTarget<string>();
 
-    const listener1 = vi.fn();
-    const listener2 = vi.fn();
+    const calls: number[] = [];
+
+    const listener1 = () => {
+      calls.push(1);
+    };
+
+    const listener2 = () => {
+      calls.push(2);
+    };
+
+    const listener3 = () => {
+      calls.push(3);
+    };
 
     eventEmitter.addChangeListener(listener1);
     eventEmitter.addChangeListener(listener2);
+    eventEmitter.addChangeListener(listener3);
 
-    eventEmitter.dispatchChange('My change');
+    await eventEmitter.dispatchChange();
 
-    expect(listener1).toHaveBeenCalledOnce();
-    expect(listener1).toHaveBeenCalledWith('My change');
-
-    expect(listener2).toHaveBeenCalledOnce();
-    expect(listener2).toHaveBeenCalledWith('My change');
+    expect(calls).toEqual([1, 2, 3]);
   });
 
-  it('should not listen to a dispatched change event after it has been unsubscribed - using unsubscribe returned from addChange', () => {
+  it('should not listen to a dispatched change event after it has been unsubscribed - using unsubscribe returned from addChange', async () => {
     const eventEmitter = new StanzaChangeTarget<string>();
 
     const listener1 = vi.fn();
@@ -50,20 +60,18 @@ describe('eventEmitter', () => {
     const unsubscribe1 = eventEmitter.addChangeListener(listener1);
     const unsubscribe2 = eventEmitter.addChangeListener(listener2);
 
-    eventEmitter.dispatchChange('My change');
+    await eventEmitter.dispatchChange();
 
     expect(listener1).toHaveBeenCalledOnce();
-    expect(listener1).toHaveBeenCalledWith('My change');
 
     expect(listener2).toHaveBeenCalledOnce();
-    expect(listener2).toHaveBeenCalledWith('My change');
 
     listener1.mockReset();
     listener2.mockReset();
 
     unsubscribe1();
 
-    eventEmitter.dispatchChange('My change 2');
+    await eventEmitter.dispatchChange();
 
     expect(listener1).not.toHaveBeenCalled();
     expect(listener2).toHaveBeenCalledOnce();
@@ -73,13 +81,13 @@ describe('eventEmitter', () => {
 
     unsubscribe2();
 
-    eventEmitter.dispatchChange('My change 3');
+    await eventEmitter.dispatchChange();
 
     expect(listener1).not.toHaveBeenCalled();
     expect(listener2).not.toHaveBeenCalled();
   });
 
-  it('should not listen to a dispatched change event after it has been unsubscribed - using removeChangeListener', () => {
+  it('should not listen to a dispatched change event after it has been unsubscribed - using removeChangeListener', async () => {
     const eventEmitter = new StanzaChangeTarget<string>();
 
     const listener1 = vi.fn();
@@ -88,20 +96,18 @@ describe('eventEmitter', () => {
     eventEmitter.addChangeListener(listener1);
     eventEmitter.addChangeListener(listener2);
 
-    eventEmitter.dispatchChange('My change');
+    await eventEmitter.dispatchChange();
 
     expect(listener1).toHaveBeenCalledOnce();
-    expect(listener1).toHaveBeenCalledWith('My change');
 
     expect(listener2).toHaveBeenCalledOnce();
-    expect(listener2).toHaveBeenCalledWith('My change');
 
     listener1.mockReset();
     listener2.mockReset();
 
     eventEmitter.removeChangeListener(listener1);
 
-    eventEmitter.dispatchChange('My change 2');
+    await eventEmitter.dispatchChange();
 
     expect(listener1).not.toHaveBeenCalled();
     expect(listener2).toHaveBeenCalledOnce();
@@ -111,7 +117,7 @@ describe('eventEmitter', () => {
 
     eventEmitter.removeChangeListener(listener2);
 
-    eventEmitter.dispatchChange('My change 3');
+    await eventEmitter.dispatchChange();
 
     expect(listener1).not.toHaveBeenCalled();
     expect(listener2).not.toHaveBeenCalled();
