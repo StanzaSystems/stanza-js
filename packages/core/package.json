@@ -6,7 +6,7 @@
   "author": "Stanza",
   "license": "Apache-2.0",
   "dependencies": {
-    "emittery": "^1.0.1"
+    "emittery": "^0.13.1"
   },
   "devDependencies": {
     "msw": "^1.2.2",
