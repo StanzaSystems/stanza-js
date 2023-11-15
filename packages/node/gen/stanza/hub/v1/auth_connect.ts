@@ -3,24 +3,23 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { GetBearerTokenRequest, GetBearerTokenResponse } from "./auth_pb.js";
-import { MethodKind } from "@bufbuild/protobuf";
+import { GetBearerTokenRequest, GetBearerTokenResponse } from './auth_pb.js';
+import { MethodKind } from '@bufbuild/protobuf';
 
 /**
  * @generated from service stanza.hub.v1.AuthService
  */
 export const AuthService = {
-  typeName: "stanza.hub.v1.AuthService",
+  typeName: 'stanza.hub.v1.AuthService',
   methods: {
     /**
      * @generated from rpc stanza.hub.v1.AuthService.GetBearerToken
      */
     getBearerToken: {
-      name: "GetBearerToken",
+      name: 'GetBearerToken',
       I: GetBearerTokenRequest,
       O: GetBearerTokenResponse,
       kind: MethodKind.Unary,
     },
-  }
+  },
 } as const;
-

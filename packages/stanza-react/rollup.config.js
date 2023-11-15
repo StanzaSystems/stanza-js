@@ -4,6 +4,6 @@ module.exports = function (config) {
     output: {
       ...config.output,
       banner: () => '"use client";',
-    }
-  }
-}
+    },
+  };
+};

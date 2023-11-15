@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "generate-hub-api": "buf generate https://github.com/StanzaSystems/apis.git --path stanza/hub"
+    "generate-hub-api": "buf generate https://github.com/StanzaSystems/apis.git --path stanza/hub",
+    "format": "prettier  --config ./.prettierrc --write '{**/*,*}.{js,ts,jsx,tsx}'",
+    "format:check": "prettier  --config ./.prettierrc -c '{**/*,*}.{js,ts,jsx,tsx}'"
   },
   "private": true,
   "devDependencies": {

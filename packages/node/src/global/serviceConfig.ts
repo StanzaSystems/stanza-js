@@ -1,25 +1,31 @@
-import { type ServiceConfig } from '../hub/model'
-import { createGlobalState } from './createGlobalState'
+import { type ServiceConfig } from '../hub/model';
+import { createGlobalState } from './createGlobalState';
 
 interface ServiceStateUninitialized {
-  initialized: false
+  initialized: false;
 }
 interface ServiceStateInitialized {
-  initialized: true
-  data: ServiceConfig | undefined
+  initialized: true;
+  data: ServiceConfig | undefined;
 }
-type ServiceState = ServiceStateUninitialized | ServiceStateInitialized
-const state = createGlobalState(Symbol.for('[Stanza SDK Internal] Service Config'), (): ServiceState => ({ initialized: false }))
+type ServiceState = ServiceStateUninitialized | ServiceStateInitialized;
+const state = createGlobalState(
+  Symbol.for('[Stanza SDK Internal] Service Config'),
+  (): ServiceState => ({ initialized: false })
+);
 
-export type ServiceConfigListener = (config: ServiceState) => void
-export const getServiceConfig = (): ServiceConfig | undefined => state.currentValue.initialized ? state.currentValue.data : undefined
+export type ServiceConfigListener = (config: ServiceState) => void;
+export const getServiceConfig = (): ServiceConfig | undefined =>
+  state.currentValue.initialized ? state.currentValue.data : undefined;
 
-export const isServiceConfigInitialized = (): boolean => state.currentValue.initialized
+export const isServiceConfigInitialized = (): boolean =>
+  state.currentValue.initialized;
 
-export const updateServiceConfig = (newConfig: ServiceConfig | undefined) => state.update({ initialized: true, data: newConfig })
+export const updateServiceConfig = (newConfig: ServiceConfig | undefined) =>
+  state.update({ initialized: true, data: newConfig });
 
-export const addServiceConfigListener = state.onChange
+export const addServiceConfigListener = state.onChange;
 
 export const resetServiceConfig = () => {
-  state.update({ initialized: false })
-}
+  state.update({ initialized: false });
+};

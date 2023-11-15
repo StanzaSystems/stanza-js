@@ -4,24 +4,31 @@
  * @param timeoutMessage - a message to pass to an error that gets thrown when the promise times out
  * @param aPromise - a promise to add timeout behavior to
  */
-export const withTimeout = async <T>(timeout: number, timeoutMessage: string, aPromise: Promise<T>): Promise<T> => {
-  let timeoutHandle: ReturnType<typeof setTimeout> | undefined
+export const withTimeout = async <T>(
+  timeout: number,
+  timeoutMessage: string,
+  aPromise: Promise<T>
+): Promise<T> => {
+  let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
   try {
     return await Promise.race([
       aPromise,
       new Promise<T>((_resolve, reject) => {
         timeoutHandle = setTimeout(() => {
-          reject(new TimeoutError(timeout, timeoutMessage))
-        }, timeout)
-      })
-    ])
+          reject(new TimeoutError(timeout, timeoutMessage));
+        }, timeout);
+      }),
+    ]);
   } finally {
-    clearTimeout(timeoutHandle)
+    clearTimeout(timeoutHandle);
   }
-}
+};
 
 export class TimeoutError extends Error {
-  constructor (public readonly timeout: number, message?: string) {
-    super(message)
+  constructor(
+    public readonly timeout: number,
+    message?: string
+  ) {
+    super(message);
   }
 }

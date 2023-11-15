@@ -3,8 +3,15 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3 } from "@bufbuild/protobuf";
+import type {
+  BinaryReadOptions,
+  FieldList,
+  JsonReadOptions,
+  JsonValue,
+  PartialMessage,
+  PlainMessage,
+} from '@bufbuild/protobuf';
+import { Message, proto3 } from '@bufbuild/protobuf';
 
 /**
  * GetBearerTokenRequest is empty, please pass your API key via a X-Stanza-Key header.
@@ -17,7 +24,7 @@ export class GetBearerTokenRequest extends Message<GetBearerTokenRequest> {
    *
    * @generated from field: string environment = 1;
    */
-  environment = "";
+  environment = '';
 
   constructor(data?: PartialMessage<GetBearerTokenRequest>) {
     super();
@@ -25,24 +32,41 @@ export class GetBearerTokenRequest extends Message<GetBearerTokenRequest> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GetBearerTokenRequest";
+  static readonly typeName = 'stanza.hub.v1.GetBearerTokenRequest';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "environment", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    {
+      no: 1,
+      name: 'environment',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetBearerTokenRequest {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GetBearerTokenRequest {
     return new GetBearerTokenRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetBearerTokenRequest {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GetBearerTokenRequest {
     return new GetBearerTokenRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetBearerTokenRequest {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GetBearerTokenRequest {
     return new GetBearerTokenRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetBearerTokenRequest | PlainMessage<GetBearerTokenRequest> | undefined, b: GetBearerTokenRequest | PlainMessage<GetBearerTokenRequest> | undefined): boolean {
+  static equals(
+    a: GetBearerTokenRequest | PlainMessage<GetBearerTokenRequest> | undefined,
+    b: GetBearerTokenRequest | PlainMessage<GetBearerTokenRequest> | undefined
+  ): boolean {
     return proto3.util.equals(GetBearerTokenRequest, a, b);
   }
 }
@@ -56,7 +80,7 @@ export class GetBearerTokenResponse extends Message<GetBearerTokenResponse> {
   /**
    * @generated from field: string bearer_token = 1;
    */
-  bearerToken = "";
+  bearerToken = '';
 
   constructor(data?: PartialMessage<GetBearerTokenResponse>) {
     super();
@@ -64,25 +88,44 @@ export class GetBearerTokenResponse extends Message<GetBearerTokenResponse> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GetBearerTokenResponse";
+  static readonly typeName = 'stanza.hub.v1.GetBearerTokenResponse';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "bearer_token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    {
+      no: 1,
+      name: 'bearer_token',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetBearerTokenResponse {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GetBearerTokenResponse {
     return new GetBearerTokenResponse().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetBearerTokenResponse {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GetBearerTokenResponse {
     return new GetBearerTokenResponse().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetBearerTokenResponse {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GetBearerTokenResponse {
     return new GetBearerTokenResponse().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetBearerTokenResponse | PlainMessage<GetBearerTokenResponse> | undefined, b: GetBearerTokenResponse | PlainMessage<GetBearerTokenResponse> | undefined): boolean {
+  static equals(
+    a:
+      | GetBearerTokenResponse
+      | PlainMessage<GetBearerTokenResponse>
+      | undefined,
+    b: GetBearerTokenResponse | PlainMessage<GetBearerTokenResponse> | undefined
+  ): boolean {
     return proto3.util.equals(GetBearerTokenResponse, a, b);
   }
 }
-

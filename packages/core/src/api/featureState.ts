@@ -1,8 +1,8 @@
 export interface ApiFeatureState {
-  name: string
+  name: string;
   config: {
-    enabledPercent: number
-    messageEnabled?: string
-    messageDisabled?: string
-  }
+    enabledPercent: number;
+    messageEnabled?: string;
+    messageDisabled?: string;
+  };
 }

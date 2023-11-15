@@ -3,9 +3,20 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3 } from "@bufbuild/protobuf";
-import { FeatureSelector, GuardServiceSelector, ServiceSelector } from "./common_pb.js";
+import type {
+  BinaryReadOptions,
+  FieldList,
+  JsonReadOptions,
+  JsonValue,
+  PartialMessage,
+  PlainMessage,
+} from '@bufbuild/protobuf';
+import { Message, proto3 } from '@bufbuild/protobuf';
+import {
+  FeatureSelector,
+  GuardServiceSelector,
+  ServiceSelector,
+} from './common_pb.js';
 
 /**
  * Request from Backend SDKs for a Guard Config. SDKs are expected to periodically poll, giving the version of the most recent configuration seen. Configurations may be large; we will not re-send them unless they have changed. Guard configurations may vary between environments but are SHARED between Services.
@@ -33,25 +44,43 @@ export class GetGuardConfigRequest extends Message<GetGuardConfigRequest> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GetGuardConfigRequest";
+  static readonly typeName = 'stanza.hub.v1.GetGuardConfigRequest';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "version_seen", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 2, name: "selector", kind: "message", T: GuardServiceSelector },
+    {
+      no: 1,
+      name: 'version_seen',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    { no: 2, name: 'selector', kind: 'message', T: GuardServiceSelector },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetGuardConfigRequest {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GetGuardConfigRequest {
     return new GetGuardConfigRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetGuardConfigRequest {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GetGuardConfigRequest {
     return new GetGuardConfigRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetGuardConfigRequest {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GetGuardConfigRequest {
     return new GetGuardConfigRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetGuardConfigRequest | PlainMessage<GetGuardConfigRequest> | undefined, b: GetGuardConfigRequest | PlainMessage<GetGuardConfigRequest> | undefined): boolean {
+  static equals(
+    a: GetGuardConfigRequest | PlainMessage<GetGuardConfigRequest> | undefined,
+    b: GetGuardConfigRequest | PlainMessage<GetGuardConfigRequest> | undefined
+  ): boolean {
     return proto3.util.equals(GetGuardConfigRequest, a, b);
   }
 }
@@ -65,7 +94,7 @@ export class GetGuardConfigResponse extends Message<GetGuardConfigResponse> {
   /**
    * @generated from field: string version = 1;
    */
-  version = "";
+  version = '';
 
   /**
    * @generated from field: bool config_data_sent = 2;
@@ -83,26 +112,46 @@ export class GetGuardConfigResponse extends Message<GetGuardConfigResponse> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GetGuardConfigResponse";
+  static readonly typeName = 'stanza.hub.v1.GetGuardConfigResponse';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "version", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "config_data_sent", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 3, name: "config", kind: "message", T: GuardConfig },
+    { no: 1, name: 'version', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 2,
+      name: 'config_data_sent',
+      kind: 'scalar',
+      T: 8 /* ScalarType.BOOL */,
+    },
+    { no: 3, name: 'config', kind: 'message', T: GuardConfig },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetGuardConfigResponse {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GetGuardConfigResponse {
     return new GetGuardConfigResponse().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetGuardConfigResponse {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GetGuardConfigResponse {
     return new GetGuardConfigResponse().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetGuardConfigResponse {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GetGuardConfigResponse {
     return new GetGuardConfigResponse().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetGuardConfigResponse | PlainMessage<GetGuardConfigResponse> | undefined, b: GetGuardConfigResponse | PlainMessage<GetGuardConfigResponse> | undefined): boolean {
+  static equals(
+    a:
+      | GetGuardConfigResponse
+      | PlainMessage<GetGuardConfigResponse>
+      | undefined,
+    b: GetGuardConfigResponse | PlainMessage<GetGuardConfigResponse> | undefined
+  ): boolean {
     return proto3.util.equals(GetGuardConfigResponse, a, b);
   }
 }
@@ -154,27 +203,50 @@ export class GuardConfig extends Message<GuardConfig> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GuardConfig";
+  static readonly typeName = 'stanza.hub.v1.GuardConfig';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "validate_ingress_tokens", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 5, name: "check_quota", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 6, name: "quota_tags", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
-    { no: 7, name: "report_only", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    {
+      no: 1,
+      name: 'validate_ingress_tokens',
+      kind: 'scalar',
+      T: 8 /* ScalarType.BOOL */,
+    },
+    { no: 5, name: 'check_quota', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
+    {
+      no: 6,
+      name: 'quota_tags',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      repeated: true,
+    },
+    { no: 7, name: 'report_only', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GuardConfig {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GuardConfig {
     return new GuardConfig().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GuardConfig {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GuardConfig {
     return new GuardConfig().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GuardConfig {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GuardConfig {
     return new GuardConfig().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GuardConfig | PlainMessage<GuardConfig> | undefined, b: GuardConfig | PlainMessage<GuardConfig> | undefined): boolean {
+  static equals(
+    a: GuardConfig | PlainMessage<GuardConfig> | undefined,
+    b: GuardConfig | PlainMessage<GuardConfig> | undefined
+  ): boolean {
     return proto3.util.equals(GuardConfig, a, b);
   }
 }
@@ -198,24 +270,42 @@ export class GetBrowserContextRequest extends Message<GetBrowserContextRequest> 
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GetBrowserContextRequest";
+  static readonly typeName = 'stanza.hub.v1.GetBrowserContextRequest';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "feature", kind: "message", T: FeatureSelector },
+    { no: 1, name: 'feature', kind: 'message', T: FeatureSelector },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetBrowserContextRequest {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GetBrowserContextRequest {
     return new GetBrowserContextRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetBrowserContextRequest {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GetBrowserContextRequest {
     return new GetBrowserContextRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetBrowserContextRequest {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GetBrowserContextRequest {
     return new GetBrowserContextRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetBrowserContextRequest | PlainMessage<GetBrowserContextRequest> | undefined, b: GetBrowserContextRequest | PlainMessage<GetBrowserContextRequest> | undefined): boolean {
+  static equals(
+    a:
+      | GetBrowserContextRequest
+      | PlainMessage<GetBrowserContextRequest>
+      | undefined,
+    b:
+      | GetBrowserContextRequest
+      | PlainMessage<GetBrowserContextRequest>
+      | undefined
+  ): boolean {
     return proto3.util.equals(GetBrowserContextRequest, a, b);
   }
 }
@@ -237,24 +327,48 @@ export class GetBrowserContextResponse extends Message<GetBrowserContextResponse
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GetBrowserContextResponse";
+  static readonly typeName = 'stanza.hub.v1.GetBrowserContextResponse';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 2, name: "feature_configs", kind: "message", T: FeatureConfig, repeated: true },
+    {
+      no: 2,
+      name: 'feature_configs',
+      kind: 'message',
+      T: FeatureConfig,
+      repeated: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetBrowserContextResponse {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GetBrowserContextResponse {
     return new GetBrowserContextResponse().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetBrowserContextResponse {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GetBrowserContextResponse {
     return new GetBrowserContextResponse().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetBrowserContextResponse {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GetBrowserContextResponse {
     return new GetBrowserContextResponse().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetBrowserContextResponse | PlainMessage<GetBrowserContextResponse> | undefined, b: GetBrowserContextResponse | PlainMessage<GetBrowserContextResponse> | undefined): boolean {
+  static equals(
+    a:
+      | GetBrowserContextResponse
+      | PlainMessage<GetBrowserContextResponse>
+      | undefined,
+    b:
+      | GetBrowserContextResponse
+      | PlainMessage<GetBrowserContextResponse>
+      | undefined
+  ): boolean {
     return proto3.util.equals(GetBrowserContextResponse, a, b);
   }
 }
@@ -266,7 +380,7 @@ export class FeatureConfig extends Message<FeatureConfig> {
   /**
    * @generated from field: string name = 1;
    */
-  name = "";
+  name = '';
 
   /**
    * @generated from field: stanza.hub.v1.BrowserConfig config = 2;
@@ -279,25 +393,37 @@ export class FeatureConfig extends Message<FeatureConfig> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.FeatureConfig";
+  static readonly typeName = 'stanza.hub.v1.FeatureConfig';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "config", kind: "message", T: BrowserConfig },
+    { no: 1, name: 'name', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: 'config', kind: 'message', T: BrowserConfig },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): FeatureConfig {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): FeatureConfig {
     return new FeatureConfig().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): FeatureConfig {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): FeatureConfig {
     return new FeatureConfig().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): FeatureConfig {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): FeatureConfig {
     return new FeatureConfig().fromJsonString(jsonString, options);
   }
 
-  static equals(a: FeatureConfig | PlainMessage<FeatureConfig> | undefined, b: FeatureConfig | PlainMessage<FeatureConfig> | undefined): boolean {
+  static equals(
+    a: FeatureConfig | PlainMessage<FeatureConfig> | undefined,
+    b: FeatureConfig | PlainMessage<FeatureConfig> | undefined
+  ): boolean {
     return proto3.util.equals(FeatureConfig, a, b);
   }
 }
@@ -350,28 +476,70 @@ export class BrowserConfig extends Message<BrowserConfig> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.BrowserConfig";
+  static readonly typeName = 'stanza.hub.v1.BrowserConfig';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 2, name: "enabled_percent", kind: "scalar", T: 13 /* ScalarType.UINT32 */, opt: true },
-    { no: 3, name: "action_code_enabled", kind: "scalar", T: 13 /* ScalarType.UINT32 */, opt: true },
-    { no: 4, name: "message_enabled", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 5, name: "action_code_disabled", kind: "scalar", T: 13 /* ScalarType.UINT32 */, opt: true },
-    { no: 6, name: "message_disabled", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    {
+      no: 2,
+      name: 'enabled_percent',
+      kind: 'scalar',
+      T: 13 /* ScalarType.UINT32 */,
+      opt: true,
+    },
+    {
+      no: 3,
+      name: 'action_code_enabled',
+      kind: 'scalar',
+      T: 13 /* ScalarType.UINT32 */,
+      opt: true,
+    },
+    {
+      no: 4,
+      name: 'message_enabled',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 5,
+      name: 'action_code_disabled',
+      kind: 'scalar',
+      T: 13 /* ScalarType.UINT32 */,
+      opt: true,
+    },
+    {
+      no: 6,
+      name: 'message_disabled',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): BrowserConfig {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): BrowserConfig {
     return new BrowserConfig().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): BrowserConfig {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): BrowserConfig {
     return new BrowserConfig().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): BrowserConfig {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): BrowserConfig {
     return new BrowserConfig().fromJsonString(jsonString, options);
   }
 
-  static equals(a: BrowserConfig | PlainMessage<BrowserConfig> | undefined, b: BrowserConfig | PlainMessage<BrowserConfig> | undefined): boolean {
+  static equals(
+    a: BrowserConfig | PlainMessage<BrowserConfig> | undefined,
+    b: BrowserConfig | PlainMessage<BrowserConfig> | undefined
+  ): boolean {
     return proto3.util.equals(BrowserConfig, a, b);
   }
 }
@@ -387,7 +555,7 @@ export class GetServiceConfigRequest extends Message<GetServiceConfigRequest> {
    *
    * @generated from field: string version_seen = 1;
    */
-  versionSeen = "";
+  versionSeen = '';
 
   /**
    * Information required to select and return the most recent ServiceConfig version
@@ -410,26 +578,55 @@ export class GetServiceConfigRequest extends Message<GetServiceConfigRequest> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GetServiceConfigRequest";
+  static readonly typeName = 'stanza.hub.v1.GetServiceConfigRequest';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "version_seen", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "service", kind: "message", T: ServiceSelector },
-    { no: 3, name: "client_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    {
+      no: 1,
+      name: 'version_seen',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+    { no: 2, name: 'service', kind: 'message', T: ServiceSelector },
+    {
+      no: 3,
+      name: 'client_id',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetServiceConfigRequest {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GetServiceConfigRequest {
     return new GetServiceConfigRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetServiceConfigRequest {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GetServiceConfigRequest {
     return new GetServiceConfigRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetServiceConfigRequest {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GetServiceConfigRequest {
     return new GetServiceConfigRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetServiceConfigRequest | PlainMessage<GetServiceConfigRequest> | undefined, b: GetServiceConfigRequest | PlainMessage<GetServiceConfigRequest> | undefined): boolean {
+  static equals(
+    a:
+      | GetServiceConfigRequest
+      | PlainMessage<GetServiceConfigRequest>
+      | undefined,
+    b:
+      | GetServiceConfigRequest
+      | PlainMessage<GetServiceConfigRequest>
+      | undefined
+  ): boolean {
     return proto3.util.equals(GetServiceConfigRequest, a, b);
   }
 }
@@ -443,7 +640,7 @@ export class GetServiceConfigResponse extends Message<GetServiceConfigResponse> 
   /**
    * @generated from field: string version = 1;
    */
-  version = "";
+  version = '';
 
   /**
    * @generated from field: bool config_data_sent = 2;
@@ -461,26 +658,49 @@ export class GetServiceConfigResponse extends Message<GetServiceConfigResponse> 
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GetServiceConfigResponse";
+  static readonly typeName = 'stanza.hub.v1.GetServiceConfigResponse';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "version", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "config_data_sent", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 3, name: "config", kind: "message", T: ServiceConfig },
+    { no: 1, name: 'version', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
+    {
+      no: 2,
+      name: 'config_data_sent',
+      kind: 'scalar',
+      T: 8 /* ScalarType.BOOL */,
+    },
+    { no: 3, name: 'config', kind: 'message', T: ServiceConfig },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetServiceConfigResponse {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GetServiceConfigResponse {
     return new GetServiceConfigResponse().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetServiceConfigResponse {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GetServiceConfigResponse {
     return new GetServiceConfigResponse().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetServiceConfigResponse {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GetServiceConfigResponse {
     return new GetServiceConfigResponse().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetServiceConfigResponse | PlainMessage<GetServiceConfigResponse> | undefined, b: GetServiceConfigResponse | PlainMessage<GetServiceConfigResponse> | undefined): boolean {
+  static equals(
+    a:
+      | GetServiceConfigResponse
+      | PlainMessage<GetServiceConfigResponse>
+      | undefined,
+    b:
+      | GetServiceConfigResponse
+      | PlainMessage<GetServiceConfigResponse>
+      | undefined
+  ): boolean {
     return proto3.util.equals(GetServiceConfigResponse, a, b);
   }
 }
@@ -517,27 +737,57 @@ export class ServiceConfig extends Message<ServiceConfig> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.ServiceConfig";
+  static readonly typeName = 'stanza.hub.v1.ServiceConfig';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "customer_id", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 3, name: "trace_config", kind: "message", T: TraceConfig, opt: true },
-    { no: 4, name: "metric_config", kind: "message", T: MetricConfig, opt: true },
-    { no: 5, name: "sentinel_config", kind: "message", T: SentinelConfig, opt: true },
+    {
+      no: 1,
+      name: 'customer_id',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    { no: 3, name: 'trace_config', kind: 'message', T: TraceConfig, opt: true },
+    {
+      no: 4,
+      name: 'metric_config',
+      kind: 'message',
+      T: MetricConfig,
+      opt: true,
+    },
+    {
+      no: 5,
+      name: 'sentinel_config',
+      kind: 'message',
+      T: SentinelConfig,
+      opt: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ServiceConfig {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): ServiceConfig {
     return new ServiceConfig().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ServiceConfig {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): ServiceConfig {
     return new ServiceConfig().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ServiceConfig {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): ServiceConfig {
     return new ServiceConfig().fromJsonString(jsonString, options);
   }
 
-  static equals(a: ServiceConfig | PlainMessage<ServiceConfig> | undefined, b: ServiceConfig | PlainMessage<ServiceConfig> | undefined): boolean {
+  static equals(
+    a: ServiceConfig | PlainMessage<ServiceConfig> | undefined,
+    b: ServiceConfig | PlainMessage<ServiceConfig> | undefined
+  ): boolean {
     return proto3.util.equals(ServiceConfig, a, b);
   }
 }
@@ -587,28 +837,70 @@ export class TraceConfig extends Message<TraceConfig> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.TraceConfig";
+  static readonly typeName = 'stanza.hub.v1.TraceConfig';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "collector_url", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 3, name: "sample_rate_default", kind: "scalar", T: 2 /* ScalarType.FLOAT */, opt: true },
-    { no: 4, name: "overrides", kind: "message", T: TraceConfigOverride, repeated: true },
-    { no: 5, name: "header_sample_configs", kind: "message", T: HeaderTraceConfig, repeated: true },
-    { no: 6, name: "param_sample_configs", kind: "message", T: ParamTraceConfig, repeated: true },
+    {
+      no: 1,
+      name: 'collector_url',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 3,
+      name: 'sample_rate_default',
+      kind: 'scalar',
+      T: 2 /* ScalarType.FLOAT */,
+      opt: true,
+    },
+    {
+      no: 4,
+      name: 'overrides',
+      kind: 'message',
+      T: TraceConfigOverride,
+      repeated: true,
+    },
+    {
+      no: 5,
+      name: 'header_sample_configs',
+      kind: 'message',
+      T: HeaderTraceConfig,
+      repeated: true,
+    },
+    {
+      no: 6,
+      name: 'param_sample_configs',
+      kind: 'message',
+      T: ParamTraceConfig,
+      repeated: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TraceConfig {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): TraceConfig {
     return new TraceConfig().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TraceConfig {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): TraceConfig {
     return new TraceConfig().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TraceConfig {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): TraceConfig {
     return new TraceConfig().fromJsonString(jsonString, options);
   }
 
-  static equals(a: TraceConfig | PlainMessage<TraceConfig> | undefined, b: TraceConfig | PlainMessage<TraceConfig> | undefined): boolean {
+  static equals(
+    a: TraceConfig | PlainMessage<TraceConfig> | undefined,
+    b: TraceConfig | PlainMessage<TraceConfig> | undefined
+  ): boolean {
     return proto3.util.equals(TraceConfig, a, b);
   }
 }
@@ -630,24 +922,42 @@ export class MetricConfig extends Message<MetricConfig> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.MetricConfig";
+  static readonly typeName = 'stanza.hub.v1.MetricConfig';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "collector_url", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    {
+      no: 1,
+      name: 'collector_url',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MetricConfig {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): MetricConfig {
     return new MetricConfig().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MetricConfig {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): MetricConfig {
     return new MetricConfig().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MetricConfig {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): MetricConfig {
     return new MetricConfig().fromJsonString(jsonString, options);
   }
 
-  static equals(a: MetricConfig | PlainMessage<MetricConfig> | undefined, b: MetricConfig | PlainMessage<MetricConfig> | undefined): boolean {
+  static equals(
+    a: MetricConfig | PlainMessage<MetricConfig> | undefined,
+    b: MetricConfig | PlainMessage<MetricConfig> | undefined
+  ): boolean {
     return proto3.util.equals(MetricConfig, a, b);
   }
 }
@@ -684,27 +994,63 @@ export class SentinelConfig extends Message<SentinelConfig> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.SentinelConfig";
+  static readonly typeName = 'stanza.hub.v1.SentinelConfig';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "circuitbreaker_rules_json", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 2, name: "flow_rules_json", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 3, name: "isolation_rules_json", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 4, name: "system_rules_json", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    {
+      no: 1,
+      name: 'circuitbreaker_rules_json',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 2,
+      name: 'flow_rules_json',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 3,
+      name: 'isolation_rules_json',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 4,
+      name: 'system_rules_json',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SentinelConfig {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): SentinelConfig {
     return new SentinelConfig().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): SentinelConfig {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): SentinelConfig {
     return new SentinelConfig().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SentinelConfig {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): SentinelConfig {
     return new SentinelConfig().fromJsonString(jsonString, options);
   }
 
-  static equals(a: SentinelConfig | PlainMessage<SentinelConfig> | undefined, b: SentinelConfig | PlainMessage<SentinelConfig> | undefined): boolean {
+  static equals(
+    a: SentinelConfig | PlainMessage<SentinelConfig> | undefined,
+    b: SentinelConfig | PlainMessage<SentinelConfig> | undefined
+  ): boolean {
     return proto3.util.equals(SentinelConfig, a, b);
   }
 }
@@ -731,25 +1077,43 @@ export class TraceConfigOverride extends Message<TraceConfigOverride> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.TraceConfigOverride";
+  static readonly typeName = 'stanza.hub.v1.TraceConfigOverride';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "sample_rate", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
-    { no: 2, name: "span_selectors", kind: "message", T: SpanSelector, repeated: true },
+    { no: 1, name: 'sample_rate', kind: 'scalar', T: 2 /* ScalarType.FLOAT */ },
+    {
+      no: 2,
+      name: 'span_selectors',
+      kind: 'message',
+      T: SpanSelector,
+      repeated: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TraceConfigOverride {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): TraceConfigOverride {
     return new TraceConfigOverride().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): TraceConfigOverride {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): TraceConfigOverride {
     return new TraceConfigOverride().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TraceConfigOverride {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): TraceConfigOverride {
     return new TraceConfigOverride().fromJsonString(jsonString, options);
   }
 
-  static equals(a: TraceConfigOverride | PlainMessage<TraceConfigOverride> | undefined, b: TraceConfigOverride | PlainMessage<TraceConfigOverride> | undefined): boolean {
+  static equals(
+    a: TraceConfigOverride | PlainMessage<TraceConfigOverride> | undefined,
+    b: TraceConfigOverride | PlainMessage<TraceConfigOverride> | undefined
+  ): boolean {
     return proto3.util.equals(TraceConfigOverride, a, b);
   }
 }
@@ -765,14 +1129,14 @@ export class SpanSelector extends Message<SpanSelector> {
    *
    * @generated from field: string otel_attribute = 1;
    */
-  otelAttribute = "";
+  otelAttribute = '';
 
   /**
    * Selector matches if value of 'otel_attribute' equals 'value'.
    *
    * @generated from field: string value = 2;
    */
-  value = "";
+  value = '';
 
   constructor(data?: PartialMessage<SpanSelector>) {
     super();
@@ -780,25 +1144,42 @@ export class SpanSelector extends Message<SpanSelector> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.SpanSelector";
+  static readonly typeName = 'stanza.hub.v1.SpanSelector';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "otel_attribute", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "value", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    {
+      no: 1,
+      name: 'otel_attribute',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+    { no: 2, name: 'value', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SpanSelector {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): SpanSelector {
     return new SpanSelector().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): SpanSelector {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): SpanSelector {
     return new SpanSelector().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SpanSelector {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): SpanSelector {
     return new SpanSelector().fromJsonString(jsonString, options);
   }
 
-  static equals(a: SpanSelector | PlainMessage<SpanSelector> | undefined, b: SpanSelector | PlainMessage<SpanSelector> | undefined): boolean {
+  static equals(
+    a: SpanSelector | PlainMessage<SpanSelector> | undefined,
+    b: SpanSelector | PlainMessage<SpanSelector> | undefined
+  ): boolean {
     return proto3.util.equals(SpanSelector, a, b);
   }
 }
@@ -836,26 +1217,56 @@ export class HeaderTraceConfig extends Message<HeaderTraceConfig> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.HeaderTraceConfig";
+  static readonly typeName = 'stanza.hub.v1.HeaderTraceConfig';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "span_selectors", kind: "message", T: SpanSelector, repeated: true },
-    { no: 2, name: "request_header_names", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
-    { no: 3, name: "response_header_names", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
+    {
+      no: 1,
+      name: 'span_selectors',
+      kind: 'message',
+      T: SpanSelector,
+      repeated: true,
+    },
+    {
+      no: 2,
+      name: 'request_header_names',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      repeated: true,
+    },
+    {
+      no: 3,
+      name: 'response_header_names',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      repeated: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): HeaderTraceConfig {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): HeaderTraceConfig {
     return new HeaderTraceConfig().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): HeaderTraceConfig {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): HeaderTraceConfig {
     return new HeaderTraceConfig().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): HeaderTraceConfig {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): HeaderTraceConfig {
     return new HeaderTraceConfig().fromJsonString(jsonString, options);
   }
 
-  static equals(a: HeaderTraceConfig | PlainMessage<HeaderTraceConfig> | undefined, b: HeaderTraceConfig | PlainMessage<HeaderTraceConfig> | undefined): boolean {
+  static equals(
+    a: HeaderTraceConfig | PlainMessage<HeaderTraceConfig> | undefined,
+    b: HeaderTraceConfig | PlainMessage<HeaderTraceConfig> | undefined
+  ): boolean {
     return proto3.util.equals(HeaderTraceConfig, a, b);
   }
 }
@@ -886,26 +1297,49 @@ export class ParamTraceConfig extends Message<ParamTraceConfig> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.ParamTraceConfig";
+  static readonly typeName = 'stanza.hub.v1.ParamTraceConfig';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "span_selectors", kind: "message", T: SpanSelector, repeated: true },
-    { no: 2, name: "parameter_names", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
+    {
+      no: 1,
+      name: 'span_selectors',
+      kind: 'message',
+      T: SpanSelector,
+      repeated: true,
+    },
+    {
+      no: 2,
+      name: 'parameter_names',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      repeated: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ParamTraceConfig {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): ParamTraceConfig {
     return new ParamTraceConfig().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ParamTraceConfig {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): ParamTraceConfig {
     return new ParamTraceConfig().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ParamTraceConfig {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): ParamTraceConfig {
     return new ParamTraceConfig().fromJsonString(jsonString, options);
   }
 
-  static equals(a: ParamTraceConfig | PlainMessage<ParamTraceConfig> | undefined, b: ParamTraceConfig | PlainMessage<ParamTraceConfig> | undefined): boolean {
+  static equals(
+    a: ParamTraceConfig | PlainMessage<ParamTraceConfig> | undefined,
+    b: ParamTraceConfig | PlainMessage<ParamTraceConfig> | undefined
+  ): boolean {
     return proto3.util.equals(ParamTraceConfig, a, b);
   }
 }
-

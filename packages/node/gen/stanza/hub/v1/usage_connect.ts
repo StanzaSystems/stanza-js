@@ -3,8 +3,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { GetUsageRequest, GetUsageResponse } from "./usage_pb.js";
-import { MethodKind } from "@bufbuild/protobuf";
+import { GetUsageRequest, GetUsageResponse } from './usage_pb.js';
+import { MethodKind } from '@bufbuild/protobuf';
 
 /**
  * Used to get statistics on usage from Stanza, sliced and diced in various ways.
@@ -12,17 +12,16 @@ import { MethodKind } from "@bufbuild/protobuf";
  * @generated from service stanza.hub.v1.UsageService
  */
 export const UsageService = {
-  typeName: "stanza.hub.v1.UsageService",
+  typeName: 'stanza.hub.v1.UsageService',
   methods: {
     /**
      * @generated from rpc stanza.hub.v1.UsageService.GetUsage
      */
     getUsage: {
-      name: "GetUsage",
+      name: 'GetUsage',
       I: GetUsageRequest,
       O: GetUsageResponse,
       kind: MethodKind.Unary,
     },
-  }
+  },
 } as const;
-

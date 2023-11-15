@@ -3,9 +3,16 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
-import { Tag } from "./common_pb.js";
+import type {
+  BinaryReadOptions,
+  FieldList,
+  JsonReadOptions,
+  JsonValue,
+  PartialMessage,
+  PlainMessage,
+} from '@bufbuild/protobuf';
+import { Message, proto3, Timestamp } from '@bufbuild/protobuf';
+import { Tag } from './common_pb.js';
 
 /**
  * MODE_SUM: query results across various axes (features, tags, apikeys) are added up and one timeseries is returned.
@@ -31,10 +38,10 @@ export enum QueryMode {
   REPORT = 2,
 }
 // Retrieve enum metadata with: proto3.getEnumType(QueryMode)
-proto3.util.setEnumType(QueryMode, "stanza.hub.v1.QueryMode", [
-  { no: 0, name: "QUERY_MODE_UNSPECIFIED" },
-  { no: 1, name: "QUERY_MODE_SUM" },
-  { no: 2, name: "QUERY_MODE_REPORT" },
+proto3.util.setEnumType(QueryMode, 'stanza.hub.v1.QueryMode', [
+  { no: 0, name: 'QUERY_MODE_UNSPECIFIED' },
+  { no: 1, name: 'QUERY_MODE_SUM' },
+  { no: 2, name: 'QUERY_MODE_REPORT' },
 ]);
 
 /**
@@ -49,7 +56,7 @@ export class GetUsageRequest extends Message<GetUsageRequest> {
    *
    * @generated from field: string environment = 1;
    */
-  environment = "";
+  environment = '';
 
   /**
    * Query for stats for this specific guard. If not specified then stats for all guards are returned.
@@ -151,39 +158,128 @@ export class GetUsageRequest extends Message<GetUsageRequest> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GetUsageRequest";
+  static readonly typeName = 'stanza.hub.v1.GetUsageRequest';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "environment", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "guard", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 3, name: "guard_query_mode", kind: "enum", T: proto3.getEnumType(QueryMode), opt: true },
-    { no: 4, name: "start_ts", kind: "message", T: Timestamp },
-    { no: 5, name: "end_ts", kind: "message", T: Timestamp },
-    { no: 6, name: "apikey", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 7, name: "feature", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 8, name: "feature_query_mode", kind: "enum", T: proto3.getEnumType(QueryMode), opt: true },
-    { no: 15, name: "service", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 16, name: "service_query_mode", kind: "enum", T: proto3.getEnumType(QueryMode), opt: true },
-    { no: 9, name: "priority", kind: "scalar", T: 5 /* ScalarType.INT32 */, opt: true },
-    { no: 10, name: "priority_query_mode", kind: "enum", T: proto3.getEnumType(QueryMode), opt: true },
-    { no: 11, name: "report_tags", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
-    { no: 12, name: "tags", kind: "message", T: Tag, repeated: true },
-    { no: 13, name: "report_all_tags", kind: "scalar", T: 8 /* ScalarType.BOOL */, opt: true },
-    { no: 14, name: "step", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    {
+      no: 1,
+      name: 'environment',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+    },
+    {
+      no: 2,
+      name: 'guard',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 3,
+      name: 'guard_query_mode',
+      kind: 'enum',
+      T: proto3.getEnumType(QueryMode),
+      opt: true,
+    },
+    { no: 4, name: 'start_ts', kind: 'message', T: Timestamp },
+    { no: 5, name: 'end_ts', kind: 'message', T: Timestamp },
+    {
+      no: 6,
+      name: 'apikey',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 7,
+      name: 'feature',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 8,
+      name: 'feature_query_mode',
+      kind: 'enum',
+      T: proto3.getEnumType(QueryMode),
+      opt: true,
+    },
+    {
+      no: 15,
+      name: 'service',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 16,
+      name: 'service_query_mode',
+      kind: 'enum',
+      T: proto3.getEnumType(QueryMode),
+      opt: true,
+    },
+    {
+      no: 9,
+      name: 'priority',
+      kind: 'scalar',
+      T: 5 /* ScalarType.INT32 */,
+      opt: true,
+    },
+    {
+      no: 10,
+      name: 'priority_query_mode',
+      kind: 'enum',
+      T: proto3.getEnumType(QueryMode),
+      opt: true,
+    },
+    {
+      no: 11,
+      name: 'report_tags',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      repeated: true,
+    },
+    { no: 12, name: 'tags', kind: 'message', T: Tag, repeated: true },
+    {
+      no: 13,
+      name: 'report_all_tags',
+      kind: 'scalar',
+      T: 8 /* ScalarType.BOOL */,
+      opt: true,
+    },
+    {
+      no: 14,
+      name: 'step',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetUsageRequest {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GetUsageRequest {
     return new GetUsageRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetUsageRequest {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GetUsageRequest {
     return new GetUsageRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetUsageRequest {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GetUsageRequest {
     return new GetUsageRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetUsageRequest | PlainMessage<GetUsageRequest> | undefined, b: GetUsageRequest | PlainMessage<GetUsageRequest> | undefined): boolean {
+  static equals(
+    a: GetUsageRequest | PlainMessage<GetUsageRequest> | undefined,
+    b: GetUsageRequest | PlainMessage<GetUsageRequest> | undefined
+  ): boolean {
     return proto3.util.equals(GetUsageRequest, a, b);
   }
 }
@@ -203,24 +299,42 @@ export class GetUsageResponse extends Message<GetUsageResponse> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.GetUsageResponse";
+  static readonly typeName = 'stanza.hub.v1.GetUsageResponse';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "result", kind: "message", T: UsageTimeseries, repeated: true },
+    {
+      no: 1,
+      name: 'result',
+      kind: 'message',
+      T: UsageTimeseries,
+      repeated: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetUsageResponse {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): GetUsageResponse {
     return new GetUsageResponse().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetUsageResponse {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): GetUsageResponse {
     return new GetUsageResponse().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetUsageResponse {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): GetUsageResponse {
     return new GetUsageResponse().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetUsageResponse | PlainMessage<GetUsageResponse> | undefined, b: GetUsageResponse | PlainMessage<GetUsageResponse> | undefined): boolean {
+  static equals(
+    a: GetUsageResponse | PlainMessage<GetUsageResponse> | undefined,
+    b: GetUsageResponse | PlainMessage<GetUsageResponse> | undefined
+  ): boolean {
     return proto3.util.equals(GetUsageResponse, a, b);
   }
 }
@@ -267,29 +381,71 @@ export class UsageTimeseries extends Message<UsageTimeseries> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.UsageTimeseries";
+  static readonly typeName = 'stanza.hub.v1.UsageTimeseries';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "data", kind: "message", T: UsageTSDataPoint, repeated: true },
-    { no: 3, name: "feature", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 4, name: "priority", kind: "scalar", T: 5 /* ScalarType.INT32 */, opt: true },
-    { no: 5, name: "tags", kind: "message", T: Tag, repeated: true },
-    { no: 6, name: "guard", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 7, name: "service", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    {
+      no: 1,
+      name: 'data',
+      kind: 'message',
+      T: UsageTSDataPoint,
+      repeated: true,
+    },
+    {
+      no: 3,
+      name: 'feature',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 4,
+      name: 'priority',
+      kind: 'scalar',
+      T: 5 /* ScalarType.INT32 */,
+      opt: true,
+    },
+    { no: 5, name: 'tags', kind: 'message', T: Tag, repeated: true },
+    {
+      no: 6,
+      name: 'guard',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
+    {
+      no: 7,
+      name: 'service',
+      kind: 'scalar',
+      T: 9 /* ScalarType.STRING */,
+      opt: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UsageTimeseries {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): UsageTimeseries {
     return new UsageTimeseries().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UsageTimeseries {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): UsageTimeseries {
     return new UsageTimeseries().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UsageTimeseries {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): UsageTimeseries {
     return new UsageTimeseries().fromJsonString(jsonString, options);
   }
 
-  static equals(a: UsageTimeseries | PlainMessage<UsageTimeseries> | undefined, b: UsageTimeseries | PlainMessage<UsageTimeseries> | undefined): boolean {
+  static equals(
+    a: UsageTimeseries | PlainMessage<UsageTimeseries> | undefined,
+    b: UsageTimeseries | PlainMessage<UsageTimeseries> | undefined
+  ): boolean {
     return proto3.util.equals(UsageTimeseries, a, b);
   }
 }
@@ -354,34 +510,79 @@ export class UsageTSDataPoint extends Message<UsageTSDataPoint> {
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stanza.hub.v1.UsageTSDataPoint";
+  static readonly typeName = 'stanza.hub.v1.UsageTSDataPoint';
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "start_ts", kind: "message", T: Timestamp },
-    { no: 2, name: "end_ts", kind: "message", T: Timestamp },
-    { no: 3, name: "granted", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 4, name: "granted_weight", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
-    { no: 5, name: "not_granted", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 6, name: "not_granted_weight", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
-    { no: 7, name: "be_burst", kind: "scalar", T: 5 /* ScalarType.INT32 */, opt: true },
-    { no: 8, name: "be_burst_weight", kind: "scalar", T: 2 /* ScalarType.FLOAT */, opt: true },
-    { no: 9, name: "parent_reject", kind: "scalar", T: 5 /* ScalarType.INT32 */, opt: true },
-    { no: 10, name: "parent_reject_weight", kind: "scalar", T: 2 /* ScalarType.FLOAT */, opt: true },
+    { no: 1, name: 'start_ts', kind: 'message', T: Timestamp },
+    { no: 2, name: 'end_ts', kind: 'message', T: Timestamp },
+    { no: 3, name: 'granted', kind: 'scalar', T: 5 /* ScalarType.INT32 */ },
+    {
+      no: 4,
+      name: 'granted_weight',
+      kind: 'scalar',
+      T: 2 /* ScalarType.FLOAT */,
+    },
+    { no: 5, name: 'not_granted', kind: 'scalar', T: 5 /* ScalarType.INT32 */ },
+    {
+      no: 6,
+      name: 'not_granted_weight',
+      kind: 'scalar',
+      T: 2 /* ScalarType.FLOAT */,
+    },
+    {
+      no: 7,
+      name: 'be_burst',
+      kind: 'scalar',
+      T: 5 /* ScalarType.INT32 */,
+      opt: true,
+    },
+    {
+      no: 8,
+      name: 'be_burst_weight',
+      kind: 'scalar',
+      T: 2 /* ScalarType.FLOAT */,
+      opt: true,
+    },
+    {
+      no: 9,
+      name: 'parent_reject',
+      kind: 'scalar',
+      T: 5 /* ScalarType.INT32 */,
+      opt: true,
+    },
+    {
+      no: 10,
+      name: 'parent_reject_weight',
+      kind: 'scalar',
+      T: 2 /* ScalarType.FLOAT */,
+      opt: true,
+    },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UsageTSDataPoint {
+  static fromBinary(
+    bytes: Uint8Array,
+    options?: Partial<BinaryReadOptions>
+  ): UsageTSDataPoint {
     return new UsageTSDataPoint().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UsageTSDataPoint {
+  static fromJson(
+    jsonValue: JsonValue,
+    options?: Partial<JsonReadOptions>
+  ): UsageTSDataPoint {
     return new UsageTSDataPoint().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UsageTSDataPoint {
+  static fromJsonString(
+    jsonString: string,
+    options?: Partial<JsonReadOptions>
+  ): UsageTSDataPoint {
     return new UsageTSDataPoint().fromJsonString(jsonString, options);
   }
 
-  static equals(a: UsageTSDataPoint | PlainMessage<UsageTSDataPoint> | undefined, b: UsageTSDataPoint | PlainMessage<UsageTSDataPoint> | undefined): boolean {
+  static equals(
+    a: UsageTSDataPoint | PlainMessage<UsageTSDataPoint> | undefined,
+    b: UsageTSDataPoint | PlainMessage<UsageTSDataPoint> | undefined
+  ): boolean {
     return proto3.util.equals(UsageTSDataPoint, a, b);
   }
 }
-

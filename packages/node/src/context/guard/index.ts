@@ -1,2 +1,2 @@
-export * from './addStanzaGuardToContext'
-export * from './getStanzaGuardFromContext'
+export * from './addStanzaGuardToContext';
+export * from './getStanzaGuardFromContext';

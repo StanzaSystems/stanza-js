@@ -1,5 +1,7 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
-export const stanzaMarkTokensAsConsumedResponse = z.object({})
+export const stanzaMarkTokensAsConsumedResponse = z.object({});
 
-export type StanzaMarkTokensAsConsumedResponse = z.infer<typeof stanzaMarkTokensAsConsumedResponse>
+export type StanzaMarkTokensAsConsumedResponse = z.infer<
+  typeof stanzaMarkTokensAsConsumedResponse
+>;
