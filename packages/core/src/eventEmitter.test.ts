@@ -2,6 +2,10 @@ import { describe, expect, it, vi } from 'vitest';
 import { StanzaChangeTarget } from './eventEmitter';
 
 describe('eventEmitter', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('should dispatch event without any listeners', () => {
     const eventEmitter = new StanzaChangeTarget<string>();
 
@@ -10,7 +14,8 @@ describe('eventEmitter', () => {
     }).not.toThrow();
   });
 
-  it('should listen to a dispatched change event', () => {
+  it('should listen to a dispatched change event', async () => {
+    vi.useFakeTimers();
     const eventEmitter = new StanzaChangeTarget<string>();
 
     const listener = vi.fn();
@@ -19,11 +24,15 @@ describe('eventEmitter', () => {
 
     eventEmitter.dispatchChange('My change');
 
+    await vi.advanceTimersByTimeAsync(0);
+
     expect(listener).toHaveBeenCalledOnce();
     expect(listener).toHaveBeenCalledWith('My change');
   });
 
-  it('should listen to a dispatched change event - multiple listeners', () => {
+  it('should listen to a dispatched change event - multiple listeners', async () => {
+    vi.useFakeTimers();
+
     const eventEmitter = new StanzaChangeTarget<string>();
 
     const listener1 = vi.fn();
@@ -34,6 +43,8 @@ describe('eventEmitter', () => {
 
     eventEmitter.dispatchChange('My change');
 
+    await vi.advanceTimersByTimeAsync(0);
+
     expect(listener1).toHaveBeenCalledOnce();
     expect(listener1).toHaveBeenCalledWith('My change');
 
@@ -41,7 +52,9 @@ describe('eventEmitter', () => {
     expect(listener2).toHaveBeenCalledWith('My change');
   });
 
-  it('should not listen to a dispatched change event after it has been unsubscribed - using unsubscribe returned from addChange', () => {
+  it('should not listen to a dispatched change event after it has been unsubscribed - using unsubscribe returned from addChange', async () => {
+    vi.useFakeTimers();
+
     const eventEmitter = new StanzaChangeTarget<string>();
 
     const listener1 = vi.fn();
@@ -51,6 +64,8 @@ describe('eventEmitter', () => {
     const unsubscribe2 = eventEmitter.addChangeListener(listener2);
 
     eventEmitter.dispatchChange('My change');
+
+    await vi.advanceTimersByTimeAsync(0);
 
     expect(listener1).toHaveBeenCalledOnce();
     expect(listener1).toHaveBeenCalledWith('My change');
@@ -64,6 +79,8 @@ describe('eventEmitter', () => {
     unsubscribe1();
 
     eventEmitter.dispatchChange('My change 2');
+
+    await vi.advanceTimersByTimeAsync(0);
 
     expect(listener1).not.toHaveBeenCalled();
     expect(listener2).toHaveBeenCalledOnce();
@@ -79,7 +96,9 @@ describe('eventEmitter', () => {
     expect(listener2).not.toHaveBeenCalled();
   });
 
-  it('should not listen to a dispatched change event after it has been unsubscribed - using removeChangeListener', () => {
+  it('should not listen to a dispatched change event after it has been unsubscribed - using removeChangeListener', async () => {
+    vi.useFakeTimers();
+
     const eventEmitter = new StanzaChangeTarget<string>();
 
     const listener1 = vi.fn();
@@ -89,6 +108,8 @@ describe('eventEmitter', () => {
     eventEmitter.addChangeListener(listener2);
 
     eventEmitter.dispatchChange('My change');
+
+    await vi.advanceTimersByTimeAsync(0);
 
     expect(listener1).toHaveBeenCalledOnce();
     expect(listener1).toHaveBeenCalledWith('My change');
@@ -102,6 +123,8 @@ describe('eventEmitter', () => {
     eventEmitter.removeChangeListener(listener1);
 
     eventEmitter.dispatchChange('My change 2');
+
+    await vi.advanceTimersByTimeAsync(0);
 
     expect(listener1).not.toHaveBeenCalled();
     expect(listener2).toHaveBeenCalledOnce();
