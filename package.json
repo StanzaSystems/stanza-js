@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "generate-hub-api": "buf generate https://github.com/StanzaSystems/apis.git --path stanza/hub"
+    "generate-hub-api": "buf generate https://github.com/StanzaSystems/apis.git --path stanza/hub",
+    "format": "prettier  --config ./.prettierrc --write '{**/*,*}.{js,ts,jsx,tsx}'",
+    "format:check": "prettier  --config ./.prettierrc -c '{**/*,*}.{js,ts,jsx,tsx}'"
   },
   "private": true,
   "devDependencies": {
@@ -111,7 +113,7 @@
     "redux": "4.2.1",
     "stripe": "10.14.0",
     "swr": "^2.2.4",
-    "use-shopping-cart": "^3.1.8",
+    "use-shopping-cart": "3.1.2",
     "zod": "^3.22.4"
   }
 }
