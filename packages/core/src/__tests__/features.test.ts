@@ -85,12 +85,14 @@ describe('features', () => {
       expect.objectContaining({
         featureName: 'productSummary',
         enabledPercent: 100,
+        lastRefreshTime: expect.anything(),
       })
     );
     expect(browserFeatures).toContainEqual(
       expect.objectContaining({
         featureName: 'shipping',
         enabledPercent: 0,
+        lastRefreshTime: expect.anything(),
       })
     );
   });
