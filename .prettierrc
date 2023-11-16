@@ -5,7 +5,7 @@
   "useTabs": false,
   "arrowParens": "always",
   "bracketSpacing": true,
-  "endOfLine": "auto",
+  "endOfLine": "lf",
   "quoteProps": "as-needed",
   "jsxSingleQuote": true,
   "singleAttributePerLine": true
