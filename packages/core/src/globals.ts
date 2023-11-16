@@ -53,7 +53,6 @@ export function getConfig(): StanzaInternalConfig {
 }
 
 export function getStateProvider(): LocalStateProvider {
-  console.log('localStateProvider', localStateProvider);
   if (localStateProvider === undefined) {
     throw new Error('Stanza is not initialized');
   }
