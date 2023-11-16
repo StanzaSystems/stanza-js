@@ -1,5 +1,9 @@
 import Emittery from 'emittery';
 
+class StanzaChangeEvent<StanzaEvent> {
+  constructor(public readonly detail: StanzaEvent) {}
+}
+
 type StanzaListener<StanzaEvent, ListenerReturnValue = unknown> = (
   event: StanzaEvent
 ) => ListenerReturnValue;
@@ -24,13 +28,20 @@ export class StanzaChangeTarget<StanzaEvent>
   addChangeListener(
     callback: StanzaListener<StanzaEvent, Promise<void> | void>
   ) {
+    const eventListener = (event: unknown): void => {
+      if (!(event instanceof StanzaChangeEvent)) {
+        return;
+      }
+      callback(event.detail) as unknown as Promise<void>;
+    };
+
     const unsubscribe = (): void => {
       this.unsubscribeMap.delete(callback);
-      this.eventTarget.off('stanzaStateChanged', callback);
+      this.eventTarget.off('stanzaStateChanged', eventListener);
     };
 
     this.unsubscribeMap.set(callback, unsubscribe);
-    this.eventTarget.on('stanzaStateChanged', callback);
+    this.eventTarget.on('stanzaStateChanged', eventListener);
 
     return unsubscribe;
   }
@@ -48,6 +59,9 @@ export class StanzaChangeTarget<StanzaEvent>
   }
 
   async dispatchChange(state?: StanzaEvent) {
-    await this.eventTarget.emit('stanzaStateChanged', state);
+    await this.eventTarget.emit(
+      'stanzaStateChanged',
+      new StanzaChangeEvent(state)
+    );
   }
 }

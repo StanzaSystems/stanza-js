@@ -56,6 +56,7 @@ export const handlers = [
       const reqJson = (await request.json()) as FeatureRequest;
       const features = reqJson.feature.names;
       const environment = reqJson.feature.environment;
+
       if (environment == null) {
         return new HttpResponse(null, {
           status: 400,
