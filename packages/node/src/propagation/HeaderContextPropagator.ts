@@ -24,8 +24,8 @@ export class HeaderContextPropagator implements TextMapPropagator {
       Array.isArray(headerValue) && headerValue.length > 0
         ? headerValue[0]
         : typeof headerValue === 'string' && headerValue !== ''
-          ? headerValue
-          : undefined;
+        ? headerValue
+        : undefined;
 
     return apiKey !== undefined
       ? context.setValue(this.contextKey, apiKey)

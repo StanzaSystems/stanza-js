@@ -83,8 +83,8 @@ export class HeadersSpanEnhancerConfigured implements SpanEnhancer {
         typeof rawValue === 'string'
           ? [rawValue]
           : typeof rawValue === 'number'
-            ? [rawValue.toString()]
-            : rawValue;
+          ? [rawValue.toString()]
+          : rawValue;
 
       if (value === undefined) {
         return;

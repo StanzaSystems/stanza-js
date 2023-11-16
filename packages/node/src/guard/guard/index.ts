@@ -98,8 +98,8 @@ export const initGuardGuard = (options: GuardGuardOptions) => {
         stepResult = !canEval()
           ? onNoEval()
           : isEnabled()
-            ? await onEnabled()
-            : onDisabled();
+          ? await onEnabled()
+          : onDisabled();
       } catch (e) {
         stepResult = onError();
       }

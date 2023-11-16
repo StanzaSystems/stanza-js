@@ -29,8 +29,9 @@ export default async function handler(
   }
   if (paymentIntentId !== undefined) {
     try {
-      const currentIntent =
-        await stripe.paymentIntents.retrieve(paymentIntentId);
+      const currentIntent = await stripe.paymentIntents.retrieve(
+        paymentIntentId
+      );
       // If PaymentIntent has been created, just update the amount.
       if (currentIntent !== undefined) {
         const updatedIntent = await stripe.paymentIntents.update(
