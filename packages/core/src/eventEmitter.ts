@@ -54,7 +54,7 @@ export class StanzaChangeTarget<StanzaEvent>
     this.eventTarget
       .emit('stanzaStateChanged', new StanzaChangeEvent(state))
       .catch(() => {
-        console.warn('Dispatching event failed')
+        console.warn('Dispatching event failed');
       });
   }
 }

@@ -18,7 +18,12 @@ body {
   margin: 0;
   padding: 0;
   background: #6772e5;
-  background: linear-gradient(to bottom right, #6772e5 0%, #bd91ff 20%, white 50%);
+  background: linear-gradient(
+    to bottom right,
+    #6772e5 0%,
+    #bd91ff 20%,
+    white 50%
+  );
   background-repeat: no-repeat;
   overflow-y: scroll;
   display: flex;
@@ -85,7 +90,6 @@ header {
   column-gap: 1rem;
 }
 
-
 ul,
 li {
   list-style: none;
@@ -111,7 +115,9 @@ li {
   width: 33%;
   margin: 0 20px 20px 0;
   text-decoration: none;
-  box-shadow: -20px 20px 60px #abacad, 20px -20px 60px #ffffff;
+  box-shadow:
+    -20px 20px 60px #abacad,
+    20px -20px 60px #ffffff;
 }
 .card h2 {
   color: #fff;
@@ -210,7 +216,9 @@ button.icon-button {
   transition: box-shadow var(--transition-duration);
 }
 .card.elements-style-background:hover {
-  box-shadow: 20px 20px 60px #464e9c, -20px -20px 60px #8896ff;
+  box-shadow:
+    20px 20px 60px #464e9c,
+    -20px -20px 60px #8896ff;
 }
 .checkout-style {
   color: var(--checkout-color);
@@ -221,14 +229,18 @@ button.icon-button {
   transition: box-shadow var(--transition-duration);
 }
 .card.checkout-style-background:hover {
-  box-shadow: 20px 20px 60px #614b91, -20px -20px 60px #bd91ff;
+  box-shadow:
+    20px 20px 60px #614b91,
+    -20px -20px 60px #bd91ff;
 }
 .cart-style-background {
   background: teal;
   transition: box-shadow var(--transition-duration);
 }
 .card.cart-style-background:hover {
-  box-shadow: 20px 20px 60px teal, -20px -20px 60px teal;
+  box-shadow:
+    20px 20px 60px teal,
+    -20px -20px 60px teal;
 }
 
 .section-title {
@@ -259,7 +271,6 @@ button.icon-button {
   height: 100%;
   object-fit: cover;
   object-position: top;
-
 }
 
 /* Test card number */
@@ -302,7 +313,9 @@ pre {
   background: var(--body-color);
   color: #6a7c94;
   border-radius: 50px;
-  box-shadow: -20px 20px 60px #abacad, 20px -20px 60px #ffffff;
+  box-shadow:
+    -20px 20px 60px #abacad,
+    20px -20px 60px #ffffff;
   display: flex;
   align-items: center;
   box-sizing: border-box;
@@ -319,7 +332,9 @@ pre {
 .PopoverContent {
   background: var(--body-color);
   border-radius: 10px;
-  box-shadow: -20px 20px 60px #abacad, 20px -20px 60px #ffffff;
+  box-shadow:
+    -20px 20px 60px #abacad,
+    20px -20px 60px #ffffff;
 }
 
 @media only screen and (max-width: 980px) {

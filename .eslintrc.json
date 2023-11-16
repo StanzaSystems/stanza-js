@@ -7,9 +7,17 @@
       "files": ["*.json"],
       "parser": "jsonc-eslint-parser",
       "rules": {
-        "@nx/dependency-checks": ["error", {
-          "ignoredFiles": ["**/*.test.(ts|js)", "**/__tests__/**", "**/vite.config.ts", "**/*.d.ts"]
-        }]
+        "@nx/dependency-checks": [
+          "error",
+          {
+            "ignoredFiles": [
+              "**/*.test.(ts|js)",
+              "**/__tests__/**",
+              "**/vite.config.ts",
+              "**/*.d.ts"
+            ]
+          }
+        ]
       }
     },
     {
@@ -44,7 +52,10 @@
         "sourceType": "module"
       },
       "rules": {
-        "@typescript-eslint/restrict-template-expressions": ["error", { "allowNullish": true, "allowNumber": true }],
+        "@typescript-eslint/restrict-template-expressions": [
+          "error",
+          { "allowNullish": true, "allowNumber": true }
+        ],
         "@typescript-eslint/return-await": ["error", "in-try-catch"],
         "@typescript-eslint/explicit-function-return-type": 0,
         "@typescript-eslint/no-explicit-any": 0,
