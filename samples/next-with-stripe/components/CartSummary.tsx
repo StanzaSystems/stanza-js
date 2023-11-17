@@ -1,3 +1,4 @@
+'use client'
 import { useStanzaContext } from '@getstanza/react';
 import React, { useState } from 'react';
 import { useShoppingCart, formatCurrencyString } from 'use-shopping-cart';
