@@ -7,16 +7,17 @@ export const useStanzaContext = (
   contextName?: string
 ): StanzaContext | undefined => {
   const providedContextName = useContext(StanzaContextName);
-  const [state, setState] = useState<StanzaContext | undefined>();
   const stanzaInstance = useContext(StanzaReactContext);
+  const resultContextName = contextName ?? providedContextName;
+  const [state, setState] = useState<StanzaContext | undefined>(
+    getContextStale(providedContextName ?? '')
+  );
 
   if (stanzaInstance === undefined) {
     throw Error('Component needs to be wrapped with StanzaProvider');
   }
 
   const contextChanges = stanzaInstance.contextChanges;
-
-  const resultContextName = contextName ?? providedContextName;
 
   if (resultContextName === undefined) {
     throw Error(

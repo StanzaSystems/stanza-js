@@ -56,7 +56,7 @@ const Layout = ({ children, title = 'Stanza Fruit Stand' }: Props) => (
           <h1>
             <span className='light'>{title}</span>
           </h1>
-          <CartButton />
+          {/* <CartButton /> */}
         </div>
       </header>
 
