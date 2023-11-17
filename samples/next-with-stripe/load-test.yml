@@ -1,11 +1,11 @@
 config:
-  target: "http://localhost:4200"
+  target: 'http://localhost:4200'
   phases:
     - duration: 90
       arrivalRate: 12
- 
+
 scenarios:
-  - name: "Test stripe guard"
+  - name: 'Test stripe guard'
     flow:
       - get:
-          url: "/api/products/featured"
+          url: '/api/products/featured'

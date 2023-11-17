@@ -1,10 +1,7 @@
-class StanzaChangeEvent<StanzaEvent> extends Event {
-  public readonly detail: StanzaEvent;
+import Emittery from 'emittery';
 
-  constructor(state: StanzaEvent) {
-    super('stanzaStateChanged');
-    this.detail = state;
-  }
+class StanzaChangeEvent<StanzaEvent> {
+  constructor(public readonly detail: StanzaEvent) {}
 }
 
 type StanzaListener<StanzaEvent, ListenerReturnValue = unknown> = (
@@ -20,7 +17,7 @@ export interface StanzaChangeEmitter<StanzaEvent> {
 export class StanzaChangeTarget<StanzaEvent>
   implements StanzaChangeEmitter<StanzaEvent>
 {
-  private readonly eventTarget = new EventTarget();
+  private readonly eventTarget = new Emittery();
   private readonly unsubscribeMap = new Map<
     StanzaListener<StanzaEvent>,
     () => void
@@ -36,11 +33,11 @@ export class StanzaChangeTarget<StanzaEvent>
 
     const unsubscribe = (): void => {
       this.unsubscribeMap.delete(callback);
-      this.eventTarget.removeEventListener('stanzaStateChanged', eventListener);
+      this.eventTarget.off('stanzaStateChanged', eventListener);
     };
 
     this.unsubscribeMap.set(callback, unsubscribe);
-    this.eventTarget.addEventListener('stanzaStateChanged', eventListener);
+    this.eventTarget.on('stanzaStateChanged', eventListener);
 
     return unsubscribe;
   }
@@ -54,6 +51,10 @@ export class StanzaChangeTarget<StanzaEvent>
   }
 
   dispatchChange(state: StanzaEvent): void {
-    this.eventTarget.dispatchEvent(new StanzaChangeEvent(state));
+    this.eventTarget
+      .emit('stanzaStateChanged', new StanzaChangeEvent(state))
+      .catch(() => {
+        console.warn('Dispatching event failed');
+      });
   }
 }
