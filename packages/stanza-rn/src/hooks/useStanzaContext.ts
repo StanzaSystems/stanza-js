@@ -1,8 +1,7 @@
-import { useContext, useEffect, useState } from 'react';
+import { getContextStale, type StanzaContext } from '@getstanza/mobile';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { StanzaReactContext } from '../context/StanzaContext';
 import { StanzaContextName } from '../context/StanzaContextName';
-
-import { StanzaContext, getContextStale } from '@getstanza/mobile';
 
 export const useStanzaContext = (
   contextName?: string
@@ -25,24 +24,25 @@ export const useStanzaContext = (
     );
   }
 
-  useEffect(() => {
-    state?.name !== resultContextName &&
-      setState(getContextStale(resultContextName));
-  }, [state, resultContextName]);
+  const updateContext = useCallback(async () => {
+    setState(await getContextStale(resultContextName));
+  }, [resultContextName]);
 
   useEffect(() => {
-    contextChanges.addChangeListener(async (context) => {
+    state?.name !== resultContextName && updateContext();
+  }, [state, resultContextName, updateContext]);
+
+  useEffect(() => {
+    const listener = async (context: StanzaContext) => {
       if (context.name === resultContextName) {
         setState(context);
       }
-    });
+    };
+
+    contextChanges.addChangeListener(listener);
 
     return () => {
-      contextChanges.removeChangeListener(async (context) => {
-        if (context.name === resultContextName) {
-          setState(undefined);
-        }
-      });
+      contextChanges.removeChangeListener(listener);
     };
   }, [contextChanges, resultContextName]);
 

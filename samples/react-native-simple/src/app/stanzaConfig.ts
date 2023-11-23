@@ -10,8 +10,8 @@ if (typeof stanzaKey !== 'string') {
 }
 
 const config: StanzaCoreConfig = {
-  url: STANZA_ENVIRONMENT ?? 'https://hub.stanzasys.co',
-  environment: STANZA_HUB_ADDRESS ?? 'local',
+  url: STANZA_HUB_ADDRESS ?? 'https://hub.stanzasys.co',
+  environment: STANZA_ENVIRONMENT ?? 'local',
   stanzaApiKey: stanzaKey ?? '',
   contextConfigs: [
     {
@@ -20,7 +20,7 @@ const config: StanzaCoreConfig = {
     },
     {
       name: 'details',
-      features: ['productSummary', 'pricing', 'shipping', 'checkout'],
+      features: ['productSummary', 'shipping', 'checkout'],
     },
   ],
   refreshSeconds: 3,

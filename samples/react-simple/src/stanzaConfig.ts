@@ -19,7 +19,7 @@ const config: StanzaCoreConfig = {
     },
     {
       name: 'details',
-      features: ['productSummary', 'pricing', 'shipping', 'checkout'],
+      features: ['productSummary', 'shipping', 'checkout'],
     },
   ],
   refreshSeconds: 3,

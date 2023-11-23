@@ -16,7 +16,7 @@ function parseFeature(featureSerialized: string): FeatureState {
 
     return createFeatureFromCacheObject(cache);
   } catch (e) {
-    throw new Error('Failed to parse feature');
+    throw new Error(`Failed to parse feature: ${e}`);
   }
 }
 
@@ -25,7 +25,10 @@ function createStanzaFeatureKey(name: string): StanzaFeatureKey {
 }
 
 function isStanzaFeatureKey(key: string): key is StanzaFeatureKey {
-  return key.startsWith(stanzaFeaturePrefix);
+  return (
+    key.startsWith(stanzaFeaturePrefix) &&
+    key.replace(stanzaFeaturePrefix, '').length > 0
+  );
 }
 
 function createFeatureFromCacheObject(cached: any): FeatureState {
@@ -88,7 +91,7 @@ export const createAsyncLocalStorageStateProvider =
         createStanzaFeatureKey(name)
       );
 
-      if (featureSerialized === null) {
+      if (!featureSerialized) {
         return undefined;
       }
 
@@ -100,12 +103,17 @@ export const createAsyncLocalStorageStateProvider =
 
       const getAllKeys = await getAllStateKeys();
 
-      return Promise.all(
+      const result = await Promise.all(
         getAllKeys.map(async (key) => {
           const value = await asyncStorage.getItem(key);
-          return parseFeature(value as string);
+          if (!value) {
+            throw new Error('Invalid state');
+          }
+          return value;
         })
       );
+
+      return result.map(parseFeature);
     }
 
     function assertInitialized() {
@@ -137,8 +145,8 @@ export const createAsyncLocalStorageStateProvider =
           if (
             key !== null &&
             isStanzaFeatureKey(key) &&
-            oldValue !== newValue &&
-            newValue !== null
+            newValue &&
+            oldValue !== newValue
           ) {
             featureStateChangeEmitter.dispatchChange({
               oldValue: oldValue ? parseFeature(oldValue) : undefined,

@@ -1,6 +1,12 @@
-import { getFeatureStates } from './getFeatureStates';
-import { getFeatureStatesHot } from './getFeatureStatesHot';
-import { getFeatureStatesStale } from './getFeatureStatesStale';
+import { getFeatureStates, getFeatureStatesAsync } from './getFeatureStates';
+import {
+  getFeatureStatesHot,
+  getFeatureStatesHotAsync,
+} from './getFeatureStatesHot';
+import {
+  getFeatureStatesStale,
+  getFeatureStatesStaleAsync,
+} from './getFeatureStatesStale';
 import * as globals from './globals';
 import { init, initMobile } from './init';
 export * from './eventEmitter';
@@ -24,6 +30,9 @@ export const Stanza = {
   getFeatureStatesHot,
   getFeatureStatesStale,
   getFeatureStates,
+  getFeatureStatesHotAsync,
+  getFeatureStatesStaleAsync,
+  getFeatureStatesAsync,
   featureChanges: globals.featureChanges,
   enablementNumberChanges: globals.enablementNumberChanges,
 };

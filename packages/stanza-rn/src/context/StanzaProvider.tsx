@@ -24,11 +24,11 @@ export const StanzaProvider: React.FC<StanzaProviderProps> = ({
       contextChanges: StanzaMobile.contextChanges,
       featureChanges: StanzaMobile.featureChanges,
     });
-  }, [config]);
+  }, [config, instance]);
 
   useEffect(() => {
-    initializeStanza();
-  }, [initializeStanza]);
+    if (!instance) initializeStanza();
+  }, [instance, initializeStanza]);
 
   if (!instance) {
     return null;

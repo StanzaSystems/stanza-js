@@ -27,8 +27,7 @@ class AsyncStorage implements IAsyncStorage {
       const value = await RNAsyncStorage.getItem(key);
       return value;
     } catch (e) {
-      console.log(e);
-      throw new Error('RNAsyncStorage.getItem failed');
+      throw new Error(`RNAsyncStorage.getItem failed: ${e}`);
     }
   }
 
@@ -42,8 +41,7 @@ class AsyncStorage implements IAsyncStorage {
 
       await this.emitter.emit('storage', { key, oldValue, newValue });
     } catch (e) {
-      console.log(e);
-      throw new Error('RNAsyncStorage.setItem failed');
+      throw new Error(`RNAsyncStorage.setItem failed: ${e}`);
     }
   }
 
@@ -57,8 +55,7 @@ class AsyncStorage implements IAsyncStorage {
         newValue: null,
       });
     } catch (e) {
-      console.log(e);
-      throw new Error('RNAsyncStorage.removeItem failed');
+      throw new Error(`RNAsyncStorage.removeItem failed: ${e}`);
     }
   }
 
@@ -66,8 +63,7 @@ class AsyncStorage implements IAsyncStorage {
     try {
       await RNAsyncStorage.clear();
     } catch (e) {
-      console.log(e);
-      throw new Error('RNAsyncStorage.clear failed');
+      throw new Error(`RNAsyncStorage.clear failed: ${e}`);
     }
   }
 
@@ -80,8 +76,7 @@ class AsyncStorage implements IAsyncStorage {
 
       return savedKeys;
     } catch (e) {
-      console.log(e);
-      throw new Error('RNAsyncStorage.getAllKeys failed');
+      throw new Error(`RNAsyncStorage.getAllKeys failed: ${e}`);
     }
   }
 

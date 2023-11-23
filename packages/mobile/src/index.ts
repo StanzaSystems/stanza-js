@@ -32,15 +32,17 @@ export const init = async (initialConfig: StanzaCoreConfig): Promise<void> => {
   }, {});
 
   Stanza.featureChanges.addChangeListener((featureState) => {
-    featureToContextMap[featureState.featureName].forEach((contextName) => {
-      contextChanges.dispatchChange(getContextStale(contextName));
-    });
+    featureToContextMap[featureState.featureName].forEach(
+      async (contextName) => {
+        contextChanges.dispatchChange(await getContextStale(contextName));
+      }
+    );
   });
 
   Stanza.enablementNumberChanges.addChangeListener(() => {
     new Set(Object.values(featureToContextMap).flat()).forEach(
-      (contextName) => {
-        contextChanges.dispatchChange(getContextStale(contextName));
+      async (contextName) => {
+        contextChanges.dispatchChange(await getContextStale(contextName));
       }
     );
   });
@@ -48,14 +50,14 @@ export const init = async (initialConfig: StanzaCoreConfig): Promise<void> => {
 
 export async function getContextHot(name: string): Promise<StanzaContext> {
   const features = getContextFeatures(name);
-  const newFeatures = await Stanza.getFeatureStatesHot(features);
+  const newFeatures = await Stanza.getFeatureStatesHotAsync(features);
   const enablementNumber = await getEnablementNumber();
   return createContext(name, newFeatures, enablementNumber, true);
 }
 
-export function getContextStale(name: string): StanzaContext {
+export async function getContextStale(name: string): Promise<StanzaContext> {
   const features = getContextFeatures(name);
-  const featureStates = Stanza.getFeatureStatesStale(features);
+  const featureStates = await Stanza.getFeatureStatesStaleAsync(features);
   const enablementNumber = getEnablementNumberStale();
   return createContext(name, featureStates, enablementNumber, true);
 }
@@ -74,6 +76,7 @@ function getContextFeatures(name: string): string[] {
   }
   return contextConfig.features;
 }
+
 export const StanzaMobile = {
   init,
   getContextHot,
