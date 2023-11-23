@@ -1,7 +1,10 @@
 import { StanzaChangeTarget } from './eventEmitter';
 import { groupBy } from './groupBy';
 import { type FeatureState } from './models/featureState';
-import { type LocalStateProvider } from './models/localStateProvider';
+import {
+  type AsyncLocalStateProvider,
+  type LocalStateProvider,
+} from './models/localStateProvider';
 import { type StanzaCoreConfig } from './models/stanzaCoreConfig';
 
 interface StanzaInternalConfig {
@@ -14,7 +17,7 @@ interface StanzaInternalConfig {
 }
 
 let stanzaConfig: StanzaInternalConfig;
-let localStateProvider: LocalStateProvider;
+let localStateProvider: LocalStateProvider | AsyncLocalStateProvider;
 let enablementNumber = 100;
 
 export const featureChanges = new StanzaChangeTarget<FeatureState>();
@@ -36,13 +39,37 @@ export function init(
       {}
     ),
   };
-  localStateProvider = provider;
 
+  localStateProvider = provider;
   localStateProvider.init(config.contextConfigs);
 
   getEnablementNumber().catch((e) => {
     console.warn('Failed to get enablement number', e);
   });
+}
+
+export async function initMobile(
+  config: StanzaCoreConfig,
+  provider: AsyncLocalStateProvider
+): Promise<void> {
+  if (stanzaConfig !== undefined) {
+    throw new Error('Stanza is already initialized');
+  }
+
+  stanzaConfig = {
+    ...config,
+    enablementNumberGenerator:
+      config.enablementNumberGenerator ?? getEnablementNumberSimple,
+    contextConfigs: config.contextConfigs.reduce(
+      groupBy('name', ({ features }) => ({ features })),
+      {}
+    ),
+  };
+
+  localStateProvider = provider;
+  await localStateProvider.init(config.contextConfigs);
+
+  await getEnablementNumber();
 }
 
 export function getConfig(): StanzaInternalConfig {
@@ -52,7 +79,9 @@ export function getConfig(): StanzaInternalConfig {
   return stanzaConfig;
 }
 
-export function getStateProvider(): LocalStateProvider {
+export function getStateProvider():
+  | LocalStateProvider
+  | AsyncLocalStateProvider {
   if (localStateProvider === undefined) {
     throw new Error('Stanza is not initialized');
   }

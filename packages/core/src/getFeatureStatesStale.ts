@@ -5,7 +5,8 @@ import { type FeatureState } from './models/featureState';
 export function getFeatureStatesStale(features: string[]): FeatureState[] {
   const stateProvider = getStateProvider();
   const featureStates = features.map(
-    (name) => stateProvider.getFeatureState(name) ?? createFeatureState(name)
+    async (name) =>
+      stateProvider.getFeatureState(name) ?? createFeatureState(name)
   );
   featureStates.forEach((featureState) => {
     stateProvider.setFeatureState(featureState);

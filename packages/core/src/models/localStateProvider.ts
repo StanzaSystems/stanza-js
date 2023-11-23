@@ -13,3 +13,12 @@ export interface LocalStateProvider {
   addChangeListener: (callback: LocalStateChangeListener) => () => void;
   removeChangeListener: (callback: LocalStateChangeListener) => void;
 }
+
+export interface AsyncLocalStateProvider {
+  init: (config: unknown) => Promise<void>;
+  setFeatureState: (context: FeatureState) => Promise<void>;
+  getFeatureState: (name: string) => Promise<FeatureState | undefined>;
+  getAllFeatureStates: () => Promise<FeatureState[]>;
+  addChangeListener: (callback: LocalStateChangeListener) => () => void;
+  removeChangeListener: (callback: LocalStateChangeListener) => void;
+}
