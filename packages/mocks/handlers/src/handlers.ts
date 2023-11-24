@@ -53,7 +53,6 @@ export const handlers = [
       // adding artificial delay to respond
       await new Promise((resolve) => setTimeout(resolve, 500));
       count++;
-      console.log('count', count);
       const reqJson = await req.json();
       const features = reqJson.feature.names;
       const environment = reqJson.feature.environment;
