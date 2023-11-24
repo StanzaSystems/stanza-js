@@ -1,5 +1,5 @@
 import { assert, beforeEach, describe, expect, it, vi } from 'vitest';
-import { type StanzaCoreConfig } from '../index';
+import { type LocalStateProvider, type StanzaCoreConfig } from '../index';
 
 let { Stanza, utils } = await import('../index');
 
@@ -33,12 +33,16 @@ describe('features', () => {
     const features = ['featured', 'search', 'checkout'].sort((a, b) =>
       a.localeCompare(b)
     );
+
     const hotFeatureStates = (await Stanza.getFeatureStatesHot(features)).sort(
       (a, b) => a.featureName.localeCompare(b.featureName)
     );
+
     const cachedFeatures = features
       .map((feature) =>
-        utils.globals.getStateProvider().getFeatureState(feature)
+        (
+          utils.globals.getStateProvider() as LocalStateProvider
+        ).getFeatureState(feature)
       )
       .filter(Boolean);
 
