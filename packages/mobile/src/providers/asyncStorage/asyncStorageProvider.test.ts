@@ -29,9 +29,9 @@ describe('asyncStorageStateProvider', () => {
     },
   } satisfies Record<string, FeatureState>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     stateProvider = createAsyncLocalStorageStateProvider();
-    asyncStorage.clear();
+    await asyncStorage.clear();
   });
 
   it('should throw before initialized', async () => {
@@ -157,8 +157,8 @@ describe('asyncStorageStateProvider', () => {
   });
 
   describe('when initialized', () => {
-    beforeEach(() => {
-      stateProvider.init({});
+    beforeEach(async () => {
+      await stateProvider.init({});
     });
 
     it('should return undefined from empty store', async () => {

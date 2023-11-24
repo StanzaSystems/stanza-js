@@ -1,7 +1,7 @@
 import {
   type FeatureState,
   StanzaChangeTarget,
-  AsyncLocalStateProvider,
+  type AsyncLocalStateProvider,
 } from '@getstanza/core';
 import { asyncStorage } from '../../lib/asyncStorage/asyncStorage';
 
@@ -16,7 +16,11 @@ function parseFeature(featureSerialized: string): FeatureState {
 
     return createFeatureFromCacheObject(cache);
   } catch (e) {
-    throw new Error(`Failed to parse feature: ${e}`);
+    let message = 'Failed to parse feature';
+    if (e instanceof Error) {
+      message = `${message}: ${e.message}`;
+    }
+    throw new Error(message);
   }
 }
 
@@ -91,7 +95,7 @@ export const createAsyncLocalStorageStateProvider =
         createStanzaFeatureKey(name)
       );
 
-      if (!featureSerialized) {
+      if (featureSerialized === null || featureSerialized === undefined) {
         return undefined;
       }
 
@@ -106,7 +110,7 @@ export const createAsyncLocalStorageStateProvider =
       const result = await Promise.all(
         getAllKeys.map(async (key) => {
           const value = await asyncStorage.getItem(key);
-          if (!value) {
+          if (value === null || value === undefined) {
             throw new Error('Invalid state');
           }
           return value;
@@ -145,11 +149,12 @@ export const createAsyncLocalStorageStateProvider =
           if (
             key !== null &&
             isStanzaFeatureKey(key) &&
-            newValue &&
+            newValue !== null &&
             oldValue !== newValue
           ) {
+            const hasOldValue = oldValue !== null && oldValue !== undefined;
             featureStateChangeEmitter.dispatchChange({
-              oldValue: oldValue ? parseFeature(oldValue) : undefined,
+              oldValue: hasOldValue ? parseFeature(oldValue) : undefined,
               newValue: parseFeature(newValue),
             });
           }

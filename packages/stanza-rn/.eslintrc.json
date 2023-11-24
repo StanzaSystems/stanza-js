@@ -1,6 +1,15 @@
 {
   "extends": ["plugin:@nx/react", "../../.eslintrc.json"],
-  "ignorePatterns": ["!**/*", "public", ".cache", "node_modules"],
+  "parserOptions": {
+    "project": ["packages/stanza-rn/tsconfig*.json"]
+  },
+  "ignorePatterns": [
+    "!**/*",
+    "public",
+    ".cache",
+    "node_modules",
+    "test-setup.ts"
+  ],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -9,9 +18,7 @@
     {
       "files": ["*.ts", "*.tsx"],
       "rules": {
-        "parserOptions": {
-          "project": ["packages/stanza-rn/tsconfig*.json"]
-        }
+        "@typescript-eslint/strict-boolean-expressions": "off"
       }
     },
     {

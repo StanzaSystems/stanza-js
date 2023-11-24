@@ -1,22 +1,22 @@
 import RNAsyncStorage from '@react-native-async-storage/async-storage';
 import Emittery from 'emittery';
 
-type StorageEvent = {
+interface StorageEvent {
   key: string;
   oldValue: string | null;
   newValue: string;
-};
+}
 
 export interface IAsyncStorage {
-  getItem(key: string): Promise<string | null>;
-  setItem(key: string, value: string): Promise<void>;
-  removeItem(key: string): Promise<void>;
-  clear(): Promise<void>;
-  addEventListener(listener: (event: StorageEvent) => void): void;
+  getItem: (key: string) => Promise<string | null>;
+  setItem: (key: string, value: string) => Promise<void>;
+  removeItem: (key: string) => Promise<void>;
+  clear: () => Promise<void>;
+  addEventListener: (listener: (event: StorageEvent) => void) => void;
 }
 
 class AsyncStorage implements IAsyncStorage {
-  private emitter = new Emittery();
+  private readonly emitter = new Emittery();
 
   constructor() {
     this.addEventListener = this.addEventListener.bind(this);
@@ -27,7 +27,11 @@ class AsyncStorage implements IAsyncStorage {
       const value = await RNAsyncStorage.getItem(key);
       return value;
     } catch (e) {
-      throw new Error(`RNAsyncStorage.getItem failed: ${e}`);
+      let message = 'RNAsyncStorage.getItem failed';
+      if (e instanceof Error) {
+        message = `${message}: ${e.message}`;
+      }
+      throw new Error(message);
     }
   }
 
@@ -41,7 +45,11 @@ class AsyncStorage implements IAsyncStorage {
 
       await this.emitter.emit('storage', { key, oldValue, newValue });
     } catch (e) {
-      throw new Error(`RNAsyncStorage.setItem failed: ${e}`);
+      let message = 'RNAsyncStorage.setItem failed';
+      if (e instanceof Error) {
+        message = `${message}: ${e.message}`;
+      }
+      throw new Error(message);
     }
   }
 
@@ -55,7 +63,11 @@ class AsyncStorage implements IAsyncStorage {
         newValue: null,
       });
     } catch (e) {
-      throw new Error(`RNAsyncStorage.removeItem failed: ${e}`);
+      let message = 'RNAsyncStorage.removeItem failed';
+      if (e instanceof Error) {
+        message = `${message}: ${e.message}`;
+      }
+      throw new Error(message);
     }
   }
 
@@ -63,7 +75,11 @@ class AsyncStorage implements IAsyncStorage {
     try {
       await RNAsyncStorage.clear();
     } catch (e) {
-      throw new Error(`RNAsyncStorage.clear failed: ${e}`);
+      let message = 'RNAsyncStorage.clear failed';
+      if (e instanceof Error) {
+        message = `${message}: ${e.message}`;
+      }
+      throw new Error(message);
     }
   }
 
@@ -76,7 +92,11 @@ class AsyncStorage implements IAsyncStorage {
 
       return savedKeys;
     } catch (e) {
-      throw new Error(`RNAsyncStorage.getAllKeys failed: ${e}`);
+      let message = 'RNAsyncStorage.getAllKeys failed';
+      if (e instanceof Error) {
+        message = `${message}: ${e.message}`;
+      }
+      throw new Error(message);
     }
   }
 

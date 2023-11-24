@@ -1,6 +1,17 @@
 {
   "extends": ["plugin:@nx/react", "../../.eslintrc.json"],
-  "ignorePatterns": ["!**/*", "public", ".cache", "node_modules"],
+  "parserOptions": {
+    "project": ["samples/react-native-simple/tsconfig*.json"]
+  },
+  "ignorePatterns": [
+    "!**/*",
+    "public",
+    ".cache",
+    "node_modules",
+    "test-setup.ts",
+    "metro.config.js",
+    "babel.config.js"
+  ],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -8,11 +19,7 @@
     },
     {
       "files": ["*.ts", "*.tsx"],
-      "rules": {
-        "parserOptions": {
-          "project": ["samples/react-native-simple/tsconfig*.json"]
-        }
-      }
+      "rules": {}
     },
     {
       "files": ["*.js", "*.jsx"],

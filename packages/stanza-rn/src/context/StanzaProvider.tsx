@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { StanzaReactContext } from './StanzaContext';
-import StanzaMobile, { StanzaCoreConfig } from '@getstanza/mobile';
-import { StanzaInstance } from '../types';
+import StanzaMobile, { type StanzaCoreConfig } from '@getstanza/mobile';
+import { type StanzaInstance } from '../types';
 
 export type StanzaConfig = StanzaCoreConfig;
 
@@ -24,10 +24,10 @@ export const StanzaProvider: React.FC<StanzaProviderProps> = ({
       contextChanges: StanzaMobile.contextChanges,
       featureChanges: StanzaMobile.featureChanges,
     });
-  }, [config, instance]);
+  }, [config]);
 
   useEffect(() => {
-    if (!instance) initializeStanza();
+    if (!instance) void initializeStanza();
   }, [instance, initializeStanza]);
 
   if (!instance) {

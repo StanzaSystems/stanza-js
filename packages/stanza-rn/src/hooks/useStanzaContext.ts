@@ -29,7 +29,7 @@ export const useStanzaContext = (
   }, [resultContextName]);
 
   useEffect(() => {
-    state?.name !== resultContextName && updateContext();
+    void (state?.name !== resultContextName && updateContext());
   }, [state, resultContextName, updateContext]);
 
   useEffect(() => {
