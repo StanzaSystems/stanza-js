@@ -14,9 +14,11 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": ["{workspaceRoot}/coverage/packages/stanza-rn"],
       "options": {
-        "jestConfig": "packages/stanza-rn/jest.config.ts"
+        "jestConfig": "packages/stanza-rn/jest.config.ts",
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/stanza-rn"
       }
     }
   }
