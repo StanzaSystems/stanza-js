@@ -87,7 +87,7 @@
       "options": {
         "jestConfig": "samples/react-native-simple/jest.config.ts",
         "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/samples/react-simple"
+        "reportsDirectory": "../../coverage/samples/react-native-simple"
       }
     }
   },
