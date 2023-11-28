@@ -17,6 +17,7 @@
     "jest-circus": "*",
     "jest-react-native": "*",
     "@testing-library/jest-native": "*",
-    "@react-native-async-storage/async-storage": "*"
+    "@react-native-async-storage/async-storage": "*",
+    "lodash": "*"
   }
 }

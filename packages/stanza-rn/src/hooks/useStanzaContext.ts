@@ -1,7 +1,8 @@
 import { getContextStale, type StanzaContext } from '@getstanza/mobile';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { StanzaReactContext } from '../context/StanzaContext';
 import { StanzaContextName } from '../context/StanzaContextName';
+import throttling from 'lodash/throttle';
 
 export const useStanzaContext = (
   contextName?: string
@@ -32,19 +33,23 @@ export const useStanzaContext = (
     void (state?.name !== resultContextName && updateContext());
   }, [state, resultContextName, updateContext]);
 
-  useEffect(() => {
-    const listener = async (context: StanzaContext) => {
-      if (context.name === resultContextName) {
-        setState(context);
-      }
-    };
+  const processChanges = useMemo(
+    () =>
+      throttling((context: StanzaContext) => {
+        if (context.name === resultContextName) {
+          setState(context);
+        }
+      }, 3000),
+    [resultContextName]
+  );
 
-    contextChanges.addChangeListener(listener);
+  useEffect(() => {
+    contextChanges.addChangeListener(processChanges);
 
     return () => {
-      contextChanges.removeChangeListener(listener);
+      contextChanges.removeChangeListener(processChanges);
     };
-  }, [contextChanges, resultContextName]);
+  }, [contextChanges, resultContextName, processChanges]);
 
   return state;
 };
