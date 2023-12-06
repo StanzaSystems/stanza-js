@@ -21,8 +21,9 @@ describe('refresh contexts', () => {
 
     await expect(StanzaBrowser.init(config)).resolves.not.toThrow();
 
-    await StanzaBrowser.getContextHot('main');
-    await StanzaBrowser.getContextHot('details');
+    await expect(StanzaBrowser.getContextHot('main')).resolves.not.toThrow();
+
+    await expect(StanzaBrowser.getContextHot('details')).resolves.not.toThrow();
 
     const mainContext = await StanzaBrowser.getContextStale('main');
     expect(mainContext?.name).toEqual('main');
