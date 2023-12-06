@@ -19,9 +19,7 @@ describe('refresh contexts', () => {
       ],
     };
 
-    expect(async () => {
-      await StanzaBrowser.init(config);
-    }).not.toThrow();
+    await expect(StanzaBrowser.init(config)).resolves.not.toThrow();
 
     await StanzaBrowser.getContextHot('main');
     await StanzaBrowser.getContextHot('details');
