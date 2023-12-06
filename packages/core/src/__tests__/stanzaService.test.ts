@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { Stanza } from '../index';
 import { type StanzaCoreConfig } from '../models/stanzaCoreConfig';
 
-describe('saveState', () => {
-  it('configures a stanza instance', () => {
+describe('saveState', async () => {
+  it('configures a stanza instance', async () => {
     const config: StanzaCoreConfig = {
       url: 'https://hub.dev.getstanza.dev',
       environment: 'local',
@@ -20,9 +20,7 @@ describe('saveState', () => {
       ],
     };
 
-    expect(() => {
-      Stanza.init(config);
-    }).not.toThrow();
+    await expect(Stanza.init(config)).resolves.not.toThrow();
   });
 
   // it('fetches correct feature list', async () => {
