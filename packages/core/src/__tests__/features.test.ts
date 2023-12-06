@@ -1,5 +1,5 @@
 import { assert, beforeEach, describe, expect, it, vi } from 'vitest';
-import { type LocalStateProvider, type StanzaCoreConfig } from '../index';
+import { type StanzaCoreConfig } from '../index';
 
 let { Stanza, utils } = await import('../index');
 
@@ -26,7 +26,7 @@ describe('features', () => {
     Stanza = indexModule.Stanza;
     utils = indexModule.utils;
 
-    Stanza.init(config);
+    await Stanza.init(config);
   });
 
   it('gets a hot features', async () => {
@@ -38,13 +38,13 @@ describe('features', () => {
       (a, b) => a.featureName.localeCompare(b.featureName)
     );
 
-    const cachedFeatures = features
-      .map((feature) =>
-        (
-          utils.globals.getStateProvider() as LocalStateProvider
-        ).getFeatureState(feature)
-      )
-      .filter(Boolean);
+    const cachedFeatures = await Promise.all(
+      features
+        .map(async (feature) =>
+          utils.globals.getStateProvider().getFeatureState(feature)
+        )
+        .filter(Boolean)
+    );
 
     assert.deepEqual(
       cachedFeatures,
@@ -53,8 +53,8 @@ describe('features', () => {
     );
   });
 
-  it('returns an enabled feature when features not found', () => {
-    const featureStatesStale = Stanza.getFeatureStatesStale(['fake']);
+  it('returns an enabled feature when features not found', async () => {
+    const featureStatesStale = await Stanza.getFeatureStatesStale(['fake']);
     expect(featureStatesStale).toEqual([
       {
         featureName: 'fake',

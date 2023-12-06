@@ -8,11 +8,11 @@ beforeEach(async () => {
   init = await import('./init').then(({ init }) => init);
 });
 
-describe('init', () => {
+describe('init', async () => {
   it('should init Stanza core properly', async () => {
     vi.useFakeTimers();
 
-    init({
+    await init({
       environment: 'testEnvironment',
       stanzaApiKey: 'testApiKey',
       url: 'https://url.to.hub',
@@ -29,7 +29,7 @@ describe('init', () => {
   it('should NOT leak errors if pollDelay rejects', async () => {
     vi.useFakeTimers();
 
-    init({
+    await init({
       environment: 'testEnvironment',
       stanzaApiKey: 'testApiKey',
       url: 'https://url.to.hub',
@@ -58,7 +58,7 @@ describe('init', () => {
   it('should NOT leak errors if pollDelay throws', async () => {
     vi.useFakeTimers();
 
-    init({
+    await init({
       environment: 'testEnvironment',
       stanzaApiKey: 'testApiKey',
       url: 'https://url.to.hub',

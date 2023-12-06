@@ -41,9 +41,9 @@ describe('pollFeatureStateUpdates', () => {
   ];
   let localStateProvider: LocalStateProvider;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     localStateProvider = createInMemoryLocalStateProvider();
-    localStateProvider.init({});
+    await localStateProvider.init({});
     mockGetFeaturesStatesHot.mockReset();
     mockGetConfig.mockReset();
     mockGetStateProvider.mockImplementation(() => localStateProvider);
@@ -61,38 +61,40 @@ describe('pollFeatureStateUpdates', () => {
     vi.useRealTimers();
   });
 
-  it('should poll no features if localStateProvider is empty', () => {
+  it('should poll no features if localStateProvider is empty', async () => {
     vi.useFakeTimers();
 
     void startPollingFeatureStateUpdates();
 
+    await vi.advanceTimersByTimeAsync(500);
+
     expect(mockGetFeaturesStatesHot).toHaveBeenCalledWith([]);
   });
 
-  it('should poll only features that exist in localStateProvider', () => {
+  it('should poll only features that exist in localStateProvider', async () => {
     vi.useFakeTimers();
-    localStateProvider.setFeatureState({
+    await localStateProvider.setFeatureState({
       featureName: 'testFeature1',
       enabledPercent: 100,
       lastRefreshTime: 123,
     });
 
     void startPollingFeatureStateUpdates();
+
+    await vi.advanceTimersByTimeAsync(500);
 
     expect(mockGetFeaturesStatesHot).toHaveBeenCalledWith(['testFeature1']);
   });
 
   it('should poll for new changes after refresh time has passed', async () => {
     vi.useFakeTimers();
-    localStateProvider.setFeatureState({
+    await localStateProvider.setFeatureState({
       featureName: 'testFeature1',
       enabledPercent: 100,
       lastRefreshTime: 123,
     });
 
     void startPollingFeatureStateUpdates();
-
-    expect(mockGetFeaturesStatesHot).toHaveBeenCalledOnce();
 
     await vi.advanceTimersByTimeAsync(500);
 

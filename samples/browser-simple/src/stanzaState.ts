@@ -2,7 +2,7 @@ import Stanza from '@getstanza/browser';
 import { config } from './stanzaConfig';
 
 export async function initState(element: HTMLDivElement): Promise<void> {
-  Stanza.init(config);
+  await Stanza.init(config);
   const context = await Stanza.getContext('main');
   const text = new Text(JSON.stringify(context.features.search.message));
   element.replaceChildren(text);
