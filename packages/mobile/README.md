@@ -1,7 +1,19 @@
-# mobile
+# Stanza Browser
 
-This library was generated with [Nx](https://nx.dev).
+Stanza mobile is a package for using Stanza in the mobile with vanilla JS.
 
-## Running unit tests
+## Getting Started
 
-Run `nx test mobile` to execute the unit tests via [Jest](https://jestjs.io).
+Install the Stanza mobile package
+
+```
+npm install @getstanza/mobile
+```
+
+Initialize Stanza Browser in an early point of your app
+
+```
+import { init } from '@getstanza/mobile'
+
+
+```

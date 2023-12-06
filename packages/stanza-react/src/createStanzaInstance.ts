@@ -4,8 +4,10 @@ import { type StanzaInstance } from './stanzaInstance';
 
 export type StanzaConfig = StanzaCoreConfig;
 
-export const createStanzaInstance = (config: StanzaConfig): StanzaInstance => {
-  StanzaBrowser.init(config);
+export const createStanzaInstance = async (
+  config: StanzaConfig
+): Promise<StanzaInstance> => {
+  await StanzaBrowser.init(config);
 
   return {
     contextChanges: StanzaBrowser.contextChanges,

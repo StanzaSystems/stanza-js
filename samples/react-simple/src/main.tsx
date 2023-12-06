@@ -15,7 +15,7 @@ if (import.meta.env.MODE === 'development') {
 
 await loadPromise;
 
-const stanzaInstance = createStanzaInstance(config);
+const stanzaInstance = await createStanzaInstance(config);
 
 const rootElementId = 'root';
 const rootElement = document.getElementById(rootElementId);

@@ -15,8 +15,8 @@ const { getConfig, getEnablementNumber, getEnablementNumberStale } =
 
 const contextChanges = new StanzaChangeTarget<StanzaContext>();
 
-export const init = (initialConfig: StanzaCoreConfig): void => {
-  Stanza.init(
+export const init = async (initialConfig: StanzaCoreConfig): Promise<void> => {
+  await Stanza.init(
     initialConfig,
     typeof window !== 'undefined'
       ? createLocalStorageStateProvider()
@@ -34,17 +34,16 @@ export const init = (initialConfig: StanzaCoreConfig): void => {
   }, {});
 
   Stanza.featureChanges.addChangeListener((featureState) => {
-    featureToContextMap[featureState.featureName].forEach((contextName) => {
-      contextChanges.dispatchChange(getContextStale(contextName));
+    featureToContextMap[featureState.featureName].map(async (contextName) => {
+      contextChanges.dispatchChange(await getContextStale(contextName));
     });
   });
 
-  Stanza.enablementNumberChanges.addChangeListener(() => {
-    new Set(Object.values(featureToContextMap).flat()).forEach(
-      (contextName) => {
-        contextChanges.dispatchChange(getContextStale(contextName));
-      }
-    );
+  Stanza.enablementNumberChanges.addChangeListener(async () => {
+    const contextNames = new Set(Object.values(featureToContextMap).flat());
+    for (const contextName of contextNames) {
+      contextChanges.dispatchChange(await getContextStale(contextName));
+    }
   });
 };
 
@@ -55,9 +54,9 @@ export async function getContextHot(name: string): Promise<StanzaContext> {
   return createContext(name, newFeatures, enablementNumber, true);
 }
 
-export function getContextStale(name: string): StanzaContext {
+export async function getContextStale(name: string): Promise<StanzaContext> {
   const features = getContextFeatures(name);
-  const featureStates = Stanza.getFeatureStatesStale(features);
+  const featureStates = await Stanza.getFeatureStatesStale(features);
   const enablementNumber = getEnablementNumberStale();
   return createContext(name, featureStates, enablementNumber, true);
 }

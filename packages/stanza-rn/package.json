@@ -1,6 +1,6 @@
 {
   "name": "@getstanza/react-native",
-  "version": "0.0.1-beta",
+  "version": "0.0.7-beta",
   "type": "commonjs",
   "description": "Stanza React Native SDK",
   "author": "Stanza",

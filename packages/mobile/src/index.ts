@@ -16,10 +16,7 @@ const { getConfig, getEnablementNumber, getEnablementNumberStale } =
 const contextChanges = new StanzaChangeTarget<StanzaContext>();
 
 export const init = async (initialConfig: StanzaCoreConfig): Promise<void> => {
-  await Stanza.initMobile(
-    initialConfig,
-    createAsyncLocalStorageStateProvider()
-  );
+  await Stanza.init(initialConfig, createAsyncLocalStorageStateProvider());
 
   const featureToContextMap = initialConfig.contextConfigs.reduce<
     Record<string, string[]>
@@ -47,14 +44,14 @@ export const init = async (initialConfig: StanzaCoreConfig): Promise<void> => {
 
 export async function getContextHot(name: string): Promise<StanzaContext> {
   const features = getContextFeatures(name);
-  const newFeatures = await Stanza.getFeatureStatesHotAsync(features);
+  const newFeatures = await Stanza.getFeatureStatesHot(features);
   const enablementNumber = await getEnablementNumber();
   return createContext(name, newFeatures, enablementNumber, true);
 }
 
 export async function getContextStale(name: string): Promise<StanzaContext> {
   const features = getContextFeatures(name);
-  const featureStates = await Stanza.getFeatureStatesStaleAsync(features);
+  const featureStates = await Stanza.getFeatureStatesStale(features);
   const enablementNumber = getEnablementNumberStale();
   return createContext(name, featureStates, enablementNumber, true);
 }

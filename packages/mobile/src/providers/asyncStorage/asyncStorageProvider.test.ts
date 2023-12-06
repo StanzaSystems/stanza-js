@@ -1,12 +1,9 @@
-import {
-  type FeatureState,
-  type AsyncLocalStateProvider,
-} from '@getstanza/core';
+import { type LocalStateProvider, type FeatureState } from '@getstanza/core';
 import { createAsyncLocalStorageStateProvider } from './asyncStorageProvider';
 import { asyncStorage } from '../../lib/asyncStorage/asyncStorage';
 
 describe('asyncStorageStateProvider', () => {
-  let stateProvider: AsyncLocalStateProvider;
+  let stateProvider: LocalStateProvider;
 
   const testFeatures = {
     first: {
@@ -35,25 +32,21 @@ describe('asyncStorageStateProvider', () => {
   });
 
   it('should throw before initialized', async () => {
-    await expect(async () => {
-      await stateProvider.getFeatureState('test');
-    }).rejects.toThrow(
+    await expect(stateProvider.getFeatureState('test')).rejects.toThrow(
       'Async Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
     );
 
-    await expect(async () => {
-      await stateProvider.setFeatureState({
+    await expect(
+      stateProvider.setFeatureState({
         featureName: 'test',
         enabledPercent: 100,
         lastRefreshTime: 0,
-      });
-    }).rejects.toThrow(
+      })
+    ).rejects.toThrow(
       'Async Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
     );
 
-    await expect(async () => {
-      await stateProvider.getAllFeatureStates();
-    }).rejects.toThrow(
+    await expect(stateProvider.getAllFeatureStates()).rejects.toThrow(
       'Async Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
     );
 

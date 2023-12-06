@@ -1,10 +1,29 @@
 {
   "name": "stanza-rn",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/stanza-rn/src",
+  "sourceRoot": "packages/stanza-rn",
   "projectType": "library",
   "tags": [],
   "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/stanza-rn",
+        "main": "packages/stanza-rn/src/index.ts",
+        "tsConfig": "packages/stanza-rn/tsconfig.json",
+        "assets": ["packages/stanza-rn/README.md"],
+        "project": "packages/stanza-rn/package.json",
+        "compiler": "babel",
+        "format": ["esm", "cjs"],
+        "external": "all",
+        "updateBuildableProjectDepsInPackageJson": true
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs stanza-rn {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],

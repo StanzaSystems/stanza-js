@@ -1,9 +1,9 @@
 import { type FeatureState } from '../models/featureState';
 import { createInMemoryAsyncLocalStateProvider } from './inMemoryAsyncLocalStateProvider';
-import { type AsyncLocalStateProvider } from '../models/localStateProvider';
+import { type LocalStateProvider } from '../models/localStateProvider';
 
 describe('InMemoryLocalStateProvider', () => {
-  let stateProvider: AsyncLocalStateProvider;
+  let stateProvider: LocalStateProvider;
 
   const testFeatures = {
     first: {

@@ -1,7 +1,7 @@
 import {
   type FeatureState,
   StanzaChangeTarget,
-  type AsyncLocalStateProvider,
+  type LocalStateProvider,
 } from '@getstanza/core';
 import { asyncStorage } from '../../lib/asyncStorage/asyncStorage';
 
@@ -58,122 +58,121 @@ const featureStateChangeEmitter = new StanzaChangeTarget<{
   newValue: FeatureState;
 }>();
 
-export const createAsyncLocalStorageStateProvider =
-  (): AsyncLocalStateProvider => {
-    let initialized = false;
+export const createAsyncLocalStorageStateProvider = (): LocalStateProvider => {
+  let initialized = false;
 
-    async function setFeatureState(featureState: FeatureState): Promise<void> {
-      assertInitialized();
+  async function setFeatureState(featureState: FeatureState): Promise<void> {
+    assertInitialized();
 
-      const name = featureState.featureName ?? '';
+    const name = featureState.featureName ?? '';
 
-      const key = createStanzaFeatureKey(name);
+    const key = createStanzaFeatureKey(name);
 
-      const oldFeatureStringValue = await asyncStorage.getItem(key);
+    const oldFeatureStringValue = await asyncStorage.getItem(key);
 
-      const newFeatureStringValue = JSON.stringify(featureState);
+    const newFeatureStringValue = JSON.stringify(featureState);
 
-      if (newFeatureStringValue === oldFeatureStringValue) {
-        return;
-      }
-
-      const oldValue = await getFeatureState(name);
-
-      await asyncStorage.setItem(key, newFeatureStringValue);
-
-      featureStateChangeEmitter.dispatchChange({
-        oldValue,
-        newValue: featureState,
-      });
+    if (newFeatureStringValue === oldFeatureStringValue) {
+      return;
     }
 
-    async function getFeatureState(
-      name: string
-    ): Promise<FeatureState | undefined> {
-      assertInitialized();
-      const featureSerialized = await asyncStorage.getItem(
-        createStanzaFeatureKey(name)
+    const oldValue = await getFeatureState(name);
+
+    await asyncStorage.setItem(key, newFeatureStringValue);
+
+    featureStateChangeEmitter.dispatchChange({
+      oldValue,
+      newValue: featureState,
+    });
+  }
+
+  async function getFeatureState(
+    name: string
+  ): Promise<FeatureState | undefined> {
+    assertInitialized();
+    const featureSerialized = await asyncStorage.getItem(
+      createStanzaFeatureKey(name)
+    );
+
+    if (featureSerialized === null || featureSerialized === undefined) {
+      return undefined;
+    }
+
+    return parseFeature(featureSerialized);
+  }
+
+  async function getAllFeatureStates(): Promise<FeatureState[]> {
+    assertInitialized();
+
+    const getAllKeys = await getAllStateKeys();
+
+    const result = await Promise.all(
+      getAllKeys.map(async (key) => {
+        const value = await asyncStorage.getItem(key);
+        if (value === null || value === undefined) {
+          throw new Error('Invalid state');
+        }
+        return value;
+      })
+    );
+
+    return result.map(parseFeature);
+  }
+
+  function assertInitialized() {
+    if (!initialized) {
+      throw new Error(
+        'Async Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
       );
-
-      if (featureSerialized === null || featureSerialized === undefined) {
-        return undefined;
-      }
-
-      return parseFeature(featureSerialized);
     }
+  }
 
-    async function getAllFeatureStates(): Promise<FeatureState[]> {
-      assertInitialized();
+  return {
+    init: async (config) => {
+      const configString = JSON.stringify(config);
+      const existingConfig = await asyncStorage.getItem(STANZA_CONFIG_KEY);
 
-      const getAllKeys = await getAllStateKeys();
+      if (configString !== existingConfig) {
+        await asyncStorage.setItem(STANZA_CONFIG_KEY, configString);
 
-      const result = await Promise.all(
-        getAllKeys.map(async (key) => {
-          const value = await asyncStorage.getItem(key);
-          if (value === null || value === undefined) {
-            throw new Error('Invalid state');
-          }
-          return value;
-        })
-      );
+        const getAllKeys = await getAllStateKeys();
 
-      return result.map(parseFeature);
-    }
-
-    function assertInitialized() {
-      if (!initialized) {
-        throw new Error(
-          'Async Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
+        await Promise.all(
+          getAllKeys.map(async (key) => {
+            await asyncStorage.removeItem(key);
+          })
         );
       }
-    }
 
-    return {
-      init: async (config) => {
-        const configString = JSON.stringify(config);
-        const existingConfig = await asyncStorage.getItem(STANZA_CONFIG_KEY);
-
-        if (configString !== existingConfig) {
-          await asyncStorage.setItem(STANZA_CONFIG_KEY, configString);
-
-          const getAllKeys = await getAllStateKeys();
-
-          await Promise.all(
-            getAllKeys.map(async (key) => {
-              await asyncStorage.removeItem(key);
-            })
-          );
+      asyncStorage.addEventListener(({ key, oldValue, newValue }) => {
+        if (
+          key !== null &&
+          isStanzaFeatureKey(key) &&
+          newValue !== null &&
+          oldValue !== newValue
+        ) {
+          const hasOldValue = oldValue !== null && oldValue !== undefined;
+          featureStateChangeEmitter.dispatchChange({
+            oldValue: hasOldValue ? parseFeature(oldValue) : undefined,
+            newValue: parseFeature(newValue),
+          });
         }
-
-        asyncStorage.addEventListener(({ key, oldValue, newValue }) => {
-          if (
-            key !== null &&
-            isStanzaFeatureKey(key) &&
-            newValue !== null &&
-            oldValue !== newValue
-          ) {
-            const hasOldValue = oldValue !== null && oldValue !== undefined;
-            featureStateChangeEmitter.dispatchChange({
-              oldValue: hasOldValue ? parseFeature(oldValue) : undefined,
-              newValue: parseFeature(newValue),
-            });
-          }
-        });
-        initialized = true;
-      },
-      getFeatureState,
-      setFeatureState,
-      getAllFeatureStates,
-      addChangeListener: (...args) => {
-        assertInitialized();
-        return featureStateChangeEmitter.addChangeListener(...args);
-      },
-      removeChangeListener: (...args) => {
-        assertInitialized();
-        featureStateChangeEmitter.removeChangeListener(...args);
-      },
-    };
+      });
+      initialized = true;
+    },
+    getFeatureState,
+    setFeatureState,
+    getAllFeatureStates,
+    addChangeListener: (...args) => {
+      assertInitialized();
+      return featureStateChangeEmitter.addChangeListener(...args);
+    },
+    removeChangeListener: (...args) => {
+      assertInitialized();
+      featureStateChangeEmitter.removeChangeListener(...args);
+    },
   };
+};
 
 async function getAllStateKeys() {
   const getAllKeys = await asyncStorage.getAllKeys();

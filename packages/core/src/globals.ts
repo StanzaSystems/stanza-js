@@ -1,10 +1,7 @@
 import { StanzaChangeTarget } from './eventEmitter';
 import { groupBy } from './groupBy';
 import { type FeatureState } from './models/featureState';
-import {
-  type AsyncLocalStateProvider,
-  type LocalStateProvider,
-} from './models/localStateProvider';
+import { type LocalStateProvider } from './models/localStateProvider';
 import { type StanzaCoreConfig } from './models/stanzaCoreConfig';
 
 interface StanzaInternalConfig {
@@ -17,42 +14,42 @@ interface StanzaInternalConfig {
 }
 
 let stanzaConfig: StanzaInternalConfig;
-let localStateProvider: LocalStateProvider | AsyncLocalStateProvider;
+let localStateProvider: LocalStateProvider;
 let enablementNumber = 100;
 
 export const featureChanges = new StanzaChangeTarget<FeatureState>();
 export const enablementNumberChanges = new StanzaChangeTarget<number>();
 
-export function init(
+// export function init(
+//   config: StanzaCoreConfig,
+//   provider: LocalStateProvider
+// ): void {
+//   if (stanzaConfig !== undefined || localStateProvider !== undefined) {
+//     throw new Error('Stanza is already initialized');
+//   }
+//   stanzaConfig = {
+//     ...config,
+//     enablementNumberGenerator:
+//       config.enablementNumberGenerator ?? getEnablementNumberSimple,
+//     contextConfigs: config.contextConfigs.reduce(
+//       groupBy('name', ({ features }) => ({ features })),
+//       {}
+//     ),
+//   };
+
+//   localStateProvider = provider;
+//   localStateProvider.init(config.contextConfigs);
+
+//   getEnablementNumber().catch((e) => {
+//     console.warn('Failed to get enablement number', e);
+//   });
+// }
+
+export async function init(
   config: StanzaCoreConfig,
   provider: LocalStateProvider
-): void {
-  if (stanzaConfig !== undefined || localStateProvider !== undefined) {
-    throw new Error('Stanza is already initialized');
-  }
-  stanzaConfig = {
-    ...config,
-    enablementNumberGenerator:
-      config.enablementNumberGenerator ?? getEnablementNumberSimple,
-    contextConfigs: config.contextConfigs.reduce(
-      groupBy('name', ({ features }) => ({ features })),
-      {}
-    ),
-  };
-
-  localStateProvider = provider;
-  localStateProvider.init(config.contextConfigs);
-
-  getEnablementNumber().catch((e) => {
-    console.warn('Failed to get enablement number', e);
-  });
-}
-
-export async function initMobile(
-  config: StanzaCoreConfig,
-  provider: AsyncLocalStateProvider
 ): Promise<void> {
-  if (stanzaConfig !== undefined) {
+  if (stanzaConfig !== undefined || localStateProvider !== undefined) {
     throw new Error('Stanza is already initialized');
   }
 
@@ -79,9 +76,7 @@ export function getConfig(): StanzaInternalConfig {
   return stanzaConfig;
 }
 
-export function getStateProvider():
-  | LocalStateProvider
-  | AsyncLocalStateProvider {
+export function getStateProvider(): LocalStateProvider {
   if (localStateProvider === undefined) {
     throw new Error('Stanza is not initialized');
   }

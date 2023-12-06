@@ -1,6 +1,6 @@
 {
   "name": "react-native-simple",
-  "version": "0.0.1",
+  "version": "0.0.7-beta",
   "private": true,
   "dependencies": {
     "@react-native/metro-config": "*",

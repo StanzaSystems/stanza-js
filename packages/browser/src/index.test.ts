@@ -19,17 +19,17 @@ describe('refresh contexts', () => {
       ],
     };
 
-    expect(() => {
-      StanzaBrowser.init(config);
+    expect(async () => {
+      await StanzaBrowser.init(config);
     }).not.toThrow();
 
     await StanzaBrowser.getContextHot('main');
     await StanzaBrowser.getContextHot('details');
 
-    const mainContext = StanzaBrowser.getContextStale('main');
+    const mainContext = await StanzaBrowser.getContextStale('main');
     expect(mainContext?.name).toEqual('main');
 
-    const detailContext = StanzaBrowser.getContextStale('details');
+    const detailContext = await StanzaBrowser.getContextStale('details');
     expect(detailContext?.name).toEqual('details');
   });
 });

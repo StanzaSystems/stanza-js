@@ -1,23 +1,14 @@
-import { getFeatureStates, getFeatureStatesAsync } from './getFeatureStates';
-import {
-  getFeatureStatesHot,
-  getFeatureStatesHotAsync,
-} from './getFeatureStatesHot';
-import {
-  getFeatureStatesStale,
-  getFeatureStatesStaleAsync,
-} from './getFeatureStatesStale';
+import { getFeatureStates } from './getFeatureStates';
+import { getFeatureStatesHot } from './getFeatureStatesHot';
+import { getFeatureStatesStale } from './getFeatureStatesStale';
 import * as globals from './globals';
-import { init, initMobile } from './init';
+import { init } from './init';
 export * from './eventEmitter';
 export * from './withStanzaHeaders';
 export * from './utils/isTruthy';
 
 export type { FeatureState } from './models/featureState';
-export type {
-  LocalStateProvider,
-  AsyncLocalStateProvider,
-} from './models/localStateProvider';
+export type { LocalStateProvider } from './models/localStateProvider';
 export type { StanzaCoreConfig } from './models/stanzaCoreConfig';
 
 export const utils = {
@@ -26,13 +17,9 @@ export const utils = {
 
 export const Stanza = {
   init,
-  initMobile,
   getFeatureStatesHot,
   getFeatureStatesStale,
   getFeatureStates,
-  getFeatureStatesHotAsync,
-  getFeatureStatesStaleAsync,
-  getFeatureStatesAsync,
   featureChanges: globals.featureChanges,
   enablementNumberChanges: globals.enablementNumberChanges,
 };
