@@ -13,7 +13,7 @@ if (!process.browser) {
   loadPromise = new Promise(() => {});
 }
 
-const stanzaInstance = createStanzaInstance({
+const stanzaInstance = await createStanzaInstance({
   ...browserConfig,
   pollDelay: loadPromise,
 });
