@@ -3,7 +3,7 @@ import {
   StanzaChangeTarget,
   type LocalStateProvider,
 } from '@getstanza/core';
-import { asyncStorage } from '../../lib/asyncStorage/asyncStorage';
+import { asyncStorage } from './asyncStorage';
 
 const stanzaFeaturePrefix = 'stanza_feature_' as const;
 export type StanzaFeaturePrefix = typeof stanzaFeaturePrefix;

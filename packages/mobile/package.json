@@ -4,7 +4,7 @@
   "type": "commonjs",
   "description": "Stanza mobile integration features",
   "author": "Stanza",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "@getstanza/core": "0.0.7-beta",
     "@react-native-async-storage/async-storage": "^1.19.5",

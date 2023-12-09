@@ -1,8 +1,8 @@
-import { type FeatureState } from '../models/featureState';
-import { createInMemoryAsyncLocalStateProvider } from './inMemoryAsyncLocalStateProvider';
-import { type LocalStateProvider } from '../models/localStateProvider';
+import { type LocalStateProvider, type FeatureState } from '@getstanza/core';
+import { createAsyncLocalStorageStateProvider } from './asyncStorageProvider';
+import { asyncStorage } from './asyncStorage';
 
-describe('InMemoryLocalStateProvider', () => {
+describe('asyncStorageStateProvider', () => {
   let stateProvider: LocalStateProvider;
 
   const testFeatures = {
@@ -26,35 +26,36 @@ describe('InMemoryLocalStateProvider', () => {
     },
   } satisfies Record<string, FeatureState>;
 
-  beforeEach(() => {
-    stateProvider = createInMemoryAsyncLocalStateProvider();
+  beforeEach(async () => {
+    stateProvider = createAsyncLocalStorageStateProvider();
+    await asyncStorage.clear();
   });
 
   it('should throw before initialized', async () => {
-    await expect(async () => {
-      await stateProvider.getFeatureState('test');
-    }).rejects.toThrow(
+    await expect(stateProvider.getFeatureState('test')).rejects.toThrow(
       'Async Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
     );
-    await expect(async () => {
-      await stateProvider.setFeatureState({
+
+    await expect(
+      stateProvider.setFeatureState({
         featureName: 'test',
         enabledPercent: 100,
         lastRefreshTime: 0,
-      });
-    }).rejects.toThrow(
+      })
+    ).rejects.toThrow(
       'Async Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
     );
-    await expect(async () => {
-      await stateProvider.getAllFeatureStates();
-    }).rejects.toThrow(
+
+    await expect(stateProvider.getAllFeatureStates()).rejects.toThrow(
       'Async Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
     );
+
     expect(() => {
       stateProvider.addChangeListener(() => {});
     }).toThrow(
       'Async Storage State Provider is not initialized. Please invoke `init` method before using the provider.'
     );
+
     expect(() => {
       stateProvider.removeChangeListener(() => {});
     }).toThrow(
@@ -66,6 +67,7 @@ describe('InMemoryLocalStateProvider', () => {
     await stateProvider.init({});
 
     await expect(stateProvider.getFeatureState('test')).resolves.not.toThrow();
+
     await expect(
       stateProvider.setFeatureState({
         featureName: 'test',
@@ -73,11 +75,78 @@ describe('InMemoryLocalStateProvider', () => {
         lastRefreshTime: 0,
       })
     ).resolves.not.toThrow();
+
     await expect(stateProvider.getAllFeatureStates()).resolves.not.toThrow();
-    expect(stateProvider.addChangeListener(() => {})).not.toThrow();
+
+    expect(() => {
+      stateProvider.addChangeListener(() => {});
+    }).not.toThrow();
+
     expect(() => {
       stateProvider.removeChangeListener(() => {});
     }).not.toThrow();
+  });
+
+  it('should NOT clear existing feature states if stanza-config in local storage is same as new one', async () => {
+    await asyncStorage.setItem(
+      'stanza_feature_test',
+      JSON.stringify(testFeatures.first)
+    );
+    await asyncStorage.setItem(
+      'stanza_feature_another-test',
+      JSON.stringify(testFeatures.second)
+    );
+    await asyncStorage.setItem('stanza_config', '{}');
+
+    await stateProvider.init({});
+
+    const getFirstFeature = await asyncStorage.getItem('stanza_feature_test');
+    const getSecondFeature = await asyncStorage.getItem(
+      'stanza_feature_another-test'
+    );
+
+    expect(getFirstFeature).toEqual(JSON.stringify(testFeatures.first));
+    expect(getSecondFeature).toEqual(JSON.stringify(testFeatures.second));
+  });
+
+  it('should clear existing feature states if no stanza-config exists in local storage', async () => {
+    await asyncStorage.setItem(
+      'stanza_feature_test',
+      JSON.stringify(testFeatures.first)
+    );
+    await asyncStorage.setItem(
+      'stanza_feature_another-test',
+      JSON.stringify(testFeatures.second)
+    );
+
+    await stateProvider.init({});
+
+    const getFirstFeature = await asyncStorage.getItem('stanza_feature_test');
+    const getSecondFeature = await asyncStorage.getItem(
+      'stanza_feature_another-test'
+    );
+
+    expect(getFirstFeature).toBeNull();
+    expect(getSecondFeature).toBeNull();
+  });
+
+  it('should clear existing feature states if stanza-config in local storage is different then the new one', async () => {
+    await asyncStorage.setItem(
+      'stanza_feature_test',
+      JSON.stringify(testFeatures.first)
+    );
+    await asyncStorage.setItem(
+      'stanza_feature_another-test',
+      JSON.stringify(testFeatures.second)
+    );
+    await asyncStorage.setItem('stanza_config', '{}');
+
+    await stateProvider.init({ anotherKey: 'anotherValue' });
+
+    const features = await stateProvider.getAllFeatureStates();
+
+    expect(features).not.toContain('stanza_feature_test');
+    expect(features).not.toContain('stanza_feature_another-test');
   });
 
   describe('when initialized', () => {
@@ -93,7 +162,7 @@ describe('InMemoryLocalStateProvider', () => {
     it('should store and retrieve a feature', async () => {
       await stateProvider.setFeatureState(testFeatures.first);
       const feature = await stateProvider.getFeatureState('firstFeature');
-      expect(feature).toBe(testFeatures.first);
+      expect(feature).toEqual(testFeatures.first);
     });
 
     it("should return undefined if feature doesn't exist in store", async () => {
@@ -116,8 +185,8 @@ describe('InMemoryLocalStateProvider', () => {
       await stateProvider.setFeatureState(testFeatures.first);
       await stateProvider.setFeatureState(testFeatures.second);
       await stateProvider.setFeatureState(testFeatures.third);
-      const allFeatures = await stateProvider.getAllFeatureStates();
-      expect(allFeatures).toEqual([
+      const features = await stateProvider.getAllFeatureStates();
+      expect(features).toEqual([
         testFeatures.first,
         testFeatures.second,
         testFeatures.third,

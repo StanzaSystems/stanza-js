@@ -20,31 +20,6 @@ let enablementNumber = 100;
 export const featureChanges = new StanzaChangeTarget<FeatureState>();
 export const enablementNumberChanges = new StanzaChangeTarget<number>();
 
-// export function init(
-//   config: StanzaCoreConfig,
-//   provider: LocalStateProvider
-// ): void {
-//   if (stanzaConfig !== undefined || localStateProvider !== undefined) {
-//     throw new Error('Stanza is already initialized');
-//   }
-//   stanzaConfig = {
-//     ...config,
-//     enablementNumberGenerator:
-//       config.enablementNumberGenerator ?? getEnablementNumberSimple,
-//     contextConfigs: config.contextConfigs.reduce(
-//       groupBy('name', ({ features }) => ({ features })),
-//       {}
-//     ),
-//   };
-
-//   localStateProvider = provider;
-//   localStateProvider.init(config.contextConfigs);
-
-//   getEnablementNumber().catch((e) => {
-//     console.warn('Failed to get enablement number', e);
-//   });
-// }
-
 export async function init(
   config: StanzaCoreConfig,
   provider: LocalStateProvider
@@ -66,7 +41,9 @@ export async function init(
   localStateProvider = provider;
   await localStateProvider.init(config.contextConfigs);
 
-  await getEnablementNumber();
+  getEnablementNumber().catch((e) => {
+    console.warn('Failed to get enablement number', e);
+  });
 }
 
 export function getConfig(): StanzaInternalConfig {

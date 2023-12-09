@@ -1,8 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "target": "ESNext"
-  },
+  "compilerOptions": {},
   "files": [],
   "include": [],
   "references": [

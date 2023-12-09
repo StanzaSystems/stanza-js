@@ -24,7 +24,6 @@ const config: StanzaCoreConfig = {
     },
   ],
   refreshSeconds: 3,
-  isReactNative: true,
 };
 
 export { config };

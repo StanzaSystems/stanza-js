@@ -41,9 +41,11 @@ export const init = async (initialConfig: StanzaCoreConfig): Promise<void> => {
 
   Stanza.enablementNumberChanges.addChangeListener(async () => {
     const contextNames = new Set(Object.values(featureToContextMap).flat());
-    for (const contextName of contextNames) {
-      contextChanges.dispatchChange(await getContextStale(contextName));
-    }
+    await Promise.allSettled(
+      Array.from(contextNames).map(async (contextName) => {
+        contextChanges.dispatchChange(await getContextStale(contextName));
+      })
+    );
   });
 };
 

@@ -5,7 +5,7 @@ import {
   utils,
 } from '@getstanza/core';
 import { createContext, type StanzaContext } from './context';
-import { createAsyncLocalStorageStateProvider } from './providers/asyncStorage/asyncStorageProvider';
+import { createAsyncLocalStorageStateProvider } from './asyncStorage/asyncStorageProvider';
 export * from './feature';
 
 export type { StanzaContext };
