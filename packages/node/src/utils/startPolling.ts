@@ -1,5 +1,5 @@
 import { logger } from '../global/logger';
-import { DEFAULT_SCHEDULER } from './scheduler';
+import { STANZA_SCHEDULER } from '../global/scheduler';
 
 type AsyncFunction<T> = (prevResult: T | null) => Promise<T | null>;
 const DEFAULT_POLL_INTERVAL = 1000;
@@ -8,8 +8,7 @@ export const startPolling = <T = unknown>(
   fn: AsyncFunction<T>,
   options: { pollInterval: number; onError?: (e: unknown) => void } = {
     pollInterval: DEFAULT_POLL_INTERVAL,
-  },
-  scheduler = DEFAULT_SCHEDULER
+  }
 ) => {
   let shouldStop = false;
   let prevResult: T | null = null;
@@ -19,7 +18,11 @@ export const startPolling = <T = unknown>(
         break;
       }
       try {
-        const result: T | null = await scheduler.schedule(fn, 0, prevResult);
+        const result: T | null = await STANZA_SCHEDULER.schedule(
+          fn,
+          0,
+          prevResult
+        );
         if (result !== null) {
           prevResult = result;
         }
@@ -43,6 +46,6 @@ export const startPolling = <T = unknown>(
     },
   };
   async function waitTime(timeout: number) {
-    return scheduler.schedule(() => {}, timeout);
+    return STANZA_SCHEDULER.schedule(() => {}, timeout);
   }
 };

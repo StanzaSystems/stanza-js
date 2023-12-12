@@ -31,16 +31,11 @@ export const nodeConfig = {
   requestTimeout: 2000,
 } satisfies NodeConfig;
 
-console.log('before init');
-
 init(nodeConfig, scheduler).catch(() => {});
 
-const guard = stanzaGuard<[], Response>(
-  {
-    guard: 'Stripe_Products_API',
-  },
-  scheduler
-);
+const guard = stanzaGuard<[], Response>({
+  guard: 'Stripe_Products_API',
+});
 
 const handler: ExportedHandler<{ EXAMPLE_CLASS: DurableObjectNamespace }> = {
   // The fetch handler is invoked when this worker receives a HTTP(S) request
@@ -57,7 +52,6 @@ const handler: ExportedHandler<{ EXAMPLE_CLASS: DurableObjectNamespace }> = {
     }
   },
   async scheduled(controller, env, ctx) {
-    console.log('scheduled');
     ctx.waitUntil(scheduler.tick());
   },
 };

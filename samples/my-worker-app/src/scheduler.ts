@@ -14,8 +14,6 @@ export const scheduler = {
     timeout: number = 0,
     ...args: TArgs
   ): Promise<TResult> {
-    console.log('schedule');
-
     let _resolve: (result: TResult) => void;
     let _reject: (reason?: any) => void;
 
@@ -26,12 +24,7 @@ export const scheduler = {
 
     queue.push({
       work: async () => {
-        console.log('running work');
         return Promise.resolve(work(...args))
-          .then((r) => {
-            console.log('work done', r);
-            return r;
-          })
           .then(_resolve)
           .catch(_reject);
       },
@@ -40,7 +33,6 @@ export const scheduler = {
     });
 
     return promise.then((r) => {
-      console.log('promise done', r);
       return r;
     });
   },

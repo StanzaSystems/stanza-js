@@ -12,6 +12,7 @@ import { setSkipTokenCache } from './global/skipTokenCache';
 import { logger } from './global/logger';
 import { startPollingAuthToken } from './authentication/startPollingAuthToken';
 import { type Scheduler } from './utils/scheduler';
+import { setScheduler } from './global/scheduler';
 
 export const initOrThrow = async (
   options: Partial<StanzaInitOptions> = {},
@@ -42,6 +43,7 @@ export const initOrThrow = async (
 
   setRequestTimeout(initOptions.requestTimeout);
   setSkipTokenCache(initOptions.skipTokenCache);
+  scheduler !== undefined && setScheduler(scheduler);
   if (initOptions.logLevel !== undefined) {
     logger.level = initOptions.logLevel;
   }
@@ -89,6 +91,6 @@ export const initOrThrow = async (
     //   })
   );
 
-  startPollingServiceConfig(clientId, scheduler);
-  startPollingAuthToken(scheduler);
+  startPollingServiceConfig(clientId);
+  startPollingAuthToken();
 };
