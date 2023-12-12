@@ -5,3 +5,4 @@ export * from './src/guard/stanzaGuardError';
 export * from './src/guard/model';
 export * from './src/stanzaGuardHealth';
 export * from './src/stanzaPriorityBoost';
+export * from './src/utils/scheduler';

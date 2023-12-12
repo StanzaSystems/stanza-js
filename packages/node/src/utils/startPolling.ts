@@ -1,4 +1,5 @@
 import { logger } from '../global/logger';
+import { DEFAULT_SCHEDULER } from './scheduler';
 
 type AsyncFunction<T> = (prevResult: T | null) => Promise<T | null>;
 const DEFAULT_POLL_INTERVAL = 1000;
@@ -7,7 +8,8 @@ export const startPolling = <T = unknown>(
   fn: AsyncFunction<T>,
   options: { pollInterval: number; onError?: (e: unknown) => void } = {
     pollInterval: DEFAULT_POLL_INTERVAL,
-  }
+  },
+  scheduler = DEFAULT_SCHEDULER
 ) => {
   let shouldStop = false;
   let prevResult: T | null = null;
@@ -17,7 +19,7 @@ export const startPolling = <T = unknown>(
         break;
       }
       try {
-        const result: T | null = await fn(prevResult);
+        const result: T | null = await scheduler.schedule(fn, 0, prevResult);
         if (result !== null) {
           prevResult = result;
         }
@@ -40,10 +42,7 @@ export const startPolling = <T = unknown>(
       shouldStop = true;
     },
   };
+  async function waitTime(timeout: number) {
+    return scheduler.schedule(() => {}, timeout);
+  }
 };
-
-async function waitTime(timeout: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, timeout);
-  });
-}

@@ -1,11 +1,13 @@
 import { initOrThrow } from './initOrThrow';
 import { type StanzaInitOptions } from './stanzaInitOptions';
-// import { logger } from './global/logger';
+import { type Scheduler } from './utils/scheduler';
 
-export const init = async (options: Partial<StanzaInitOptions> = {}) => {
+export const init = async (
+  options: Partial<StanzaInitOptions> = {},
+  scheduler?: Scheduler
+) => {
   try {
-    console.log('jhfjdhfjsd')
-    await initOrThrow(options);
+    await initOrThrow(options, scheduler);
   } catch (e) {
     if (e instanceof TypeError) {
       console.warn(e.message);

@@ -17,11 +17,13 @@ import { getActiveStanzaEntry } from '../baggage/getActiveStanzaEntry';
 import { getGuardConfig } from '../global/guardConfig';
 import { StanzaGuardError } from './stanzaGuardError';
 import { identity } from 'ramda';
+import { type Scheduler } from '../utils/scheduler';
 
 export const stanzaGuard = <TArgs extends any[], TReturn>(
-  options: StanzaGuardOptions
+  options: StanzaGuardOptions,
+  scheduler: Scheduler
 ) => {
-  const { guard } = createStanzaGuard(options);
+  const { guard } = createStanzaGuard(options, scheduler);
 
   return createStanzaWrapper<TArgs, TReturn, Promisify<TReturn>>((fn) => {
     const resultFn = async function (...args: Parameters<typeof fn>) {
@@ -123,8 +125,11 @@ function getGuardMode(guardName: string) {
     : 'unspecified';
 }
 
-const createStanzaGuard = (options: StanzaGuardOptions) => {
-  const initializedGuard = initOrGetGuard(options);
+const createStanzaGuard = (
+  options: StanzaGuardOptions,
+  scheduler: Scheduler
+) => {
+  const initializedGuard = initOrGetGuard(options, scheduler);
   return {
     ...initializedGuard,
     guard: wrapEventsAsync(initializedGuard.guard, {

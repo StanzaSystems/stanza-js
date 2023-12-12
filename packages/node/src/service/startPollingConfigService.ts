@@ -3,8 +3,12 @@ import { type ServiceConfig } from '../hub/model';
 import { startPolling } from '../utils/startPolling';
 import { logger } from '../global/logger';
 import { type FetchServiceConfigOptions } from '../hub/hubService';
+import { type Scheduler } from '../utils/scheduler';
 
-export const startPollingServiceConfig = (clientId: string) => {
+export const startPollingServiceConfig = (
+  clientId: string,
+  scheduler?: Scheduler
+) => {
   logger.debug('start polling service config');
   startPolling(
     async (prevResult: ServiceConfig | null) => {
@@ -18,6 +22,7 @@ export const startPollingServiceConfig = (clientId: string) => {
 
       return fetchServiceConfig(options);
     },
-    { pollInterval: 15000 }
+    { pollInterval: 15000 },
+    scheduler
   );
 };

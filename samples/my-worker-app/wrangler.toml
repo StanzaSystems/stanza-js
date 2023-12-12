@@ -4,3 +4,6 @@ main = "src/index.ts"
 
 #node_compat = true
 compatibility_flags = [ "nodejs_compat" ]
+
+[triggers]
+crons = [ "* * * * *" ]

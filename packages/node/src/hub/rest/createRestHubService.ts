@@ -198,7 +198,7 @@ export const createRestHubService = ({
             'v1/auth/token',
             {
               method: 'GET',
-              body: {
+              searchParams: {
                 environment,
               },
             },

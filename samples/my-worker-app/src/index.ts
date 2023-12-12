@@ -8,37 +8,18 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import * as process from './env'
+import * as process from './env';
 
-import type { StanzaCoreConfig } from '@getstanza/browser'
-import { init } from '@getstanza/node'
-type NodeConfig = Parameters<typeof init>[0]
+import { init, stanzaGuard } from '@getstanza/node';
+import { scheduler } from './scheduler';
 
-const stanzaBrowserKey = process.env.NEXT_PUBLIC_STANZA_BROWSER_KEY
+type NodeConfig = Parameters<typeof init>[0];
 
-const stanzaApiKey = process.env.NEXT_PUBLIC_STANZA_API_KEY
+const stanzaApiKey = process.env.NEXT_PUBLIC_STANZA_API_KEY;
 
-const hubUrl = process.env.NEXT_PUBLIC_STANZA_HUB_ADDRESS ?? 'https://hub.stanzasys.co'
-const environment = process.env.NEXT_PUBLIC_STANZA_ENVIRONMENT ?? 'local'
-export const browserConfig = {
-  url: hubUrl,
-  environment,
-  stanzaApiKey: stanzaBrowserKey,
-  contextConfigs: [
-    {
-      name: 'main',
-      features: ['featured', 'search', 'checkout']
-    },
-    {
-      name: 'details',
-      features: ['checkout']
-    }
-  ],
-  refreshSeconds: 3,
-  enablementNumberGenerator: async (): Promise<number> => {
-    return 100
-  }
-} satisfies StanzaCoreConfig
+const hubUrl =
+  process.env.NEXT_PUBLIC_STANZA_HUB_ADDRESS ?? 'https://hub.stanzasys.co';
+const environment = process.env.NEXT_PUBLIC_STANZA_ENVIRONMENT ?? 'local';
 
 export const nodeConfig = {
   hubUrl,
@@ -47,27 +28,39 @@ export const nodeConfig = {
   serviceName: 'DemoCommerce',
   serviceRelease: '1',
   useRestHubApi: true,
-  requestTimeout: 2000
-} satisfies NodeConfig
+  requestTimeout: 2000,
+} satisfies NodeConfig;
 
-console.log('dasdsjkdhjsh')
+console.log('before init');
 
-init(nodeConfig).catch(() => {})
+init(nodeConfig, scheduler).catch(() => {});
 
-const handler: ExportedHandler = {
+const guard = stanzaGuard<[], Response>(
+  {
+    guard: 'Stripe_Products_API',
+  },
+  scheduler
+);
+
+const handler: ExportedHandler<{ EXAMPLE_CLASS: DurableObjectNamespace }> = {
   // The fetch handler is invoked when this worker receives a HTTP(S) request
   // and should return a Response (optionally wrapped in a Promise)
-  async fetch (request, env, ctx) {
-    // const proxyUrl = new URL('https://zenquotes.io')
-    // return stanza.guard(proxyUrl, request, env, ctx)
-    return new Response('hello')
-  }
-}
+  async fetch(request, env, ctx) {
+    ctx.waitUntil(scheduler.tick());
+    try {
+      const fn = () => {
+        return new Response('hello');
+      };
+      return await guard.call(fn);
+    } catch {
+      return new Response('Too many requests', { status: 429 });
+    }
+  },
+  async scheduled(controller, env, ctx) {
+    console.log('scheduled');
+    ctx.waitUntil(scheduler.tick());
+  },
+};
 
 // Export a default object containing event handlers
-export default handler
-
-// init({
-//   // remaining Stanza init configuration
-//   useRestHubApi: true
-// }).catch(() => {})
+export default handler;

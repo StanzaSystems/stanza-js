@@ -11,8 +11,12 @@ import { setRequestTimeout } from './global/requestTimeout';
 import { setSkipTokenCache } from './global/skipTokenCache';
 import { logger } from './global/logger';
 import { startPollingAuthToken } from './authentication/startPollingAuthToken';
+import { type Scheduler } from './utils/scheduler';
 
-export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
+export const initOrThrow = async (
+  options: Partial<StanzaInitOptions> = {},
+  scheduler?: Scheduler
+) => {
   const parseResult = stanzaInitOptions.safeParse({
     ...getEnvInitOptions(),
     ...options,
@@ -29,7 +33,6 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
       .map(({ key, value }) => `- ${key}: ${value.description}`)
       .join('\n');
 
-    console.log('error', JSON.stringify(parseResult.error))
     throw new TypeError(
       `Provided options are invalid. Please provide an object with the following properties:\n${expectedFields}`
     );
@@ -48,9 +51,9 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
   updateHubService(
     await Promise.all([
       import('./hub/rest/createRestHubService'),
-      import('./hub/rest/createHubRequest')
-    ])
-      .then(([module1, module2]) => module1.createRestHubService({
+      import('./hub/rest/createHubRequest'),
+    ]).then(([module1, module2]) =>
+      module1.createRestHubService({
         serviceName: initOptions.serviceName,
         serviceRelease: initOptions.serviceRelease,
         environment: initOptions.environment,
@@ -59,9 +62,10 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
           hubUrl: initOptions.hubUrl,
           apiKey: initOptions.apiKey,
           serviceName: initOptions.serviceName,
-          serviceRelease: initOptions.serviceRelease
-        })
-      }))
+          serviceRelease: initOptions.serviceRelease,
+        }),
+      })
+    )
     // initOptions.useRestHubApi
     //   ? createRestHubService({
     //     serviceName: initOptions.serviceName,
@@ -83,8 +87,8 @@ export const initOrThrow = async (options: Partial<StanzaInitOptions> = {}) => {
     //     hubUrl: initOptions.hubUrl,
     //     apiKey: initOptions.apiKey
     //   })
-  )
+  );
 
-  startPollingServiceConfig(clientId);
-  startPollingAuthToken();
+  startPollingServiceConfig(clientId, scheduler);
+  startPollingAuthToken(scheduler);
 };
