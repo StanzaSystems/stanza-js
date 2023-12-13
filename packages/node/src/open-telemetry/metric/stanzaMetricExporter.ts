@@ -9,7 +9,7 @@ import {
   addServiceConfigListener,
   getServiceConfig,
 } from '../../global/serviceConfig';
-import { type ServiceConfig } from '../../hub/model';
+import { type ServiceConfig } from '@getstanza/hub-client-api';
 import { type ExportResult, ExportResultCode } from '@opentelemetry/core';
 import { eventBus, events } from '../../global/eventBus';
 import { hubService } from '../../global/hubService';
@@ -64,7 +64,7 @@ export class StanzaMetricExporter implements PushMetricExporter {
     // );
     const prevExporter = this.exporter;
     this.exporter = new OTLPMetricExporter({
-      url: metricConfig.collectorUrl
+      url: metricConfig.collectorUrl,
       // metadata,
     });
     this.collectorUrl = metricConfig.collectorUrl;

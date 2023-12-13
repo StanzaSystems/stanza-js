@@ -1,6 +1,6 @@
 import { updateGuardConfig } from '../global/guardConfig';
 import { hubService } from '../global/hubService';
-import { type FetchGuardConfigOptions } from '../hub/hubService';
+import { type FetchGuardConfigOptions } from '@getstanza/hub-client-api';
 import { logger } from '../global/logger';
 
 export async function fetchGuardConfig(options: FetchGuardConfigOptions) {

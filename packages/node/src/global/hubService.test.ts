@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { hubService, updateHubService } from './hubService';
-import { Health } from '../guard/model';
+import { Health } from '@getstanza/hub-client-api';
 
 const originalHubService = hubService;
 

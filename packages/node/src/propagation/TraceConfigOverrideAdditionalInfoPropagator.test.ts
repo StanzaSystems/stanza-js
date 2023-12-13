@@ -7,7 +7,7 @@ import {
   type getServiceConfig,
   type ServiceConfigListener,
 } from '../global/serviceConfig';
-import { type ServiceConfig } from '../hub/model';
+import { type ServiceConfig } from '@getstanza/hub-client-api';
 import { ROOT_CONTEXT, type TextMapGetter } from '@opentelemetry/api';
 
 const recordGetter: TextMapGetter<Record<string, string>> = {

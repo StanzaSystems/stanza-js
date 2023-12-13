@@ -1,4 +1,4 @@
-import { type StanzaTokenLease } from '../hub/model';
+import { type StanzaTokenLease } from '@getstanza/hub-client-api';
 
 export interface TokenQuery {
   feature?: string;

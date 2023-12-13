@@ -1,10 +1,9 @@
-import { type StanzaToken } from '../hub/model';
+import { type StanzaToken, type Tag } from '@getstanza/hub-client-api';
 import { withTimeout } from '../utils/withTimeout';
 import { tokenStore } from '../global/tokenStore';
 import { hubService } from '../global/hubService';
 import { getGuardConfig } from '../global/guardConfig';
 import { logger } from '../global/logger';
-import { type Tag } from '../guard/model';
 import { STANZA_SKIP_TOKEN_CACHE } from '../global/skipTokenCache';
 import { eventBus, events } from '../global/eventBus';
 import { backoffGetQuota } from './backoffGetQuota';

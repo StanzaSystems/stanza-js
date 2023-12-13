@@ -1,29 +1,29 @@
-import { type HubService } from '../hubService';
+import {
+  type HubService,
+  serviceConfigResponse,
+  guardConfigResponse,
+  stanzaTokenResponse,
+  stanzaTokenLeaseResponse,
+  stanzaValidateTokenResponse,
+  stanzaMarkTokensAsConsumedResponse,
+  stanzaAuthTokenResponse,
+  apiHealthToHealth,
+  stanzaGuardHealthResponse,
+  Health,
+  type ServiceConfig,
+} from '@getstanza/hub-client-api';
 import { createPromiseClient } from '@connectrpc/connect';
 import { ConfigService } from '../../../gen/stanza/hub/v1/config_connect';
 import { createGrpcTransport } from '@connectrpc/connect-node';
-import { type ServiceConfig } from '../model';
-import { serviceConfigResponse } from '../api/serviceConfigResponse';
-import { guardConfigResponse } from '../api/guardConfigResponse';
 import { QuotaService } from '../../../gen/stanza/hub/v1/quota_connect';
-import { stanzaTokenResponse } from '../api/stanzaTokenResponse';
-import { stanzaTokenLeaseResponse } from '../api/stanzaTokenLeaseResponse';
-import { stanzaValidateTokenResponse } from '../api/stanzaValidateTokenResponse';
-import { stanzaMarkTokensAsConsumedResponse } from '../api/stanzaMarkTokensAsConsumedResponse';
 import { type z, type ZodType } from 'zod';
 import { withTimeout } from '../../utils/withTimeout';
 import { wrapHubServiceWithMetrics } from '../wrapHubServiceWithMetrics';
 import { STANZA_REQUEST_TIMEOUT } from '../../global/requestTimeout';
 import { logger } from '../../global/logger';
 import { AuthService } from '../../../gen/stanza/hub/v1/auth_connect';
-import { stanzaAuthTokenResponse } from '../api/stanzaAuthTokenResponse';
 import { createUserAgentHeader } from '../../utils/userAgentHeader';
 import { HealthService } from '../../../gen/stanza/hub/v1/health_connect';
-import {
-  apiHealthToHealth,
-  stanzaGuardHealthResponse,
-} from '../api/stanzaGuardHealthResponse';
-import { Health } from '../../guard/model';
 
 interface GrpcHubServiceInitOptions {
   serviceName: string;

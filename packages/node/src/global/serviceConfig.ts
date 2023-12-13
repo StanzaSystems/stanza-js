@@ -1,4 +1,4 @@
-import { type ServiceConfig } from '../hub/model';
+import { type ServiceConfig } from '@getstanza/hub-client-api';
 import { createGlobalState } from './createGlobalState';
 
 interface ServiceStateUninitialized {

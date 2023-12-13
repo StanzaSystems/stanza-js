@@ -1,4 +1,4 @@
-import { type GuardConfig } from '../hub/model';
+import { type GuardConfig } from '@getstanza/hub-client-api';
 import { startPolling } from '../utils/startPolling';
 import { fetchGuardConfig } from './fetchGuardConfig';
 import { logger } from '../global/logger';

@@ -1,6 +1,6 @@
-import { type GuardConfigResponse } from './api/guardConfigResponse';
-import { type ServiceConfigResponse } from './api/serviceConfigResponse';
-import { type StanzaTokenResponse } from './api/stanzaTokenResponse';
+import { type ServiceConfigResponse } from './serviceConfigResponse';
+import { type GuardConfigResponse } from './guardConfigResponse';
+import { type StanzaTokenResponse } from './stanzaTokenResponse';
 
 type DataSent<T extends { configDataSent: boolean }> = T extends {
   configDataSent: true;
@@ -38,4 +38,9 @@ export interface ValidatedToken {
 
 export interface AuthTokenResult {
   bearerToken: string;
+}
+
+export interface Tag {
+  key: string;
+  value: string;
 }

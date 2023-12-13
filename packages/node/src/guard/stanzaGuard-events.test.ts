@@ -3,7 +3,7 @@ import { updateGuardConfig } from '../global/guardConfig';
 import { mockHubService } from '../__tests__/mocks/mockHubService';
 import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
 import { context, propagation, ROOT_CONTEXT } from '@opentelemetry/api';
-import { type GuardConfig } from '../hub/model';
+import { type GuardConfig } from '@getstanza/hub-client-api';
 import { stanzaGuard } from './stanzaGuard';
 import { eventBus, events } from '../global/eventBus';
 import type * as getQuotaModule from '../quota/getQuota';

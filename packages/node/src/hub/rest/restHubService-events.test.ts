@@ -7,10 +7,13 @@ import {
   type Mock,
   vi,
 } from 'vitest';
-import { type GuardConfig, type ServiceConfig } from '../model';
+import {
+  type GuardConfig,
+  type ServiceConfig,
+  type ServiceConfigResponse,
+} from '@getstanza/hub-client-api';
 import { eventBus, events } from '../../global/eventBus';
 import { createRestHubService } from './createRestHubService';
-import { type ServiceConfigResponse } from '../api/serviceConfigResponse';
 import { updateServiceConfig } from '../../global/serviceConfig';
 
 const mockMessageBusEmit = vi.spyOn(eventBus, 'emit');
@@ -49,7 +52,6 @@ describe('hubService', () => {
     afterEach(() => {
       vi.useRealTimers();
 
-      // @ts-expect-error: reset service config
       updateServiceConfig(undefined);
     });
 

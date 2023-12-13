@@ -1,14 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { type GuardConfigResponse } from '../api/guardConfigResponse';
-import { type ServiceConfigResponse } from '../api/serviceConfigResponse';
+import {
+  type GuardConfigResponse,
+  type ServiceConfigResponse,
+  type StanzaTokenResponse,
+  type StanzaTokenLeaseResponse,
+  type StanzaValidateTokenResponse,
+  type StanzaMarkTokensAsConsumedResponse,
+  type StanzaGuardHealthResponse,
+} from '@getstanza/hub-client-api';
 import { createRestHubService } from './createRestHubService';
 import { createHubRequest } from './createHubRequest';
-import { type StanzaTokenResponse } from '../api/stanzaTokenResponse';
-import { type StanzaTokenLeaseResponse } from '../api/stanzaTokenLeaseResponse';
-import { type StanzaValidateTokenResponse } from '../api/stanzaValidateTokenResponse';
-import { type StanzaMarkTokensAsConsumedResponse } from '../api/stanzaMarkTokensAsConsumedResponse';
-import { type StanzaGuardHealthResponse } from '../api/stanzaGuardHealthResponse';
-import { Health } from '../../guard/model';
+import { Health } from '@getstanza/hub-client-api';
 
 vi.mock('../../fetchImplementation', () => {
   return {

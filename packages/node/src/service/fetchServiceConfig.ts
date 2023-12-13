@@ -3,8 +3,10 @@ import {
   isServiceConfigInitialized,
   updateServiceConfig,
 } from '../global/serviceConfig';
-import { type FetchServiceConfigOptions } from '../hub/hubService';
-import { type ServiceConfig } from '../hub/model';
+import {
+  type FetchServiceConfigOptions,
+  type ServiceConfig,
+} from '@getstanza/hub-client-api';
 
 export async function fetchServiceConfig(
   options?: FetchServiceConfigOptions

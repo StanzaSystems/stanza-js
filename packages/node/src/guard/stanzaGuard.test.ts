@@ -18,7 +18,10 @@ import {
 import { mockHubService } from '../__tests__/mocks/mockHubService';
 import { stanzaTokenContextKey } from '../context/stanzaTokenContextKey';
 import { updateGuardConfig } from '../global/guardConfig';
-import { type GuardConfig, type ServiceConfig } from '../hub/model';
+import {
+  type GuardConfig,
+  type ServiceConfig,
+} from '@getstanza/hub-client-api';
 import { stanzaGuard } from './stanzaGuard';
 import { StanzaGuardError } from './stanzaGuardError';
 import type * as getQuotaModule from '../quota/getQuota';

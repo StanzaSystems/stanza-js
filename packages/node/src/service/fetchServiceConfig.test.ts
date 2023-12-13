@@ -4,7 +4,7 @@ import {
   type updateServiceConfig,
   type isServiceConfigInitialized,
 } from '../global/serviceConfig';
-import { type ServiceConfig } from '../hub/model';
+import { type ServiceConfig } from '@getstanza/hub-client-api';
 
 type UpdateServiceConfig = typeof updateServiceConfig;
 type IsServiceConfigInitialized = typeof isServiceConfigInitialized;

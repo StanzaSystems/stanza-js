@@ -1,7 +1,7 @@
 {
   "name": "sdk-base",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/sdk-base/src",
+  "sourceRoot": "packages/sdk-base",
   "projectType": "library",
   "targets": {
     "build": {

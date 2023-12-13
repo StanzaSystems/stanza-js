@@ -1,7 +1,7 @@
 {
   "extends": ["../../../.eslintrc.json"],
   "parserOptions": {
-    "project": ["packages/hub-client-grpc/tsconfig*.json"]
+    "project": ["packages/hub/client-grpc/tsconfig*.json"]
   },
   "ignorePatterns": ["!**/*"],
   "overrides": [

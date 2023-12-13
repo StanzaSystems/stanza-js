@@ -1,4 +1,4 @@
-import { type HubService } from './hubService';
+import { type HubService } from '@getstanza/hub-client-api';
 import { wrapEventsAsync } from '../utils/wrapEventsAsync';
 import { eventBus, events } from '../global/eventBus';
 import { getServiceConfig } from '../global/serviceConfig';

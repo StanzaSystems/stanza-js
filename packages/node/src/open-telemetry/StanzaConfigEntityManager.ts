@@ -4,7 +4,10 @@ import {
   addServiceConfigListener,
   getServiceConfig,
 } from '../global/serviceConfig';
-import { type GuardConfig, type ServiceConfig } from '../hub/model';
+import {
+  type GuardConfig,
+  type ServiceConfig,
+} from '@getstanza/hub-client-api';
 import { getStanzaGuardFromContext } from '../context/guard';
 
 export class StanzaConfigEntityManager<T> {

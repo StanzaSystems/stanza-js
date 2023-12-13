@@ -13,7 +13,7 @@ import {
   type getServiceConfig,
   type ServiceConfigListener,
 } from '../../global/serviceConfig';
-import { type ServiceConfig } from '../../hub/model';
+import { type ServiceConfig } from '@getstanza/hub-client-api';
 import type * as createSpanExporterModule from './createSpanExporter';
 import { StanzaSpanProcessorManager } from './StanzaSpanProcessorManager';
 import { addStanzaGuardToContext } from '../../context/guard';

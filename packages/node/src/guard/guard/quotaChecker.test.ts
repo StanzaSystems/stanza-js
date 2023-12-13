@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { type GuardConfig } from '../../hub/model';
+import { type GuardConfig } from '@getstanza/hub-client-api';
 import { initQuotaChecker } from './quotaChecker';
 import { updateGuardConfig } from '../../global/guardConfig';
 import { mockHubService } from '../../__tests__/mocks/mockHubService';

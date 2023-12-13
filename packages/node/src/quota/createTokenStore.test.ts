@@ -10,7 +10,7 @@ import {
 import { createTokenStore } from './createTokenStore';
 import { type TokenStore } from './tokenStore';
 import { mockHubService } from '../__tests__/mocks/mockHubService';
-import { type StanzaTokenLeasesResult } from '../hub/model';
+import { type StanzaTokenLeasesResult } from '@getstanza/hub-client-api';
 
 describe('tokenStore', () => {
   beforeEach(() => {

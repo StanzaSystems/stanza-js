@@ -3,9 +3,10 @@ import {
   type ServiceConfig,
   type StanzaToken,
   type StanzaTokenLeasesResult,
+  type Tag,
   type ValidatedToken,
 } from './model';
-import { type Health } from '../guard/model';
+import { type Health } from './guardModel';
 
 export interface FetchServiceConfigOptions {
   lastVersionSeen?: string;
@@ -15,11 +16,6 @@ export interface FetchServiceConfigOptions {
 export interface FetchGuardConfigOptions {
   guard: string;
   lastVersionSeen?: string;
-}
-
-export interface Tag {
-  key: string;
-  value: string;
 }
 
 interface GetTokenOptions {

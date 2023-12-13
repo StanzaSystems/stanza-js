@@ -1,7 +1,7 @@
 {
   "name": "hub-client-http",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/hub/client-http/src",
+  "sourceRoot": "packages/hub/client-http",
   "projectType": "library",
   "targets": {
     "build": {

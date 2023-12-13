@@ -1,7 +1,4 @@
-export interface Tag {
-  key: string;
-  value: string;
-}
+import { type Tag } from './model';
 
 export interface StanzaGuardOptions {
   guard: string;

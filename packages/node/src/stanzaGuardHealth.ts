@@ -1,4 +1,7 @@
-import { type Health, type StanzaGuardHealthOptions } from './guard/model';
+import {
+  type Health,
+  type StanzaGuardHealthOptions,
+} from '@getstanza/hub-client-api';
 import { hubService } from './global/hubService';
 
 export const stanzaGuardHealth = async (

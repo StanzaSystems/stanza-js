@@ -1,19 +1,19 @@
-import { guardConfigResponse } from '../api/guardConfigResponse';
-import { serviceConfigResponse } from '../api/serviceConfigResponse';
-import { stanzaTokenLeaseResponse } from '../api/stanzaTokenLeaseResponse';
-import { stanzaTokenResponse } from '../api/stanzaTokenResponse';
-import { stanzaValidateTokenResponse } from '../api/stanzaValidateTokenResponse';
-import { type HubService } from '../hubService';
-import { stanzaMarkTokensAsConsumedResponse } from '../api/stanzaMarkTokensAsConsumedResponse';
+import {
+  guardConfigResponse,
+  serviceConfigResponse,
+  stanzaTokenLeaseResponse,
+  stanzaTokenResponse,
+  stanzaValidateTokenResponse,
+  stanzaMarkTokensAsConsumedResponse,
+  stanzaAuthTokenResponse,
+  apiHealthToHealth,
+  stanzaGuardHealthResponse,
+  Health,
+  type HubService,
+} from '@getstanza/hub-client-api';
 import { type HubRequest } from '../hubRequest';
 import { wrapHubServiceWithMetrics } from '../wrapHubServiceWithMetrics';
 import { logger } from '../../global/logger';
-import { stanzaAuthTokenResponse } from '../api/stanzaAuthTokenResponse';
-import {
-  apiHealthToHealth,
-  stanzaGuardHealthResponse,
-} from '../api/stanzaGuardHealthResponse';
-import { Health } from '../../guard/model';
 
 interface HubServiceInitOptions {
   serviceName: string;

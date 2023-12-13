@@ -2,7 +2,7 @@ import { type TokenStore } from './tokenStore';
 import { hubService } from '../global/hubService';
 import { createTokenState } from './createTokenState';
 import { type TokenQuery } from './tokenState';
-import { type StanzaToken } from '../hub/model';
+import { type StanzaToken } from '@getstanza/hub-client-api';
 
 const MARK_TOKENS_AS_CONSUMED_DELAY = 100;
 const TOKEN_EXPIRE_OFFSET = 2000;

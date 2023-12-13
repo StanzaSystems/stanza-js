@@ -3,7 +3,7 @@ import { defineConfig } from 'vite';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
 export default defineConfig({
-  cacheDir: '../../../node_modules/.vite/hub-client-grpc',
+  cacheDir: '../../../node_modules/.vite/hub/client-grpc',
 
   plugins: [nxViteTsPaths()],
 

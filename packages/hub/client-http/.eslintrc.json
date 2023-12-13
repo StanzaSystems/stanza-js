@@ -1,7 +1,7 @@
 {
   "extends": ["../../../.eslintrc.json"],
   "parserOptions": {
-    "project": ["packages/hub-client-http/tsconfig*.json"]
+    "project": ["packages/hub/client-http/tsconfig*.json"]
   },
   "ignorePatterns": ["!**/*"],
   "overrides": [

@@ -1,6 +1,6 @@
 import { type Mock, vi } from 'vitest';
 import { updateHubService } from '../../global/hubService';
-import { type HubService } from '../../hub/hubService';
+import { type HubService } from '@getstanza/hub-client-api';
 
 const hubServiceMockMethod = <TMethod extends keyof HubService>(
   implementation: (

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { type ServiceConfig } from '../hub/model';
+import { type ServiceConfig } from '@getstanza/hub-client-api';
 import type * as serviceConfigModuleImport from './serviceConfig';
 type ServiceConfigModule = typeof serviceConfigModuleImport;
 

@@ -17,7 +17,7 @@ import { type HealthService } from '../../../gen/stanza/hub/v1/health_connect';
 import { type AuthService } from '../../../gen/stanza/hub/v1/auth_connect';
 import { QueryGuardHealthResponse } from '../../../gen/stanza/hub/v1/health_pb';
 import { Health as APIHealth } from '../../../gen/stanza/hub/v1/common_pb';
-import { Health } from '../../guard/model';
+import { Health } from '@getstanza/hub-client-api';
 
 type ConnectNodeModule = typeof connectNodeModule;
 

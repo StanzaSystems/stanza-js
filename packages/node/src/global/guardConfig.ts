@@ -1,4 +1,4 @@
-import { type GuardConfig } from '../hub/model';
+import { type GuardConfig } from '@getstanza/hub-client-api';
 
 const STANZA_GUARD_CONFIG_SYMBOL = Symbol.for(
   '[Stanza SDK Internal] Guard Config'

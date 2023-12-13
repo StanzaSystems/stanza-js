@@ -1,4 +1,4 @@
-import { type StanzaGuardOptions } from './model';
+import { type StanzaGuardOptions } from '@getstanza/hub-client-api';
 import { startPollingGuardConfig } from './startPollingGuardConfig';
 import { initGuardGuard } from './guard';
 import { logger } from '../global/logger';

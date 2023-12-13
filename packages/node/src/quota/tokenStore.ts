@@ -1,5 +1,5 @@
 import { type TokenQuery } from './tokenState';
-import { type StanzaToken } from '../hub/model';
+import { type StanzaToken } from '@getstanza/hub-client-api';
 
 export interface TokenStoreQuery extends TokenQuery {
   guard: string;

@@ -1,6 +1,6 @@
 import { getGuardConfig } from '../../global/guardConfig';
 import { getQuota } from '../../quota/getQuota';
-import { type Tag } from '../model';
+import { type Tag } from '@getstanza/hub-client-api';
 import { getActiveStanzaEntry } from '../../baggage/getActiveStanzaEntry';
 import { getPriorityBoostFromContext } from '../../context/priorityBoost';
 import { context } from '@opentelemetry/api';

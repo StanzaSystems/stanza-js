@@ -6,7 +6,7 @@ import {
   type getServiceConfig,
   type ServiceConfigListener,
 } from '../../global/serviceConfig';
-import { type ServiceConfig } from '../../hub/model';
+import { type ServiceConfig } from '@getstanza/hub-client-api';
 import { StanzaSamplerManager } from './StanzaSamplerManager';
 import { addStanzaGuardToContext } from '../../context/guard';
 import { StanzaConfiguredSampler } from './StanzaConfiguredSampler';
