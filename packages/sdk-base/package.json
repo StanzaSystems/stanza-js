@@ -1,0 +1,11 @@
+{
+  "name": "@getstanza/sdk-base",
+  "type": "commonjs",
+  "version": "0.0.7-beta",
+  "description": "Stanza SDK Base",
+  "author": "Stanza",
+  "license": "Apache-2.0",
+  "dependencies": {},
+  "main": "./index.cjs",
+  "module": "./index.js"
+}

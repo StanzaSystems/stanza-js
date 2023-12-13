@@ -31,7 +31,8 @@
       "@getstanza/next": ["packages/next/index.ts"],
       "@getstanza/next-node": ["packages/next-node/index.ts"],
       "@getstanza/node": ["packages/node/index.ts"],
-      "@getstanza/react": ["packages/stanza-react/index.ts"]
+      "@getstanza/react": ["packages/stanza-react/index.ts"],
+      "@getstanza/sdk-base": ["packages/sdk-base/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
