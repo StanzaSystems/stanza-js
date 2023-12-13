@@ -48,23 +48,35 @@ export const initOrThrow = async (
   await addInstrumentation(initOptions.serviceName, initOptions.serviceRelease);
 
   updateHubService(
-    await Promise.all([
-      import('./hub/rest/createRestHubService'),
-      import('./hub/rest/createHubRequest'),
-    ]).then(([module1, module2]) =>
-      module1.createRestHubService({
-        serviceName: initOptions.serviceName,
-        serviceRelease: initOptions.serviceRelease,
-        environment: initOptions.environment,
-        clientId,
-        hubRequest: module2.createHubRequest({
-          hubUrl: initOptions.hubUrl,
-          apiKey: initOptions.apiKey,
-          serviceName: initOptions.serviceName,
-          serviceRelease: initOptions.serviceRelease,
-        }),
-      })
-    )
+    initOptions.useRestHubApi
+      ? await Promise.all([
+          import('./hub/rest/createRestHubService'),
+          import('./hub/rest/createHubRequest'),
+        ]).then(([{ createRestHubService }, { createHubRequest }]) =>
+          createRestHubService({
+            serviceName: initOptions.serviceName,
+            serviceRelease: initOptions.serviceRelease,
+            environment: initOptions.environment,
+            clientId,
+            hubRequest: createHubRequest({
+              hubUrl: initOptions.hubUrl,
+              apiKey: initOptions.apiKey,
+              serviceName: initOptions.serviceName,
+              serviceRelease: initOptions.serviceRelease,
+            }),
+          })
+        )
+      : await import('./hub/grpc/createGrpcHubService').then(
+          ({ createGrpcHubService }) =>
+            createGrpcHubService({
+              serviceName: initOptions.serviceName,
+              serviceRelease: initOptions.serviceRelease,
+              environment: initOptions.environment,
+              clientId,
+              hubUrl: initOptions.hubUrl,
+              apiKey: initOptions.apiKey,
+            })
+        )
   );
 
   startPollingServiceConfig(clientId);

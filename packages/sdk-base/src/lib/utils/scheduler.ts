@@ -17,11 +17,15 @@ export const DEFAULT_SCHEDULER: Scheduler = {
     ...args: TArgs
   ): Promise<TResult> {
     return new Promise<TResult>((resolve, reject) => {
-      setTimeout(() => {
-        Promise.resolve(work(...args))
-          .then(resolve)
-          .catch(reject);
-      }, timeout);
+      timeout > 0
+        ? setTimeout(() => {
+            Promise.resolve(work(...args))
+              .then(resolve)
+              .catch(reject);
+          }, timeout)
+        : Promise.resolve(work(...args))
+            .then(resolve)
+            .catch(reject);
     });
   },
 };
