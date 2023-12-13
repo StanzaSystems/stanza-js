@@ -20,9 +20,9 @@ beforeEach(() => {
 });
 describe('generateClientId', function () {
   it('should generate client id', function () {
-    mockRandomUUID.mockImplementation(() => 'test-uuid');
+    mockRandomUUID.mockImplementation(() => 'test-uuid-a-b-c');
 
-    expect(generateClientId()).toEqual('test-uuid');
+    expect(generateClientId()).toEqual('test-uuid-a-b-c');
   });
 
   it('should return empty string if crypto.randomUUID throws', function () {
