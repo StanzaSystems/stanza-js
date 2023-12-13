@@ -25,6 +25,9 @@
     "paths": {
       "@getstanza/browser": ["packages/browser/index.ts"],
       "@getstanza/core": ["packages/core/index.ts"],
+      "@getstanza/hub-client-api": ["packages/hub/client-api/src/index.ts"],
+      "@getstanza/hub-client-grpc": ["packages/hub/client-grpc/src/index.ts"],
+      "@getstanza/hub-client-http": ["packages/hub/client-http/src/index.ts"],
       "@getstanza/mocks-browser": ["packages/mocks/browser/src/index.ts"],
       "@getstanza/mocks-handlers": ["packages/mocks/handlers/src/index.ts"],
       "@getstanza/mocks-server": ["packages/mocks/server/src/index.ts"],
