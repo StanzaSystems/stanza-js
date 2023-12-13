@@ -1,4 +1,4 @@
-// import { Metadata } from '@grpc/grpc-js';
+import { Metadata } from '@grpc/grpc-js';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
 import {
   AggregationTemporality,
@@ -51,21 +51,21 @@ export class StanzaMetricExporter implements PushMetricExporter {
 
   private updateExporter(
     { config: { metricConfig } }: ServiceConfig,
-    _authToken: string
+    authToken: string
   ) {
-    // const metadata = new Metadata();
-    // metadata.add('Authorization', `bearer ${authToken}`);
-    // metadata.add(
-    //   'User-Agent',
-    //   createUserAgentHeader({
-    //     serviceName: this.serviceName,
-    //     serviceRelease: this.serviceRelease,
-    //   })
-    // );
+    const metadata = new Metadata();
+    metadata.add('Authorization', `bearer ${authToken}`);
+    metadata.add(
+      'User-Agent',
+      createUserAgentHeader({
+        serviceName: this.serviceName,
+        serviceRelease: this.serviceRelease,
+      })
+    );
     const prevExporter = this.exporter;
     this.exporter = new OTLPMetricExporter({
       url: metricConfig.collectorUrl,
-      // metadata,
+      metadata,
     });
     this.collectorUrl = metricConfig.collectorUrl;
     prevExporter.shutdown().catch((err) => {

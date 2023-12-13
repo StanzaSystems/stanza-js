@@ -1,4 +1,4 @@
-import packageJson from '../../package.json';
+import packageJson from '../../../package.json';
 
 const { version: sdkVersion } = packageJson;
 export const createUserAgentHeader = ({

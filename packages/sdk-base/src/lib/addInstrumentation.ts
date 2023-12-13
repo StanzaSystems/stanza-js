@@ -51,7 +51,6 @@ export const addInstrumentation = async (
   // const { StanzaInstrumentation } = await import(
   //   './open-telemetry/instrumentation/stanzaInstrumentation'
   // );
-
   // const sdk = new NodeSDK({
   //   sampler: new StanzaSampler(),
   //   spanProcessor: new StanzaSpanProcessor(serviceName, serviceRelease) as any, // TODO: fix any cast

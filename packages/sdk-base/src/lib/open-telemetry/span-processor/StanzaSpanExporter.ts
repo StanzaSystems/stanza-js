@@ -1,11 +1,11 @@
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
-// import { Metadata } from '@grpc/grpc-js';
+import { Metadata } from '@grpc/grpc-js';
 import { eventBus, events } from '../../global/eventBus';
 import { hubService } from '../../global/hubService';
-// import { createUserAgentHeader } from '../../utils/userAgentHeader';
+import { createUserAgentHeader } from '../../utils/userAgentHeader';
 import {
   addAuthTokenListener,
-  // getStanzaAuthToken,
+  getStanzaAuthToken,
 } from '../../global/authToken';
 
 export class StanzaSpanExporter extends OTLPTraceExporter {
@@ -14,25 +14,25 @@ export class StanzaSpanExporter extends OTLPTraceExporter {
     serviceName: string,
     serviceRelease: string
   ) {
-    // const metadata = new Metadata();
-    // let authToken = getStanzaAuthToken();
-    // if (authToken !== undefined) {
-    //   metadata.set('Authorization', `bearer ${authToken}`);
-    // }
-    // metadata.set(
-    //   'User-Agent',
-    //   createUserAgentHeader({ serviceName, serviceRelease })
-    // );
+    const metadata = new Metadata();
+    let authToken = getStanzaAuthToken();
+    if (authToken !== undefined) {
+      metadata.set('Authorization', `bearer ${authToken}`);
+    }
+    metadata.set(
+      'User-Agent',
+      createUserAgentHeader({ serviceName, serviceRelease })
+    );
     super({
-      url: traceConfig.collectorUrl
-      // metadata,
+      url: traceConfig.collectorUrl,
+      metadata,
     });
 
     addAuthTokenListener((newToken) => {
-      // authToken = newToken;
-      // if (authToken !== undefined) {
-      //   this.metadata?.set('Authorization', `bearer ${authToken}`);
-      // }
+      authToken = newToken;
+      if (authToken !== undefined) {
+        this.metadata?.set('Authorization', `bearer ${authToken}`);
+      }
     });
   }
 

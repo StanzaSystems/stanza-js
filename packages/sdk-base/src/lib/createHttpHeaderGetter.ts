@@ -1,4 +1,8 @@
-import { type ClientRequest, IncomingMessage, type ServerResponse } from 'node:http';
+import {
+  type ClientRequest,
+  IncomingMessage,
+  type ServerResponse,
+} from 'node:http';
 import { type HeaderGetter } from './span/SpanEnhancer';
 
 export const createHttpHeaderGetter =
