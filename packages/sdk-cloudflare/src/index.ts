@@ -1,12 +1,12 @@
 import {
   init as initBase,
   initOrThrow as initOrThrowBase,
-  type Scheduler,
 } from '@getstanza/sdk-base';
 import {
   createHubRequest,
   createRestHubService,
 } from '@getstanza/hub-client-http';
+import { cloudflareScheduler } from './cloudflareScheduler';
 
 export * from '@getstanza/sdk-base';
 
@@ -35,10 +35,41 @@ function createInitBaseOptions(options: InitOptions): InitBaseOptions {
   };
 }
 
-export async function init(options: InitOptions, scheduler: Scheduler) {
-  await initBase(createInitBaseOptions(options), scheduler);
+export async function init(options: InitOptions) {
+  await initBase(createInitBaseOptions(options), cloudflareScheduler);
 }
 
-export async function initOrThrow(options: InitOptions, scheduler: Scheduler) {
-  await initOrThrowBase(createInitBaseOptions(options), scheduler);
+export async function initOrThrow(options: InitOptions) {
+  await initOrThrowBase(createInitBaseOptions(options), cloudflareScheduler);
 }
+
+export const stanzaCloudflareHandler = (
+  cloudflareHandler: ExportedHandler
+): typeof cloudflareHandler => {
+  const { fetch: fetchHandler, scheduled: scheduledHandler } =
+    cloudflareHandler;
+  return {
+    ...cloudflareHandler,
+    ...(fetchHandler !== undefined
+      ? {
+          fetch: async (request, env, ctx) => {
+            ctx.waitUntil(cloudflareScheduler.tick());
+            return fetchHandler.call(cloudflareHandler, request, env, ctx);
+          },
+        }
+      : {}),
+    ...(scheduledHandler !== undefined
+      ? {
+          scheduled: async (controller, env, ctx) => {
+            ctx.waitUntil(cloudflareScheduler.tick());
+            return scheduledHandler.call(
+              cloudflareHandler,
+              controller,
+              env,
+              ctx
+            );
+          },
+        }
+      : {}),
+  };
+};

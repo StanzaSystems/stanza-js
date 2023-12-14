@@ -10,8 +10,11 @@
 
 import * as process from './env';
 
-import { init, stanzaGuard } from '@getstanza/sdk-cloudflare';
-import { scheduler } from './scheduler';
+import {
+  init,
+  stanzaCloudflareHandler,
+  stanzaGuard,
+} from '@getstanza/sdk-cloudflare';
 
 type NodeConfig = Parameters<typeof init>[0];
 
@@ -31,17 +34,16 @@ export const cloudflareConfig = {
   logLevel: 'debug',
 } satisfies NodeConfig;
 
-init(cloudflareConfig, scheduler).catch(() => {});
+init(cloudflareConfig).catch(() => {});
 
 const guard = stanzaGuard<[], Response>({
   guard: 'Stripe_Products_API',
 });
 
-const handler: ExportedHandler = {
+const handler: ExportedHandler = stanzaCloudflareHandler({
   // The fetch handler is invoked when this worker receives a HTTP(S) request
   // and should return a Response (optionally wrapped in a Promise)
   async fetch(request, env, ctx) {
-    ctx.waitUntil(scheduler.tick());
     try {
       const fn = () => {
         return new Response('hello');
@@ -51,10 +53,8 @@ const handler: ExportedHandler = {
       return new Response('Too many requests', { status: 429 });
     }
   },
-  async scheduled(controller, env, ctx) {
-    ctx.waitUntil(scheduler.tick());
-  },
-};
+  async scheduled(controller, env, ctx) {},
+});
 
 // Export a default object containing event handlers
 export default handler;

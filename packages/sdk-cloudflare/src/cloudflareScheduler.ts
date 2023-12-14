@@ -8,7 +8,7 @@ const queue = new Array<{
 
 type AnyFunction = (...args: any[]) => Promise<unknown>;
 
-export const scheduler = {
+export const cloudflareScheduler = {
   async schedule<TArgs extends unknown[], TResult>(
     work: Action<TArgs, TResult>,
     timeout: number = 0,

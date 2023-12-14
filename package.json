@@ -11,7 +11,7 @@
   "devDependencies": {
     "@babel/core": "^7.14.5",
     "@babel/preset-react": "^7.22.5",
-    "@cloudflare/workers-types": "^4.20231025.0",
+    "@cloudflare/workers-types": "^4.20231121.0",
     "@naxodev/nx-cloudflare": "^1.0.0",
     "@nx/devkit": "^17.1.2",
     "@nx/esbuild": "17.1.1",

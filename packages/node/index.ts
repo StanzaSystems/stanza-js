@@ -39,10 +39,10 @@ function createInitBaseOptions(options: InitOptions): InitBaseOptions {
   };
 }
 
-export async function init(options: InitOptions, scheduler: Scheduler) {
-  await initBase(createInitBaseOptions(options), scheduler);
+export async function init(options: InitOptions) {
+  await initBase(createInitBaseOptions(options));
 }
 
-export async function initOrThrow(options: InitOptions, scheduler: Scheduler) {
-  await initOrThrowBase(createInitBaseOptions(options), scheduler);
+export async function initOrThrow(options: InitOptions) {
+  await initOrThrowBase(createInitBaseOptions(options));
 }
