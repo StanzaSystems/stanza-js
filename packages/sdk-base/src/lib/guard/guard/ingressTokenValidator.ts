@@ -1,7 +1,7 @@
 import { getGuardConfig } from '../../global/guardConfig';
 import { context } from '@opentelemetry/api';
 import { stanzaTokenContextKey } from '../../context/stanzaTokenContextKey';
-import { TimeoutError, withTimeout } from '../../utils/withTimeout';
+import { TimeoutError, withTimeout } from '@getstanza/sdk-utils';
 import { hubService } from '../../global/hubService';
 import { logger } from '../../global/logger';
 import { STANZA_REQUEST_TIMEOUT } from '../../global/requestTimeout';

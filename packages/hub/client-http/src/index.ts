@@ -1,1 +1,2 @@
-export * from './lib/hub-client-http';
+export * from './lib/createRestHubService';
+export * from './lib/createHubRequest';

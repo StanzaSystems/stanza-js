@@ -3,6 +3,7 @@ import { init } from './init';
 import { type StanzaInitOptions } from './stanzaInitOptions';
 import type { getEnvInitOptions as getEnvInitOptionsType } from './getEnvInitOptions';
 import { logger } from './global/logger';
+import { mockHubService } from './__tests__/mocks/mockHubService';
 
 vi.mock('./getEnvInitOptions', () => {
   return {
@@ -28,6 +29,7 @@ vi.mock('./global/logger', async () => {
 
 const getEnvInitOptionsMock = vi.fn();
 const fetchMock = vi.fn();
+const createHubService = () => mockHubService;
 
 beforeEach(async () => {
   const { getEnvInitOptions } = await vi.importActual<{
@@ -44,13 +46,13 @@ afterEach(() => {
 describe('Stanza init', function () {
   describe('invalid options', () => {
     it('should not throw when not options provided', async () => {
-      await expect(init()).resolves.toBeUndefined();
+      await expect(init({ createHubService })).resolves.toBeUndefined();
     });
 
     it('should warn if empty config is provided', async () => {
       const warnSpy = vi.spyOn(logger, 'warn');
 
-      await init();
+      await init({ createHubService });
 
       expect(warnSpy).toHaveBeenCalledOnce();
       expect(warnSpy)
@@ -69,6 +71,7 @@ describe('Stanza init', function () {
       async () => {
         await expect(
           init({
+            createHubService,
             hubUrl: 'https://url.to.stanza.hub',
             apiKey: 'dummyAPIKey',
             serviceName: 'dummyStanzaService',
@@ -89,6 +92,7 @@ describe('Stanza init', function () {
         json: async () => ({}),
       }));
       await init({
+        createHubService,
         hubUrl: 'https://url.to.stanza.hub',
         apiKey: 'dummyAPIKey',
         serviceName: 'dummyStanzaService',
@@ -116,7 +120,7 @@ describe('Stanza init', function () {
         };
       });
 
-      await init();
+      await init({ createHubService });
 
       expect(warnSpy).not.toHaveBeenCalledWith('Provided options are invalid');
     });

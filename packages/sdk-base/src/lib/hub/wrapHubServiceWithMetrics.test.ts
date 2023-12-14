@@ -1,54 +1,55 @@
-import {
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  type Mock,
-  vi,
-} from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   type GuardConfig,
   type ServiceConfig,
-  type ServiceConfigResponse,
 } from '@getstanza/hub-client-api';
-import { eventBus, events } from '../../global/eventBus';
-import { createRestHubService } from './createRestHubService';
-import { updateServiceConfig } from '../../global/serviceConfig';
+import { eventBus, events } from '../global/eventBus';
+import { updateServiceConfig } from '../global/serviceConfig';
+import { wrapHubServiceWithMetrics } from './wrapHubServiceWithMetrics';
+import { mockHubService } from '../__tests__/mocks/mockHubService';
 
 const mockMessageBusEmit = vi.spyOn(eventBus, 'emit');
-const mockHubRequest = Object.assign(vi.fn(), {
-  mockImplementationDeferred: function (this: Mock) {
-    const deferred: {
-      resolve: (value: unknown) => void;
-      reject: (reason: unknown) => void;
-    } = {
-      resolve: () => {},
-      reject: () => {},
-    };
-    this.mockImplementation((): any => {
-      return new Promise<unknown>((resolve, reject) => {
-        deferred.resolve = resolve;
-        deferred.reject = reject;
-      });
-    });
-
-    return deferred;
-  },
-});
-const hubService = createRestHubService({
-  serviceName: 'testService',
-  serviceRelease: '1.0.0',
-  clientId: 'testClientId',
-  environment: 'testEnvironment',
-  hubRequest: mockHubRequest,
-});
+// const mockHubRequest = Object.assign(vi.fn(), {
+//   mockImplementationDeferred: function (this: Mock) {
+//     const deferred: {
+//       resolve: (value: unknown) => void;
+//       reject: (reason: unknown) => void;
+//     } = {
+//       resolve: () => {},
+//       reject: () => {},
+//     };
+//     this.mockImplementation((): any => {
+//       return new Promise<unknown>((resolve, reject) => {
+//         deferred.resolve = resolve;
+//         deferred.reject = reject;
+//       });
+//     });
+//
+//     return deferred;
+//   },
+// });
+// const hubService = createRestHubService({
+//   serviceName: 'testService',
+//   serviceRelease: '1.0.0',
+//   clientId: 'testClientId',
+//   environment: 'testEnvironment',
+//   hubRequest: mockHubRequest,
+//   logger,
+// });
+const hubService = wrapHubServiceWithMetrics(mockHubService);
 beforeEach(() => {
   mockMessageBusEmit.mockReset();
+  mockHubService.reset();
+  mockHubService.getServiceMetadata.mockImplementation(() => ({
+    serviceName: 'testService',
+    serviceRelease: '1.0.0',
+    environment: 'testEnvironment',
+    clientId: 'testClientId',
+  }));
 });
 
 describe('hubService', () => {
-  describe('events', () => {
+  describe('wrapHubServiceWithMetrics', () => {
     afterEach(() => {
       vi.useRealTimers();
 
@@ -57,7 +58,8 @@ describe('hubService', () => {
 
     describe('fetchServiceConfig', () => {
       it('should emit stanza.config.service.fetch.success when fetching succeeds', async () => {
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.fetchServiceConfig.mockImplementationDeferred();
 
         const fetchServiceConfigPromise = hubService.fetchServiceConfig();
 
@@ -79,12 +81,12 @@ describe('hubService', () => {
       });
 
       it('should emit stanza.config.service.fetch.success when fetching succeeds - with customer id', async () => {
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.fetchServiceConfig.mockImplementationDeferred();
 
         const fetchServiceConfigPromise = hubService.fetchServiceConfig();
 
         deferred.resolve({
-          configDataSent: true,
           config: {
             customerId: 'testCustomerId',
             traceConfig: {
@@ -105,7 +107,7 @@ describe('hubService', () => {
             },
           },
           version: 'testVersion',
-        } satisfies ServiceConfigResponse);
+        });
 
         await expect(fetchServiceConfigPromise).resolves.toBeDefined();
 
@@ -121,7 +123,8 @@ describe('hubService', () => {
       });
 
       it('should emit stanza.config.service.fetch.failure when fetching fails', async () => {
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.fetchServiceConfig.mockImplementationDeferred();
 
         const fetchServiceConfigPromise = hubService.fetchServiceConfig();
 
@@ -163,7 +166,8 @@ describe('hubService', () => {
           },
         });
 
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.fetchServiceConfig.mockImplementationDeferred();
 
         const fetchServiceConfigPromise = hubService.fetchServiceConfig();
 
@@ -187,7 +191,8 @@ describe('hubService', () => {
           now: 0,
         });
 
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.fetchServiceConfig.mockImplementationDeferred();
 
         const fetchServiceConfigPromise = hubService.fetchServiceConfig();
 
@@ -239,7 +244,8 @@ describe('hubService', () => {
           },
         });
 
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.fetchServiceConfig.mockImplementationDeferred();
 
         const fetchServiceConfigPromise = hubService.fetchServiceConfig();
 
@@ -267,7 +273,8 @@ describe('hubService', () => {
 
     describe('fetchGuard', () => {
       it('should emit stanza.config.guard.fetch.success when fetching succeeds', async () => {
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.fetchGuardConfig.mockImplementationDeferred();
 
         const fetchGuardPromise = hubService.fetchGuardConfig({
           guard: 'testGuard',
@@ -292,7 +299,8 @@ describe('hubService', () => {
       });
 
       it('should emit stanza.config.guard.fetch.failure when fetching fails', async () => {
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.fetchGuardConfig.mockImplementationDeferred();
 
         const fetchGuardPromise = hubService.fetchGuardConfig({
           guard: 'testGuard',
@@ -317,7 +325,8 @@ describe('hubService', () => {
           now: 0,
         });
 
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.fetchGuardConfig.mockImplementationDeferred();
 
         const fetchGuardPromise = hubService.fetchGuardConfig({
           guard: 'testGuard',
@@ -346,7 +355,7 @@ describe('hubService', () => {
 
     describe('getToken', () => {
       it('should emit stanza.quota.fetch.success when fetching succeeds', async () => {
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred = mockHubService.getToken.mockImplementationDeferred();
 
         const getTokenPromise = hubService.getToken({
           guard: 'testGuard',
@@ -372,7 +381,7 @@ describe('hubService', () => {
       });
 
       it('should emit stanza.quota.fetch.failure when fetching fails', async () => {
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred = mockHubService.getToken.mockImplementationDeferred();
 
         const getTokenPromise = hubService.getToken({
           guard: 'testGuard',
@@ -398,7 +407,7 @@ describe('hubService', () => {
           now: 0,
         });
 
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred = mockHubService.getToken.mockImplementationDeferred();
 
         const getTokenPromise = hubService.getToken({
           guard: 'testGuard',
@@ -437,19 +446,21 @@ describe('hubService', () => {
       });
 
       it('should emit stanza.quota.fetch.success when fetching succeeds', async () => {
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.getTokenLease.mockImplementationDeferred();
 
         const getTokenLeasePromise = hubService.getTokenLease({
           guard: 'testGuard',
         });
 
         deferred.resolve({
+          granted: true,
           leases: [
             {
               feature: '',
               priorityBoost: 0,
               token: 'testToken',
-              durationMsec: 1000,
+              expiresAt: 1000,
             },
           ],
         });
@@ -476,7 +487,8 @@ describe('hubService', () => {
       });
 
       it('should emit stanza.quota.fetch.failure when fetching fails', async () => {
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.getTokenLease.mockImplementationDeferred();
 
         const getTokenLeasePromise = hubService.getTokenLease({
           guard: 'testGuard',
@@ -498,7 +510,8 @@ describe('hubService', () => {
       });
 
       it('should emit stanza.quota.fetch.duration event when fetching succeeds', async () => {
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.getTokenLease.mockImplementationDeferred();
 
         const getTokenLeasePromise = hubService.getTokenLease({
           guard: 'testGuard',
@@ -507,12 +520,13 @@ describe('hubService', () => {
         await vi.advanceTimersByTimeAsync(123.456);
 
         deferred.resolve({
+          granted: true,
           leases: [
             {
               feature: '',
               priorityBoost: 0,
               token: 'testToken',
-              durationMsec: 1000,
+              expiresAt: 1123,
             },
           ],
         });
@@ -544,15 +558,15 @@ describe('hubService', () => {
 
     describe('markTokensAsConsumed', () => {
       it('should emit stanza.quota.fetch.success when fetching succeeds', async () => {
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.markTokensAsConsumed.mockImplementationDeferred();
 
         const markTokensAsConsumedPromise = hubService.markTokensAsConsumed({
           tokens: ['testToken'],
         });
 
         deferred.resolve({
-          granted: true,
-          token: 'testToken',
+          ok: true,
         });
 
         await expect(markTokensAsConsumedPromise).resolves.toEqual({
@@ -568,7 +582,8 @@ describe('hubService', () => {
       });
 
       it('should emit stanza.quota.fetch.failure when fetching fails', async () => {
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.markTokensAsConsumed.mockImplementationDeferred();
 
         const markTokensAsConsumedPromise = hubService.markTokensAsConsumed({
           tokens: ['testToken'],
@@ -594,7 +609,8 @@ describe('hubService', () => {
           now: 0,
         });
 
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.markTokensAsConsumed.mockImplementationDeferred();
 
         const markTokensAsConsumedPromise = hubService.markTokensAsConsumed({
           tokens: ['testToken'],
@@ -602,7 +618,7 @@ describe('hubService', () => {
 
         await vi.advanceTimersByTimeAsync(123.456);
 
-        deferred.resolve({});
+        deferred.resolve({ ok: true });
 
         await expect(markTokensAsConsumedPromise).resolves.toEqual({
           ok: true,
@@ -623,7 +639,8 @@ describe('hubService', () => {
 
     describe('validateToken', () => {
       it('should emit stanza.quota.token.validate.success when validating succeeds', async () => {
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.validateToken.mockImplementationDeferred();
 
         const validateTokenPromise = hubService.validateToken({
           guard: 'testGuard',
@@ -632,12 +649,7 @@ describe('hubService', () => {
 
         deferred.resolve({
           valid: true,
-          tokensValid: [
-            {
-              valid: true,
-              token: 'testToken',
-            },
-          ],
+          token: 'testToken',
         });
 
         await expect(validateTokenPromise).resolves.toEqual({
@@ -657,7 +669,8 @@ describe('hubService', () => {
       });
 
       it('should emit stanza.quota.token.validate.failure when fetching fails', async () => {
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.validateToken.mockImplementationDeferred();
 
         const validateTokenPromise = hubService.validateToken({
           guard: 'testGuard',
@@ -679,7 +692,8 @@ describe('hubService', () => {
       });
 
       it('should emit stanza.quota.token.validate.failure when fetching return invalid token', async () => {
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.validateToken.mockImplementationDeferred();
 
         const validateTokenPromise = hubService.validateToken({
           guard: 'testGuard',
@@ -688,12 +702,7 @@ describe('hubService', () => {
 
         deferred.resolve({
           valid: false,
-          tokensValid: [
-            {
-              valid: false,
-              token: 'testToken',
-            },
-          ],
+          token: 'testToken',
         });
 
         await expect(validateTokenPromise).resolves.toEqual({
@@ -717,7 +726,8 @@ describe('hubService', () => {
           now: 0,
         });
 
-        const deferred = mockHubRequest.mockImplementationDeferred();
+        const deferred =
+          mockHubService.validateToken.mockImplementationDeferred();
 
         const validateTokenPromise = hubService.validateToken({
           guard: 'testGuard',
@@ -728,12 +738,7 @@ describe('hubService', () => {
 
         deferred.resolve({
           valid: true,
-          tokensValid: [
-            {
-              valid: true,
-              token: 'testToken',
-            },
-          ],
+          token: 'testToken',
         });
 
         await expect(validateTokenPromise).resolves.toEqual({

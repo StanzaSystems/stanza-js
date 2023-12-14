@@ -4,7 +4,8 @@ import { type Scheduler } from './utils/scheduler';
 import { logger } from './global/logger';
 
 export const init = async (
-  options: Partial<StanzaInitOptions> = {},
+  options: Partial<StanzaInitOptions> &
+    Pick<StanzaInitOptions, 'createHubService'>,
   scheduler?: Scheduler
 ) => {
   try {

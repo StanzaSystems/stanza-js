@@ -1,0 +1,46 @@
+{
+  "name": "sdk-cloudflare",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/sdk-cloudflare",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/sdk-cloudflare",
+        "main": "packages/sdk-cloudflare/src/index.ts",
+        "tsConfig": "packages/sdk-cloudflare/tsconfig.lib.json",
+        "assets": ["packages/sdk-cloudflare/README.md"],
+        "project": "packages/sdk-cloudflare/package.json",
+        "format": ["esm", "cjs"],
+        "compiler": "babel",
+        "external": "all",
+        "updateBuildableProjectDepsInPackageJson": true
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs sdk-cloudflare {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/sdk-cloudflare/**/*.ts",
+          "packages/sdk-cloudflare/package.json"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{workspaceRoot}/coverage/packages/sdk-cloudflare"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/sdk-cloudflare"
+      }
+    }
+  },
+  "tags": []
+}

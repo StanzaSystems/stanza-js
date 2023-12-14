@@ -10,7 +10,7 @@
 
 import * as process from './env';
 
-import { init, stanzaGuard } from '@getstanza/node';
+import { init, stanzaGuard } from '@getstanza/sdk-cloudflare';
 import { scheduler } from './scheduler';
 
 type NodeConfig = Parameters<typeof init>[0];
@@ -21,23 +21,23 @@ const hubUrl =
   process.env.NEXT_PUBLIC_STANZA_HUB_ADDRESS ?? 'https://hub.stanzasys.co';
 const environment = process.env.NEXT_PUBLIC_STANZA_ENVIRONMENT ?? 'local';
 
-export const nodeConfig = {
+export const cloudflareConfig = {
   hubUrl,
   environment,
   apiKey: stanzaApiKey,
   serviceName: 'DemoCommerce',
   serviceRelease: '1',
-  useRestHubApi: true,
   requestTimeout: 2000,
+  logLevel: 'debug',
 } satisfies NodeConfig;
 
-init(nodeConfig, scheduler).catch(() => {});
+init(cloudflareConfig, scheduler).catch(() => {});
 
 const guard = stanzaGuard<[], Response>({
   guard: 'Stripe_Products_API',
 });
 
-const handler: ExportedHandler<{ EXAMPLE_CLASS: DurableObjectNamespace }> = {
+const handler: ExportedHandler = {
   // The fetch handler is invoked when this worker receives a HTTP(S) request
   // and should return a Response (optionally wrapped in a Promise)
   async fetch(request, env, ctx) {

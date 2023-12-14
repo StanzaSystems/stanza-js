@@ -3,7 +3,7 @@ import { mockHubService } from '../__tests__/mocks/mockHubService';
 import { getQuota } from './getQuota';
 import { type TokenStore } from './tokenStore';
 import { createTokenStore } from './createTokenStore';
-import { TimeoutError } from '../utils/withTimeout';
+import { TimeoutError } from '@getstanza/sdk-utils';
 
 vi.mock('../global/tokenStore', () => {
   return {

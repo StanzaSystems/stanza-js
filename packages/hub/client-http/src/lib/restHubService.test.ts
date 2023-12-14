@@ -11,8 +11,12 @@ import {
 import { createRestHubService } from './createRestHubService';
 import { createHubRequest } from './createHubRequest';
 import { Health } from '@getstanza/hub-client-api';
+import pino from 'pino';
 
-vi.mock('../../fetchImplementation', () => {
+const logger = pino();
+const getRequestTimeout = () => 1000;
+
+vi.mock('./fetchImplementation', () => {
   return {
     fetch: ((...args) => fetchMock(...args)) satisfies typeof fetch,
   };
@@ -41,7 +45,10 @@ describe('createRestHubService', async () => {
         apiKey: 'testApiKey',
         serviceName: 'TestService',
         serviceRelease: '1.0.0',
+        logger,
+        getRequestTimeout,
       }),
+      logger,
     });
 
     it('should return service metadata', () => {
@@ -65,7 +72,10 @@ describe('createRestHubService', async () => {
         apiKey: 'testApiKey',
         serviceName: 'TestService',
         serviceRelease: '1.0.0',
+        logger,
+        getRequestTimeout,
       }),
+      logger,
     });
 
     it('should call fetch with proper params', async () => {
@@ -223,7 +233,10 @@ describe('createRestHubService', async () => {
         apiKey: 'testApiKey',
         serviceName: 'TestService',
         serviceRelease: '1.0.0',
+        logger,
+        getRequestTimeout,
       }),
+      logger,
     });
 
     it('should call fetch with proper params', async () => {
@@ -360,7 +373,10 @@ describe('createRestHubService', async () => {
         apiKey: 'testApiKey',
         serviceName: 'TestService',
         serviceRelease: '1.0.0',
+        logger,
+        getRequestTimeout,
       }),
+      logger,
     });
 
     it('should call fetch with proper params', async () => {
@@ -509,7 +525,10 @@ describe('createRestHubService', async () => {
         apiKey: 'testApiKey',
         serviceName: 'TestService',
         serviceRelease: '1.0.0',
+        logger,
+        getRequestTimeout,
       }),
+      logger,
     });
 
     it('should call fetch with proper params', async () => {
@@ -674,7 +693,10 @@ describe('createRestHubService', async () => {
         apiKey: 'testApiKey',
         serviceName: 'TestService',
         serviceRelease: '1.0.0',
+        logger,
+        getRequestTimeout,
       }),
+      logger,
     });
 
     it('should call fetch with proper params', async () => {
@@ -795,7 +817,10 @@ describe('createRestHubService', async () => {
         apiKey: 'testApiKey',
         serviceName: 'TestService',
         serviceRelease: '1.0.0',
+        logger,
+        getRequestTimeout,
       }),
+      logger,
     });
 
     it('should call fetch with proper params', async () => {
@@ -883,7 +908,10 @@ describe('createRestHubService', async () => {
         apiKey: 'testApiKey',
         serviceName: 'TestService',
         serviceRelease: '1.0.0',
+        logger,
+        getRequestTimeout,
       }),
+      logger,
     });
 
     it('should call fetch with proper params', async () => {

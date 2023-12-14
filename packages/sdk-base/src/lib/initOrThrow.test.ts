@@ -2,8 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { initOrThrow } from './initOrThrow';
 import { type StanzaInitOptions } from './stanzaInitOptions';
 import type { getEnvInitOptions as getEnvInitOptionsType } from './getEnvInitOptions';
-import * as createGrpcHubServiceModule from './hub/grpc/createGrpcHubService';
-import * as createRestHubServiceModule from './hub/rest/createRestHubService';
+import { mockHubService } from './__tests__/mocks/mockHubService';
 
 vi.mock('./getEnvInitOptions', () => {
   return {
@@ -27,25 +26,16 @@ vi.mock('./global/logger', async () => {
   };
 });
 
-const createGrpcHubServiceMock = vi.spyOn(
-  createGrpcHubServiceModule,
-  'createGrpcHubService'
-);
-const createRestHubServiceMock = vi.spyOn(
-  createRestHubServiceModule,
-  'createRestHubService'
-);
-
 const getEnvInitOptionsMock = vi.fn();
 const fetchMock = vi.fn();
+
+const createHubService = () => mockHubService;
 
 beforeEach(async () => {
   const { getEnvInitOptions } = await vi.importActual<{
     getEnvInitOptions: typeof getEnvInitOptionsType;
   }>('./getEnvInitOptions');
   getEnvInitOptionsMock.mockImplementation(getEnvInitOptions);
-  createGrpcHubServiceMock.mockReset();
-  createRestHubServiceMock.mockReset();
 });
 
 afterEach(() => {
@@ -56,7 +46,7 @@ afterEach(() => {
 describe('Stanza init', function () {
   describe('invalid options', () => {
     it('should throw when not options provided', async () => {
-      await expect(initOrThrow()).rejects.toEqual(
+      await expect(initOrThrow({ createHubService })).rejects.toEqual(
         new Error(`Provided options are invalid. Please provide an object with the following properties:
 - hubUrl: string (URL to a Hub instance)
 - apiKey: string (API key for a Hub instance)
@@ -67,7 +57,7 @@ describe('Stanza init', function () {
     });
 
     it('should warn if empty config is provided', async () => {
-      await expect(initOrThrow()).rejects.toEqual(
+      await expect(initOrThrow({ createHubService })).rejects.toEqual(
         new Error(`Provided options are invalid. Please provide an object with the following properties:
 - hubUrl: string (URL to a Hub instance)
 - apiKey: string (API key for a Hub instance)
@@ -87,6 +77,7 @@ describe('Stanza init', function () {
         }));
         await expect(
           initOrThrow({
+            createHubService,
             hubUrl: 'https://url.to.stanza.hub',
             apiKey: 'dummyAPIKey',
             serviceName: 'dummyStanzaService',
@@ -107,6 +98,7 @@ describe('Stanza init', function () {
       }));
       await expect(
         initOrThrow({
+          createHubService,
           hubUrl: 'https://url.to.stanza.hub',
           apiKey: 'dummyAPIKey',
           serviceName: 'dummyStanzaService',
@@ -130,44 +122,45 @@ describe('Stanza init', function () {
         };
       });
 
-      await expect(initOrThrow()).resolves.toBeUndefined();
+      await expect(initOrThrow({ createHubService })).resolves.toBeUndefined();
     });
 
-    it('should create grpc hub service by default', async () => {
-      fetchMock.mockImplementation(async () => ({
-        json: async () => ({}),
-      }));
-      await expect(
-        initOrThrow({
-          hubUrl: 'https://url.to.stanza.hub',
-          apiKey: 'dummyAPIKey',
-          serviceName: 'dummyStanzaService',
-          serviceRelease: 'dummyStanzaRelease',
-          environment: 'testEnvironment',
-        })
-      ).resolves.toBeUndefined();
+    // TODO: move tests to @getstanza/node
+    // it('should create grpc hub service by default', async () => {
+    //   fetchMock.mockImplementation(async () => ({
+    //     json: async () => ({}),
+    //   }));
+    //   await expect(
+    //     initOrThrow({
+    //       hubUrl: 'https://url.to.stanza.hub',
+    //       apiKey: 'dummyAPIKey',
+    //       serviceName: 'dummyStanzaService',
+    //       serviceRelease: 'dummyStanzaRelease',
+    //       environment: 'testEnvironment',
+    //     })
+    //   ).resolves.toBeUndefined();
+    //
+    //   expect(createGrpcHubServiceMock).toHaveBeenCalledOnce();
+    //   expect(createRestHubServiceMock).not.toHaveBeenCalled();
+    // });
 
-      expect(createGrpcHubServiceMock).toHaveBeenCalledOnce();
-      expect(createRestHubServiceMock).not.toHaveBeenCalled();
-    });
-
-    it('should create rest hub service is useRest is specified', async () => {
-      fetchMock.mockImplementation(async () => ({
-        json: async () => ({}),
-      }));
-      await expect(
-        initOrThrow({
-          hubUrl: 'https://url.to.stanza.hub',
-          apiKey: 'dummyAPIKey',
-          serviceName: 'dummyStanzaService',
-          serviceRelease: 'dummyStanzaRelease',
-          environment: 'testEnvironment',
-          useRestHubApi: true,
-        })
-      ).resolves.toBeUndefined();
-
-      expect(createRestHubServiceMock).toHaveBeenCalled();
-      expect(createGrpcHubServiceMock).not.toHaveBeenCalledOnce();
-    });
+    // it('should create rest hub service is useRest is specified', async () => {
+    //   fetchMock.mockImplementation(async () => ({
+    //     json: async () => ({}),
+    //   }));
+    //   await expect(
+    //     initOrThrow({
+    //       hubUrl: 'https://url.to.stanza.hub',
+    //       apiKey: 'dummyAPIKey',
+    //       serviceName: 'dummyStanzaService',
+    //       serviceRelease: 'dummyStanzaRelease',
+    //       environment: 'testEnvironment',
+    //       useRestHubApi: true,
+    //     })
+    //   ).resolves.toBeUndefined();
+    //
+    //   expect(createRestHubServiceMock).toHaveBeenCalled();
+    //   expect(createGrpcHubServiceMock).not.toHaveBeenCalledOnce();
+    // });
   });
 });

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type pino from 'pino';
+import { type HubService } from '@getstanza/hub-client-api';
 
 const LOG_LEVELS = Object.keys({
   fatal: true,
@@ -30,4 +31,13 @@ export const stanzaInitOptions = z.object({
     .optional(),
 });
 
-export type StanzaInitOptions = z.infer<typeof stanzaInitOptions>;
+type StanzaBaseInitOptions = z.infer<typeof stanzaInitOptions>;
+export type StanzaInitOptions = StanzaBaseInitOptions & {
+  createHubService: (
+    options: StanzaBaseInitOptions & {
+      clientId: string;
+      logger: pino.Logger;
+      getRequestTimeout: () => number;
+    }
+  ) => HubService;
+};

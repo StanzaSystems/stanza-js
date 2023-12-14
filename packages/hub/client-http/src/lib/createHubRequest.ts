@@ -1,16 +1,16 @@
 import { type z, type ZodType } from 'zod';
-import { withTimeout } from '../../utils/withTimeout';
-import { fetch } from '../../fetchImplementation';
-import { type HubApiPath, type HubRequest } from '../hubRequest';
-import { logger } from '../../global/logger';
-import { STANZA_REQUEST_TIMEOUT } from '../../global/requestTimeout';
-import { createUserAgentHeader } from '../../utils/userAgentHeader';
+import { withTimeout, createUserAgentHeader } from '@getstanza/sdk-utils';
+import { fetch } from './fetchImplementation';
+import { type HubApiPath, type HubRequest } from './hubRequest';
+import type pino from 'pino';
 
 export interface HubRequestInitOptions {
   hubUrl: string;
   apiKey: string;
   serviceName: string;
   serviceRelease: string;
+  logger: pino.Logger;
+  getRequestTimeout: () => number;
 }
 
 export const createHubRequest = ({
@@ -18,6 +18,8 @@ export const createHubRequest = ({
   hubUrl,
   serviceName,
   serviceRelease,
+  logger,
+  getRequestTimeout,
 }: HubRequestInitOptions): HubRequest => {
   return async function hubRequest<T extends ZodType>(
     apiPath: HubApiPath,
@@ -48,12 +50,16 @@ export const createHubRequest = ({
       });
 
     const response = await withTimeout(
-      STANZA_REQUEST_TIMEOUT,
+      getRequestTimeout(),
       'Hub request timed out',
       fetch(requestUrl, {
         headers: {
           'X-Stanza-Key': apiKey,
-          'User-Agent': createUserAgentHeader({ serviceName, serviceRelease }),
+          'User-Agent': createUserAgentHeader({
+            serviceName,
+            serviceRelease,
+            sdkVersion: '0.0.7-beta', // TODO
+          }),
         },
         method,
         ...(body != null ? { body: JSON.stringify(body) } : {}),

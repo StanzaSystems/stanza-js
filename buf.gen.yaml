@@ -3,7 +3,7 @@ version: v1
 plugins:
   - plugin: buf.build/bufbuild/es
     opt: target=ts
-    out: packages/sdk-base/src/gen
+    out: packages/hub/client-grpc/src/gen
   - plugin: buf.build/bufbuild/connect-es
     opt: target=ts
-    out: packages/sdk-base/src/gen
+    out: packages/hub/client-grpc/src/gen

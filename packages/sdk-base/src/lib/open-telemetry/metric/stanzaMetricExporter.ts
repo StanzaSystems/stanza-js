@@ -19,7 +19,7 @@ import {
   getStanzaAuthToken,
 } from '../../global/authToken';
 import { isTokenInvalidError } from '../../grpc/isTokenInvalidError';
-import { createUserAgentHeader } from '../../utils/userAgentHeader';
+import { createUserAgentHeader } from '@getstanza/sdk-utils';
 
 export class StanzaMetricExporter implements PushMetricExporter {
   private exporter: InMemoryMetricExporter | OTLPMetricExporter =
@@ -60,6 +60,7 @@ export class StanzaMetricExporter implements PushMetricExporter {
       createUserAgentHeader({
         serviceName: this.serviceName,
         serviceRelease: this.serviceRelease,
+        sdkVersion: '0.0.7-beta', // TODO
       })
     );
     const prevExporter = this.exporter;

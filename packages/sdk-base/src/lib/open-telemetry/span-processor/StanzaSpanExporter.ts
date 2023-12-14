@@ -2,7 +2,7 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 import { Metadata } from '@grpc/grpc-js';
 import { eventBus, events } from '../../global/eventBus';
 import { hubService } from '../../global/hubService';
-import { createUserAgentHeader } from '../../utils/userAgentHeader';
+import { createUserAgentHeader } from '@getstanza/sdk-utils';
 import {
   addAuthTokenListener,
   getStanzaAuthToken,
@@ -21,7 +21,11 @@ export class StanzaSpanExporter extends OTLPTraceExporter {
     }
     metadata.set(
       'User-Agent',
-      createUserAgentHeader({ serviceName, serviceRelease })
+      createUserAgentHeader({
+        serviceName,
+        serviceRelease,
+        sdkVersion: '0.0.7-beta', // TODO
+      })
     );
     super({
       url: traceConfig.collectorUrl,

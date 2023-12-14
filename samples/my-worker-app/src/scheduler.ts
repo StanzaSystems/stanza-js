@@ -1,4 +1,4 @@
-import type { Action, Scheduler } from '@getstanza/node';
+import type { Action, Scheduler } from '@getstanza/sdk-base';
 
 const queue = new Array<{
   work: AnyFunction;

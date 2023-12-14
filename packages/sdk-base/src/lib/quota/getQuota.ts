@@ -1,5 +1,5 @@
 import { type StanzaToken, type Tag } from '@getstanza/hub-client-api';
-import { withTimeout } from '../utils/withTimeout';
+import { withTimeout } from '@getstanza/sdk-utils';
 import { tokenStore } from '../global/tokenStore';
 import { hubService } from '../global/hubService';
 import { getGuardConfig } from '../global/guardConfig';

@@ -6,7 +6,7 @@ import { getPriorityBoostFromContext } from '../../context/priorityBoost';
 import { context } from '@opentelemetry/api';
 import { type QuotaReason, type ReasonData } from '../../global/eventBus';
 import { type CheckerResponse } from './types';
-import { TimeoutError } from '../../utils/withTimeout';
+import { TimeoutError } from '@getstanza/sdk-utils';
 
 export interface QuotaCheckerOptions {
   guard: string;

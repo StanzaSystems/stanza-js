@@ -1,1 +1,1 @@
-export * from './lib/hub-client-grpc';
+export * from './lib/createGrpcHubService';

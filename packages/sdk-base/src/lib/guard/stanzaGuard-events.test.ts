@@ -11,7 +11,7 @@ import type * as quotaCheckerModule from '../guard/guard/quotaChecker';
 import type * as ingressTokenValidatorModule from '../guard/guard/ingressTokenValidator';
 import { updateServiceConfig } from '../global/serviceConfig';
 import { stanzaTokenContextKey } from '../context/stanzaTokenContextKey';
-import { TimeoutError } from '../utils/withTimeout';
+import { TimeoutError } from '@getstanza/sdk-utils';
 import { initIngressTokenValidator } from './guard/ingressTokenValidator';
 import { initQuotaChecker } from './guard/quotaChecker';
 

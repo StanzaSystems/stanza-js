@@ -23,7 +23,6 @@ import {
   eventDataToGuardAttributes,
   eventDataToOptionalGuardAttributes,
 } from './guardAttributes';
-import { packageName, packageVersion } from '../../meta';
 
 type QuotaEndpoint = 'GetToken' | 'GetTokenLease' | 'SetTokenLeaseConsumed';
 
@@ -69,10 +68,6 @@ export class StanzaInstrumentation extends InstrumentationBase {
       sendFailed: Counter<DefaultContextAttributes & { otel_address: string }>;
     };
   };
-
-  constructor() {
-    super(packageName, packageVersion);
-  }
 
   protected init(): void {
     this.initRequestMetrics();

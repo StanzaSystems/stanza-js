@@ -1,9 +1,9 @@
 {
   "extends": ["../../.eslintrc.json"],
   "parserOptions": {
-    "project": ["samples/my-worker-app/tsconfig*.json"]
+    "project": ["packages/sdk-cloudflare/tsconfig*.json"]
   },
-  "ignorePatterns": ["!**/*", ".wrangler"],
+  "ignorePatterns": ["!**/*"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],

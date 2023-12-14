@@ -35,7 +35,9 @@
       "@getstanza/next-node": ["packages/next-node/index.ts"],
       "@getstanza/node": ["packages/node/index.ts"],
       "@getstanza/react": ["packages/stanza-react/index.ts"],
-      "@getstanza/sdk-base": ["packages/sdk-base/src/index.ts"]
+      "@getstanza/sdk-base": ["packages/sdk-base/src/index.ts"],
+      "@getstanza/sdk-cloudflare": ["packages/sdk-cloudflare/src/index.ts"],
+      "@getstanza/sdk-utils": ["packages/sdk-utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

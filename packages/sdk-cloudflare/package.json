@@ -1,14 +1,13 @@
 {
-  "name": "@getstanza/node",
+  "name": "@getstanza/sdk-cloudflare",
   "type": "commonjs",
   "version": "0.0.7-beta",
-  "description": "Stanza Node SDK",
+  "description": "Stanza Cloudflare SDK",
   "author": "Stanza",
   "license": "Apache-2.0",
   "dependencies": {
     "@getstanza/sdk-base": "0.0.7-beta",
-    "@getstanza/hub-client-http": "0.0.7-beta",
-    "@getstanza/hub-client-grpc": "0.0.7-beta"
+    "@getstanza/hub-client-http": "0.0.7-beta"
   },
   "devDependencies": {
     "@vitest/expect": "0.33.0",

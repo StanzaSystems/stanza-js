@@ -1,23 +1,27 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createGrpcHubService } from './createGrpcHubService';
 import type * as connectNodeModule from '@connectrpc/connect';
-import { type ConfigService } from '../../../gen/stanza/hub/v1/config_connect';
-import { type QuotaService } from '../../../gen/stanza/hub/v1/quota_connect';
+import { type ConfigService } from '../gen/stanza/hub/v1/config_connect';
+import { type QuotaService } from '../gen/stanza/hub/v1/quota_connect';
 import {
   GetGuardConfigResponse,
   GetServiceConfigResponse,
-} from '../../../gen/stanza/hub/v1/config_pb';
+} from '../gen/stanza/hub/v1/config_pb';
 import {
   GetTokenLeaseResponse,
   GetTokenResponse,
   SetTokenLeaseConsumedResponse,
   ValidateTokenResponse,
-} from '../../../gen/stanza/hub/v1/quota_pb';
-import { type HealthService } from '../../../gen/stanza/hub/v1/health_connect';
-import { type AuthService } from '../../../gen/stanza/hub/v1/auth_connect';
-import { QueryGuardHealthResponse } from '../../../gen/stanza/hub/v1/health_pb';
-import { Health as APIHealth } from '../../../gen/stanza/hub/v1/common_pb';
+} from '../gen/stanza/hub/v1/quota_pb';
+import { type HealthService } from '../gen/stanza/hub/v1/health_connect';
+import { type AuthService } from '../gen/stanza/hub/v1/auth_connect';
+import { QueryGuardHealthResponse } from '../gen/stanza/hub/v1/health_pb';
+import { Health as APIHealth } from '../gen/stanza/hub/v1/common_pb';
 import { Health } from '@getstanza/hub-client-api';
+import pino from 'pino';
+
+const logger = pino();
+const getRequestTimeout = () => 1000;
 
 type ConnectNodeModule = typeof connectNodeModule;
 
@@ -76,6 +80,8 @@ describe('createGrpcHubService', async () => {
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
       apiKey: 'testApiKey',
+      logger,
+      getRequestTimeout,
     });
 
     it('should return service metadata', () => {
@@ -98,6 +104,8 @@ describe('createGrpcHubService', async () => {
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
       apiKey: 'testApiKey',
+      logger,
+      getRequestTimeout,
     });
 
     it('should call fetch with proper params', async () => {
@@ -219,6 +227,8 @@ describe('createGrpcHubService', async () => {
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
       apiKey: 'testApiKey',
+      logger,
+      getRequestTimeout,
     });
 
     it('should call fetch with proper params', async () => {
@@ -327,6 +337,8 @@ describe('createGrpcHubService', async () => {
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
       apiKey: 'testApiKey',
+      logger,
+      getRequestTimeout,
     });
 
     it('should call fetch with proper params', async () => {
@@ -463,6 +475,8 @@ describe('createGrpcHubService', async () => {
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
       apiKey: 'testApiKey',
+      logger,
+      getRequestTimeout,
     });
 
     it('should call fetch with proper params', async () => {
@@ -623,6 +637,8 @@ describe('createGrpcHubService', async () => {
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
       apiKey: 'testApiKey',
+      logger,
+      getRequestTimeout,
     });
 
     it('should call fetch with proper params', async () => {
@@ -714,6 +730,8 @@ describe('createGrpcHubService', async () => {
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
       apiKey: 'testApiKey',
+      logger,
+      getRequestTimeout,
     });
 
     it('should call fetch with proper params', async () => {
@@ -783,6 +801,8 @@ describe('createGrpcHubService', async () => {
       clientId: 'test-client-id',
       hubUrl: 'https://url.to.hub',
       apiKey: 'testApiKey',
+      logger,
+      getRequestTimeout,
     });
 
     it('should call fetch with proper params', async () => {
