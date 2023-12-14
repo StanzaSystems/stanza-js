@@ -8,7 +8,7 @@ import { type Fn } from '../utils/fn';
 import { isTruthy } from '../utils/isTruthy';
 import { type Promisify } from '../utils/promisify';
 import { initOrGetGuard } from './initOrGetGuard';
-import { type StanzaGuardOptions } from '@getstanza/hub-client-api';
+import { type StanzaGuardOptions } from './model';
 import { eventBus, events, type ReasonData } from '../global/eventBus';
 import { wrapEventsAsync } from '../utils/wrapEventsAsync';
 import { hubService } from '../global/hubService';

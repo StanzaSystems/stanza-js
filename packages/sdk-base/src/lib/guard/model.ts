@@ -1,4 +1,4 @@
-import { type Tag } from './model';
+import { type Tag } from '@getstanza/hub-client-api';
 
 export interface StanzaGuardOptions {
   guard: string;
@@ -13,11 +13,4 @@ export interface StanzaGuardHealthOptions {
   environment: string;
   priorityBoost?: number;
   tags?: Tag[];
-}
-
-export enum Health {
-  Unspecified = 'Unspecified',
-  Ok = 'Ok',
-  Overloaded = 'Overloaded',
-  Down = 'Down',
 }

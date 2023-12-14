@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Health } from './guardModel';
+import { Health } from './model';
 
 const zHealth = z.union([
   z.literal('HEALTH_UNSPECIFIED'),

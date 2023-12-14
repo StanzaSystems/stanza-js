@@ -1,6 +1,6 @@
 import { initQuotaChecker } from './quotaChecker';
 import { initIngressTokenValidator } from './ingressTokenValidator';
-import { type StanzaGuardOptions } from '@getstanza/hub-client-api';
+import { type StanzaGuardOptions } from '../model';
 import {
   addServiceConfigListener,
   isServiceConfigInitialized,

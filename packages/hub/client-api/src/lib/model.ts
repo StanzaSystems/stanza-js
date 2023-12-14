@@ -44,3 +44,10 @@ export interface Tag {
   key: string;
   value: string;
 }
+
+export enum Health {
+  Unspecified = 'Unspecified',
+  Ok = 'Ok',
+  Overloaded = 'Overloaded',
+  Down = 'Down',
+}

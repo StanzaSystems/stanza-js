@@ -1,8 +1,8 @@
-import { type StanzaGuardOptions } from '@getstanza/hub-client-api';
 import { startPollingGuardConfig } from './startPollingGuardConfig';
 import { initGuardGuard } from './guard';
 import { logger } from '../global/logger';
 import { guardStore } from '../global/guardStore';
+import { type StanzaGuardOptions } from './model';
 
 export const initOrGetGuard = (options: StanzaGuardOptions) => {
   logger.debug('initializing guard with options: %o', options);

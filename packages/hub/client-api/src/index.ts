@@ -1,6 +1,5 @@
 export * from './lib/guardConfigResponse';
 export * from './lib/hubService';
-export * from './lib/guardModel';
 export * from './lib/model';
 export * from './lib/serviceConfigResponse';
 export * from './lib/stanzaAuthTokenResponse';

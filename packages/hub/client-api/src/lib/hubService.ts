@@ -1,12 +1,12 @@
 import {
   type GuardConfig,
+  type Health,
   type ServiceConfig,
   type StanzaToken,
   type StanzaTokenLeasesResult,
   type Tag,
   type ValidatedToken,
 } from './model';
-import { type Health } from './guardModel';
 
 export interface FetchServiceConfigOptions {
   lastVersionSeen?: string;
