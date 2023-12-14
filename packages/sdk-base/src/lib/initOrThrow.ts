@@ -61,43 +61,6 @@ export const initOrThrow = async (
         logger,
         getRequestTimeout: () => STANZA_REQUEST_TIMEOUT,
       })
-      // initOptions.useRestHubApi
-      //   ? await import('@getstanza/hub-client-http').then(
-      //       ({ createRestHubService, createHubRequest }) =>
-      //         createRestHubService({
-      //           serviceName: initOptions.serviceName,
-      //           serviceRelease: initOptions.serviceRelease,
-      //           environment: initOptions.environment,
-      //           clientId,
-      //           hubRequest: createHubRequest({
-      //             hubUrl: initOptions.hubUrl,
-      //             apiKey: initOptions.apiKey,
-      //             serviceName: initOptions.serviceName,
-      //             serviceRelease: initOptions.serviceRelease,
-      //             logger,
-      //             getRequestTimeout: () => STANZA_REQUEST_TIMEOUT,
-      //           }),
-      //           logger,
-      //         })
-      //     )
-      //   : await Promise.resolve().then(async () => {
-      //       console.warn('loading grpc');
-      //       throw 'kaboom';
-      //
-      //       // return import('@getstanza/hub-client-grpc').then(
-      //       //   ({ createGrpcHubService }) =>
-      //       //     createGrpcHubService({
-      //       //       serviceName: initOptions.serviceName,
-      //       //       serviceRelease: initOptions.serviceRelease,
-      //       //       environment: initOptions.environment,
-      //       //       clientId,
-      //       //       hubUrl: initOptions.hubUrl,
-      //       //       apiKey: initOptions.apiKey,
-      //       //       logger,
-      //       //       getRequestTimeout: () => STANZA_REQUEST_TIMEOUT,
-      //       //     })
-      //       // );
-      //     })
     )
   );
 

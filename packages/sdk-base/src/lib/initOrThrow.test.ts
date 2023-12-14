@@ -124,43 +124,5 @@ describe('Stanza init', function () {
 
       await expect(initOrThrow({ createHubService })).resolves.toBeUndefined();
     });
-
-    // TODO: move tests to @getstanza/node
-    // it('should create grpc hub service by default', async () => {
-    //   fetchMock.mockImplementation(async () => ({
-    //     json: async () => ({}),
-    //   }));
-    //   await expect(
-    //     initOrThrow({
-    //       hubUrl: 'https://url.to.stanza.hub',
-    //       apiKey: 'dummyAPIKey',
-    //       serviceName: 'dummyStanzaService',
-    //       serviceRelease: 'dummyStanzaRelease',
-    //       environment: 'testEnvironment',
-    //     })
-    //   ).resolves.toBeUndefined();
-    //
-    //   expect(createGrpcHubServiceMock).toHaveBeenCalledOnce();
-    //   expect(createRestHubServiceMock).not.toHaveBeenCalled();
-    // });
-
-    // it('should create rest hub service is useRest is specified', async () => {
-    //   fetchMock.mockImplementation(async () => ({
-    //     json: async () => ({}),
-    //   }));
-    //   await expect(
-    //     initOrThrow({
-    //       hubUrl: 'https://url.to.stanza.hub',
-    //       apiKey: 'dummyAPIKey',
-    //       serviceName: 'dummyStanzaService',
-    //       serviceRelease: 'dummyStanzaRelease',
-    //       environment: 'testEnvironment',
-    //       useRestHubApi: true,
-    //     })
-    //   ).resolves.toBeUndefined();
-    //
-    //   expect(createRestHubServiceMock).toHaveBeenCalled();
-    //   expect(createGrpcHubServiceMock).not.toHaveBeenCalledOnce();
-    // });
   });
 });
