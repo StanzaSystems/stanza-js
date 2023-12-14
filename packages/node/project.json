@@ -9,7 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/node",
-        "main": "packages/node/index.ts",
+        "main": "packages/node/src/index.ts",
         "tsConfig": "packages/node/tsconfig.lib.json",
         "assets": ["packages/node/README.md"],
         "project": "packages/node/package.json",
