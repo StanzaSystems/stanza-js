@@ -19,7 +19,7 @@ export default defineConfig({
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     coverage: {
       reporter: [['lcov', { projectRoot: '.' }]],
-      reportsDirectory: '../../coverage/packages/hub/client-grpc',
+      reportsDirectory: '../../../coverage/packages/hub/client-grpc',
       exclude: [
         'packages/hub/client-grpc/src/gen/**',
         'coverage/**',
