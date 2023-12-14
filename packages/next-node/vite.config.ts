@@ -31,7 +31,7 @@ export default defineConfig({
       reporter: [['lcov', { projectRoot: '.' }]],
       reportsDirectory: '../../coverage/packages/next-node',
       exclude: [
-        'packages/node/gen/**',
+        'packages/hub/client-grpc/src/gen/**',
         'coverage/**',
         'dist/**',
         'packages/*/test{,s}/**',
