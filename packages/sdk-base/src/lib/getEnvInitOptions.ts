@@ -5,7 +5,7 @@ import {
   coerceStringToInteger,
   coerceStringToLogLevel,
 } from './coerceStanzaInitOptions';
-import { identity } from '@getstanza/core';
+import { identity } from 'ramda';
 import process from 'node:process';
 
 type StanzaInitOptionsFromEnv = Exclude<
