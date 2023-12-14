@@ -1,7 +1,6 @@
 import {
   init as initBase,
   initOrThrow as initOrThrowBase,
-  type Scheduler,
 } from '@getstanza/sdk-base';
 import {
   createHubRequest,
