@@ -8,53 +8,24 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import * as process from './env';
+import { stanzaCloudflareHandler } from '@getstanza/sdk-cloudflare';
 
-import {
-  init,
-  stanzaCloudflareHandler,
-  stanzaGuard,
-} from '@getstanza/sdk-cloudflare';
-
-type NodeConfig = Parameters<typeof init>[0];
-
-const stanzaApiKey = process.env.NEXT_PUBLIC_STANZA_API_KEY;
-
-const hubUrl =
-  process.env.NEXT_PUBLIC_STANZA_HUB_ADDRESS ?? 'https://hub.stanzasys.co';
-const environment = process.env.NEXT_PUBLIC_STANZA_ENVIRONMENT ?? 'local';
-
-export const cloudflareConfig = {
-  hubUrl,
-  environment,
-  apiKey: stanzaApiKey,
-  serviceName: 'DemoCommerce',
-  serviceRelease: '1',
-  requestTimeout: 2000,
-  logLevel: 'debug',
-} satisfies NodeConfig;
-
-init(cloudflareConfig).catch(() => {});
-
-const guard = stanzaGuard<[], Response>({
-  guard: 'Stripe_Products_API',
-});
-
-const handler: ExportedHandler = stanzaCloudflareHandler({
-  // The fetch handler is invoked when this worker receives a HTTP(S) request
-  // and should return a Response (optionally wrapped in a Promise)
-  async fetch(request, env, ctx) {
-    try {
-      const fn = () => {
-        return new Response('hello');
-      };
-      return await guard.call(fn);
-    } catch {
-      return new Response('Too many requests', { status: 429 });
-    }
+const handler: ExportedHandler = stanzaCloudflareHandler(
+  {
+    serviceName: 'DemoCommerce',
+    serviceRelease: '1',
+    requestTimeout: 2000,
   },
-  async scheduled(controller, env, ctx) {},
-});
+  { guardName: 'Stripe_Products_API' },
+  {
+    // The fetch handler is invoked when this worker receives a HTTP(S) request
+    // and should return a Response (optionally wrapped in a Promise)
+    async fetch(request, env, ctx) {
+      return fetch('https://zenquotes.io/api/random');
+    },
+    async scheduled(controller, env, ctx) {},
+  }
+);
 
 // Export a default object containing event handlers
 export default handler;

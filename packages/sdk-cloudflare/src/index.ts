@@ -1,6 +1,7 @@
 import {
   init as initBase,
   initOrThrow as initOrThrowBase,
+  stanzaGuard,
 } from '@getstanza/sdk-base';
 import {
   createHubRequest,
@@ -44,8 +45,27 @@ export async function initOrThrow(options: InitOptions) {
 }
 
 export const stanzaCloudflareHandler = (
+  options: InitOptions,
+  guardOptions: { guardName: string },
   cloudflareHandler: ExportedHandler
 ): typeof cloudflareHandler => {
+  let initialized = false;
+  let guard: ReturnType<typeof stanzaGuard<[], Response | Promise<Response>>>;
+
+  const initIfNeeded = async (
+    env: any // TODO: remove any
+  ) => {
+    if (!initialized) {
+      initialized = true;
+
+      const apiKey = env.STANZA_API_KEY;
+      const hubUrl = env.STANZA_HUB_ADDRESS ?? 'https://hub.stanzasys.co';
+      const environment = env.STANZA_ENVIRONMENT ?? 'local';
+      await init({ ...options, apiKey, hubUrl, environment });
+      guard = stanzaGuard({ guard: guardOptions.guardName });
+    }
+  };
+
   const { fetch: fetchHandler, scheduled: scheduledHandler } =
     cloudflareHandler;
   return {
@@ -53,15 +73,27 @@ export const stanzaCloudflareHandler = (
     ...(fetchHandler !== undefined
       ? {
           fetch: async (request, env, ctx) => {
+            await initIfNeeded(env);
+
             ctx.waitUntil(cloudflareScheduler.tick());
-            return fetchHandler.call(cloudflareHandler, request, env, ctx);
+            try {
+              const fn = async () => {
+                return fetchHandler.call(cloudflareHandler, request, env, ctx);
+              };
+              return await guard.call(fn);
+            } catch {
+              return new Response('Too many requests', { status: 429 });
+            }
           },
         }
       : {}),
     ...(scheduledHandler !== undefined
       ? {
           scheduled: async (controller, env, ctx) => {
+            await initIfNeeded(env);
+
             ctx.waitUntil(cloudflareScheduler.tick());
+
             return scheduledHandler.call(
               cloudflareHandler,
               controller,

@@ -1,8 +1,0 @@
-export const env = {
-  // NEXT_PUBLIC_STANZA_HUB_ADDRESS: 'http://192.168.0.102:9010',
-  NEXT_PUBLIC_STANZA_HUB_ADDRESS: 'http://127.0.0.1:9010',
-  NEXT_PUBLIC_STANZA_ENVIRONMENT: 'local',
-  NEXT_PUBLIC_STANZA_BROWSER_KEY: 'valid-api-key',
-  NEXT_PUBLIC_STANZA_API_KEY: 'valid-api-key',
-  STANZA_LOG_LEVEL: 'debug',
-};
