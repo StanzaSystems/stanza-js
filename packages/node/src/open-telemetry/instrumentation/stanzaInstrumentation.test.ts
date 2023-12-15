@@ -6,8 +6,8 @@ import {
   type Meter,
   type MeterProvider as IMeterProvider,
 } from '@opentelemetry/api';
-import type * as eventBusModule from '../../global/eventBus';
-import { eventBus, events } from '../../global/eventBus';
+import type * as eventBusModule from '@getstanza/sdk-base';
+import { eventBus, events } from '@getstanza/sdk-base';
 import { StanzaInstrumentation } from './stanzaInstrumentation';
 
 type EventBusModule = typeof eventBusModule;
@@ -17,9 +17,9 @@ type TokenReason = eventBusModule.TokenReason;
 type QuotaReason = eventBusModule.QuotaReason;
 type GuardMode = eventBusModule.GuardMode;
 
-vi.mock('../../global/eventBus', async (_importOriginal) => {
+vi.mock('@getstanza/sdk-base', async (_importOriginal) => {
   const Emittery = (await import('emittery')).default;
-  const original: any = await vi.importActual('../../global/eventBus');
+  const original: any = await vi.importActual('@getstanza/sdk-base');
   return {
     ...original,
     eventBus: new Emittery(),
@@ -43,7 +43,7 @@ describe('StanzaInstrumentation', () => {
   } = { counter: {}, histogram: {} };
 
   beforeEach(() => {
-    instrumentation = new StanzaInstrumentation();
+    instrumentation = new StanzaInstrumentation('testPackage', '1.0.0');
     metricSpies = { counter: {}, histogram: {} };
     const realMeterProvider = new MeterProvider();
     const meterProvider = {

@@ -1,5 +1,5 @@
 import { type Attributes } from '@opentelemetry/api';
-import { type DefaultContextData } from '../../global/eventBus';
+import { type DefaultContextData } from '@getstanza/sdk-base';
 
 export interface DefaultContextAttributes extends Attributes {
   service: string;

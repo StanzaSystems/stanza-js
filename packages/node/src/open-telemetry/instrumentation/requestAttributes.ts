@@ -14,7 +14,7 @@ import {
   type GuardData,
   type DefaultContextData,
   type FeatureData,
-} from '../../global/eventBus';
+} from '@getstanza/sdk-base';
 
 export type RequestAttributes = DefaultContextAttributes &
   GuardAttributes &

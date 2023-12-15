@@ -1,37 +1,14 @@
 import { ROOT_CONTEXT } from '@opentelemetry/api';
 import { AlwaysOffSampler } from '@opentelemetry/sdk-trace-base';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { type getGuardConfig } from '../../global/guardConfig';
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
-  type getServiceConfig,
-  type ServiceConfigListener,
-} from '../../global/serviceConfig';
+  addStanzaGuardToContext,
+  updateServiceConfig,
+  resetServiceConfig,
+} from '@getstanza/sdk-base';
 import { type ServiceConfig } from '@getstanza/hub-client-api';
 import { StanzaSamplerManager } from './StanzaSamplerManager';
-import { addStanzaGuardToContext } from '../../context/guard';
 import { StanzaConfiguredSampler } from './StanzaConfiguredSampler';
-
-let serviceListener: ServiceConfigListener;
-
-type GetServiceConfig = typeof getServiceConfig;
-type GetGuardConfig = typeof getGuardConfig;
-const getServiceConfigMock = vi.fn<
-  Parameters<GetServiceConfig>,
-  ReturnType<GetServiceConfig>
->();
-const getGuardConfigMock = vi.fn<
-  Parameters<GetGuardConfig>,
-  ReturnType<GetGuardConfig>
->();
-vi.mock('../../global/serviceConfig', () => {
-  return {
-    getServiceConfig: ((...args) =>
-      getServiceConfigMock(...args)) satisfies GetServiceConfig,
-    addServiceConfigListener: (newListener: ServiceConfigListener) => {
-      serviceListener = newListener;
-    },
-  };
-});
 
 const mockServiceConfig = {
   version: 'test',
@@ -56,8 +33,7 @@ const secondMockServiceConfig = {
 } as unknown as ServiceConfig;
 
 beforeEach(async () => {
-  getServiceConfigMock.mockReset();
-  getGuardConfigMock.mockReset();
+  resetServiceConfig();
 });
 
 describe('StanzaSamplerManager', function () {
@@ -75,7 +51,7 @@ describe('StanzaSamplerManager', function () {
     it('should return service sampler if service config is initialized', function () {
       const manager = new StanzaSamplerManager();
 
-      serviceListener({ initialized: true, data: mockServiceConfig });
+      updateServiceConfig(mockServiceConfig);
 
       const sampler = manager.getSampler(ROOT_CONTEXT);
       expect(sampler).toEqual(
@@ -84,7 +60,7 @@ describe('StanzaSamplerManager', function () {
     });
 
     it('should return service sampler if service config is initialized before creating the manager', function () {
-      getServiceConfigMock.mockImplementationOnce(() => mockServiceConfig);
+      updateServiceConfig(mockServiceConfig);
 
       const manager = new StanzaSamplerManager();
 
@@ -95,7 +71,7 @@ describe('StanzaSamplerManager', function () {
     });
 
     it('should return updated service sampler after service config is updated', function () {
-      getServiceConfigMock.mockImplementation(() => mockServiceConfig);
+      updateServiceConfig(mockServiceConfig);
 
       const manager = new StanzaSamplerManager();
 
@@ -104,7 +80,7 @@ describe('StanzaSamplerManager', function () {
         new StanzaConfiguredSampler(mockServiceConfig.config)
       );
 
-      serviceListener({ initialized: true, data: secondMockServiceConfig });
+      updateServiceConfig(secondMockServiceConfig);
 
       const sampler2 = manager.getSampler(ROOT_CONTEXT);
       expect(sampler2).toEqual(
@@ -125,7 +101,7 @@ describe('StanzaSamplerManager', function () {
     it('should return service processor if service config is initialized', function () {
       const manager = new StanzaSamplerManager();
 
-      serviceListener({ initialized: true, data: mockServiceConfig });
+      updateServiceConfig(mockServiceConfig);
 
       const sampler = manager.getSampler(
         addStanzaGuardToContext('myGuard')(ROOT_CONTEXT)

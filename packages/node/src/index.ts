@@ -7,6 +7,7 @@ import {
   createRestHubService,
 } from '@getstanza/hub-client-http';
 import { createGrpcHubService } from '@getstanza/hub-client-grpc';
+import { createInstrumentation } from './createInstrumentation';
 
 export * from '@getstanza/sdk-base';
 
@@ -16,6 +17,7 @@ type InitOptions = Omit<InitBaseOptions, 'createHubService'>;
 function createInitBaseOptions(options: InitOptions): InitBaseOptions {
   return {
     ...options,
+    createInstrumentation,
     createHubService:
       options.useRestHubApi === true
         ? (initOptions) =>

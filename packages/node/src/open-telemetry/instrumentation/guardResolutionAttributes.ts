@@ -12,7 +12,7 @@ import type {
   QuotaReason,
   ReasonData,
   TokenReason,
-} from '../../global/eventBus';
+} from '@getstanza/sdk-base';
 
 export type GuardResolutionAttributes = RequestAttributes & {
   config_state: ConfigState;

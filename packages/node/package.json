@@ -8,7 +8,22 @@
   "dependencies": {
     "@getstanza/sdk-base": "0.0.7-beta",
     "@getstanza/hub-client-http": "0.0.7-beta",
-    "@getstanza/hub-client-grpc": "0.0.7-beta"
+    "@getstanza/hub-client-grpc": "0.0.7-beta",
+    "@opentelemetry/instrumentation-http": "~0.45.1",
+    "@opentelemetry/sdk-node": "~0.45.1",
+    "@opentelemetry/core": "~1.18.1",
+    "@opentelemetry/resources": "~1.18.1",
+    "@opentelemetry/semantic-conventions": "~1.18.1",
+    "@opentelemetry/sdk-metrics": "~1.18.1",
+    "@grpc/grpc-js": "~1.9.10",
+    "@opentelemetry/api": "~1.7.0",
+    "@getstanza/hub-client-api": "0.0.7-beta",
+    "@opentelemetry/instrumentation": "~0.45.1",
+    "@opentelemetry/exporter-metrics-otlp-grpc": "~0.45.1",
+    "@getstanza/sdk-utils": "0.0.7-beta",
+    "@opentelemetry/sdk-trace-base": "~1.18.1",
+    "@opentelemetry/exporter-trace-otlp-grpc": "~0.45.1",
+    "ramda": "^0.29.0"
   },
   "devDependencies": {
     "@vitest/expect": "0.33.0",

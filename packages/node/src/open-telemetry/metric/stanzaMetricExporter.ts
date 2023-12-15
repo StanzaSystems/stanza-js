@@ -8,16 +8,15 @@ import {
 import {
   addServiceConfigListener,
   getServiceConfig,
-} from '../../global/serviceConfig';
-import { type ServiceConfig } from '@getstanza/hub-client-api';
-import { type ExportResult, ExportResultCode } from '@opentelemetry/core';
-import { eventBus, events } from '../../global/eventBus';
-import { hubService } from '../../global/hubService';
-import { logger } from '../../global/logger';
-import {
+  eventBus,
+  events,
+  hubService,
+  logger,
   addAuthTokenListener,
   getStanzaAuthToken,
-} from '../../global/authToken';
+} from '@getstanza/sdk-base';
+import { type ServiceConfig } from '@getstanza/hub-client-api';
+import { type ExportResult, ExportResultCode } from '@opentelemetry/core';
 import { isTokenInvalidError } from '../../grpc/isTokenInvalidError';
 import { createUserAgentHeader } from '@getstanza/sdk-utils';
 

@@ -1,5 +1,5 @@
 import { context } from '@opentelemetry/api';
-import { StanzaConfigEntityManager } from '../../open-telemetry/StanzaConfigEntityManager';
+import { StanzaConfigEntityManager } from '@getstanza/sdk-base';
 import { HeadersSpanEnhancerConfigured } from './HeadersSpanEnhancerConfigured';
 import { type Span } from '@opentelemetry/api';
 import { NoopSpanEnhancer } from '../NoopSpanEnhancer';

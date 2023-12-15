@@ -1,12 +1,13 @@
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 import { Metadata } from '@grpc/grpc-js';
-import { eventBus, events } from '../../global/eventBus';
-import { hubService } from '../../global/hubService';
-import { createUserAgentHeader } from '@getstanza/sdk-utils';
 import {
+  eventBus,
+  events,
+  hubService,
   addAuthTokenListener,
   getStanzaAuthToken,
-} from '../../global/authToken';
+} from '@getstanza/sdk-base';
+import { createUserAgentHeader } from '@getstanza/sdk-utils';
 
 export class StanzaSpanExporter extends OTLPTraceExporter {
   constructor(

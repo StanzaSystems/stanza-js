@@ -1,6 +1,6 @@
 import { type Context } from '@opentelemetry/api';
 import { AlwaysOffSampler, type Sampler } from '@opentelemetry/sdk-trace-base';
-import { StanzaConfigEntityManager } from '../StanzaConfigEntityManager';
+import { StanzaConfigEntityManager } from '@getstanza/sdk-base';
 import { type SamplerManager } from './SamplerManager';
 import { StanzaConfiguredSampler } from './StanzaConfiguredSampler';
 

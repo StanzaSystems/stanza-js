@@ -1,7 +1,7 @@
 import { type Span } from '@opentelemetry/api';
 import { type HeaderGetter, type SpanEnhancer } from '../SpanEnhancer';
 import { Span as SpanClass } from '@opentelemetry/sdk-trace-base';
-import { isTruthy } from '../../utils/isTruthy';
+import { isTruthy } from '@getstanza/sdk-base';
 import { uniq } from 'ramda';
 
 export class HeadersSpanEnhancerConfigured implements SpanEnhancer {

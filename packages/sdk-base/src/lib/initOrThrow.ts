@@ -1,4 +1,3 @@
-import { addInstrumentation } from './addInstrumentation';
 import { generateClientId } from './generateClientId';
 import { getEnvInitOptions } from './getEnvInitOptions';
 import { updateHubService } from './global/hubService';
@@ -51,7 +50,10 @@ export const initOrThrow = async (
     logger.level = initOptions.logLevel;
   }
 
-  await addInstrumentation(initOptions.serviceName, initOptions.serviceRelease);
+  await options.createInstrumentation?.({
+    serviceName: initOptions.serviceName,
+    serviceRelease: initOptions.serviceRelease,
+  });
 
   updateHubService(
     wrapHubService(

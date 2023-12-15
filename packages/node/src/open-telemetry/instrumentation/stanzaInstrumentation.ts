@@ -5,7 +5,7 @@ import {
   type MetricOptions,
   ValueType,
 } from '@opentelemetry/api';
-import { eventBus, events } from '../../global/eventBus';
+import { eventBus, events } from '@getstanza/sdk-base';
 import {
   eventDataToRequestAttributes,
   type RequestAttributes,

@@ -40,4 +40,7 @@ export type StanzaInitOptions = StanzaBaseInitOptions & {
       getRequestTimeout: () => number;
     }
   ) => HubService;
+  createInstrumentation: (
+    options: Pick<StanzaBaseInitOptions, 'serviceName' | 'serviceRelease'>
+  ) => void | Promise<void>;
 };
