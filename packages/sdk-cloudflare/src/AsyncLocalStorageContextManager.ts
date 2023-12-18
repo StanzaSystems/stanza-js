@@ -1,3 +1,11 @@
+/* eslint-disable */
+/*
+* Original file: https://github.com/open-telemetry/opentelemetry-js/blob/3e5929132129ed6022adbd05d085b998cb03e3d5/packages/opentelemetry-context-async-hooks/src/AsyncLocalStorageContextManager.ts
+*
+* This file was modified:
+* * changed import from `import { AsyncLocalStorage } from 'async_hooks';` to `import { AsyncLocalStorage } from 'node:async_hooks';`'
+* */
+
 /*
  * Copyright The OpenTelemetry Authors
  *
@@ -15,7 +23,7 @@
  */
 
 import { Context, ROOT_CONTEXT } from '@opentelemetry/api';
-import { AsyncLocalStorage } from 'async_hooks';
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { AbstractAsyncHooksContextManager } from './AbstractAsyncHooksContextManager';
 
 export class AsyncLocalStorageContextManager extends AbstractAsyncHooksContextManager {
