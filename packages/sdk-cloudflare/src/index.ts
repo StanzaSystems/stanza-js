@@ -1,13 +1,23 @@
 import {
   init as initBase,
   initOrThrow as initOrThrowBase,
+  StanzaApiKeyPropagator,
+  StanzaBaggagePropagator,
   stanzaGuard,
+  StanzaTokenPropagator,
+  TraceConfigOverrideAdditionalInfoPropagator,
 } from '@getstanza/sdk-base';
 import {
   createHubRequest,
   createRestHubService,
 } from '@getstanza/hub-client-http';
 import { cloudflareScheduler } from './cloudflareScheduler';
+import { context, propagation, type TextMapGetter } from '@opentelemetry/api';
+import {
+  CompositePropagator,
+  W3CTraceContextPropagator,
+} from '@opentelemetry/core';
+import { AsyncLocalStorageContextManager } from './AsyncLocalStorageContextManager';
 
 export * from '@getstanza/sdk-base';
 
@@ -44,6 +54,21 @@ export async function initOrThrow(options: InitOptions) {
   await initOrThrowBase(createInitBaseOptions(options), cloudflareScheduler);
 }
 
+const headersGetter: TextMapGetter = {
+  get(carrier, key) {
+    if (carrier == null) {
+      return undefined;
+    }
+    return carrier.get(key) ?? undefined;
+  },
+  keys(carrier) {
+    if (carrier == null) {
+      return [];
+    }
+    return Array.from(carrier.keys());
+  },
+};
+
 export const stanzaCloudflareHandler = (
   options: InitOptions,
   guardOptions: { guardName: string },
@@ -63,6 +88,18 @@ export const stanzaCloudflareHandler = (
       const environment = env.STANZA_ENVIRONMENT ?? 'local';
       await init({ ...options, apiKey, hubUrl, environment });
       guard = stanzaGuard({ guard: guardOptions.guardName });
+      context.setGlobalContextManager(new AsyncLocalStorageContextManager());
+      propagation.setGlobalPropagator(
+        new CompositePropagator({
+          propagators: [
+            new W3CTraceContextPropagator(),
+            new StanzaBaggagePropagator(),
+            new StanzaApiKeyPropagator(),
+            new StanzaTokenPropagator(),
+            new TraceConfigOverrideAdditionalInfoPropagator(),
+          ],
+        })
+      );
     }
   };
 
@@ -72,18 +109,31 @@ export const stanzaCloudflareHandler = (
     ...cloudflareHandler,
     ...(fetchHandler !== undefined
       ? {
-          fetch: async (request, env, ctx) => {
+          fetch: async (request, env, ctx): Promise<Response> => {
             await initIfNeeded(env);
 
             ctx.waitUntil(cloudflareScheduler.tick());
-            try {
-              const fn = async () => {
-                return fetchHandler.call(cloudflareHandler, request, env, ctx);
-              };
-              return await guard.call(fn);
-            } catch {
-              return new Response('Too many requests', { status: 429 });
-            }
+
+            const fetchContext = propagation.extract(
+              context.active(),
+              request.headers,
+              headersGetter
+            );
+            return context.with(fetchContext, async () => {
+              try {
+                const fn = (): Promise<Response> | Response => {
+                  return fetchHandler.call(
+                    cloudflareHandler,
+                    request,
+                    env,
+                    ctx
+                  );
+                };
+                return await guard.call(fn);
+              } catch {
+                return new Response('Too many requests', { status: 429 });
+              }
+            });
           },
         }
       : {}),
