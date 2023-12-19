@@ -20,10 +20,24 @@ const handler: ExportedHandler = stanzaCloudflareHandler(
   {
     // The fetch handler is invoked when this worker receives a HTTP(S) request
     // and should return a Response (optionally wrapped in a Promise)
-    async fetch(request, env, ctx) {
-      return fetch('https://zenquotes.io/api/random');
+    async fetch(request, _env, _ctx) {
+      const proxyUrl = new URL('https://zenquotes.io')
+      const requestUrl = new URL(request.url);
+
+      // carry through request path and query string
+      proxyUrl.pathname = requestUrl.pathname;
+      proxyUrl.search = requestUrl.search;
+
+      // carry through original request headers (except for X-Stanza-Key)
+      const proxyHeaders = new Headers(request.headers);
+      proxyHeaders.delete('X-Stanza-Key');
+      // TODO: pass Stanza token if obtained
+      const proxyRequest = new Request(request, { headers: proxyHeaders });
+
+      // make subrequests with the global `fetch()` function
+      return  fetch(proxyUrl, proxyRequest);
     },
-    async scheduled(controller, env, ctx) {},
+    async scheduled(_controller, _env, _ctx) {},
   }
 );
 
