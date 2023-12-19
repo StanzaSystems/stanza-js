@@ -17,7 +17,7 @@ import {
   CompositePropagator,
   W3CTraceContextPropagator,
 } from '@opentelemetry/core';
-import { AsyncLocalStorageContextManager } from './AsyncLocalStorageContextManager';
+import { AsyncLocalStorageContextManager } from './opentelemetry-context-async-hooks/AsyncLocalStorageContextManager';
 
 export * from '@getstanza/sdk-base';
 

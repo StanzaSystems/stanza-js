@@ -7,7 +7,10 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@getstanza/sdk-base": "0.0.7-beta",
-    "@getstanza/hub-client-http": "0.0.7-beta"
+    "@getstanza/hub-client-http": "0.0.7-beta",
+    "@opentelemetry/api": "~1.7.0",
+    "@opentelemetry/core": "~1.18.1",
+    "events": "3.3.0"
   },
   "devDependencies": {
     "@vitest/expect": "0.33.0",
