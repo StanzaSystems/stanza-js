@@ -63,10 +63,7 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["samples/browser-simple/**/*.ts"]
-      }
+      "outputs": ["{options.outputFile}"]
     }
   }
 }

@@ -12,10 +12,7 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["samples/cloudflare-proxy/**/*.ts"]
-      }
+      "outputs": ["{options.outputFile}"]
     },
     "deploy": {
       "executor": "@naxodev/nx-cloudflare:deploy"

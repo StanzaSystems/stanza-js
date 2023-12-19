@@ -27,13 +27,7 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/stanza-react/**/*.{ts,tsx,js,jsx}",
-          "packages/stanza-react/package.json"
-        ]
-      }
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/vite:test",
