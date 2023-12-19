@@ -5,8 +5,12 @@ import { resolve } from 'path';
 import { searchForWorkspaceRoot } from 'vite';
 
 export default defineConfig({
+  root: __dirname,
   cacheDir: '../../node_modules/.vite/browser-simple',
   build: {
+    outDir: '../../dist/samples/browser-simple',
+    reportCompressedSize: true,
+    commonjsOptions: { transformMixedEsModules: true },
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
@@ -29,6 +33,11 @@ export default defineConfig({
   // },
 
   test: {
+    reporters: ['default'],
+    coverage: {
+      reportsDirectory: '../../coverage/samples/browser-simple',
+      provider: 'v8',
+    },
     globals: true,
     cache: {
       dir: '../../node_modules/.vitest',
