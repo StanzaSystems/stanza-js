@@ -1,4 +1,4 @@
-name = "my-worker-app"
+name = "cloudflare-proxy"
 compatibility_date = "2023-07-31"
 main = "src/index.ts"
 

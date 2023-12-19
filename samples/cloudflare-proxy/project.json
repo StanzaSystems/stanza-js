@@ -1,7 +1,7 @@
 {
-  "name": "my-worker-app",
+  "name": "cloudflare-proxy",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "samples/my-worker-app/src",
+  "sourceRoot": "samples/cloudflare-proxy/src",
   "projectType": "application",
   "targets": {
     "serve": {
@@ -14,7 +14,7 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["samples/my-worker-app/**/*.ts"]
+        "lintFilePatterns": ["samples/cloudflare-proxy/**/*.ts"]
       }
     },
     "deploy": {

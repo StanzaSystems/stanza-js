@@ -21,7 +21,7 @@ const handler: ExportedHandler = stanzaCloudflareHandler(
     // The fetch handler is invoked when this worker receives a HTTP(S) request
     // and should return a Response (optionally wrapped in a Promise)
     async fetch(request, _env, _ctx) {
-      const proxyUrl = new URL('https://zenquotes.io')
+      const proxyUrl = new URL('https://zenquotes.io');
       const requestUrl = new URL(request.url);
 
       // carry through request path and query string
@@ -35,7 +35,7 @@ const handler: ExportedHandler = stanzaCloudflareHandler(
       const proxyRequest = new Request(request, { headers: proxyHeaders });
 
       // make subrequests with the global `fetch()` function
-      return  fetch(proxyUrl, proxyRequest);
+      return fetch(proxyUrl, proxyRequest);
     },
     async scheduled(_controller, _env, _ctx) {},
   }

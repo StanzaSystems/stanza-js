@@ -1,7 +1,7 @@
 {
   "extends": ["../../.eslintrc.json"],
   "parserOptions": {
-    "project": ["samples/my-worker-app/tsconfig*.json"]
+    "project": ["samples/cloudflare-proxy/tsconfig*.json"]
   },
   "ignorePatterns": ["!**/*", ".wrangler"],
   "overrides": [
