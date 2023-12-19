@@ -53,7 +53,10 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["samples/express-demo/**/*.ts"]
+      }
     },
     "test": {
       "executor": "@nx/jest:jest",
