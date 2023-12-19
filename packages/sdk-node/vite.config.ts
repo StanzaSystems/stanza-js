@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
 export default defineConfig({
-  cacheDir: '../../node_modules/.vite/node',
+  cacheDir: '../../node_modules/.vite/sdk-node',
 
   plugins: [nxViteTsPaths()],
 
@@ -21,7 +21,7 @@ export default defineConfig({
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     coverage: {
       reporter: [['lcov', { projectRoot: '.' }]],
-      reportsDirectory: '../../coverage/packages/node',
+      reportsDirectory: '../../coverage/packages/sdk-node',
       exclude: [
         'packages/hub/client-grpc/src/gen/**',
         'coverage/**',

@@ -1,18 +1,18 @@
 {
-  "name": "node",
+  "name": "sdk-node",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/node",
+  "sourceRoot": "packages/sdk-node",
   "projectType": "library",
   "targets": {
     "build": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/node",
-        "main": "packages/node/src/index.ts",
-        "tsConfig": "packages/node/tsconfig.lib.json",
-        "assets": ["packages/node/README.md"],
-        "project": "packages/node/package.json",
+        "outputPath": "dist/packages/sdk-node",
+        "main": "packages/sdk-node/src/index.ts",
+        "tsConfig": "packages/sdk-node/tsconfig.lib.json",
+        "assets": ["packages/sdk-node/README.md"],
+        "project": "packages/sdk-node/package.json",
         "format": ["esm", "cjs"],
         "compiler": "babel",
         "external": "all",
@@ -28,17 +28,17 @@
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
-          "packages/node/**/*.ts",
-          "packages/node/package.json"
+          "packages/sdk-node/**/*.ts",
+          "packages/sdk-node/package.json"
         ]
       }
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["{workspaceRoot}/coverage/packages/node"],
+      "outputs": ["{workspaceRoot}/coverage/packages/sdk-node"],
       "options": {
         "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/packages/node"
+        "reportsDirectory": "../../coverage/packages/sdk-node"
       }
     }
   },

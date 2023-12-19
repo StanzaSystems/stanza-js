@@ -33,7 +33,7 @@
       "@getstanza/mocks-server": ["packages/mocks/server/src/index.ts"],
       "@getstanza/next": ["packages/next/index.ts"],
       "@getstanza/next-node": ["packages/next-node/index.ts"],
-      "@getstanza/node": ["packages/node/src/index.ts"],
+      "@getstanza/node": ["packages/sdk-node/src/index.ts"],
       "@getstanza/react": ["packages/stanza-react/index.ts"],
       "@getstanza/sdk-base": ["packages/sdk-base/src/index.ts"],
       "@getstanza/sdk-cloudflare": ["packages/sdk-cloudflare/src/index.ts"],
