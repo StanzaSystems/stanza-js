@@ -1,5 +1,5 @@
 import { type Attributes } from '@opentelemetry/api';
-import { type GuardData, type OptionalGuardData } from '@getstanza/sdk-base';
+import { type GuardData, type OptionalGuardData } from '../../../index';
 
 export interface GuardAttributes extends Attributes {
   guard: string;

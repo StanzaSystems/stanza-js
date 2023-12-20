@@ -6,8 +6,8 @@ import {
   type Meter,
   type MeterProvider as IMeterProvider,
 } from '@opentelemetry/api';
-import type * as eventBusModule from '@getstanza/sdk-base';
-import { eventBus, events } from '@getstanza/sdk-base';
+import type * as eventBusModule from '../../../index';
+import { eventBus, events } from '../../../index';
 import { StanzaInstrumentation } from './stanzaInstrumentation';
 
 type EventBusModule = typeof eventBusModule;
