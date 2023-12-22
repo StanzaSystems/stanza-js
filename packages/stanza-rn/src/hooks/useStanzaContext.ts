@@ -10,6 +10,7 @@ export const useStanzaContext = (
   const providedContextName = useContext(StanzaContextName);
   const [state, setState] = useState<StanzaContext | undefined>();
   const stanzaInstance = useContext(StanzaReactContext);
+  const refreshTime = (stanzaInstance?.refreshSeconds ?? 3) * 1000;
 
   if (stanzaInstance === undefined) {
     throw Error('Component needs to be wrapped with StanzaProvider');
@@ -39,8 +40,8 @@ export const useStanzaContext = (
         if (context.name === resultContextName) {
           setState(context);
         }
-      }, 3000),
-    [resultContextName]
+      }, refreshTime),
+    [resultContextName, refreshTime]
   );
 
   useEffect(() => {
