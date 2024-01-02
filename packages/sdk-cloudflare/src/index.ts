@@ -18,7 +18,7 @@ import {
   W3CTraceContextPropagator,
 } from '@opentelemetry/core';
 import { AsyncLocalStorageContextManager } from './opentelemetry-context-async-hooks/AsyncLocalStorageContextManager';
-import packageJson from '../package.json';
+import { sdkOptions } from './sdkOptions';
 
 export * from '@getstanza/sdk-base';
 
@@ -38,8 +38,7 @@ function createInitBaseOptions(options: InitOptions): InitBaseOptions {
         environment: initOptions.environment,
         clientId: initOptions.clientId,
         hubRequest: createHubRequest({
-          sdkName: 'StanzaCloudflareSDK',
-          sdkVersion: packageJson.version,
+          ...sdkOptions,
           hubUrl: initOptions.hubUrl,
           apiKey: initOptions.apiKey,
           serviceName: initOptions.serviceName,
