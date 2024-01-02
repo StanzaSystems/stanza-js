@@ -12,11 +12,14 @@ import { stanzaCloudflareHandler } from '@getstanza/sdk-cloudflare';
 
 const handler: ExportedHandler = stanzaCloudflareHandler(
   {
-    serviceName: 'DemoCommerce',
+    serviceName: 'CloudflareProxy',
     serviceRelease: '1',
     requestTimeout: 2000,
+    scheduler: {
+      tickSize: 60 * 1000,
+    },
   },
-  { guardName: 'Stripe_Products_API' },
+  { guardName: 'ZenQuoteProxy' },
   {
     // The fetch handler is invoked when this worker receives a HTTP(S) request
     // and should return a Response (optionally wrapped in a Promise)

@@ -1,0 +1,4 @@
+STANZA_API_KEY=<your_api_key>
+STANZA_HUB_ADDRESS=https://hub.stanzasys.co
+STANZA_ENVIRONMENT=dev
+

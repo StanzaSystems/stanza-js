@@ -22,7 +22,10 @@ import { AsyncLocalStorageContextManager } from './opentelemetry-context-async-h
 export * from '@getstanza/sdk-base';
 
 type InitBaseOptions = Parameters<typeof initBase>[0];
-type InitOptions = Omit<InitBaseOptions, 'createHubService' | 'useRestHubApi'>;
+type InitOptions = Omit<
+  InitBaseOptions,
+  'createHubService' | 'useRestHubApi'
+> & { scheduler?: { tickSize?: number } };
 
 function createInitBaseOptions(options: InitOptions): InitBaseOptions {
   return {
@@ -112,7 +115,9 @@ export const stanzaCloudflareHandler = (
           fetch: async (request, env, ctx): Promise<Response> => {
             await initIfNeeded(env);
 
-            ctx.waitUntil(cloudflareScheduler.tick());
+            ctx.waitUntil(
+              cloudflareScheduler.runScheduled(options.scheduler?.tickSize)
+            );
 
             const fetchContext = propagation.extract(
               context.active(),
@@ -142,7 +147,9 @@ export const stanzaCloudflareHandler = (
           scheduled: async (controller, env, ctx) => {
             await initIfNeeded(env);
 
-            ctx.waitUntil(cloudflareScheduler.tick());
+            ctx.waitUntil(
+              cloudflareScheduler.runScheduled(options.scheduler?.tickSize)
+            );
 
             return scheduledHandler.call(
               cloudflareHandler,

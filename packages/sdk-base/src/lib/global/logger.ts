@@ -62,6 +62,9 @@ export const logger: pino.Logger & typeof loggerWrapper = createGlobal(
         paths: ['token', '[*].tokens[*]', 'bearerToken'],
         censor: (value) => `[Redacted ${typeof value}]`,
       },
+      browser: {
+        asObject: true,
+      },
     });
 
     return Object.assign(pinoLogger, loggerWrapper);

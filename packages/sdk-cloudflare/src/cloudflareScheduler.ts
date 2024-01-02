@@ -1,4 +1,7 @@
+import { logger as rootLogger } from '@getstanza/sdk-base';
 import type { Action, Scheduler } from '@getstanza/sdk-base';
+
+const logger = rootLogger.child({}, { msgPrefix: '[Cloudflare Scheduler]' });
 
 const queue = new Array<{
   work: AnyFunction;
@@ -36,17 +39,17 @@ export const cloudflareScheduler = {
       return r;
     });
   },
-  async tick() {
-    console.log('queue length:', queue.length);
+  async runScheduled(maxTimeout = 1000) {
+    logger.debug('runScheduled start: queue length: %d', queue.length);
 
     const internalQueue = queue.splice(0, queue.length);
 
-    const timestampTheshold = Date.now() + 60 * 1000;
+    const timestampThreshold = Date.now() + maxTimeout;
     const toRun = internalQueue.filter(
-      ({ timestamp }) => timestamp < timestampTheshold
+      ({ timestamp }) => timestamp < timestampThreshold
     );
     const toRequeue = internalQueue.filter(
-      ({ timestamp }) => timestamp >= timestampTheshold
+      ({ timestamp }) => timestamp >= timestampThreshold
     );
 
     queue.push(...toRequeue);
@@ -64,9 +67,9 @@ export const cloudflareScheduler = {
         });
       })
     ).catch((e) => {
-      console.error(e);
+      logger.error(e);
     });
 
-    console.log(`Run ${toRun.length} tasks`);
+    logger.debug(`runScheduled end: run %d tasks`, toRun.length);
   },
-} satisfies Scheduler & { tick: () => Promise<void> };
+} satisfies Scheduler & { runScheduled: () => Promise<void> };
