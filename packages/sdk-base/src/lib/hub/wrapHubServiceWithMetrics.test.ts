@@ -9,33 +9,6 @@ import { wrapHubServiceWithMetrics } from './wrapHubServiceWithMetrics';
 import { mockHubService } from '../__tests__/mocks/mockHubService';
 
 const mockMessageBusEmit = vi.spyOn(eventBus, 'emit');
-// const mockHubRequest = Object.assign(vi.fn(), {
-//   mockImplementationDeferred: function (this: Mock) {
-//     const deferred: {
-//       resolve: (value: unknown) => void;
-//       reject: (reason: unknown) => void;
-//     } = {
-//       resolve: () => {},
-//       reject: () => {},
-//     };
-//     this.mockImplementation((): any => {
-//       return new Promise<unknown>((resolve, reject) => {
-//         deferred.resolve = resolve;
-//         deferred.reject = reject;
-//       });
-//     });
-//
-//     return deferred;
-//   },
-// });
-// const hubService = createRestHubService({
-//   serviceName: 'testService',
-//   serviceRelease: '1.0.0',
-//   clientId: 'testClientId',
-//   environment: 'testEnvironment',
-//   hubRequest: mockHubRequest,
-//   logger,
-// });
 const hubService = wrapHubServiceWithMetrics(mockHubService);
 beforeEach(() => {
   mockMessageBusEmit.mockReset();

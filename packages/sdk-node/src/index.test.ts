@@ -38,7 +38,7 @@ describe('index', () => {
     expect(createRestHubServiceMock).not.toHaveBeenCalled();
   });
 
-  it('should create rest hub service is useRest is specified', async () => {
+  it('should create rest hub service if useRest is specified', async () => {
     await expect(
       initOrThrow({
         hubUrl: 'https://url.to.stanza.hub',
