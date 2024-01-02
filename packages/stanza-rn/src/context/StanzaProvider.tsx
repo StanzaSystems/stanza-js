@@ -23,7 +23,6 @@ export const StanzaProvider: React.FC<StanzaProviderProps> = ({
     setInstance({
       contextChanges: StanzaMobile.contextChanges,
       featureChanges: StanzaMobile.featureChanges,
-      refreshSeconds: config.refreshSeconds,
     });
   }, [config]);
 

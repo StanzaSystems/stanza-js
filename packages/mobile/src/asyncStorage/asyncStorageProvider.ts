@@ -144,20 +144,6 @@ export const createAsyncLocalStorageStateProvider = (): LocalStateProvider => {
         );
       }
 
-      asyncStorage.addEventListener(({ key, oldValue, newValue }) => {
-        if (
-          key !== null &&
-          isStanzaFeatureKey(key) &&
-          newValue !== null &&
-          oldValue !== newValue
-        ) {
-          const hasOldValue = oldValue !== null && oldValue !== undefined;
-          featureStateChangeEmitter.dispatchChange({
-            oldValue: hasOldValue ? parseFeature(oldValue) : undefined,
-            newValue: parseFeature(newValue),
-          });
-        }
-      });
       initialized = true;
     },
     getFeatureState,

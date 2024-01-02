@@ -33,7 +33,7 @@ export const useStanzaContext = (
   }, [state, resultContextName, updateContext]);
 
   useEffect(() => {
-    return contextChanges.addChangeListener(async (context) => {
+    return contextChanges.addChangeListener((context) => {
       if (context.name === resultContextName) {
         setState(context);
       }

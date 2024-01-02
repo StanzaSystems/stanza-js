@@ -4,9 +4,7 @@ import { type StanzaInstance } from './stanzaInstance';
 
 export type StanzaConfig = StanzaCoreConfig;
 
-export const createStanzaInstance = async (
-  config: StanzaConfig
-): Promise<StanzaInstance> => {
+export const createStanzaInstance = (config: StanzaConfig): StanzaInstance => {
   StanzaBrowser.init(config).catch((e) => {
     console.warn('Error while initializing @getstanza/browser', e);
   });

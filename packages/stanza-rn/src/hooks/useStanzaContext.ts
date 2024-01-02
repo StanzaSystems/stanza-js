@@ -2,7 +2,6 @@ import { getContextStale, type StanzaContext } from '@getstanza/mobile';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { StanzaReactContext } from '../context/StanzaContext';
 import { StanzaContextName } from '../context/StanzaContextName';
-import throttling from 'lodash/throttle';
 
 export const useStanzaContext = (
   contextName?: string
@@ -10,7 +9,6 @@ export const useStanzaContext = (
   const providedContextName = useContext(StanzaContextName);
   const [state, setState] = useState<StanzaContext | undefined>();
   const stanzaInstance = useContext(StanzaReactContext);
-  const refreshTime = (stanzaInstance?.refreshSeconds ?? 3) * 1000;
 
   if (stanzaInstance === undefined) {
     throw Error('Component needs to be wrapped with StanzaProvider');
@@ -35,21 +33,17 @@ export const useStanzaContext = (
   }, [state, resultContextName, updateContext]);
 
   const processChanges = useMemo(
-    () =>
-      throttling((context: StanzaContext) => {
-        if (context.name === resultContextName) {
-          setState(context);
-        }
-      }, refreshTime),
-    [resultContextName, refreshTime]
+    () => (context: StanzaContext) => {
+      if (context.name === resultContextName) {
+        console.log('context changed', context);
+        setState(context);
+      }
+    },
+    [resultContextName]
   );
 
   useEffect(() => {
-    contextChanges.addChangeListener(processChanges);
-
-    return () => {
-      contextChanges.removeChangeListener(processChanges);
-    };
+    return contextChanges.addChangeListener(processChanges);
   }, [contextChanges, resultContextName, processChanges]);
 
   return state;

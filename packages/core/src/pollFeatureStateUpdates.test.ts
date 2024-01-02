@@ -96,7 +96,7 @@ describe('pollFeatureStateUpdates', () => {
 
     void startPollingFeatureStateUpdates();
 
-    await vi.advanceTimersByTimeAsync(500);
+    await vi.advanceTimersByTimeAsync(0);
 
     expect(mockGetFeaturesStatesHot).toHaveBeenCalledOnce();
 

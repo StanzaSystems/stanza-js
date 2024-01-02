@@ -39,11 +39,9 @@ describe('features', () => {
     );
 
     const cachedFeatures = await Promise.all(
-      features
-        .map(async (feature) =>
-          utils.globals.getStateProvider().getFeatureState(feature)
-        )
-        .filter(Boolean)
+      features.map(async (feature) =>
+        utils.globals.getStateProvider().getFeatureState(feature)
+      )
     );
 
     assert.deepEqual(
