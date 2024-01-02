@@ -102,6 +102,10 @@ describe('pollFeatureStateUpdates', () => {
 
     await vi.advanceTimersByTimeAsync(500);
 
+    expect(mockGetFeaturesStatesHot).toHaveBeenCalledOnce();
+
+    await vi.advanceTimersByTimeAsync(500);
+
     expect(mockGetFeaturesStatesHot).toHaveBeenCalledTimes(2);
 
     await vi.advanceTimersByTimeAsync(1000);
