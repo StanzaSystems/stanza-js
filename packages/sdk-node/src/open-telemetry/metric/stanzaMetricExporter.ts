@@ -19,6 +19,7 @@ import { type ServiceConfig } from '@getstanza/hub-client-api';
 import { type ExportResult, ExportResultCode } from '@opentelemetry/core';
 import { isTokenInvalidError } from '../../grpc/isTokenInvalidError';
 import { createUserAgentHeader } from '@getstanza/sdk-utils';
+import packageJson from '../../../package.json';
 
 export class StanzaMetricExporter implements PushMetricExporter {
   private exporter: InMemoryMetricExporter | OTLPMetricExporter =
@@ -59,7 +60,8 @@ export class StanzaMetricExporter implements PushMetricExporter {
       createUserAgentHeader({
         serviceName: this.serviceName,
         serviceRelease: this.serviceRelease,
-        sdkVersion: '0.0.7-beta', // TODO
+        sdkName: 'StanzaNodeSDK',
+        sdkVersion: packageJson.version,
       })
     );
     const prevExporter = this.exporter;

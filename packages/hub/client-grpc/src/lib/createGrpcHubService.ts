@@ -25,6 +25,8 @@ import type pino from 'pino';
 export interface GrpcHubServiceInitOptions {
   serviceName: string;
   serviceRelease: string;
+  sdkName: string;
+  sdkVersion: string;
   environment: string;
   clientId: string;
   hubUrl: string;
@@ -36,6 +38,8 @@ export interface GrpcHubServiceInitOptions {
 export function createGrpcHubService({
   serviceName,
   serviceRelease,
+  sdkName,
+  sdkVersion,
   environment,
   clientId,
   hubUrl,
@@ -54,7 +58,8 @@ export function createGrpcHubService({
           createUserAgentHeader({
             serviceName,
             serviceRelease,
-            sdkVersion: '0.0.7-beta', // TODO
+            sdkName,
+            sdkVersion,
           })
         );
         return next(req);

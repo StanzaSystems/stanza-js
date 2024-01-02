@@ -8,6 +8,7 @@ import {
   getStanzaAuthToken,
 } from '@getstanza/sdk-base';
 import { createUserAgentHeader } from '@getstanza/sdk-utils';
+import packageJson from '../../../package.json';
 
 export class StanzaSpanExporter extends OTLPTraceExporter {
   constructor(
@@ -25,7 +26,8 @@ export class StanzaSpanExporter extends OTLPTraceExporter {
       createUserAgentHeader({
         serviceName,
         serviceRelease,
-        sdkVersion: '0.0.7-beta', // TODO
+        sdkName: 'StanzaNodeSDK',
+        sdkVersion: packageJson.version,
       })
     );
     super({

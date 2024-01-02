@@ -58,11 +58,11 @@ export const createInstrumentation = async ({
   );
   const sdk = new NodeSDK({
     sampler: new StanzaSampler(),
-    spanProcessor: new StanzaSpanProcessor(serviceName, serviceRelease) as any, // TODO: fix any cast
+    spanProcessor: new StanzaSpanProcessor(serviceName, serviceRelease),
     resource: new Resource({
       [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
       [SemanticResourceAttributes.SERVICE_VERSION]: serviceRelease,
-    }) as any, // TODO: fix any cast
+    }),
     textMapPropagator: new CompositePropagator({
       propagators: [
         new W3CTraceContextPropagator(),
@@ -75,7 +75,7 @@ export const createInstrumentation = async ({
     metricReader: new PeriodicExportingMetricReader({
       exporter: new StanzaMetricExporter(serviceName, serviceRelease),
       exportIntervalMillis: 10000,
-    }) as any, // TODO: fix any cast
+    }),
     instrumentations: [
       httpInstrumentation,
       new StanzaInstrumentation(packageJson.name, packageJson.version),

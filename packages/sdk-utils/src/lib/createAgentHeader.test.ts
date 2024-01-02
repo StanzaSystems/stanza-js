@@ -6,8 +6,9 @@ describe('createUserAgentHeader', () => {
       createUserAgentHeader({
         serviceName: 'TestService',
         serviceRelease: '1.2.3',
+        sdkName: 'StanzaTestSDK',
         sdkVersion: '4.5.6',
       })
-    ).toBe('TestService/1.2.3 StanzaNodeSDK/4.5.6');
+    ).toBe('TestService/1.2.3 StanzaTestSDK/4.5.6');
   });
 });

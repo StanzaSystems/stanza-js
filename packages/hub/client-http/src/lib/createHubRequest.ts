@@ -9,6 +9,8 @@ export interface HubRequestInitOptions {
   apiKey: string;
   serviceName: string;
   serviceRelease: string;
+  sdkName: string;
+  sdkVersion: string;
   logger: pino.Logger;
   getRequestTimeout: () => number;
 }
@@ -18,6 +20,8 @@ export const createHubRequest = ({
   hubUrl,
   serviceName,
   serviceRelease,
+  sdkName,
+  sdkVersion,
   logger,
   getRequestTimeout,
 }: HubRequestInitOptions): HubRequest => {
@@ -58,7 +62,8 @@ export const createHubRequest = ({
           'User-Agent': createUserAgentHeader({
             serviceName,
             serviceRelease,
-            sdkVersion: '0.0.7-beta', // TODO
+            sdkName,
+            sdkVersion,
           }),
         },
         method,
