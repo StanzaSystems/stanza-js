@@ -35,7 +35,6 @@ export const useStanzaContext = (
   const processChanges = useMemo(
     () => (context: StanzaContext) => {
       if (context.name === resultContextName) {
-        console.log('context changed', context);
         setState(context);
       }
     },
