@@ -13,7 +13,7 @@
         "tsConfig": "packages/sdk-cloudflare/tsconfig.lib.json",
         "assets": ["packages/sdk-cloudflare/README.md"],
         "project": "packages/sdk-cloudflare/package.json",
-        "format": ["esm", "cjs"],
+        "format": ["esm"],
         "compiler": "babel",
         "external": "all",
         "updateBuildableProjectDepsInPackageJson": true

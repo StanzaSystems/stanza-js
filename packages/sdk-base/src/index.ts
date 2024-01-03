@@ -23,5 +23,6 @@ export * from './lib/propagation/TraceConfigOverrideAdditionalInfoPropagator';
 
 export * from './lib/open-telemetry/StanzaConfigEntityManager';
 export * from './lib/open-telemetry/instrumentation/stanzaInstrumentation';
+export * from './lib/open-telemetry/metric/PeriodicExportingMetricReader';
 
 export * from './lib/utils/isTruthy';
