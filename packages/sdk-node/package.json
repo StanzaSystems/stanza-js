@@ -18,7 +18,6 @@
     "@grpc/grpc-js": "~1.9.10",
     "@opentelemetry/api": "~1.7.0",
     "@getstanza/hub-client-api": "0.0.7-beta",
-    "@opentelemetry/instrumentation": "~0.45.1",
     "@opentelemetry/exporter-metrics-otlp-grpc": "~0.45.1",
     "@getstanza/sdk-utils": "0.0.7-beta",
     "@opentelemetry/sdk-trace-base": "~1.18.1",

@@ -16,7 +16,9 @@
     "ramda": "^0.29.0",
     "@opentelemetry/core": "~1.18.1",
     "exponential-backoff": "^3.1.1",
-    "@getstanza/sdk-utils": "0.0.7-beta"
+    "@getstanza/sdk-utils": "0.0.7-beta",
+    "@opentelemetry/instrumentation": "~0.45.1",
+    "@opentelemetry/sdk-metrics": "~1.18.1"
   },
   "main": "./index.cjs",
   "module": "./index.js"

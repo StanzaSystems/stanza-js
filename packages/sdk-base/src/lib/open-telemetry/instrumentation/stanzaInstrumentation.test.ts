@@ -44,6 +44,7 @@ describe('StanzaInstrumentation', () => {
 
   beforeEach(() => {
     instrumentation = new StanzaInstrumentation('testPackage', '1.0.0');
+    instrumentation.enable();
     metricSpies = { counter: {}, histogram: {} };
     const realMeterProvider = new MeterProvider();
     const meterProvider = {
