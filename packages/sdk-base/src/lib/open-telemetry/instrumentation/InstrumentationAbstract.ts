@@ -1,5 +1,12 @@
 /* eslint-disable */
 /*
+ * Original file: https://github.com/open-telemetry/opentelemetry-js/blob/3e5929132129ed6022adbd05d085b998cb03e3d5/experimental/packages/opentelemetry-instrumentation/src/instrumentation.ts
+ *
+ * This file was modified:
+ * * removed shimmer usages
+ * * import types from original '@opentelemetry/instrumentation' library
+ * */
+/*
  * Copyright The OpenTelemetry Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,11 +32,10 @@ import {
   Tracer,
   TracerProvider,
 } from '@opentelemetry/api';
-// import * as shimmer from 'shimmer';
 import type {
+  InstrumentationModuleDefinition,
   Instrumentation,
   InstrumentationConfig,
-  InstrumentationModuleDefinition,
 } from '@opentelemetry/instrumentation';
 
 /**
@@ -63,15 +69,6 @@ export abstract class InstrumentationAbstract<T = any>
     this._meter = metrics.getMeter(instrumentationName, instrumentationVersion);
     this._updateMetricInstruments();
   }
-
-  // /* Api to wrap instrumented method */
-  // protected _wrap = shimmer.wrap;
-  // /* Api to unwrap instrumented methods */
-  // protected _unwrap = shimmer.unwrap;
-  // /* Api to mass wrap instrumented method */
-  // protected _massWrap = shimmer.massWrap;
-  // /* Api to mass unwrap instrumented methods */
-  // protected _massUnwrap = shimmer.massUnwrap;
 
   /* Returns meter */
   protected get meter(): Meter {

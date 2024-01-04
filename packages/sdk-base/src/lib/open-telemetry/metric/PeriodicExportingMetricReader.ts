@@ -1,5 +1,13 @@
 /* eslint-disable */
 /*
+ * Original file: https://github.com/open-telemetry/opentelemetry-js/blob/3e5929132129ed6022adbd05d085b998cb03e3d5/packages/sdk-metrics/src/export/PeriodicExportingMetricReader.ts
+ *
+ * This file was modified:
+ * * import types from original '@opentelemetry/core' '@opentelemetry/sdk-metrics' libraries
+ * * suppress TS warnings
+ * * modify onInitialized method to use STANZA_SCHEDULER instead of setInterval for scheduling exporting of metrics
+ * */
+/*
  * Copyright The OpenTelemetry Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,9 +32,6 @@ import {
   callWithTimeout,
   TimeoutError,
 } from '@opentelemetry/core';
-// import { MetricReader } from './MetricReader';
-// import { PushMetricExporter } from './MetricExporter';
-// import { callWithTimeout, TimeoutError } from '../utils';
 import { diag } from '@opentelemetry/api';
 import {
   MetricProducer,
@@ -35,7 +40,6 @@ import {
 } from '@opentelemetry/sdk-metrics';
 import { STANZA_SCHEDULER } from '../../global/scheduler';
 import { logger } from '../../global/logger';
-// import { MetricProducer } from './MetricProducer';
 
 export type PeriodicExportingMetricReaderOptions = {
   /**
@@ -160,15 +164,14 @@ export class PeriodicExportingMetricReader extends MetricReader {
   }
 
   protected override onInitialized(): void {
-    // start running the interval as soon as this reader is initialized and keep handle for shutdown.
     const work = () => {
-      // this._runOnce never rejects. Using void operator to suppress @typescript-eslint/no-floating-promises.
       const runOnceResult = this._runOnce();
       STANZA_SCHEDULER.schedule(work, this._exportInterval).catch((err) => {
         logger.warn(err);
       });
       return runOnceResult;
     };
+    // start running the work as soon as this reader is initialized.
     STANZA_SCHEDULER.schedule(work, this._exportInterval).catch((err) => {
       logger.warn(err);
     });
