@@ -1,0 +1,23 @@
+{
+  "name": "@getstanza/sdk-base",
+  "type": "commonjs",
+  "version": "0.0.7-beta",
+  "description": "Stanza SDK Base",
+  "author": "Stanza",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "vitest": "0.33.0",
+    "@getstanza/hub-client-api": "0.0.7-beta",
+    "@opentelemetry/api": "~1.7.0",
+    "@vitest/expect": "0.33.0",
+    "zod": "^3.21.4",
+    "pino": "^8.14.1",
+    "emittery": "^0.13.1",
+    "ramda": "^0.29.0",
+    "@opentelemetry/core": "~1.18.1",
+    "exponential-backoff": "^3.1.1",
+    "@getstanza/sdk-utils": "0.0.7-beta"
+  },
+  "main": "./index.cjs",
+  "module": "./index.js"
+}

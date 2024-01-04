@@ -2,3 +2,4 @@
 /dist
 /coverage
 /.nx
+packages/sdk-cloudflare/src/opentelemetry-context-async-hooks

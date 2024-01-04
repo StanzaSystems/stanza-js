@@ -1,0 +1,17 @@
+{
+  "name": "@getstanza/hub-client-http",
+  "type": "commonjs",
+  "version": "0.0.7-beta",
+  "description": "Stanza Hub Http client",
+  "author": "Stanza",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@getstanza/sdk-utils": "0.0.7-beta",
+    "@getstanza/hub-client-api": "0.0.7-beta",
+    "node-fetch": "^2.6.2",
+    "pino": "^8.14.1",
+    "zod": "^3.21.4"
+  },
+  "main": "./index.cjs",
+  "module": "./index.js"
+}

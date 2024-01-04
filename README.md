@@ -24,7 +24,8 @@ The following samples are used primarily during Stanza development, and are work
 
 - `packages/core` - Stanza JS core library, used by browser, node, and other packages
 - `packages/browser` - Stanza browser SDK
-- `packages/node` - Stanza Node SDK
+- `packages/sdk-node` - Stanza Node SDK
+- `packages/sdk-cloudflare` - Stanza Cloudflare SDK
 
 ### Supporting Packages
 

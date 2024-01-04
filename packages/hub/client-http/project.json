@@ -1,0 +1,46 @@
+{
+  "name": "hub-client-http",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/hub/client-http",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/hub/client-http",
+        "main": "packages/hub/client-http/src/index.ts",
+        "tsConfig": "packages/hub/client-http/tsconfig.lib.json",
+        "assets": ["packages/hub/client-http/README.md"],
+        "project": "packages/hub/client-http/package.json",
+        "format": ["cjs", "esm"],
+        "compiler": "babel",
+        "external": "all",
+        "updateBuildableProjectDepsInPackageJson": true
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs hub-client-http {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/hub/client-http/**/*.ts",
+          "packages/hub/client-http/package.json"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../../coverage/packages/hub/client-http"
+      }
+    }
+  },
+  "tags": []
+}

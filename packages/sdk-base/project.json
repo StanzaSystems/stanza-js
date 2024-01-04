@@ -1,0 +1,46 @@
+{
+  "name": "sdk-base",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/sdk-base",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/sdk-base",
+        "main": "packages/sdk-base/src/index.ts",
+        "tsConfig": "packages/sdk-base/tsconfig.lib.json",
+        "assets": ["packages/sdk-base/README.md"],
+        "project": "packages/sdk-base/package.json",
+        "format": ["cjs", "esm"],
+        "compiler": "babel",
+        "external": "all",
+        "updateBuildableProjectDepsInPackageJson": true
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs sdk-base {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/sdk-base/**/*.ts",
+          "packages/sdk-base/package.json"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/packages/sdk-base"
+      }
+    }
+  },
+  "tags": []
+}
