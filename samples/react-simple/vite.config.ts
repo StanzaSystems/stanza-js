@@ -3,9 +3,13 @@ import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
 export default defineConfig({
+  root: __dirname,
   cacheDir: '../../node_modules/.vite/react-simple',
 
   build: {
+    outDir: '../../dist/samples/react-simple',
+    reportCompressedSize: true,
+    commonjsOptions: { transformMixedEsModules: true },
     target: 'esnext',
   },
 
@@ -31,6 +35,11 @@ export default defineConfig({
   // },
 
   test: {
+    reporters: ['default'],
+    coverage: {
+      reportsDirectory: '../../coverage/samples/react-simple',
+      provider: 'v8',
+    },
     globals: true,
     cache: {
       dir: '../../node_modules/.vitest',
