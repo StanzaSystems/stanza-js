@@ -6,8 +6,8 @@ import {
   type Meter,
   type MeterProvider as IMeterProvider,
 } from '@opentelemetry/api';
-import type * as eventBusModule from '../../../index';
-import { eventBus, events } from '../../../index';
+import type * as eventBusModule from '../../global/eventBus';
+import { eventBus, events } from '../../global/eventBus';
 import { StanzaInstrumentation } from './stanzaInstrumentation';
 
 type EventBusModule = typeof eventBusModule;

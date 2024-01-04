@@ -1,5 +1,5 @@
 import { type Attributes } from '@opentelemetry/api';
-import { type GuardData, type OptionalGuardData } from '../../../index';
+import { type GuardData, type OptionalGuardData } from '../../global/eventBus';
 
 export interface GuardAttributes extends Attributes {
   guard: string;

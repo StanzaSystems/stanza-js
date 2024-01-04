@@ -14,7 +14,7 @@ import {
   type GuardData,
   type DefaultContextData,
   type FeatureData,
-} from '../../../index';
+} from '../../global/eventBus';
 
 export type RequestAttributes = DefaultContextAttributes &
   GuardAttributes &

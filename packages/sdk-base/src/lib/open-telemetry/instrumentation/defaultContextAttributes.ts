@@ -1,5 +1,5 @@
 import { type Attributes } from '@opentelemetry/api';
-import { type DefaultContextData } from '../../../index';
+import { type DefaultContextData } from '../../global/eventBus';
 
 export interface DefaultContextAttributes extends Attributes {
   service: string;

@@ -12,7 +12,7 @@ import type {
   QuotaReason,
   ReasonData,
   TokenReason,
-} from '../../../index';
+} from '../../global/eventBus';
 
 export type GuardResolutionAttributes = RequestAttributes & {
   config_state: ConfigState;
