@@ -163,11 +163,11 @@ export class PeriodicExportingMetricReader extends MetricReader {
     // start running the interval as soon as this reader is initialized and keep handle for shutdown.
     const work = () => {
       // this._runOnce never rejects. Using void operator to suppress @typescript-eslint/no-floating-promises.
-      void STANZA_SCHEDULER.schedule(work, this._exportInterval).catch(
-        (err) => {
-          logger.warn(err);
-        }
-      );
+      const runOnceResult = this._runOnce();
+      STANZA_SCHEDULER.schedule(work, this._exportInterval).catch((err) => {
+        logger.warn(err);
+      });
+      return runOnceResult;
     };
     STANZA_SCHEDULER.schedule(work, this._exportInterval).catch((err) => {
       logger.warn(err);
