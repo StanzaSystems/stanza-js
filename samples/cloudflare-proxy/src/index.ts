@@ -8,7 +8,10 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { stanzaCloudflareHandler } from '@getstanza/sdk-cloudflare';
+import {
+  stanzaCloudflareHandler,
+  withStanzaHeaders,
+} from '@getstanza/sdk-cloudflare';
 
 const handler: ExportedHandler = stanzaCloudflareHandler(
   {
@@ -31,10 +34,10 @@ const handler: ExportedHandler = stanzaCloudflareHandler(
       proxyUrl.pathname = requestUrl.pathname;
       proxyUrl.search = requestUrl.search;
 
-      // carry through original request headers (except for X-Stanza-Key)
-      const proxyHeaders = new Headers(request.headers);
-      proxyHeaders.delete('X-Stanza-Key');
-      // TODO: pass Stanza token if obtained
+      // carry through original request headers and append any Stanza specific headers
+      const proxyHeaders = withStanzaHeaders(request.headers);
+
+      console.log('outgoing headers', proxyHeaders);
       const proxyRequest = new Request(request, { headers: proxyHeaders });
 
       // make subrequests with the global `fetch()` function

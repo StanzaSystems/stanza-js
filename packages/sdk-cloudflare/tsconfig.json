@@ -1,6 +1,8 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": {},
+  "compilerOptions": {
+    "lib": ["es2020"]
+  },
   "files": [],
   "include": [],
   "references": [
