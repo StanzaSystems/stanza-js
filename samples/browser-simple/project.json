@@ -55,14 +55,14 @@
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["coverage/samples/browser-simple"],
+      "outputs": ["{workspaceRoot}/coverage/samples/browser-simple"],
       "options": {
         "passWithNoTests": true,
         "reportsDirectory": "../../coverage/samples/browser-simple"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["samples/browser-simple/**/*.ts"]

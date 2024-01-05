@@ -1,0 +1,40 @@
+{
+  "name": "sdk-utils",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/sdk-utils",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/sdk-utils",
+        "main": "packages/sdk-utils/src/index.ts",
+        "tsConfig": "packages/sdk-utils/tsconfig.lib.json",
+        "assets": ["packages/sdk-utils/README.md"],
+        "project": "packages/sdk-utils/package.json",
+        "format": ["cjs", "esm"],
+        "compiler": "babel",
+        "external": "all",
+        "updateBuildableProjectDepsInPackageJson": true
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs sdk-utils {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../../coverage/packages/sdk-utils"
+      }
+    }
+  },
+  "tags": []
+}

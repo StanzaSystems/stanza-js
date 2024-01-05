@@ -1,30 +1,28 @@
-import { defineConfig } from 'vitest/config'
+import { defineConfig } from 'vitest/config';
 
-import viteTsConfigPaths from 'vite-tsconfig-paths'
-import { resolve } from 'path'
-import { searchForWorkspaceRoot } from 'vite'
+import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import { resolve } from 'path';
+import { searchForWorkspaceRoot } from 'vite';
 
 export default defineConfig({
+  root: __dirname,
   cacheDir: '../../node_modules/.vite/browser-simple',
   build: {
+    outDir: '../../dist/samples/browser-simple',
+    reportCompressedSize: true,
+    commonjsOptions: { transformMixedEsModules: true },
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html')
-      }
-    }
+        main: resolve(__dirname, 'index.html'),
+      },
+    },
   },
   server: {
     fs: {
-      allow: [
-        searchForWorkspaceRoot(process.cwd())
-      ]
-    }
+      allow: [searchForWorkspaceRoot(process.cwd())],
+    },
   },
-  plugins: [
-    viteTsConfigPaths({
-      root: '../../'
-    })
-  ],
+  plugins: [nxViteTsPaths()],
   // Uncomment this if you are using workers.
   // worker: {
   //  plugins: [
@@ -35,11 +33,16 @@ export default defineConfig({
   // },
 
   test: {
+    reporters: ['default'],
+    coverage: {
+      reportsDirectory: '../../coverage/samples/browser-simple',
+      provider: 'v8',
+    },
     globals: true,
     cache: {
-      dir: '../../node_modules/.vitest'
+      dir: '../../node_modules/.vitest',
     },
     environment: 'jsdom',
-    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}']
-  }
-})
+    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+  },
+});

@@ -17,8 +17,8 @@
         "compiler": "babel",
         "format": ["esm", "cjs"],
         "external": "all",
-        "updateBuildableProjectDepsInPackageJson": false,
-        "rollupConfig": "packages/stanza-react/rollup.config.js"
+        "rollupConfig": "packages/stanza-react/rollup.config.js",
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "publish": {
@@ -26,18 +26,12 @@
       "dependsOn": ["build"]
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "packages/stanza-react/**/*.{ts,tsx,js,jsx}",
-          "packages/stanza-react/package.json"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["coverage/packages/stanza-react"],
+      "outputs": ["{workspaceRoot}/coverage/packages/stanza-react"],
       "options": {
         "passWithNoTests": true,
         "reportsDirectory": "../../coverage/packages/stanza-react"

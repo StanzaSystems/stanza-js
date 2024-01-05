@@ -1,1 +1,1 @@
-export * from './stanzaSession'
+export * from './stanzaSession';

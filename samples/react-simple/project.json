@@ -54,18 +54,15 @@
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["coverage/samples/react-simple"],
+      "outputs": ["{workspaceRoot}/coverage/samples/react-simple"],
       "options": {
         "passWithNoTests": true,
         "reportsDirectory": "../../coverage/samples/react-simple"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["samples/react-simple/**/*.{ts,tsx,js,jsx}"]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": []

@@ -1,33 +1,26 @@
-import { getFeatureStatesHot } from './getFeatureStatesHot'
-import { featureChanges, getConfig, getStateProvider } from './globals'
-import { featureStatesEqual } from './models/featureStatesEqual'
-import { groupBy } from './groupBy'
-import { identity } from './identity'
+import { getFeatureStatesHot } from './getFeatureStatesHot';
+import { featureChanges, getConfig, getStateProvider } from './globals';
 
-export async function startPollingFeatureStateUpdates (): Promise<void> {
+export async function startPollingFeatureStateUpdates(): Promise<void> {
+  const stateProvider = getStateProvider();
+  stateProvider.addChangeListener(({ newValue }) => {
+    featureChanges.dispatchChange(newValue);
+  });
+
   while (true) {
-    await pollFeatureStateUpdates()
-    await poll()
+    await pollFeatureStateUpdates();
+    await poll();
   }
 }
 
-async function pollFeatureStateUpdates (): Promise<void> {
-  const featureStates = getStateProvider().getAllFeatureStates()
-  const features = featureStates.map(({ featureName }) => featureName)
-  const newFeaturesStates = await getFeatureStatesHot(features)
-
-  const oldFeatureStatesMap = featureStates.reduce(groupBy('featureName', identity), {})
-
-  newFeaturesStates.filter(newFeaturesState => {
-    const oldFeatureState = oldFeatureStatesMap[newFeaturesState.featureName]
-    return oldFeatureState == null || !featureStatesEqual(newFeaturesState, oldFeatureState)
-  }).forEach(newFeaturesState => {
-    featureChanges.dispatchChange(newFeaturesState)
-  })
+async function pollFeatureStateUpdates(): Promise<void> {
+  const featureStates = getStateProvider().getAllFeatureStates();
+  const features = featureStates.map(({ featureName }) => featureName);
+  await getFeatureStatesHot(features);
 }
 
-async function poll (): Promise<void> {
-  const config = getConfig()
-  const timeout = (config.refreshSeconds ?? 10) * 1000
-  await new Promise(resolve => setTimeout(resolve, timeout))
+async function poll(): Promise<void> {
+  const config = getConfig();
+  const timeout = (config.refreshSeconds ?? 10) * 1000;
+  await new Promise((resolve) => setTimeout(resolve, timeout));
 }

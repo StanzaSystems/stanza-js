@@ -7,7 +7,17 @@
       "files": ["*.json"],
       "parser": "jsonc-eslint-parser",
       "rules": {
-        "@nx/dependency-checks": "error"
+        "@nx/dependency-checks": [
+          "error",
+          {
+            "ignoredFiles": [
+              "**/*.test.(ts|js)",
+              "**/__tests__/**",
+              "**/vite.config.ts",
+              "**/*.d.ts"
+            ]
+          }
+        ]
       }
     },
     {
@@ -32,14 +42,20 @@
       "files": ["*.ts", "*.tsx"],
       "extends": [
         "plugin:@nx/typescript",
-        "standard-with-typescript"
+        "standard-with-typescript",
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier"
       ],
       "parserOptions": {
         "ecmaVersion": "latest",
         "sourceType": "module"
       },
       "rules": {
-        "@typescript-eslint/restrict-template-expressions": ["error", { "allowNullish": true, "allowNumber": true }],
+        "@typescript-eslint/restrict-template-expressions": [
+          "error",
+          { "allowNullish": true, "allowNumber": true }
+        ],
         "@typescript-eslint/return-await": ["error", "in-try-catch"],
         "@typescript-eslint/explicit-function-return-type": 0,
         "@typescript-eslint/no-explicit-any": 0,

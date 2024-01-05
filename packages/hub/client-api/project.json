@@ -1,0 +1,40 @@
+{
+  "name": "hub-client-api",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/hub/client-api",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/hub/client-api",
+        "main": "packages/hub/client-api/src/index.ts",
+        "tsConfig": "packages/hub/client-api/tsconfig.lib.json",
+        "assets": ["packages/hub/client-api/README.md"],
+        "project": "packages/hub/client-api/package.json",
+        "format": ["cjs", "esm"],
+        "compiler": "babel",
+        "external": "all",
+        "updateBuildableProjectDepsInPackageJson": true
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs hub-client-api {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../../coverage/packages/hub/client-api"
+      }
+    }
+  },
+  "tags": []
+}

@@ -8,7 +8,7 @@ Refer to the `README.md` file linked to each sample, and the [Stanza Docs](https
 
 ## Sample Applications
 
-- [`samples/express-demo`](./samples/express-demo/README.md) - Express (Node) sample, showing Stanza guards.  (Good first sample to start with.)
+- [`samples/express-demo`](./samples/express-demo/README.md) - Express (Node) sample, showing Stanza guards. (Good first sample to start with.)
 - [`samples/next-with-stripe`](./samples/next-with-stripe/README.md) - Next.js sample that uses the Stripe React component.
 - [`samples/react-simple`](./samples/react-simple/README.md) - Simple React sample app
 - [`samples/simple-next`](./samples/simple-next/README.md) - Simple Next.js sample app
@@ -24,7 +24,8 @@ The following samples are used primarily during Stanza development, and are work
 
 - `packages/core` - Stanza JS core library, used by browser, node, and other packages
 - `packages/browser` - Stanza browser SDK
-- `packages/node` - Stanza Node SDK
+- `packages/sdk-node` - Stanza Node SDK
+- `packages/sdk-cloudflare` - Stanza Cloudflare SDK
 
 ### Supporting Packages
 
@@ -36,6 +37,7 @@ The following samples are used primarily during Stanza development, and are work
 ## Toolchain
 
 Stanza JS uses the following tools, which you should familiarize yourself with:
+
 - [Nx](https://nx.dev/)
 - [esbuild](https://esbuild.github.io/)
 - [ESLint](https://eslint.org/)
@@ -54,7 +56,7 @@ npm install
 ```
 
 _If you get deprecation or vulnerability warnings, they are likely from our development dependencies only, and unrelated to Stanza packages.
-To be certain, you can run `npm audit --omit=dev` which should find 0 vulnerabilities.  If this is not the case, please
+To be certain, you can run `npm audit --omit=dev` which should find 0 vulnerabilities. If this is not the case, please
 [open an issue](https://github.com/StanzaSystems/stanza-js/issues)._
 
 After everything is installed, you can build all of the packages and sample applications:
@@ -95,7 +97,7 @@ cd samples/express-demo
 npx nx serve
 ```
 
-By default, these samples will run in development mode.  Saving a file will restart the application.
+By default, these samples will run in development mode. Saving a file will restart the application.
 
 ## Workspaces and packages
 

@@ -11,13 +11,14 @@ Requests for higher paying users are prioritized under load.
 ## Setup
 
 1. Copy the `.env.example` file and rename it to `.env`.
-2. In the `.env` file, set `STANZA_API_KEY` to a [browser key](https://ui.demo.getstanza.io/admin?tab=keys) for your local environment.
-3. In the `.env` file, set `GITHUB_PAT` to a [GitHub Personal Access Token](https://github.com/settings/tokens).  It does not require any particular scopes.
-4. In the [Stanza UI](https://ui.demo.getstanza.io/guards), create a guard:
+2. In the `.env` file, set `STANZA_API_KEY` to a [API key](https://ui.stanzasys.co/) for your local environment.
+3. In the `.env` file, set `GITHUB_PAT` to a [GitHub Personal Access Token](https://github.com/settings/tokens). It does not require any particular scopes.
+4. In the [Stanza UI](https://ui.stanzasys.co/), create a service named `expressDemo`.
+5. In the [Stanza UI](https://ui.stanzasys.co/), create a guard:
 
-  | Name                | Project | Environment | Traffic Type |
-  |---------------------|---------|-------------|--------------|
-  | github_guard        | default | local       | Outbound     |
+| Name         | Project | Environment | Traffic Type | Guarded Service |
+| ------------ | ------- | ----------- | ------------ | --------------- |
+| github_guard | default | local       | Outbound     | expressDemo     |
 
 Ensure the guard has the following traffic configuration:
 
@@ -32,7 +33,7 @@ Ensure the guard has the following traffic configuration:
 }
 ```
 
-Note that this configuration is useful for demonstration purposes only.  In a real application, the refill and burst rates would be much higher.
+Note that this configuration is useful for demonstration purposes only. In a real application, the refill and burst rates would be much higher.
 
 ### Traffic Configuration Options
 
@@ -72,16 +73,19 @@ In the following examples, [octocat](https://github.com/octocat) is a GitHub use
 The demo app will make a request to a GitHub API that retrieves details for that user.
 
 For regular priority (using the default plan):
+
 ```sh
 curl localhost:3002/account/octocat
 ```
 
 For low priority (using the "free" plan):
+
 ```sh
 curl --header "x-user-plan: free" localhost:3002/account/octocat
 ```
 
 For high priority (using the "enterprise" plan):
+
 ```sh
 curl --header "x-user-plan: enterprise" localhost:3002/account/octocat
 ```
@@ -111,12 +115,12 @@ You'll see Artillery's statistics along the way, and a summary output at the end
 ```
 
 From this chart, you can see the total number of requests of each type that were sent, how many succeeded, how many were rate limited, and the percent that were successful.
-Because we set the refill and burst rates very low, we should see a majority of requests were rate-limited.  However, we can also see that higher priority requests from users
+Because we set the refill and burst rates very low, we should see a majority of requests were rate-limited. However, we can also see that higher priority requests from users
 of the `enterprise` plan were allowed to succeed at a much higher rate than users of the default `pro` plan, or users of the `free` plan.
 
 For this example, these plans and their priorities were established in the source code of the `gitHubGuard`
 function in [`main.ts`](./src/main.ts).
 
 ```ts
-const priorityBoost = (plan === 'free') ? -1 : (plan === 'enterprise') ? 1 : 0
+const priorityBoost = plan === 'free' ? -1 : plan === 'enterprise' ? 1 : 0;
 ```

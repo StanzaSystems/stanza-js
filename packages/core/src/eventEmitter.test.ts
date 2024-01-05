@@ -1,117 +1,142 @@
-import { describe, expect, it, vi } from 'vitest'
-import { StanzaChangeTarget } from './eventEmitter'
+import { describe, expect, it, vi } from 'vitest';
+import { StanzaChangeTarget } from './eventEmitter';
 
 describe('eventEmitter', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('should dispatch event without any listeners', () => {
-    const eventEmitter = new StanzaChangeTarget<string>()
+    const eventEmitter = new StanzaChangeTarget<string>();
 
-    expect(() => { eventEmitter.dispatchChange('My change') }).not.toThrow()
-  })
+    expect(() => {
+      eventEmitter.dispatchChange('My change');
+    }).not.toThrow();
+  });
 
-  it('should listen to a dispatched change event', () => {
-    const eventEmitter = new StanzaChangeTarget<string>()
+  it('should listen to a dispatched change event', async () => {
+    vi.useFakeTimers();
+    const eventEmitter = new StanzaChangeTarget<string>();
 
-    const listener = vi.fn()
+    const listener = vi.fn();
 
-    eventEmitter.addChangeListener(listener)
+    eventEmitter.addChangeListener(listener);
 
-    eventEmitter.dispatchChange('My change')
+    eventEmitter.dispatchChange('My change');
 
-    expect(listener).toHaveBeenCalledOnce()
-    expect(listener).toHaveBeenCalledWith('My change')
-  })
+    await vi.advanceTimersByTimeAsync(0);
 
-  it('should listen to a dispatched change event - multiple listeners', () => {
-    const eventEmitter = new StanzaChangeTarget<string>()
+    expect(listener).toHaveBeenCalledOnce();
+    expect(listener).toHaveBeenCalledWith('My change');
+  });
 
-    const listener1 = vi.fn()
-    const listener2 = vi.fn()
+  it('should listen to a dispatched change event - multiple listeners', async () => {
+    vi.useFakeTimers();
 
-    eventEmitter.addChangeListener(listener1)
-    eventEmitter.addChangeListener(listener2)
+    const eventEmitter = new StanzaChangeTarget<string>();
 
-    eventEmitter.dispatchChange('My change')
+    const listener1 = vi.fn();
+    const listener2 = vi.fn();
 
-    expect(listener1).toHaveBeenCalledOnce()
-    expect(listener1).toHaveBeenCalledWith('My change')
+    eventEmitter.addChangeListener(listener1);
+    eventEmitter.addChangeListener(listener2);
 
-    expect(listener2).toHaveBeenCalledOnce()
-    expect(listener2).toHaveBeenCalledWith('My change')
-  })
+    eventEmitter.dispatchChange('My change');
 
-  it('should not listen to a dispatched change event after it has been unsubscribed - using unsubscribe returned from addChange', () => {
-    const eventEmitter = new StanzaChangeTarget<string>()
+    await vi.advanceTimersByTimeAsync(0);
 
-    const listener1 = vi.fn()
-    const listener2 = vi.fn()
+    expect(listener1).toHaveBeenCalledOnce();
+    expect(listener1).toHaveBeenCalledWith('My change');
 
-    const unsubscribe1 = eventEmitter.addChangeListener(listener1)
-    const unsubscribe2 = eventEmitter.addChangeListener(listener2)
+    expect(listener2).toHaveBeenCalledOnce();
+    expect(listener2).toHaveBeenCalledWith('My change');
+  });
 
-    eventEmitter.dispatchChange('My change')
+  it('should not listen to a dispatched change event after it has been unsubscribed - using unsubscribe returned from addChange', async () => {
+    vi.useFakeTimers();
 
-    expect(listener1).toHaveBeenCalledOnce()
-    expect(listener1).toHaveBeenCalledWith('My change')
+    const eventEmitter = new StanzaChangeTarget<string>();
 
-    expect(listener2).toHaveBeenCalledOnce()
-    expect(listener2).toHaveBeenCalledWith('My change')
+    const listener1 = vi.fn();
+    const listener2 = vi.fn();
 
-    listener1.mockReset()
-    listener2.mockReset()
+    const unsubscribe1 = eventEmitter.addChangeListener(listener1);
+    const unsubscribe2 = eventEmitter.addChangeListener(listener2);
 
-    unsubscribe1()
+    eventEmitter.dispatchChange('My change');
 
-    eventEmitter.dispatchChange('My change 2')
+    await vi.advanceTimersByTimeAsync(0);
 
-    expect(listener1).not.toHaveBeenCalled()
-    expect(listener2).toHaveBeenCalledOnce()
+    expect(listener1).toHaveBeenCalledOnce();
+    expect(listener1).toHaveBeenCalledWith('My change');
 
-    listener1.mockReset()
-    listener2.mockReset()
+    expect(listener2).toHaveBeenCalledOnce();
+    expect(listener2).toHaveBeenCalledWith('My change');
 
-    unsubscribe2()
+    listener1.mockReset();
+    listener2.mockReset();
 
-    eventEmitter.dispatchChange('My change 3')
+    unsubscribe1();
 
-    expect(listener1).not.toHaveBeenCalled()
-    expect(listener2).not.toHaveBeenCalled()
-  })
+    eventEmitter.dispatchChange('My change 2');
 
-  it('should not listen to a dispatched change event after it has been unsubscribed - using removeChangeListener', () => {
-    const eventEmitter = new StanzaChangeTarget<string>()
+    await vi.advanceTimersByTimeAsync(0);
 
-    const listener1 = vi.fn()
-    const listener2 = vi.fn()
+    expect(listener1).not.toHaveBeenCalled();
+    expect(listener2).toHaveBeenCalledOnce();
 
-    eventEmitter.addChangeListener(listener1)
-    eventEmitter.addChangeListener(listener2)
+    listener1.mockReset();
+    listener2.mockReset();
 
-    eventEmitter.dispatchChange('My change')
+    unsubscribe2();
 
-    expect(listener1).toHaveBeenCalledOnce()
-    expect(listener1).toHaveBeenCalledWith('My change')
+    eventEmitter.dispatchChange('My change 3');
 
-    expect(listener2).toHaveBeenCalledOnce()
-    expect(listener2).toHaveBeenCalledWith('My change')
+    expect(listener1).not.toHaveBeenCalled();
+    expect(listener2).not.toHaveBeenCalled();
+  });
 
-    listener1.mockReset()
-    listener2.mockReset()
+  it('should not listen to a dispatched change event after it has been unsubscribed - using removeChangeListener', async () => {
+    vi.useFakeTimers();
 
-    eventEmitter.removeChangeListener(listener1)
+    const eventEmitter = new StanzaChangeTarget<string>();
 
-    eventEmitter.dispatchChange('My change 2')
+    const listener1 = vi.fn();
+    const listener2 = vi.fn();
 
-    expect(listener1).not.toHaveBeenCalled()
-    expect(listener2).toHaveBeenCalledOnce()
+    eventEmitter.addChangeListener(listener1);
+    eventEmitter.addChangeListener(listener2);
 
-    listener1.mockReset()
-    listener2.mockReset()
+    eventEmitter.dispatchChange('My change');
 
-    eventEmitter.removeChangeListener(listener2)
+    await vi.advanceTimersByTimeAsync(0);
 
-    eventEmitter.dispatchChange('My change 3')
+    expect(listener1).toHaveBeenCalledOnce();
+    expect(listener1).toHaveBeenCalledWith('My change');
 
-    expect(listener1).not.toHaveBeenCalled()
-    expect(listener2).not.toHaveBeenCalled()
-  })
-})
+    expect(listener2).toHaveBeenCalledOnce();
+    expect(listener2).toHaveBeenCalledWith('My change');
+
+    listener1.mockReset();
+    listener2.mockReset();
+
+    eventEmitter.removeChangeListener(listener1);
+
+    eventEmitter.dispatchChange('My change 2');
+
+    await vi.advanceTimersByTimeAsync(0);
+
+    expect(listener1).not.toHaveBeenCalled();
+    expect(listener2).toHaveBeenCalledOnce();
+
+    listener1.mockReset();
+    listener2.mockReset();
+
+    eventEmitter.removeChangeListener(listener2);
+
+    eventEmitter.dispatchChange('My change 3');
+
+    expect(listener1).not.toHaveBeenCalled();
+    expect(listener2).not.toHaveBeenCalled();
+  });
+});

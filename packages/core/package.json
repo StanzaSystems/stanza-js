@@ -1,12 +1,12 @@
 {
   "name": "@getstanza/core",
-  "version": "0.0.5-beta",
+  "version": "0.0.7-beta",
   "type": "commonjs",
   "description": "Stanza core JS features",
   "author": "Stanza",
   "license": "Apache-2.0",
   "dependencies": {
-    "cross-fetch": "^4.0.0"
+    "emittery": "^0.13.1"
   },
   "devDependencies": {
     "msw": "^1.2.2",

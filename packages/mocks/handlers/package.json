@@ -1,5 +1,9 @@
 {
   "name": "@getstanza/mocks-handlers",
-  "version": "0.0.5-beta",
-  "type": "module"
+  "version": "0.0.7-beta",
+  "type": "module",
+  "dependencies": {
+    "msw": "^1.3.2",
+    "tslib": "^2.6.0"
+  }
 }

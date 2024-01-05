@@ -1,12 +1,12 @@
 {
   "name": "@getstanza/next-node",
-  "version": "0.0.5-beta",
+  "version": "0.0.7-beta",
   "type": "commonjs",
   "description": "Stanza Node SDK adapter for NextJS",
   "author": "Stanza",
   "license": "Apache-2.0",
   "dependencies": {
-    "@getstanza/node": "0.0.5-beta",
+    "@getstanza/node": "0.0.7-beta",
     "next": "13.5.3"
   },
   "devDependencies": {
