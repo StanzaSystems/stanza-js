@@ -12,7 +12,7 @@ import { diag } from '@opentelemetry/api';
 
 export function sendWithFetch<ExportItem, ServiceRequest>(
   collector: OTLPExporterFetchBase<ExportItem, ServiceRequest>,
-  body: string | Buffer,
+  body: string,
   contentType: string,
   onSuccess: () => void,
   onError: (error: OTLPExporterError) => void
@@ -20,7 +20,6 @@ export function sendWithFetch<ExportItem, ServiceRequest>(
   const exporterTimeout = collector.timeoutMillis;
   const parsedUrl = new URL(collector.url);
   let retryTimer: ReturnType<typeof setTimeout>;
-  // let req: http.ClientRequest;
   let reqIsDestroyed = false;
 
   const exporterTimer = setTimeout(() => {

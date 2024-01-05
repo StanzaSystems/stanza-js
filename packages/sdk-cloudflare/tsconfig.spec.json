@@ -20,6 +20,7 @@
     "src/**/*.spec.js",
     "src/**/*.test.jsx",
     "src/**/*.spec.jsx",
+    "src/**/__tests__/**/*.ts",
     "src/**/*.d.ts"
   ]
 }
