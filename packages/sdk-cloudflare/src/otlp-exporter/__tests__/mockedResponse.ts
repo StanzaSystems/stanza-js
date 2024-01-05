@@ -2,7 +2,7 @@
 /*
  * Original file: https://github.com/open-telemetry/opentelemetry-js/blob/3e5929132129ed6022adbd05d085b998cb03e3d5/experimental/packages/opentelemetry-exporter-metrics-otlp-http/test/node/nodeHelpers.ts
  *
-*/
+ */
 /*
  * Copyright The OpenTelemetry Authors
  *
