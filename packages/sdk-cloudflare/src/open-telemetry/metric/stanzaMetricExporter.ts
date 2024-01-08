@@ -4,20 +4,21 @@ import {
   type PushMetricExporter,
 } from '@opentelemetry/sdk-metrics';
 import {
+  addAuthTokenListener,
   addServiceConfigListener,
-  getServiceConfig,
   eventBus,
   events,
+  getServiceConfig,
+  getStanzaAuthToken,
   hubService,
   logger,
-  addAuthTokenListener,
-  getStanzaAuthToken,
 } from '@getstanza/sdk-base';
 import { type ServiceConfig } from '@getstanza/hub-client-api';
 import { type ExportResult, ExportResultCode } from '@opentelemetry/core';
 import { createUserAgentHeader } from '@getstanza/sdk-utils';
 import { OTLPMetricExporter } from '../../otlp-exporter/OTLPMetricExporter';
 import { sdkOptions } from '../../sdkOptions';
+import { isTokenInvalidError } from '../isTokenInvalidError';
 
 export class StanzaMetricExporter implements PushMetricExporter {
   private exporter: InMemoryMetricExporter | OTLPMetricExporter =
@@ -78,7 +79,8 @@ export class StanzaMetricExporter implements PushMetricExporter {
     const oTelAddress = this.collectorUrl;
     const callback = (result: ExportResult): void => {
       if (
-        result.code === ExportResultCode.FAILED // && isTokenInvalidError(result.error)
+        result.code === ExportResultCode.FAILED &&
+        isTokenInvalidError(result.error)
       ) {
         eventBus.emit(events.auth.tokenInvalid).catch(() => {});
       }
