@@ -77,6 +77,8 @@ export class StanzaMetricExporter implements PushMetricExporter {
     >
   ): void {
     const oTelAddress = this.collectorUrl;
+
+    logger.debug('exporting metrics to %s', oTelAddress);
     const callback = (result: ExportResult): void => {
       if (
         result.code === ExportResultCode.FAILED &&
@@ -84,17 +86,23 @@ export class StanzaMetricExporter implements PushMetricExporter {
       ) {
         eventBus.emit(events.auth.tokenInvalid).catch(() => {});
       }
-      eventBus
-        .emit(
-          result.code === ExportResultCode.SUCCESS
-            ? events.telemetry.sendOk
-            : events.telemetry.sendFailed,
-          {
+      if (result.code === ExportResultCode.SUCCESS) {
+        logger.debug('exporting metrics succeeded');
+        eventBus
+          .emit(events.telemetry.sendOk, {
             ...hubService.getServiceMetadata(),
             oTelAddress,
-          }
-        )
-        .catch(() => {});
+          })
+          .catch(() => {});
+      } else {
+        logger.debug('exporting metrics failed with error: %o', result.error);
+        eventBus
+          .emit(events.telemetry.sendFailed, {
+            ...hubService.getServiceMetadata(),
+            oTelAddress,
+          })
+          .catch(() => {});
+      }
       originalCallback(result);
     };
 
