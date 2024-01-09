@@ -7,6 +7,7 @@ import {
   W3CTraceContextPropagator,
 } from '@opentelemetry/core';
 import {
+  BatchSpanProcessor,
   PeriodicExportingMetricReader,
   StanzaApiKeyPropagator,
   StanzaBaggagePropagator,
@@ -14,9 +15,14 @@ import {
   StanzaTokenPropagator,
   TraceConfigOverrideAdditionalInfoPropagator,
 } from '@getstanza/sdk-base';
-import packageJson from '../package.json';
 import { Resource } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import { CloudflareTracerProvider } from './open-telemetry/CloudflareTracerProvider';
+import {
+  AlwaysOnSampler,
+  ConsoleSpanExporter,
+} from '@opentelemetry/sdk-trace-base';
+import { sdkOptions } from './sdkOptions';
 
 export const createInstrumentation = async ({
   serviceName,
@@ -26,7 +32,8 @@ export const createInstrumentation = async ({
   serviceRelease: string;
 }) => {
   try {
-    context.setGlobalContextManager(new AsyncLocalStorageContextManager());
+    const contextManager = new AsyncLocalStorageContextManager();
+    context.setGlobalContextManager(contextManager);
 
     const resource = new Resource({
       [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
@@ -43,21 +50,30 @@ export const createInstrumentation = async ({
         exportIntervalMillis: 1000,
       })
     );
-    propagation.setGlobalPropagator(
-      new CompositePropagator({
-        propagators: [
-          new W3CTraceContextPropagator(),
-          new StanzaBaggagePropagator(),
-          new StanzaApiKeyPropagator(),
-          new StanzaTokenPropagator(),
-          new TraceConfigOverrideAdditionalInfoPropagator(),
-        ],
-      })
-    );
+    const propagator = new CompositePropagator({
+      propagators: [
+        new W3CTraceContextPropagator(),
+        new StanzaBaggagePropagator(),
+        new StanzaApiKeyPropagator(),
+        new StanzaTokenPropagator(),
+        new TraceConfigOverrideAdditionalInfoPropagator(),
+      ],
+    });
+    propagation.setGlobalPropagator(propagator);
+
+    const provider = new CloudflareTracerProvider({
+      resource,
+      // TODO: use proper Stanza sampler
+      sampler: new AlwaysOnSampler(),
+    });
+    const exporter = new ConsoleSpanExporter();
+    const processor = new BatchSpanProcessor(exporter);
+    provider.addSpanProcessor(processor);
+    provider.register({ contextManager });
 
     const instrumentation = new StanzaInstrumentation(
-      packageJson.name,
-      packageJson.version
+      sdkOptions.sdkName,
+      sdkOptions.sdkVersion
     );
     instrumentation.enable();
   } catch (err) {

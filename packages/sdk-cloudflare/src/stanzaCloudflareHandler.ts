@@ -1,5 +1,5 @@
 import type { InitOptions } from './types';
-import { stanzaGuard } from '@getstanza/sdk-base';
+import { stanzaGuard, type StanzaGuardOptions } from '@getstanza/sdk-base';
 import { context, propagation } from '@opentelemetry/api';
 import { cloudflareScheduler } from './cloudflareScheduler';
 import { headersGetter } from './headersGetter';
@@ -8,7 +8,7 @@ import { createInstrumentation } from './createInstrumentation';
 
 export const stanzaCloudflareHandler = (
   options: InitOptions,
-  guardOptions: { guardName: string },
+  guardOptions: StanzaGuardOptions,
   cloudflareHandler: ExportedHandler
 ): typeof cloudflareHandler => {
   let initialized = false;
@@ -30,10 +30,7 @@ export const stanzaCloudflareHandler = (
         hubUrl,
         environment,
       });
-      guard = stanzaGuard({
-        guard: guardOptions.guardName,
-        feature: 'featured',
-      });
+      guard = stanzaGuard(guardOptions);
     }
   };
 

@@ -12,11 +12,11 @@ const queue = new Array<{
 type AnyFunction = (...args: any[]) => Promise<unknown>;
 
 export const cloudflareScheduler = {
-  async schedule<TArgs extends unknown[], TResult>(
+  schedule<TArgs extends unknown[], TResult>(
     work: Action<TArgs, TResult>,
     timeout: number = 0,
     ...args: TArgs
-  ): Promise<TResult> {
+  ): Promise<TResult> & { cancel: () => void } {
     let _resolve: (result: TResult) => void;
     let _reject: (reason?: any) => void;
 
@@ -25,7 +25,7 @@ export const cloudflareScheduler = {
       _reject = reject;
     });
 
-    queue.push({
+    const queueItem = {
       work: async () => {
         return Promise.resolve(work(...args))
           .then(_resolve)
@@ -33,10 +33,14 @@ export const cloudflareScheduler = {
       },
       timestamp: Date.now() + timeout,
       args,
-    });
+    };
+    queue.push(queueItem);
 
-    return promise.then((r) => {
-      return r;
+    return Object.assign(promise, {
+      cancel: () => {
+        const index = queue.indexOf(queueItem);
+        index >= 0 && queue.splice(index, 1);
+      },
     });
   },
   async runScheduled(maxTimeout = 1000) {

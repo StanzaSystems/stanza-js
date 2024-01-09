@@ -7,25 +7,35 @@ export interface Scheduler {
     work: Action<TArgs, TResult>,
     timeout?: number,
     ...args: TArgs
-  ) => Promise<TResult>;
+  ) => Promise<TResult> & { cancel: () => void };
 }
 
 export const DEFAULT_SCHEDULER: Scheduler = {
-  async schedule<TArgs extends unknown[], TResult>(
+  schedule<TArgs extends unknown[], TResult>(
     work: Action<TArgs, TResult>,
     timeout: number = 0,
     ...args: TArgs
-  ): Promise<TResult> {
-    return new Promise<TResult>((resolve, reject) => {
-      timeout > 0
-        ? setTimeout(() => {
-            Promise.resolve(work(...args))
-              .then(resolve)
-              .catch(reject);
-          }, timeout)
-        : Promise.resolve(work(...args))
+  ): Promise<TResult> & { cancel: () => void } {
+    let timer: NodeJS.Timeout | undefined;
+    const promise = new Promise<TResult>((resolve, reject) => {
+      if (timeout > 0) {
+        timer = setTimeout(() => {
+          Promise.resolve(work(...args))
             .then(resolve)
             .catch(reject);
+        }, timeout);
+      } else {
+        Promise.resolve(work(...args))
+          .then(resolve)
+          .catch(reject);
+      }
+    });
+
+    return Object.assign(promise, {
+      cancel: () => {
+        clearTimeout(timer);
+        timer = undefined;
+      },
     });
   },
 };
