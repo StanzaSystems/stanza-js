@@ -6,8 +6,8 @@ import {
   type Meter,
   type MeterProvider as IMeterProvider,
 } from '@opentelemetry/api';
-import type * as eventBusModule from '@getstanza/sdk-base';
-import { eventBus, events } from '@getstanza/sdk-base';
+import type * as eventBusModule from '../../global/eventBus';
+import { eventBus, events } from '../../global/eventBus';
 import { StanzaInstrumentation } from './stanzaInstrumentation';
 
 type EventBusModule = typeof eventBusModule;
@@ -44,6 +44,7 @@ describe('StanzaInstrumentation', () => {
 
   beforeEach(() => {
     instrumentation = new StanzaInstrumentation('testPackage', '1.0.0');
+    instrumentation.enable();
     metricSpies = { counter: {}, histogram: {} };
     const realMeterProvider = new MeterProvider();
     const meterProvider = {

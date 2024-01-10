@@ -1,11 +1,10 @@
-import { InstrumentationBase } from '@opentelemetry/instrumentation';
+import { type InstrumentationConfig } from '@opentelemetry/instrumentation';
 import {
   type Counter,
   type Histogram,
   type MetricOptions,
   ValueType,
 } from '@opentelemetry/api';
-import { eventBus, events } from '@getstanza/sdk-base';
 import {
   eventDataToRequestAttributes,
   type RequestAttributes,
@@ -19,14 +18,16 @@ import {
   eventDataToDefaultContextAttributes,
 } from './defaultContextAttributes';
 import {
-  type GuardAttributes,
   eventDataToGuardAttributes,
   eventDataToOptionalGuardAttributes,
+  type GuardAttributes,
 } from './guardAttributes';
+import { InstrumentationAbstract } from './InstrumentationAbstract';
+import { eventBus, events } from '../../global/eventBus';
 
 type QuotaEndpoint = 'GetToken' | 'GetTokenLease' | 'SetTokenLeaseConsumed';
 
-export class StanzaInstrumentation extends InstrumentationBase {
+export class StanzaInstrumentation extends InstrumentationAbstract {
   private metrics!: {
     guard: {
       allowed: Counter<GuardResolutionAttributes>;
@@ -69,12 +70,25 @@ export class StanzaInstrumentation extends InstrumentationBase {
     };
   };
 
-  protected init(): void {
+  constructor(
+    instrumentationName: string,
+    instrumentationVersion: string,
+    config: InstrumentationConfig = {}
+  ) {
+    super(instrumentationName, instrumentationVersion, config);
+    this._updateMetricInstruments();
+  }
+
+  protected init(): void {}
+
+  override enable() {
     this.initRequestMetrics();
     this.initConfigMetrics();
     this.initQuotaMetrics();
     this.initTelemetryMetrics();
   }
+
+  override disable(): void {}
 
   protected override _updateMetricInstruments() {
     this.metrics = {

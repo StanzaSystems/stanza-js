@@ -1,5 +1,5 @@
 import { type Attributes } from '@opentelemetry/api';
-import { type FeatureData } from '@getstanza/sdk-base';
+import { type FeatureData } from '../../global/eventBus';
 
 export interface FeatureAttributes extends Attributes {
   feature: string;

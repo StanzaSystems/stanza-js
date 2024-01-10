@@ -2,6 +2,7 @@ import { StanzaSampler } from './open-telemetry/sampler/StanzaSampler';
 import {
   StanzaApiKeyPropagator,
   StanzaBaggagePropagator,
+  StanzaInstrumentation,
   StanzaTokenPropagator,
   TraceConfigOverrideAdditionalInfoPropagator,
 } from '@getstanza/sdk-base';
@@ -52,9 +53,6 @@ export const createInstrumentation = async ({
   );
   const { StanzaMetricExporter } = await import(
     './open-telemetry/metric/stanzaMetricExporter'
-  );
-  const { StanzaInstrumentation } = await import(
-    './open-telemetry/instrumentation/stanzaInstrumentation'
   );
   const sdk = new NodeSDK({
     sampler: new StanzaSampler(),

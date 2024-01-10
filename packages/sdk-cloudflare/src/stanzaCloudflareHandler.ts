@@ -1,20 +1,10 @@
 import type { InitOptions } from './types';
-import {
-  StanzaApiKeyPropagator,
-  StanzaBaggagePropagator,
-  stanzaGuard,
-  StanzaTokenPropagator,
-  TraceConfigOverrideAdditionalInfoPropagator,
-} from '@getstanza/sdk-base';
+import { stanzaGuard } from '@getstanza/sdk-base';
 import { context, propagation } from '@opentelemetry/api';
-import { AsyncLocalStorageContextManager } from './opentelemetry-context-async-hooks/AsyncLocalStorageContextManager';
-import {
-  CompositePropagator,
-  W3CTraceContextPropagator,
-} from '@opentelemetry/core';
 import { cloudflareScheduler } from './cloudflareScheduler';
 import { headersGetter } from './headersGetter';
 import { init } from './index';
+import { createInstrumentation } from './createInstrumentation';
 
 export const stanzaCloudflareHandler = (
   options: InitOptions,
@@ -33,23 +23,17 @@ export const stanzaCloudflareHandler = (
       const apiKey = env.STANZA_API_KEY;
       const hubUrl = env.STANZA_HUB_ADDRESS ?? 'https://hub.stanzasys.co';
       const environment = env.STANZA_ENVIRONMENT ?? 'local';
-      await init({ ...options, apiKey, hubUrl, environment });
+      await init({
+        ...options,
+        createInstrumentation,
+        apiKey,
+        hubUrl,
+        environment,
+      });
       guard = stanzaGuard({
         guard: guardOptions.guardName,
         feature: 'featured',
       });
-      context.setGlobalContextManager(new AsyncLocalStorageContextManager());
-      propagation.setGlobalPropagator(
-        new CompositePropagator({
-          propagators: [
-            new W3CTraceContextPropagator(),
-            new StanzaBaggagePropagator(),
-            new StanzaApiKeyPropagator(),
-            new StanzaTokenPropagator(),
-            new TraceConfigOverrideAdditionalInfoPropagator(),
-          ],
-        })
-      );
     }
   };
 
