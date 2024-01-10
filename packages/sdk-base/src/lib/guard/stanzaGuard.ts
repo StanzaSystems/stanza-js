@@ -21,6 +21,7 @@ import { getGuardConfig } from '../global/guardConfig';
 import { StanzaGuardError } from './stanzaGuardError';
 import { identity } from 'ramda';
 import { context, SpanKind, trace } from '@opentelemetry/api';
+import { getSdkMetadata } from '../global/sdkMetadata';
 
 export const stanzaGuard = <TArgs extends any[], TReturn>(
   options: StanzaGuardOptions
@@ -39,8 +40,8 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(
           const customerId = getServiceConfig()?.config.customerId;
           const { serviceName, environment, clientId } =
             hubService.getServiceMetadata();
-          // TODO: use proper name and version
-          return trace.getTracer('test', 'version').startActiveSpan(
+          const { name, version } = getSdkMetadata();
+          return trace.getTracer(name, version).startActiveSpan(
             'StanzaGuard',
             {
               kind: SpanKind.INTERNAL,

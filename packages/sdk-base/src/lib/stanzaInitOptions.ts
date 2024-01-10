@@ -16,6 +16,8 @@ export const stanzaInitOptions = z.object({
   apiKey: z.string().describe('string (API key for a Hub instance)'),
   serviceName: z.string().describe('string (Name of the service)'),
   serviceRelease: z.string().describe('string (A version of the service)'),
+  sdkName: z.string().optional().describe('string (Name of the SDK)'),
+  sdkVersion: z.string().optional().describe('string (A version of the SDK)'),
   environment: z.string().describe('string (An environment to use)'),
   useRestHubApi: z.boolean().optional().default(false),
   skipTokenCache: z.boolean().optional().default(false),

@@ -18,6 +18,7 @@ type InitOptions = Omit<InitBaseOptions, 'createHubService'>;
 function createInitBaseOptions(options: InitOptions): InitBaseOptions {
   return {
     ...options,
+    ...sdkOptions,
     createInstrumentation,
     createHubService:
       options.useRestHubApi === true

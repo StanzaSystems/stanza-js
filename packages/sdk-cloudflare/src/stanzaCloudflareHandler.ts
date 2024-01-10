@@ -5,6 +5,7 @@ import { cloudflareScheduler } from './cloudflareScheduler';
 import { headersGetter } from './headersGetter';
 import { init } from './index';
 import { createInstrumentation } from './createInstrumentation';
+import { sdkOptions } from './sdkOptions';
 
 export const stanzaCloudflareHandler = (
   options: InitOptions,
@@ -25,6 +26,7 @@ export const stanzaCloudflareHandler = (
       const environment = env.STANZA_ENVIRONMENT ?? 'local';
       await init({
         ...options,
+        ...sdkOptions,
         createInstrumentation,
         apiKey,
         hubUrl,
