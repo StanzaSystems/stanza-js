@@ -1,4 +1,7 @@
-import { type SpanProcessor } from '@opentelemetry/sdk-trace-base';
+import {
+  SpanExporter,
+  type SpanProcessor,
+} from '@opentelemetry/sdk-trace-base';
 import { StanzaSpanProcessorManager } from './StanzaSpanProcessorManager';
 import { ManagedSpanProcessor } from './ManagedSpanProcessor';
 
@@ -6,7 +9,9 @@ export class StanzaSpanProcessor
   extends ManagedSpanProcessor
   implements SpanProcessor
 {
-  constructor(serviceName: string, serviceRelease: string) {
-    super(new StanzaSpanProcessorManager(serviceName, serviceRelease));
+  constructor(
+    createSpanExporter: (traceConfig: { collectorUrl: string }) => SpanExporter
+  ) {
+    super(new StanzaSpanProcessorManager(createSpanExporter));
   }
 }

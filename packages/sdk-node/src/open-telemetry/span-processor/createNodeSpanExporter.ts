@@ -1,7 +1,7 @@
 import { type SpanExporter } from '@opentelemetry/sdk-trace-base';
 import { StanzaSpanExporter } from './StanzaSpanExporter';
 
-export function createSpanExporter(
+export function createNodeSpanExporter(
   traceConfig: { collectorUrl: string },
   serviceName: string,
   serviceRelease: string

@@ -9,6 +9,7 @@ import {
 import { HeadersSpanEnhancer } from './span/headers/HeadersSpanEnhancer';
 import { createHttpHeaderGetter } from './createHttpHeaderGetter';
 import packageJson from '../package.json';
+import { createNodeSpanExporter } from './open-telemetry/span-processor/createNodeSpanExporter';
 export const createInstrumentation = async ({
   serviceName,
   serviceRelease,
@@ -56,7 +57,9 @@ export const createInstrumentation = async ({
   );
   const sdk = new NodeSDK({
     sampler: new StanzaSampler(),
-    spanProcessor: new StanzaSpanProcessor(serviceName, serviceRelease),
+    spanProcessor: new StanzaSpanProcessor((traceConfig) =>
+      createNodeSpanExporter(traceConfig, serviceName, serviceRelease)
+    ),
     resource: new Resource({
       [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
       [SemanticResourceAttributes.SERVICE_VERSION]: serviceRelease,
