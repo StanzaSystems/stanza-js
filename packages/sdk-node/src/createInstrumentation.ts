@@ -3,6 +3,7 @@ import {
   StanzaApiKeyPropagator,
   StanzaBaggagePropagator,
   StanzaInstrumentation,
+  StanzaSpanProcessor,
   StanzaTokenPropagator,
   TraceConfigOverrideAdditionalInfoPropagator,
 } from '@getstanza/sdk-base';
@@ -48,9 +49,6 @@ export const createInstrumentation = async ({
   );
   const { PeriodicExportingMetricReader } = await import(
     '@opentelemetry/sdk-metrics'
-  );
-  const { StanzaSpanProcessor } = await import(
-    './open-telemetry/span-processor/StanzaSpanProcessor'
   );
   const { StanzaMetricExporter } = await import(
     './open-telemetry/metric/stanzaMetricExporter'

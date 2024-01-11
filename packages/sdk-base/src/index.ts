@@ -24,6 +24,6 @@ export * from './lib/propagation/TraceConfigOverrideAdditionalInfoPropagator';
 export * from './lib/open-telemetry/StanzaConfigEntityManager';
 export * from './lib/open-telemetry/instrumentation/stanzaInstrumentation';
 export * from './lib/open-telemetry/metric/PeriodicExportingMetricReader';
-export * from './lib/open-telemetry/export/BatchSpanProcessor';
+export * from './lib/open-telemetry/export/StanzaSpanProcessor';
 
 export * from './lib/utils/isTruthy';

@@ -5,10 +5,8 @@ import {
   type SpanProcessor,
 } from '@opentelemetry/sdk-trace-base';
 import { type SpanProcessorManager } from './SpanProcessorManager';
-import {
-  BatchSpanProcessor,
-  StanzaConfigEntityManager,
-} from '@getstanza/sdk-base';
+import { StanzaConfigEntityManager } from '../StanzaConfigEntityManager';
+import { BatchSpanProcessor } from './BatchSpanProcessor';
 
 export class StanzaSpanProcessorManager implements SpanProcessorManager {
   private readonly traceConfigManager =

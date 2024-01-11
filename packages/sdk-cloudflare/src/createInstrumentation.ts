@@ -7,11 +7,11 @@ import {
   W3CTraceContextPropagator,
 } from '@opentelemetry/core';
 import {
-  BatchSpanProcessor,
   PeriodicExportingMetricReader,
   StanzaApiKeyPropagator,
   StanzaBaggagePropagator,
   StanzaInstrumentation,
+  StanzaSpanProcessor,
   StanzaTokenPropagator,
   TraceConfigOverrideAdditionalInfoPropagator,
 } from '@getstanza/sdk-base';
@@ -67,7 +67,7 @@ export const createInstrumentation = async ({
       sampler: new AlwaysOnSampler(),
     });
     const exporter = new ConsoleSpanExporter();
-    const processor = new BatchSpanProcessor(exporter);
+    const processor = new StanzaSpanProcessor(() => exporter);
     provider.addSpanProcessor(processor);
     provider.register({ contextManager });
 

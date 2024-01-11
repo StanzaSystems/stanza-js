@@ -1,11 +1,6 @@
 import { ROOT_CONTEXT } from '@opentelemetry/api';
-import type * as StanzaSdkBaseModule from '@getstanza/sdk-base';
-import {
-  addStanzaGuardToContext,
-  BatchSpanProcessor,
-  resetServiceConfig,
-  updateServiceConfig,
-} from '@getstanza/sdk-base';
+import type * as BatchSpanProcessorModule from './BatchSpanProcessor';
+import { BatchSpanProcessor } from './BatchSpanProcessor';
 import {
   InMemorySpanExporter,
   NoopSpanProcessor,
@@ -14,10 +9,15 @@ import {
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { type ServiceConfig } from '@getstanza/hub-client-api';
 import { StanzaSpanProcessorManager } from './StanzaSpanProcessorManager';
+import {
+  resetServiceConfig,
+  updateServiceConfig,
+} from '../../global/serviceConfig';
+import { addStanzaGuardToContext } from '../../context/guard';
 
 vi.mock(
-  '@getstanza/sdk-base',
-  async (importOriginal: () => Promise<typeof StanzaSdkBaseModule>) => {
+  './BatchSpanProcessor',
+  async (importOriginal: () => Promise<typeof BatchSpanProcessorModule>) => {
     const original = await importOriginal();
 
     class MockSpanProcessor
