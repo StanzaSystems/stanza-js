@@ -1,6 +1,6 @@
-import {
+import type {
   SpanExporter,
-  type SpanProcessor,
+  SpanProcessor,
 } from '@opentelemetry/sdk-trace-base';
 import { StanzaSpanProcessorManager } from './StanzaSpanProcessorManager';
 import { ManagedSpanProcessor } from './ManagedSpanProcessor';
