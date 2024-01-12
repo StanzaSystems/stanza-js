@@ -11,6 +11,7 @@ import {
   StanzaApiKeyPropagator,
   StanzaBaggagePropagator,
   StanzaInstrumentation,
+  StanzaSampler,
   StanzaSpanProcessor,
   StanzaTokenPropagator,
   TraceConfigOverrideAdditionalInfoPropagator,
@@ -18,7 +19,6 @@ import {
 import { Resource } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { CloudflareTracerProvider } from './open-telemetry/CloudflareTracerProvider';
-import { AlwaysOnSampler } from '@opentelemetry/sdk-trace-base';
 import { sdkOptions } from './sdkOptions';
 import { StanzaSpanExporter } from './open-telemetry/StanzaSpanExporter';
 
@@ -61,8 +61,7 @@ export const createInstrumentation = async ({
 
     const provider = new CloudflareTracerProvider({
       resource,
-      // TODO: use proper Stanza sampler
-      sampler: new AlwaysOnSampler(),
+      sampler: new StanzaSampler(),
     });
     const processor = new StanzaSpanProcessor(
       (traceConfig) =>

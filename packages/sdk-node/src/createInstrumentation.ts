@@ -1,8 +1,8 @@
-import { StanzaSampler } from './open-telemetry/sampler/StanzaSampler';
 import {
   StanzaApiKeyPropagator,
   StanzaBaggagePropagator,
   StanzaInstrumentation,
+  StanzaSampler,
   StanzaSpanProcessor,
   StanzaTokenPropagator,
   TraceConfigOverrideAdditionalInfoPropagator,
