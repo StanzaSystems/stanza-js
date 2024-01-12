@@ -5,7 +5,7 @@ import {
 import type {
   ConfigState,
   DefaultContextData,
-  FeatureData,
+  GuardExecutionData,
   GuardData,
   GuardMode,
   LocalReason,
@@ -25,7 +25,7 @@ export type GuardResolutionAttributes = RequestAttributes & {
 export const eventDataToGuardResolutionAttributes = (
   data: DefaultContextData &
     GuardData &
-    FeatureData &
+    GuardExecutionData &
     ReasonData & { mode: GuardMode }
 ): GuardResolutionAttributes => ({
   ...eventDataToRequestAttributes(data),

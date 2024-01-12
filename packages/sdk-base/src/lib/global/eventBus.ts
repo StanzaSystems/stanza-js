@@ -102,8 +102,9 @@ export interface DefaultContextData {
   customerId?: string;
 }
 
-export interface FeatureData {
+export interface GuardExecutionData {
   featureName: string;
+  priorityBoost: number;
 }
 
 export interface GuardData {
@@ -175,24 +176,24 @@ export interface ReasonData {
 type StanzaEventBus = EventBus<{
   [guardAllowed]: DefaultContextData &
     GuardData &
-    FeatureData &
+    GuardExecutionData &
     ReasonData &
     GuardModeData;
   [guardBlocked]: DefaultContextData &
     GuardData &
-    FeatureData &
+    GuardExecutionData &
     ReasonData &
     GuardModeData;
   [guardFailOpen]: DefaultContextData &
     GuardData &
-    FeatureData &
+    GuardExecutionData &
     ReasonData &
     GuardModeData;
-  [guardAllowedFailure]: DefaultContextData & GuardData & FeatureData;
-  [guardAllowedSuccess]: DefaultContextData & GuardData & FeatureData;
+  [guardAllowedFailure]: DefaultContextData & GuardData & GuardExecutionData;
+  [guardAllowedSuccess]: DefaultContextData & GuardData & GuardExecutionData;
   [guardAllowedDuration]: DefaultContextData &
     GuardData &
-    FeatureData &
+    GuardExecutionData &
     DurationData;
   [configServiceFetchSuccess]: DefaultContextData;
   [configServiceFetchFailure]: DefaultContextData;
