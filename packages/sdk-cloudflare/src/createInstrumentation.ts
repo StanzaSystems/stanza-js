@@ -18,11 +18,9 @@ import {
 import { Resource } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import { CloudflareTracerProvider } from './open-telemetry/CloudflareTracerProvider';
-import {
-  AlwaysOnSampler,
-  ConsoleSpanExporter,
-} from '@opentelemetry/sdk-trace-base';
+import { AlwaysOnSampler } from '@opentelemetry/sdk-trace-base';
 import { sdkOptions } from './sdkOptions';
+import { StanzaSpanExporter } from './open-telemetry/StanzaSpanExporter';
 
 export const createInstrumentation = async ({
   serviceName,
@@ -66,8 +64,10 @@ export const createInstrumentation = async ({
       // TODO: use proper Stanza sampler
       sampler: new AlwaysOnSampler(),
     });
-    const exporter = new ConsoleSpanExporter();
-    const processor = new StanzaSpanProcessor(() => exporter);
+    const processor = new StanzaSpanProcessor(
+      (traceConfig) =>
+        new StanzaSpanExporter(traceConfig, serviceName, serviceRelease)
+    );
     provider.addSpanProcessor(processor);
     provider.register({ contextManager });
 

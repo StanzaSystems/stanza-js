@@ -28,7 +28,6 @@ import { baggageUtils, getEnv } from '@opentelemetry/core';
 import {
   appendResourcePathToUrl,
   appendRootPathToUrlIfNeeded,
-  type OTLPExporterNodeConfigBase,
 } from '@opentelemetry/otlp-exporter-base';
 import {
   createExportMetricsServiceRequest,
@@ -61,7 +60,7 @@ class OTLPExporterFetchProxy extends OTLPExporterFetchBase<
     return createExportMetricsServiceRequest(metrics, { useLongBits: false });
   }
 
-  getDefaultUrl(config: OTLPExporterNodeConfigBase): string {
+  getDefaultUrl(config: OTLPExporterFetchConfigBase): string {
     return typeof config.url === 'string'
       ? config.url
       : getEnv().OTEL_EXPORTER_OTLP_METRICS_ENDPOINT.length > 0

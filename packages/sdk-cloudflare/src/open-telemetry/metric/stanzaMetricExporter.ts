@@ -61,11 +61,11 @@ export class StanzaMetricExporter implements PushMetricExporter {
       }),
     };
     const prevExporter = this.exporter;
+    this.collectorUrl = metricConfig.collectorUrl;
     this.exporter = new OTLPMetricExporter({
-      url: metricConfig.collectorUrl,
+      url: this.collectorUrl,
       headers,
     });
-    this.collectorUrl = metricConfig.collectorUrl;
     prevExporter.shutdown().catch((err) => {
       logger.warn('Failed to shutdown a metric exporter: %o', err);
     });
