@@ -37,24 +37,17 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(
             addPriorityBoostToContext(options.priorityBoost),
         ].filter(isTruthy),
         async () => {
-          const customerId = getServiceConfig()?.config.customerId;
-          const { serviceName, environment, clientId } =
-            hubService.getServiceMetadata();
           const { name, version } = getSdkMetadata();
           return trace.getTracer(name, version).startActiveSpan(
             'StanzaGuard',
             {
               kind: SpanKind.INTERNAL,
               attributes: {
-                // TODO: maybe extract the logic for getting those attributes as it's same as in events
-                serviceName,
-                environment,
-                clientId,
+                ...getDefaultContextData(),
                 featureName:
                   getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
-                priorityBoost: getPriorityBoostFromContext(context.active()),
                 guardName: options.guard,
-                customerId,
+                priorityBoost: getPriorityBoostFromContext(context.active()),
                 mode: getGuardMode(options.guard),
               },
             },
@@ -105,51 +98,45 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(
 
     return wrapEventsAsync(resultFn, {
       success: async () => {
-        const customerId = getServiceConfig()?.config.customerId;
-        const { serviceName, environment, clientId } =
-          hubService.getServiceMetadata();
         return eventBus.emit(events.guard.succeeded, {
-          serviceName,
-          environment,
-          clientId,
+          ...getDefaultContextData(),
           featureName:
             getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
-          customerId,
         });
       },
       failure: async () => {
-        const customerId = getServiceConfig()?.config.customerId;
-        const { serviceName, environment, clientId } =
-          hubService.getServiceMetadata();
         return eventBus.emit(events.guard.failed, {
-          serviceName,
-          environment,
-          clientId,
+          ...getDefaultContextData(),
           featureName:
             getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
-          customerId,
         });
       },
       duration: async (...[duration]) => {
-        const customerId = getServiceConfig()?.config.customerId;
-        const { serviceName, environment, clientId } =
-          hubService.getServiceMetadata();
         return eventBus.emit(events.guard.duration, {
-          serviceName,
-          environment,
-          clientId,
+          ...getDefaultContextData(),
           featureName:
             getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
-          customerId,
           duration,
         });
       },
     }) as Fn<TArgs, Promisify<TReturn>>;
   });
 };
+
+function getDefaultContextData() {
+  const customerId = getServiceConfig()?.config.customerId;
+  const { serviceName, environment, clientId } =
+    hubService.getServiceMetadata();
+  return {
+    serviceName,
+    environment,
+    clientId,
+    customerId,
+  };
+}
 
 function getGuardMode(guardName: string) {
   const guardConfig = getGuardConfig(guardName)?.config;
