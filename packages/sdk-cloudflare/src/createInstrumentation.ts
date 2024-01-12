@@ -45,7 +45,7 @@ export const createInstrumentation = async ({
     meterProvider.addMetricReader(
       new PeriodicExportingMetricReader({
         exporter: new StanzaMetricExporter(serviceName, serviceRelease),
-        exportIntervalMillis: 1000,
+        exportIntervalMillis: 10000,
       })
     );
     const propagator = new CompositePropagator({
