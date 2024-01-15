@@ -1042,7 +1042,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: '',
-                priorityBoost: 1,
+                priorityBoost: 3,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
