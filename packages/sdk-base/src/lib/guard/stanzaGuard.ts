@@ -70,16 +70,17 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(
                 }
 
                 const fnWithBoundContext = bindContext(
-                  guardResult
-                    .filter(isTruthy)
-                    .map((token) =>
-                      token?.type === 'QUOTA' && token.status === 'success'
-                        ? addStanzaTokenToContext(token.token)
-                        : token.type === 'TOKEN_VALIDATE' &&
-                          token.status === 'success'
-                        ? removeStanzaTokenFromContext()
-                        : identity
-                    ),
+                  guardResult.filter(isTruthy).map((token) => {
+                    if (token.status === 'success') {
+                      switch (token.type) {
+                        case 'QUOTA':
+                          return addStanzaTokenToContext(token.token);
+                        case 'TOKEN_VALIDATE':
+                          return removeStanzaTokenFromContext();
+                      }
+                    }
+                    return identity;
+                  }),
                   fn
                 );
 
