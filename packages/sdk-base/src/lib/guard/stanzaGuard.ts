@@ -1,4 +1,7 @@
-import { addPriorityBoostToContext } from '../context/priorityBoost';
+import {
+  addPriorityBoostToContext,
+  getPriorityBoostFromContext,
+} from '../context/priorityBoost';
 import { addStanzaGuardToContext } from '../context/guard';
 import { addStanzaTokenToContext } from '../context/addStanzaTokenToContext';
 import { bindContext } from '../context/bindContext';
@@ -17,6 +20,8 @@ import { getActiveStanzaEntry } from '../baggage/getActiveStanzaEntry';
 import { getGuardConfig } from '../global/guardConfig';
 import { StanzaGuardError } from './stanzaGuardError';
 import { identity } from 'ramda';
+import { context, SpanKind, trace } from '@opentelemetry/api';
+import { getSdkMetadata } from '../global/sdkMetadata';
 
 export const stanzaGuard = <TArgs extends any[], TReturn>(
   options: StanzaGuardOptions
@@ -32,35 +37,61 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(
             addPriorityBoostToContext(options.priorityBoost),
         ].filter(isTruthy),
         async () => {
-          const guardResult = await guard();
+          const { name, version } = getSdkMetadata();
+          return trace.getTracer(name, version).startActiveSpan(
+            'StanzaGuard',
+            {
+              kind: SpanKind.INTERNAL,
+              attributes: {
+                ...getDefaultContextData(),
+                featureName:
+                  getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
+                guardName: options.guard,
+                priorityBoost: getPriorityBoostFromContext(context.active()),
+                mode: getGuardMode(options.guard),
+              },
+            },
+            context.active(),
+            async (span) => {
+              try {
+                const guardResult = await guard();
 
-          const failure = guardResult.find(
-            (r): r is typeof r & { status: 'failure' } => r.status === 'failure'
+                const failure = guardResult.find(
+                  (r): r is typeof r & { status: 'failure' } =>
+                    r.status === 'failure'
+                );
+                if (
+                  failure !== undefined &&
+                  getGuardConfig(options.guard)?.config.reportOnly !== true
+                ) {
+                  throw failure.type === 'QUOTA'
+                    ? new StanzaGuardError('NoQuota', failure.message)
+                    : new StanzaGuardError('InvalidToken', failure.message);
+                }
+
+                const fnWithBoundContext = bindContext(
+                  guardResult.filter(isTruthy).map((token) => {
+                    if (token.status === 'success') {
+                      switch (token.type) {
+                        case 'QUOTA':
+                          return addStanzaTokenToContext(token.token);
+                        case 'TOKEN_VALIDATE':
+                          return removeStanzaTokenFromContext();
+                      }
+                    }
+                    return identity;
+                  }),
+                  fn
+                );
+
+                return await (fnWithBoundContext(
+                  ...args
+                ) as Promisify<TReturn>);
+              } finally {
+                span.end();
+              }
+            }
           );
-          if (
-            failure !== undefined &&
-            getGuardConfig(options.guard)?.config.reportOnly !== true
-          ) {
-            throw failure.type === 'QUOTA'
-              ? new StanzaGuardError('NoQuota', failure.message)
-              : new StanzaGuardError('InvalidToken', failure.message);
-          }
-
-          const fnWithBoundContext = bindContext(
-            guardResult
-              .filter(isTruthy)
-              .map((token) =>
-                token?.type === 'QUOTA' && token.status === 'success'
-                  ? addStanzaTokenToContext(token.token)
-                  : token.type === 'TOKEN_VALIDATE' &&
-                    token.status === 'success'
-                  ? removeStanzaTokenFromContext()
-                  : identity
-              ),
-            fn
-          );
-
-          return fnWithBoundContext(...args) as Promisify<TReturn>;
         }
       );
       return outerFn();
@@ -68,51 +99,45 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(
 
     return wrapEventsAsync(resultFn, {
       success: async () => {
-        const customerId = getServiceConfig()?.config.customerId;
-        const { serviceName, environment, clientId } =
-          hubService.getServiceMetadata();
         return eventBus.emit(events.guard.succeeded, {
-          serviceName,
-          environment,
-          clientId,
+          ...getDefaultContextData(),
           featureName:
             getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
-          customerId,
         });
       },
       failure: async () => {
-        const customerId = getServiceConfig()?.config.customerId;
-        const { serviceName, environment, clientId } =
-          hubService.getServiceMetadata();
         return eventBus.emit(events.guard.failed, {
-          serviceName,
-          environment,
-          clientId,
+          ...getDefaultContextData(),
           featureName:
             getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
-          customerId,
         });
       },
       duration: async (...[duration]) => {
-        const customerId = getServiceConfig()?.config.customerId;
-        const { serviceName, environment, clientId } =
-          hubService.getServiceMetadata();
         return eventBus.emit(events.guard.duration, {
-          serviceName,
-          environment,
-          clientId,
+          ...getDefaultContextData(),
           featureName:
             getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
           guardName: options.guard,
-          customerId,
           duration,
         });
       },
     }) as Fn<TArgs, Promisify<TReturn>>;
   });
 };
+
+function getDefaultContextData() {
+  const customerId = getServiceConfig()?.config.customerId;
+  const { serviceName, environment, clientId } =
+    hubService.getServiceMetadata();
+  return {
+    serviceName,
+    environment,
+    clientId,
+    customerId,
+  };
+}
 
 function getGuardMode(guardName: string) {
   const guardConfig = getGuardConfig(guardName)?.config;

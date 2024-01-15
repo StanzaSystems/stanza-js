@@ -83,34 +83,14 @@ export const mockHubService = {
   getAuthToken: getAuthTokenMock,
   getGuardHealth: getGuardHealthMock,
   reset: () => {
-    getServiceMetadataMock.mockReset();
-    fetchServiceConfigMock.mockReset();
-    fetchGuardConfigMock.mockReset();
-    getTokenMock.mockReset();
-    getTokenLeaseMock.mockReset();
-    validateTokenMock.mockReset();
-    markTokensAsConsumedMock.mockReset();
-    getAuthTokenMock.mockReset();
-
-    fetchServiceConfigMock.mockImplementation(
-      async () => new Promise<never>(() => {})
-    );
-    fetchGuardConfigMock.mockImplementation(
-      async () => new Promise<never>(() => {})
-    );
-    getTokenMock.mockImplementation(async () => new Promise<never>(() => {}));
-    getTokenLeaseMock.mockImplementation(
-      async () => new Promise<never>(() => {})
-    );
-    validateTokenMock.mockImplementation(
-      async () => new Promise<never>(() => {})
-    );
-    markTokensAsConsumedMock.mockImplementation(
-      async () => new Promise<never>(() => {})
-    );
-    getAuthTokenMock.mockImplementation(
-      async () => new Promise<never>(() => {})
-    );
+    getServiceMetadataMock.mockRestore();
+    fetchServiceConfigMock.mockRestore();
+    fetchGuardConfigMock.mockRestore();
+    getTokenMock.mockRestore();
+    getTokenLeaseMock.mockRestore();
+    validateTokenMock.mockRestore();
+    markTokensAsConsumedMock.mockRestore();
+    getAuthTokenMock.mockRestore();
 
     updateHubService(mockHubService);
   },

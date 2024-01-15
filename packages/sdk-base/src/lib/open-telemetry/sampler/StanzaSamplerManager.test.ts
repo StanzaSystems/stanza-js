@@ -1,14 +1,14 @@
 import { ROOT_CONTEXT } from '@opentelemetry/api';
 import { AlwaysOffSampler } from '@opentelemetry/sdk-trace-base';
 import { beforeEach, describe, expect, it } from 'vitest';
-import {
-  addStanzaGuardToContext,
-  updateServiceConfig,
-  resetServiceConfig,
-} from '@getstanza/sdk-base';
 import { type ServiceConfig } from '@getstanza/hub-client-api';
 import { StanzaSamplerManager } from './StanzaSamplerManager';
 import { StanzaConfiguredSampler } from './StanzaConfiguredSampler';
+import {
+  resetServiceConfig,
+  updateServiceConfig,
+} from '../../global/serviceConfig';
+import { addStanzaGuardToContext } from '../../context/guard';
 
 const mockServiceConfig = {
   version: 'test',

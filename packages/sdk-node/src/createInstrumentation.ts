@@ -1,14 +1,16 @@
-import { StanzaSampler } from './open-telemetry/sampler/StanzaSampler';
 import {
   StanzaApiKeyPropagator,
   StanzaBaggagePropagator,
   StanzaInstrumentation,
+  StanzaSampler,
+  StanzaSpanProcessor,
   StanzaTokenPropagator,
   TraceConfigOverrideAdditionalInfoPropagator,
 } from '@getstanza/sdk-base';
 import { HeadersSpanEnhancer } from './span/headers/HeadersSpanEnhancer';
 import { createHttpHeaderGetter } from './createHttpHeaderGetter';
 import packageJson from '../package.json';
+import { StanzaSpanExporter } from './open-telemetry/span-processor/StanzaSpanExporter';
 export const createInstrumentation = async ({
   serviceName,
   serviceRelease,
@@ -48,15 +50,15 @@ export const createInstrumentation = async ({
   const { PeriodicExportingMetricReader } = await import(
     '@opentelemetry/sdk-metrics'
   );
-  const { StanzaSpanProcessor } = await import(
-    './open-telemetry/span-processor/StanzaSpanProcessor'
-  );
   const { StanzaMetricExporter } = await import(
     './open-telemetry/metric/stanzaMetricExporter'
   );
   const sdk = new NodeSDK({
     sampler: new StanzaSampler(),
-    spanProcessor: new StanzaSpanProcessor(serviceName, serviceRelease),
+    spanProcessor: new StanzaSpanProcessor(
+      (traceConfig) =>
+        new StanzaSpanExporter(traceConfig, serviceName, serviceRelease)
+    ),
     resource: new Resource({
       [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
       [SemanticResourceAttributes.SERVICE_VERSION]: serviceRelease,

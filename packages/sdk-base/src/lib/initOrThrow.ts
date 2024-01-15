@@ -14,6 +14,8 @@ import { type Scheduler } from './utils/scheduler';
 import { setScheduler } from './global/scheduler';
 import { type HubService } from '@getstanza/hub-client-api';
 import { wrapHubServiceWithMetrics } from './hub/wrapHubServiceWithMetrics';
+import { isTruthy } from './utils/isTruthy';
+import { updateSdkMetadata } from './global/sdkMetadata';
 
 export const initOrThrow = async (
   options: Partial<StanzaInitOptions> &
@@ -54,6 +56,13 @@ export const initOrThrow = async (
     serviceName: initOptions.serviceName,
     serviceRelease: initOptions.serviceRelease,
   });
+
+  if (isTruthy(options.sdkName) && isTruthy(options.sdkVersion)) {
+    updateSdkMetadata({
+      name: options.sdkName,
+      version: options.sdkVersion,
+    });
+  }
 
   updateHubService(
     wrapHubService(

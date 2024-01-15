@@ -52,6 +52,8 @@ describe('Stanza init', function () {
 - apiKey: string (API key for a Hub instance)
 - serviceName: string (Name of the service)
 - serviceRelease: string (A version of the service)
+- sdkName: string (Name of the SDK)
+- sdkVersion: string (A version of the SDK)
 - environment: string (An environment to use)`)
       );
     });
@@ -63,6 +65,8 @@ describe('Stanza init', function () {
 - apiKey: string (API key for a Hub instance)
 - serviceName: string (Name of the service)
 - serviceRelease: string (A version of the service)
+- sdkName: string (Name of the SDK)
+- sdkVersion: string (A version of the SDK)
 - environment: string (An environment to use)`)
       );
     });

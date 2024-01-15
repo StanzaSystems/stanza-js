@@ -11,7 +11,7 @@ import {
   TraceIdRatioBasedSampler,
 } from '@opentelemetry/sdk-trace-base';
 import { type ServiceConfig } from '@getstanza/hub-client-api';
-import { getTraceConfigOverrideAdditionalInfo } from '@getstanza/sdk-base';
+import { getTraceConfigOverrideAdditionalInfo } from '../../propagation/TraceConfigOverrideAdditionalInfoPropagator';
 
 export class StanzaConfiguredSampler implements Sampler {
   private readonly defaultSampler: Sampler = new ParentBasedSampler({

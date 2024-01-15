@@ -6,3 +6,5 @@ packages/sdk-cloudflare/src/opentelemetry-context-async-hooks
 packages/sdk-cloudflare/src/otlp-exporter/util.ts
 packages/sdk-base/src/lib/open-telemetry/metric/PeriodicExportingMetricReader.ts
 packages/sdk-base/src/lib/open-telemetry/instrumentation/InstrumentationAbstract.ts
+packages/sdk-base/src/lib/open-telemetry/export/BatchSpanProcessorBase.ts
+packages/sdk-base/src/lib/open-telemetry/export/BatchSpanProcessor.ts

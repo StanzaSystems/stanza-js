@@ -10,7 +10,11 @@ import process from 'node:process';
 
 type StanzaInitOptionsFromEnv = Exclude<
   keyof StanzaInitOptions,
-  'useRestHubApi' | 'createHubService' | 'createInstrumentation'
+  | 'useRestHubApi'
+  | 'createHubService'
+  | 'createInstrumentation'
+  | 'sdkName'
+  | 'sdkVersion'
 >;
 
 const stanzaEnvOptionsMap: {
