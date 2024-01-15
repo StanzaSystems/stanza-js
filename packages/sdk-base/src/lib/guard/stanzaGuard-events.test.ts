@@ -14,7 +14,6 @@ import { stanzaTokenContextKey } from '../context/stanzaTokenContextKey';
 import { TimeoutError } from '@getstanza/sdk-utils';
 import { initIngressTokenValidator } from './guard/ingressTokenValidator';
 import { initQuotaChecker } from './guard/quotaChecker';
-import { StanzaBaggagePropagator } from '../propagation/StanzaBaggagePropagator';
 import { addPriorityBoostToContext } from '../context/priorityBoost';
 
 type GetQuotaModule = typeof getQuotaModule;
