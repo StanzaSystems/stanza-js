@@ -11,6 +11,7 @@ Please note we have a code of conduct, please follow it in all your interactions
 
 - [Code of Conduct](#code-of-conduct)
 - [Reporting Bugs](#reporting-bugs)
+- [Releasing packages](#releasing-packages)
 
 ## Code of Conduct
 
@@ -41,3 +42,21 @@ Once it's filed:
 - The project team will label the issue accordingly.
 - A team member will try to reproduce the issue with your provided steps. If there are no reproduction steps or no obvious way to reproduce the issue, the team will ask you for those steps and mark the issue as `needs-repro`. Bugs with the `needs-repro` tag will not be addressed until they are reproduced.
 - If the team is able to reproduce the issue, it will be marked `needs-fix`, as well as possibly other tags (such as `critical`), and the issue will be left to be implemented by someone.
+
+### Releasing Packages
+
+Right now the process of publishing packages is manual. To release the packages please follow the steps listed below:
+
+- bump versions in all `package.json` files under `packages/*`
+- bump all dependencies pointing to `@getstanza/*` packages to the new version 
+- create a release branch `release/<X.Y.Z>` where `<X.Y.Z>` is the new version that you want to release and create a PR
+- merge the PR to main 
+- create and push a tag for the release on the `main` branch 
+  - `git tag v<X.Y.Z>` where `<X.Y.Z>` is the new version that you want to release
+  - `git push origin v<X.Y.Z>`
+- build all the packages: `npx nx run-many --target=build --all`
+- cd into each package dist directory and publish a new version of the package e.g.
+```shell
+cd dist/packages/core
+npm publish --access public --tag latest
+```
