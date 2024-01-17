@@ -14,15 +14,17 @@ import { type ServiceConfig } from '@getstanza/hub-client-api';
 import { getTraceConfigOverrideAdditionalInfo } from '../../propagation/TraceConfigOverrideAdditionalInfoPropagator';
 
 export class StanzaConfiguredSampler implements Sampler {
-  private readonly defaultSampler: Sampler = new ParentBasedSampler({
-    root: new TraceIdRatioBasedSampler(
-      this.serviceConfig.traceConfig.sampleRateDefault
-    ),
-  });
+  private readonly defaultSampler: Sampler;
 
   private readonly overrideSamplers: Record<number, Sampler> = {};
 
-  constructor(private readonly serviceConfig: ServiceConfig['config']) {}
+  constructor(private readonly serviceConfig: ServiceConfig['config']) {
+    this.defaultSampler = new ParentBasedSampler({
+      root: new TraceIdRatioBasedSampler(
+        this.serviceConfig.traceConfig.sampleRateDefault
+      ),
+    });
+  }
 
   shouldSample(
     context: Context,

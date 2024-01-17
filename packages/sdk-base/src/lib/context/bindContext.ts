@@ -1,19 +1,8 @@
-import * as oTelApi from '@opentelemetry/api';
-import { type Context } from '@opentelemetry/api';
 import { type Fn } from '../utils/fn';
+import { type ContextMapFunction, pipeContext } from './pipeContext';
+import { context } from '@opentelemetry/api';
 
-type ContextMapFunction = (context: Context) => Context;
 export const bindContext = <TArgs extends any[], TReturn>(
   mapFns: ContextMapFunction[],
   fn: Fn<TArgs, TReturn>
-): Fn<TArgs, TReturn> => {
-  return mapFns.length > 0
-    ? oTelApi.context.bind(
-        mapFns.reduce(
-          (context, mapFn) => mapFn(context),
-          oTelApi.context.active()
-        ),
-        fn
-      )
-    : fn;
-};
+): Fn<TArgs, TReturn> => context.bind(pipeContext(mapFns), fn);

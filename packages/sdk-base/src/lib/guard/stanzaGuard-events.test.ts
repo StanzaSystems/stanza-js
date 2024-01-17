@@ -14,6 +14,7 @@ import { stanzaTokenContextKey } from '../context/stanzaTokenContextKey';
 import { TimeoutError } from '@getstanza/sdk-utils';
 import { initIngressTokenValidator } from './guard/ingressTokenValidator';
 import { initQuotaChecker } from './guard/quotaChecker';
+import { addPriorityBoostToContext } from '../context/priorityBoost';
 
 type GetQuotaModule = typeof getQuotaModule;
 type QuotaCheckerModule = typeof quotaCheckerModule;
@@ -143,6 +144,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: '',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -182,6 +184,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: 'testFeature',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -230,6 +233,136 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: 'testBaggageFeature',
+                priorityBoost: 0,
+                serviceName: 'testService',
+                environment: 'testEnvironment',
+                clientId: 'testClientId',
+                configState: 'CONFIG_CACHED_OK',
+                localReason: 'LOCAL_NOT_SUPPORTED',
+                tokenReason: 'TOKEN_EVAL_DISABLED',
+                quotaReason: 'QUOTA_GRANTED',
+                mode: reportOnly ? 'report_only' : 'normal',
+              }
+            );
+          });
+
+          it('with specified priority boost when guard executes', async () => {
+            updateGuardConfig('testGuard', {
+              config: {
+                checkQuota: true,
+                reportOnly,
+              } satisfies Partial<GuardConfig['config']> as any,
+              version: 'testGuardVersion',
+            });
+
+            const deferred = getQuotaMock.mockImplementationDeferred();
+
+            const guardedDoStuff = stanzaGuard({
+              guard: 'testGuard',
+              priorityBoost: 1,
+            }).bind(doStuff);
+
+            const guardStuffPromise = guardedDoStuff();
+
+            deferred.resolve({ granted: true, token: 'testToken' });
+
+            await expect(guardStuffPromise).resolves.toBeUndefined();
+
+            expect(mockMessageBusEmit).toHaveBeenCalledWith(
+              events.guard.allowed,
+              {
+                guardName: 'testGuard',
+                featureName: '',
+                priorityBoost: 1,
+                serviceName: 'testService',
+                environment: 'testEnvironment',
+                clientId: 'testClientId',
+                configState: 'CONFIG_CACHED_OK',
+                localReason: 'LOCAL_NOT_SUPPORTED',
+                tokenReason: 'TOKEN_EVAL_DISABLED',
+                quotaReason: 'QUOTA_GRANTED',
+                mode: reportOnly ? 'report_only' : 'normal',
+              }
+            );
+          });
+
+          it('with priority boost specified in context when guard executes', async () => {
+            updateGuardConfig('testGuard', {
+              config: {
+                checkQuota: true,
+                reportOnly,
+              } satisfies Partial<GuardConfig['config']> as any,
+              version: 'testGuardVersion',
+            });
+
+            const deferred = getQuotaMock.mockImplementationDeferred();
+
+            const guardedDoStuff = stanzaGuard({
+              guard: 'testGuard',
+            }).bind(doStuff);
+
+            const contextWithBoost = addPriorityBoostToContext(2)(ROOT_CONTEXT);
+
+            const guardStuffPromise = context.with(
+              contextWithBoost,
+              guardedDoStuff
+            );
+
+            deferred.resolve({ granted: true, token: 'testToken' });
+
+            await expect(guardStuffPromise).resolves.toBeUndefined();
+
+            expect(mockMessageBusEmit).toHaveBeenCalledWith(
+              events.guard.allowed,
+              {
+                guardName: 'testGuard',
+                featureName: '',
+                priorityBoost: 2,
+                serviceName: 'testService',
+                environment: 'testEnvironment',
+                clientId: 'testClientId',
+                configState: 'CONFIG_CACHED_OK',
+                localReason: 'LOCAL_NOT_SUPPORTED',
+                tokenReason: 'TOKEN_EVAL_DISABLED',
+                quotaReason: 'QUOTA_GRANTED',
+                mode: reportOnly ? 'report_only' : 'normal',
+              }
+            );
+          });
+
+          it('with priority boost specified in guard and context when guard executes', async () => {
+            updateGuardConfig('testGuard', {
+              config: {
+                checkQuota: true,
+                reportOnly,
+              } satisfies Partial<GuardConfig['config']> as any,
+              version: 'testGuardVersion',
+            });
+
+            const deferred = getQuotaMock.mockImplementationDeferred();
+
+            const guardedDoStuff = stanzaGuard({
+              guard: 'testGuard',
+              priorityBoost: 1,
+            }).bind(doStuff);
+
+            const contextWithBoost = addPriorityBoostToContext(2)(ROOT_CONTEXT);
+
+            const guardStuffPromise = context.with(
+              contextWithBoost,
+              guardedDoStuff
+            );
+
+            deferred.resolve({ granted: true, token: 'testToken' });
+
+            await expect(guardStuffPromise).resolves.toBeUndefined();
+
+            expect(mockMessageBusEmit).toHaveBeenCalledWith(
+              events.guard.allowed,
+              {
+                guardName: 'testGuard',
+                featureName: '',
+                priorityBoost: 3,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -258,6 +391,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: '',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -296,6 +430,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: '',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -334,6 +469,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: '',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -375,6 +511,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: '',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -418,6 +555,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: '',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -459,6 +597,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: '',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -507,6 +646,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: '',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -562,6 +702,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: '',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -616,6 +757,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: '',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -660,6 +802,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: '',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -703,6 +846,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: 'testFeature',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -755,6 +899,150 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: 'testBaggageFeature',
+                priorityBoost: 0,
+                serviceName: 'testService',
+                environment: 'testEnvironment',
+                clientId: 'testClientId',
+                configState: 'CONFIG_CACHED_OK',
+                localReason: 'LOCAL_NOT_SUPPORTED',
+                tokenReason: 'TOKEN_EVAL_DISABLED',
+                quotaReason: 'QUOTA_BLOCKED',
+                mode: reportOnly ? 'report_only' : 'normal',
+              }
+            );
+          });
+
+          it("with specified priority boost when guard's execution is blocked", async () => {
+            updateGuardConfig('testGuard', {
+              config: {
+                checkQuota: true,
+                reportOnly,
+              } satisfies Partial<GuardConfig['config']> as any,
+              version: 'testGuardVersion',
+            });
+
+            const deferred = getQuotaMock.mockImplementationDeferred();
+
+            const guardedDoStuff = stanzaGuard({
+              guard: 'testGuard',
+              priorityBoost: 1,
+            }).bind(doStuff);
+
+            const guardStuffPromise = guardedDoStuff();
+
+            deferred.resolve({ granted: false });
+
+            if (reportOnly) {
+              await expect(guardStuffPromise).resolves.toBeUndefined();
+            } else {
+              await expect(guardStuffPromise).rejects.toThrow();
+            }
+
+            expect(mockMessageBusEmit).toHaveBeenCalledWith(
+              events.guard.blocked,
+              {
+                guardName: 'testGuard',
+                featureName: '',
+                priorityBoost: 1,
+                serviceName: 'testService',
+                environment: 'testEnvironment',
+                clientId: 'testClientId',
+                configState: 'CONFIG_CACHED_OK',
+                localReason: 'LOCAL_NOT_SUPPORTED',
+                tokenReason: 'TOKEN_EVAL_DISABLED',
+                quotaReason: 'QUOTA_BLOCKED',
+                mode: reportOnly ? 'report_only' : 'normal',
+              }
+            );
+          });
+
+          it("with priority boost specified in context when guard's execution is blocked", async () => {
+            updateGuardConfig('testGuard', {
+              config: {
+                checkQuota: true,
+                reportOnly,
+              } satisfies Partial<GuardConfig['config']> as any,
+              version: 'testGuardVersion',
+            });
+
+            const deferred = getQuotaMock.mockImplementationDeferred();
+
+            const guardedDoStuff = stanzaGuard({
+              guard: 'testGuard',
+            }).bind(doStuff);
+
+            const contextWithPriorityBoost =
+              addPriorityBoostToContext(2)(ROOT_CONTEXT);
+
+            const guardStuffPromise = context.with(
+              contextWithPriorityBoost,
+              guardedDoStuff
+            );
+
+            deferred.resolve({ granted: false });
+
+            if (reportOnly) {
+              await expect(guardStuffPromise).resolves.toBeUndefined();
+            } else {
+              await expect(guardStuffPromise).rejects.toThrow();
+            }
+
+            expect(mockMessageBusEmit).toHaveBeenCalledWith(
+              events.guard.blocked,
+              {
+                guardName: 'testGuard',
+                featureName: '',
+                priorityBoost: 2,
+                serviceName: 'testService',
+                environment: 'testEnvironment',
+                clientId: 'testClientId',
+                configState: 'CONFIG_CACHED_OK',
+                localReason: 'LOCAL_NOT_SUPPORTED',
+                tokenReason: 'TOKEN_EVAL_DISABLED',
+                quotaReason: 'QUOTA_BLOCKED',
+                mode: reportOnly ? 'report_only' : 'normal',
+              }
+            );
+          });
+
+          it("with priority boost specified in guard and context when guard's execution is blocked", async () => {
+            updateGuardConfig('testGuard', {
+              config: {
+                checkQuota: true,
+                reportOnly,
+              } satisfies Partial<GuardConfig['config']> as any,
+              version: 'testGuardVersion',
+            });
+
+            const deferred = getQuotaMock.mockImplementationDeferred();
+
+            const guardedDoStuff = stanzaGuard({
+              guard: 'testGuard',
+              priorityBoost: 1,
+            }).bind(doStuff);
+
+            const contextWithPriorityBoost =
+              addPriorityBoostToContext(2)(ROOT_CONTEXT);
+
+            const guardStuffPromise = context.with(
+              contextWithPriorityBoost,
+              guardedDoStuff
+            );
+
+            deferred.resolve({ granted: false });
+
+            if (reportOnly) {
+              await expect(guardStuffPromise).resolves.toBeUndefined();
+            } else {
+              await expect(guardStuffPromise).rejects.toThrow();
+            }
+
+            expect(mockMessageBusEmit).toHaveBeenCalledWith(
+              events.guard.blocked,
+              {
+                guardName: 'testGuard',
+                featureName: '',
+                priorityBoost: 3,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -797,6 +1085,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: '',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -833,6 +1122,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: 'testFeature',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -878,6 +1168,129 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: 'testBaggageFeature',
+                priorityBoost: 0,
+                serviceName: 'testService',
+                environment: 'testEnvironment',
+                clientId: 'testClientId',
+              }
+            );
+          });
+
+          it('with specified priority boost when function wrapped with a guard succeeds', async () => {
+            updateGuardConfig('testGuard', {
+              config: {
+                checkQuota: true,
+                reportOnly,
+              } satisfies Partial<GuardConfig['config']> as any,
+              version: 'testGuardVersion',
+            });
+
+            const deferred = getQuotaMock.mockImplementationDeferred();
+
+            const guardedDoStuff = stanzaGuard({
+              guard: 'testGuard',
+              priorityBoost: 1,
+            }).bind(doStuff);
+
+            const guardStuffPromise = guardedDoStuff();
+
+            mockMessageBusEmit.mockReset();
+
+            deferred.resolve({ granted: true, token: 'testToken' });
+
+            await expect(guardStuffPromise).resolves.toBeUndefined();
+
+            expect(mockMessageBusEmit).toHaveBeenCalledWith(
+              events.guard.succeeded,
+              {
+                guardName: 'testGuard',
+                featureName: '',
+                priorityBoost: 1,
+                serviceName: 'testService',
+                environment: 'testEnvironment',
+                clientId: 'testClientId',
+              }
+            );
+          });
+
+          it('with priority boost specified in context when function wrapped with a guard succeeds', async () => {
+            updateGuardConfig('testGuard', {
+              config: {
+                checkQuota: true,
+                reportOnly,
+              } satisfies Partial<GuardConfig['config']> as any,
+              version: 'testGuardVersion',
+            });
+
+            const deferred = getQuotaMock.mockImplementationDeferred();
+
+            const guardedDoStuff = stanzaGuard({
+              guard: 'testGuard',
+            }).bind(doStuff);
+
+            const contextWithPriorityBoost =
+              addPriorityBoostToContext(2)(ROOT_CONTEXT);
+
+            const guardStuffPromise = context.with(
+              contextWithPriorityBoost,
+              guardedDoStuff
+            );
+
+            mockMessageBusEmit.mockReset();
+
+            deferred.resolve({ granted: true, token: 'testToken' });
+
+            await expect(guardStuffPromise).resolves.toBeUndefined();
+
+            expect(mockMessageBusEmit).toHaveBeenCalledWith(
+              events.guard.succeeded,
+              {
+                guardName: 'testGuard',
+                featureName: '',
+                priorityBoost: 2,
+                serviceName: 'testService',
+                environment: 'testEnvironment',
+                clientId: 'testClientId',
+              }
+            );
+          });
+
+          it('with priority boost specified in guard and context when function wrapped with a guard succeeds', async () => {
+            updateGuardConfig('testGuard', {
+              config: {
+                checkQuota: true,
+                reportOnly,
+              } satisfies Partial<GuardConfig['config']> as any,
+              version: 'testGuardVersion',
+            });
+
+            const deferred = getQuotaMock.mockImplementationDeferred();
+
+            const guardedDoStuff = stanzaGuard({
+              guard: 'testGuard',
+              priorityBoost: 1,
+            }).bind(doStuff);
+
+            const contextWithPriorityBoost =
+              addPriorityBoostToContext(2)(ROOT_CONTEXT);
+
+            const guardStuffPromise = context.with(
+              contextWithPriorityBoost,
+              guardedDoStuff
+            );
+
+            mockMessageBusEmit.mockReset();
+
+            deferred.resolve({ granted: true, token: 'testToken' });
+
+            await expect(guardStuffPromise).resolves.toBeUndefined();
+
+            expect(mockMessageBusEmit).toHaveBeenCalledWith(
+              events.guard.succeeded,
+              {
+                guardName: 'testGuard',
+                featureName: '',
+                priorityBoost: 3,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -915,6 +1328,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: '',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -951,6 +1365,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: 'testFeature',
+                priorityBoost: 0,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -996,6 +1411,129 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: 'testBaggageFeature',
+                priorityBoost: 0,
+                serviceName: 'testService',
+                environment: 'testEnvironment',
+                clientId: 'testClientId',
+              }
+            );
+          });
+
+          it('with specified priority boost when function wrapped with a guard fails', async () => {
+            updateGuardConfig('testGuard', {
+              config: {
+                checkQuota: true,
+                reportOnly,
+              } satisfies Partial<GuardConfig['config']> as any,
+              version: 'testGuardVersion',
+            });
+
+            const deferred = getQuotaMock.mockImplementationDeferred();
+
+            const guardedDoStuff = stanzaGuard({
+              guard: 'testGuard',
+              priorityBoost: 1,
+            }).bind(() => {
+              throw new Error('kaboom');
+            });
+
+            const guardStuffPromise = guardedDoStuff();
+
+            deferred.resolve({ granted: true, token: 'testToken' });
+
+            await expect(guardStuffPromise).rejects.toThrow('kaboom');
+
+            expect(mockMessageBusEmit).toHaveBeenCalledWith(
+              events.guard.failed,
+              {
+                guardName: 'testGuard',
+                featureName: '',
+                priorityBoost: 1,
+                serviceName: 'testService',
+                environment: 'testEnvironment',
+                clientId: 'testClientId',
+              }
+            );
+          });
+
+          it('with priority boost specified in context when function wrapped with a guard fails', async () => {
+            updateGuardConfig('testGuard', {
+              config: {
+                checkQuota: true,
+                reportOnly,
+              } satisfies Partial<GuardConfig['config']> as any,
+              version: 'testGuardVersion',
+            });
+
+            const deferred = getQuotaMock.mockImplementationDeferred();
+
+            const guardedDoStuff = stanzaGuard({
+              guard: 'testGuard',
+            }).bind(() => {
+              throw new Error('kaboom');
+            });
+
+            const contextWithPriorityBoost =
+              addPriorityBoostToContext(2)(ROOT_CONTEXT);
+
+            const guardStuffPromise = context.with(
+              contextWithPriorityBoost,
+              guardedDoStuff
+            );
+
+            deferred.resolve({ granted: true, token: 'testToken' });
+
+            await expect(guardStuffPromise).rejects.toThrow('kaboom');
+
+            expect(mockMessageBusEmit).toHaveBeenCalledWith(
+              events.guard.failed,
+              {
+                guardName: 'testGuard',
+                featureName: '',
+                priorityBoost: 2,
+                serviceName: 'testService',
+                environment: 'testEnvironment',
+                clientId: 'testClientId',
+              }
+            );
+          });
+
+          it('with priority boost specified in guard and context when function wrapped with a guard fails', async () => {
+            updateGuardConfig('testGuard', {
+              config: {
+                checkQuota: true,
+                reportOnly,
+              } satisfies Partial<GuardConfig['config']> as any,
+              version: 'testGuardVersion',
+            });
+
+            const deferred = getQuotaMock.mockImplementationDeferred();
+
+            const guardedDoStuff = stanzaGuard({
+              guard: 'testGuard',
+              priorityBoost: 1,
+            }).bind(() => {
+              throw new Error('kaboom');
+            });
+
+            const contextWithPriorityBoost =
+              addPriorityBoostToContext(2)(ROOT_CONTEXT);
+
+            const guardStuffPromise = context.with(
+              contextWithPriorityBoost,
+              guardedDoStuff
+            );
+
+            deferred.resolve({ granted: true, token: 'testToken' });
+
+            await expect(guardStuffPromise).rejects.toThrow('kaboom');
+
+            expect(mockMessageBusEmit).toHaveBeenCalledWith(
+              events.guard.failed,
+              {
+                guardName: 'testGuard',
+                featureName: '',
+                priorityBoost: 3,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
                 clientId: 'testClientId',
@@ -1036,6 +1574,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: '',
+                priorityBoost: 0,
                 duration: 123.456,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
@@ -1078,6 +1617,7 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: 'testFeature',
+                priorityBoost: 0,
                 duration: 123.456,
                 serviceName: 'testService',
                 environment: 'testEnvironment',
@@ -1129,6 +1669,147 @@ describe('stanzaGuard', () => {
               {
                 guardName: 'testGuard',
                 featureName: 'testBaggageFeature',
+                priorityBoost: 0,
+                duration: 123.456,
+                serviceName: 'testService',
+                environment: 'testEnvironment',
+                clientId: 'testClientId',
+              }
+            );
+
+            vi.useRealTimers();
+          });
+
+          it('with specified priority boost when function wrapped with a guard succeeds', async () => {
+            vi.useFakeTimers({
+              now: 0,
+            });
+            updateGuardConfig('testGuard', {
+              config: {
+                checkQuota: true,
+                reportOnly,
+              } satisfies Partial<GuardConfig['config']> as any,
+              version: 'testGuardVersion',
+            });
+
+            const deferred = getQuotaMock.mockImplementationDeferred();
+
+            const guardedDoStuff = stanzaGuard({
+              guard: 'testGuard',
+              priorityBoost: 1,
+            }).bind(doStuff);
+
+            const guardStuffPromise = guardedDoStuff();
+
+            await vi.advanceTimersByTimeAsync(123.456);
+
+            deferred.resolve({ granted: true, token: 'testToken' });
+
+            await expect(guardStuffPromise).resolves.toBeUndefined();
+
+            expect(mockMessageBusEmit).toHaveBeenCalledWith(
+              events.guard.duration,
+              {
+                guardName: 'testGuard',
+                featureName: '',
+                priorityBoost: 1,
+                duration: 123.456,
+                serviceName: 'testService',
+                environment: 'testEnvironment',
+                clientId: 'testClientId',
+              }
+            );
+
+            vi.useRealTimers();
+          });
+
+          it('with priority boost specified in context when function wrapped with a guard succeeds', async () => {
+            vi.useFakeTimers({
+              now: 0,
+            });
+            updateGuardConfig('testGuard', {
+              config: {
+                checkQuota: true,
+                reportOnly,
+              } satisfies Partial<GuardConfig['config']> as any,
+              version: 'testGuardVersion',
+            });
+
+            const deferred = getQuotaMock.mockImplementationDeferred();
+
+            const guardedDoStuff = stanzaGuard({
+              guard: 'testGuard',
+            }).bind(doStuff);
+
+            const contextWithPriorityBoost =
+              addPriorityBoostToContext(2)(ROOT_CONTEXT);
+
+            const guardStuffPromise = context.with(
+              contextWithPriorityBoost,
+              guardedDoStuff
+            );
+
+            await vi.advanceTimersByTimeAsync(123.456);
+
+            deferred.resolve({ granted: true, token: 'testToken' });
+
+            await expect(guardStuffPromise).resolves.toBeUndefined();
+
+            expect(mockMessageBusEmit).toHaveBeenCalledWith(
+              events.guard.duration,
+              {
+                guardName: 'testGuard',
+                featureName: '',
+                priorityBoost: 2,
+                duration: 123.456,
+                serviceName: 'testService',
+                environment: 'testEnvironment',
+                clientId: 'testClientId',
+              }
+            );
+
+            vi.useRealTimers();
+          });
+
+          it('with priority boost specified in guard and context when function wrapped with a guard succeeds', async () => {
+            vi.useFakeTimers({
+              now: 0,
+            });
+            updateGuardConfig('testGuard', {
+              config: {
+                checkQuota: true,
+                reportOnly,
+              } satisfies Partial<GuardConfig['config']> as any,
+              version: 'testGuardVersion',
+            });
+
+            const deferred = getQuotaMock.mockImplementationDeferred();
+
+            const guardedDoStuff = stanzaGuard({
+              guard: 'testGuard',
+              priorityBoost: 1,
+            }).bind(doStuff);
+
+            const contextWithPriorityBoost =
+              addPriorityBoostToContext(2)(ROOT_CONTEXT);
+
+            const guardStuffPromise = context.with(
+              contextWithPriorityBoost,
+              guardedDoStuff
+            );
+
+            await vi.advanceTimersByTimeAsync(123.456);
+
+            deferred.resolve({ granted: true, token: 'testToken' });
+
+            await expect(guardStuffPromise).resolves.toBeUndefined();
+
+            expect(mockMessageBusEmit).toHaveBeenCalledWith(
+              events.guard.duration,
+              {
+                guardName: 'testGuard',
+                featureName: '',
+                priorityBoost: 3,
                 duration: 123.456,
                 serviceName: 'testService',
                 environment: 'testEnvironment',

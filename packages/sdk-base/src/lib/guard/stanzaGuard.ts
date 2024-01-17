@@ -19,9 +19,19 @@ import { getServiceConfig } from '../global/serviceConfig';
 import { getActiveStanzaEntry } from '../baggage/getActiveStanzaEntry';
 import { getGuardConfig } from '../global/guardConfig';
 import { StanzaGuardError } from './stanzaGuardError';
-import { identity } from 'ramda';
-import { context, SpanKind, trace } from '@opentelemetry/api';
+import { identity, pipe } from 'ramda';
+import { type Context, context, SpanKind, trace } from '@opentelemetry/api';
 import { getSdkMetadata } from '../global/sdkMetadata';
+import { pipeContext } from '../context/pipeContext';
+
+class ErrorWithContext extends Error {
+  constructor(
+    public readonly originalError: unknown,
+    public readonly ctx: Context
+  ) {
+    super();
+  }
+}
 
 export const stanzaGuard = <TArgs extends any[], TReturn>(
   options: StanzaGuardOptions
@@ -30,100 +40,118 @@ export const stanzaGuard = <TArgs extends any[], TReturn>(
 
   return createStanzaWrapper<TArgs, TReturn, Promisify<TReturn>>((fn) => {
     const resultFn = async function (...args: Parameters<typeof fn>) {
-      const outerFn = bindContext(
+      const outerFnCtx = pipeContext(
         [
           addStanzaGuardToContext(options.guard),
           options.priorityBoost !== undefined &&
             addPriorityBoostToContext(options.priorityBoost),
-        ].filter(isTruthy),
-        async () => {
-          const { name, version } = getSdkMetadata();
-          return trace.getTracer(name, version).startActiveSpan(
-            'StanzaGuard',
-            {
-              kind: SpanKind.INTERNAL,
-              attributes: {
-                ...getDefaultContextData(),
-                featureName:
-                  getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
-                guardName: options.guard,
-                priorityBoost: getPriorityBoostFromContext(context.active()),
-                mode: getGuardMode(options.guard),
-              },
-            },
-            context.active(),
-            async (span) => {
-              try {
-                const guardResult = await guard();
-
-                const failure = guardResult.find(
-                  (r): r is typeof r & { status: 'failure' } =>
-                    r.status === 'failure'
-                );
-                if (
-                  failure !== undefined &&
-                  getGuardConfig(options.guard)?.config.reportOnly !== true
-                ) {
-                  throw failure.type === 'QUOTA'
-                    ? new StanzaGuardError('NoQuota', failure.message)
-                    : new StanzaGuardError('InvalidToken', failure.message);
-                }
-
-                const fnWithBoundContext = bindContext(
-                  guardResult.filter(isTruthy).map((token) => {
-                    if (token.status === 'success') {
-                      switch (token.type) {
-                        case 'QUOTA':
-                          return addStanzaTokenToContext(token.token);
-                        case 'TOKEN_VALIDATE':
-                          return removeStanzaTokenFromContext();
-                      }
-                    }
-                    return identity;
-                  }),
-                  fn
-                );
-
-                return await (fnWithBoundContext(
-                  ...args
-                ) as Promisify<TReturn>);
-              } finally {
-                span.end();
-              }
-            }
-          );
-        }
+        ].filter(isTruthy)
       );
-      return outerFn();
+      const outerFn = context.bind(outerFnCtx, async () => {
+        const { name, version } = getSdkMetadata();
+        return trace.getTracer(name, version).startActiveSpan(
+          'StanzaGuard',
+          {
+            kind: SpanKind.INTERNAL,
+            attributes: {
+              ...getDefaultContextData(),
+              featureName:
+                getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
+              guardName: options.guard,
+              priorityBoost: getPriorityBoostFromContext(context.active()),
+              mode: getGuardMode(options.guard),
+            },
+          },
+          context.active(),
+          async (span) => {
+            try {
+              const guardResult = await guard();
+
+              const failure = guardResult.find(
+                (r): r is typeof r & { status: 'failure' } =>
+                  r.status === 'failure'
+              );
+              if (
+                failure !== undefined &&
+                getGuardConfig(options.guard)?.config.reportOnly !== true
+              ) {
+                throw failure.type === 'QUOTA'
+                  ? new StanzaGuardError('NoQuota', failure.message)
+                  : new StanzaGuardError('InvalidToken', failure.message);
+              }
+
+              const fnWithBoundContext = bindContext(
+                guardResult.filter(isTruthy).map((token) => {
+                  if (token.status === 'success') {
+                    switch (token.type) {
+                      case 'QUOTA':
+                        return addStanzaTokenToContext(token.token);
+                      case 'TOKEN_VALIDATE':
+                        return removeStanzaTokenFromContext();
+                    }
+                  }
+                  return identity;
+                }),
+                fn
+              );
+
+              return await (fnWithBoundContext(...args) as Promisify<TReturn>);
+            } finally {
+              span.end();
+            }
+          }
+        );
+      });
+      try {
+        const result = await outerFn();
+        return { ctx: outerFnCtx, result } as const;
+      } catch (err) {
+        throw new ErrorWithContext(err, outerFnCtx);
+      }
     };
 
-    return wrapEventsAsync(resultFn, {
-      success: async () => {
-        return eventBus.emit(events.guard.succeeded, {
-          ...getDefaultContextData(),
-          featureName:
-            getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
-          guardName: options.guard,
-        });
-      },
-      failure: async () => {
-        return eventBus.emit(events.guard.failed, {
-          ...getDefaultContextData(),
-          featureName:
-            getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
-          guardName: options.guard,
-        });
-      },
-      duration: async (...[duration]) => {
-        return eventBus.emit(events.guard.duration, {
-          ...getDefaultContextData(),
-          featureName:
-            getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
-          guardName: options.guard,
-          duration,
-        });
-      },
-    }) as Fn<TArgs, Promisify<TReturn>>;
+    return pipe(
+      wrapEventsAsync(resultFn, {
+        success: async ({ ctx }, ..._) => {
+          return eventBus.emit(events.guard.succeeded, {
+            ...getDefaultContextData(),
+            guardName: options.guard,
+            featureName:
+              getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
+            priorityBoost: getPriorityBoostFromContext(ctx),
+          });
+        },
+        failure: async (err, ..._) => {
+          const ctx =
+            err instanceof ErrorWithContext ? err.ctx : context.active();
+          return eventBus.emit(events.guard.failed, {
+            ...getDefaultContextData(),
+            guardName: options.guard,
+            featureName:
+              getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
+            priorityBoost: getPriorityBoostFromContext(ctx),
+          });
+        },
+        duration: async (...[duration, result]) => {
+          const { ctx } = result ?? { ctx: context.active() };
+          return eventBus.emit(events.guard.duration, {
+            ...getDefaultContextData(),
+            guardName: options.guard,
+            featureName:
+              getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
+            priorityBoost: getPriorityBoostFromContext(ctx),
+            duration,
+          });
+        },
+      }),
+      async (resultWithContextPromise) =>
+        resultWithContextPromise.then(
+          ({ result }) => result,
+          (err) => {
+            throw err instanceof ErrorWithContext ? err.originalError : err;
+          }
+        )
+    ) as Fn<TArgs, Promisify<TReturn>>;
   });
 };
 
@@ -154,9 +182,6 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
     ...initializedGuard,
     guard: wrapEventsAsync(initializedGuard.guard, {
       success: async (result) => {
-        const customerId = getServiceConfig()?.config.customerId;
-        const { serviceName, environment, clientId } =
-          hubService.getServiceMetadata();
         return eventBus.emit(
           result.some((r) => r.status === 'failure')
             ? events.guard.blocked
@@ -164,13 +189,11 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
             ? events.guard.failOpen
             : events.guard.allowed,
           {
-            serviceName,
-            environment,
-            clientId,
+            ...getDefaultContextData(),
+            guardName: options.guard,
             featureName:
               getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
-            guardName: options.guard,
-            customerId,
+            priorityBoost: getPriorityBoostFromContext(context.active()),
             ...getReasons(result.filter(isTruthy).map(({ reason }) => reason)),
             mode: getGuardMode(options.guard),
           }
@@ -178,17 +201,12 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
       },
       failure: async (err) => {
         if (err instanceof StanzaGuardError) {
-          const customerId = getServiceConfig()?.config.customerId;
-          const { serviceName, environment, clientId } =
-            hubService.getServiceMetadata();
           return eventBus.emit(events.guard.blocked, {
-            serviceName,
-            environment,
-            clientId,
+            ...getDefaultContextData(),
+            guardName: options.guard,
             featureName:
               getActiveStanzaEntry('stz-feat') ?? options.feature ?? '',
-            guardName: options.guard,
-            customerId,
+            priorityBoost: getPriorityBoostFromContext(context.active()),
             ...getReasons([err]),
             mode: getGuardMode(options.guard),
           });

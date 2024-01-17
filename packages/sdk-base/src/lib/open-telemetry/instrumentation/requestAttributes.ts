@@ -7,23 +7,23 @@ import {
   eventDataToGuardAttributes,
 } from './guardAttributes';
 import {
-  eventDataToFeatureAttributes,
-  type FeatureAttributes,
-} from './featureAttributes';
+  eventDataToGuardExecutionAttributes,
+  type GuardExecutionAttributes,
+} from './guardExecutionAttributes';
 import {
   type GuardData,
   type DefaultContextData,
-  type FeatureData,
+  type GuardExecutionData,
 } from '../../global/eventBus';
 
 export type RequestAttributes = DefaultContextAttributes &
   GuardAttributes &
-  FeatureAttributes;
+  GuardExecutionAttributes;
 
 export const eventDataToRequestAttributes = (
-  data: DefaultContextData & GuardData & FeatureData
+  data: DefaultContextData & GuardData & GuardExecutionData
 ): RequestAttributes => ({
   ...eventDataToDefaultContextAttributes(data),
   ...eventDataToGuardAttributes(data),
-  ...eventDataToFeatureAttributes(data),
+  ...eventDataToGuardExecutionAttributes(data),
 });
