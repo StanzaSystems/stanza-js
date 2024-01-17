@@ -23,10 +23,5 @@
     "@opentelemetry/sdk-trace-base": "~1.18.1",
     "@opentelemetry/exporter-trace-otlp-grpc": "~0.45.1",
     "ramda": "^0.29.0"
-  },
-  "devDependencies": {
-    "@vitest/expect": "0.33.0",
-    "vitest": "0.33.0",
-    "vite-tsconfig-paths": "^4.2.0"
   }
 }
