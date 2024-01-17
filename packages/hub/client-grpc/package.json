@@ -1,7 +1,7 @@
 {
   "name": "@getstanza/hub-client-grpc",
   "type": "commonjs",
-  "version": "0.0.7-beta",
+  "version": "0.0.8-beta",
   "description": "Stanza Hub GRPC client",
   "author": "Stanza",
   "license": "Apache-2.0",
@@ -9,8 +9,8 @@
     "@bufbuild/protobuf": "~1.4.2",
     "@connectrpc/connect-node": "~1.1.3",
     "@connectrpc/connect": "~1.1.3",
-    "@getstanza/hub-client-api": "0.0.7-beta",
-    "@getstanza/sdk-utils": "0.0.7-beta",
+    "@getstanza/hub-client-api": "0.0.8-beta",
+    "@getstanza/sdk-utils": "0.0.8-beta",
     "pino": "^8.14.1",
     "zod": "^3.21.4"
   },

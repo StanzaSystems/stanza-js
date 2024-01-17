@@ -1,13 +1,13 @@
 {
   "name": "@getstanza/sdk-base",
   "type": "commonjs",
-  "version": "0.0.7-beta",
+  "version": "0.0.8-beta",
   "description": "Stanza SDK Base",
   "author": "Stanza",
   "license": "Apache-2.0",
   "dependencies": {
     "vitest": "0.34.6",
-    "@getstanza/hub-client-api": "0.0.7-beta",
+    "@getstanza/hub-client-api": "0.0.8-beta",
     "@opentelemetry/api": "~1.7.0",
     "@vitest/expect": "0.34.6",
     "zod": "^3.21.4",
@@ -16,7 +16,7 @@
     "ramda": "^0.29.0",
     "@opentelemetry/core": "~1.18.1",
     "exponential-backoff": "^3.1.1",
-    "@getstanza/sdk-utils": "0.0.7-beta",
+    "@getstanza/sdk-utils": "0.0.8-beta",
     "@opentelemetry/instrumentation": "~0.45.1",
     "@opentelemetry/sdk-metrics": "~1.18.1",
     "@opentelemetry/sdk-trace-base": "~1.18.1"
