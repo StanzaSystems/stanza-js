@@ -1,9 +1,9 @@
 {
   "name": "@getstanza/mocks-server",
-  "version": "0.0.7-beta",
+  "version": "0.0.8-beta",
   "type": "module",
   "dependencies": {
-    "@getstanza/mocks-handlers": "*",
+    "@getstanza/mocks-handlers": "0.0.8-beta",
     "msw": "^1.3.2",
     "tslib": "^2.6.0"
   }
