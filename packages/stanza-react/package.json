@@ -9,9 +9,5 @@
     "@getstanza/browser": "0.0.7-beta",
     "@getstanza/core": "0.0.7-beta",
     "react": "18.2.0"
-  },
-  "devDependencies": {
-    "vitest": "0.33.0",
-    "vite-tsconfig-paths": "^4.2.0"
   }
 }

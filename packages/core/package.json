@@ -7,10 +7,5 @@
   "license": "Apache-2.0",
   "dependencies": {
     "emittery": "^0.13.1"
-  },
-  "devDependencies": {
-    "msw": "^1.2.2",
-    "vitest": "0.33.0",
-    "vite-tsconfig-paths": "^4.2.0"
   }
 }

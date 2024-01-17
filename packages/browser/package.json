@@ -7,11 +7,5 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@getstanza/core": "0.0.7-beta"
-  },
-  "devDependencies": {
-    "vitest": "0.33.0",
-    "vitest-localstorage-mock": "^0.0.1",
-    "@getstanza/mocks-server": "0.0.7-beta",
-    "vite-tsconfig-paths": "^4.2.0"
   }
 }
