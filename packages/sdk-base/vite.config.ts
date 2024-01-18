@@ -13,6 +13,7 @@ export default defineConfig({
   // },
 
   test: {
+    reporters: ['default'],
     setupFiles: ['./src/lib/__tests__/setup.ts'],
     globals: true,
     cache: { dir: '../../node_modules/.vitest' },
