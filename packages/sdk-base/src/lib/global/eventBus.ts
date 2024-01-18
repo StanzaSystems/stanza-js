@@ -85,11 +85,12 @@ const eventBusEvents = {
   },
 } as const;
 
-type GetKeys<T> = T extends Record<infer K, symbol>
-  ? T[K]
-  : T extends Record<infer K, unknown>
-  ? GetKeys<T[K]>
-  : never;
+type GetKeys<T> =
+  T extends Record<infer K, symbol>
+    ? T[K]
+    : T extends Record<infer K, unknown>
+      ? GetKeys<T[K]>
+      : never;
 
 type EventKeys = GetKeys<typeof eventBusEvents>;
 

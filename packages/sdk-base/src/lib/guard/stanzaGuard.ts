@@ -172,8 +172,8 @@ function getGuardMode(guardName: string) {
   return guardConfig?.reportOnly === true
     ? 'report_only'
     : guardConfig?.reportOnly === false
-    ? 'normal'
-    : 'unspecified';
+      ? 'normal'
+      : 'unspecified';
 }
 
 const createStanzaGuard = (options: StanzaGuardOptions) => {
@@ -186,8 +186,8 @@ const createStanzaGuard = (options: StanzaGuardOptions) => {
           result.some((r) => r.status === 'failure')
             ? events.guard.blocked
             : result.some((r) => r.status === 'failOpen')
-            ? events.guard.failOpen
-            : events.guard.allowed,
+              ? events.guard.failOpen
+              : events.guard.allowed,
           {
             ...getDefaultContextData(),
             guardName: options.guard,

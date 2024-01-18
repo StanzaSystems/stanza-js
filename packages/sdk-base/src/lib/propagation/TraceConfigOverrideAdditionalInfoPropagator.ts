@@ -66,11 +66,10 @@ export class TraceConfigOverrideAdditionalInfoPropagator
           serviceConfig.traceConfig.overrides
             .map((o) => o.spanSelectors.map((s) => s.otelAttribute))
             .flat()
-            .map(
-              (attr) =>
-                /^http.(client|server).header.(?<header>[\w_]+)$/
-                  .exec(attr)
-                  ?.groups?.header?.replace(/_/g, '-')
+            .map((attr) =>
+              /^http.(client|server).header.(?<header>[\w_]+)$/
+                .exec(attr)
+                ?.groups?.header?.replace(/_/g, '-')
             )
             .filter(isTruthy)
         ),
@@ -86,14 +85,13 @@ export class TraceConfigOverrideAdditionalInfoPropagator
   extract(context: Context, carrier: unknown, getter: TextMapGetter): Context {
     const headers = this.usedOtelData
       .getEntity(ROOT_CONTEXT)
-      .headers.reduce<TraceConfigOverrideAdditionalInfo['headers']>(
-        (resultHeaders, key) => {
-          resultHeaders = resultHeaders ?? {};
-          resultHeaders[key] = getter.get(carrier, key);
-          return resultHeaders;
-        },
-        undefined
-      );
+      .headers.reduce<
+        TraceConfigOverrideAdditionalInfo['headers']
+      >((resultHeaders, key) => {
+        resultHeaders = resultHeaders ?? {};
+        resultHeaders[key] = getter.get(carrier, key);
+        return resultHeaders;
+      }, undefined);
     return context.setValue(stanzaTraceConfigOverrideAdditionalInfoKey, {
       headers,
     } satisfies TraceConfigOverrideAdditionalInfo);
