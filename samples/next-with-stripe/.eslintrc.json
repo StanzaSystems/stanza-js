@@ -16,7 +16,8 @@
         "@next/next/no-html-link-for-pages": [
           "error",
           "samples/next-with-stripe/pages"
-        ]
+        ],
+        "@typescript-eslint/no-unsafe-argument": 1
       }
     },
     {

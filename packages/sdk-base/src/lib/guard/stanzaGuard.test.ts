@@ -87,7 +87,7 @@ const getQuotaMock = Object.assign(
 
 beforeEach(() => {
   resetServiceConfig();
-  updateGuardConfig('testGuard', undefined as any);
+  updateGuardConfig('testGuard', undefined as unknown as GuardConfig);
 
   doStuff.mockReset();
   getQuotaMock.mockReset();

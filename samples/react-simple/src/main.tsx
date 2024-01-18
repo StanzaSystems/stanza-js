@@ -17,7 +17,16 @@ await loadPromise;
 
 const stanzaInstance = createStanzaInstance(config);
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+const rootElementId = 'root';
+const rootElement = document.getElementById(rootElementId);
+
+if (rootElement == null) {
+  throw new Error(
+    `Could not find element with id ${rootElementId} on the page`
+  );
+}
+
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <StanzaProvider instance={stanzaInstance}>
       <App />

@@ -83,7 +83,7 @@ const getQuotaMock = Object.assign(
 );
 
 beforeEach(() => {
-  updateGuardConfig('testGuard', undefined as any);
+  updateGuardConfig('testGuard', undefined as unknown as GuardConfig);
   updateServiceConfig(undefined);
 
   mockMessageBusEmit.mockReset();

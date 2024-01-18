@@ -6,7 +6,6 @@
     "loadTestHub": "npx artillery run --dotenv .env --output js-load.json ./token-test.yml && node ./load-test-summarize"
   },
   "dependencies": {
-    "@getstanza/node": "0.0.8-beta",
     "express": "~4.18.1",
     "dotenv": "16.3.1",
     "cors": "^2.8.5",

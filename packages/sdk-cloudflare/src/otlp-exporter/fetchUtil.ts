@@ -15,7 +15,7 @@ export function sendWithFetch<ExportItem, ServiceRequest>(
   body: string,
   contentType: string,
   onSuccess: () => void,
-  onError: (error: OTLPExporterError) => void
+  onError: (error: Error) => void
 ): void {
   const exporterTimeout = collector.timeoutMillis;
   const parsedUrl = new URL(collector.url);
@@ -100,7 +100,11 @@ export function sendWithFetch<ExportItem, ServiceRequest>(
       })
       .catch((error) => {
         onError(
-          reqIsDestroyed ? new OTLPExporterError('Request Timeout') : error
+          reqIsDestroyed
+            ? new OTLPExporterError('Request Timeout')
+            : error instanceof Error
+              ? error
+              : new OTLPExporterError('Unknown Error')
         );
         clearTimeout(exporterTimer);
         clearTimeout(retryTimer);

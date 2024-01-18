@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite';
 
 import viteTsConfigPaths from 'vite-tsconfig-paths';
 
@@ -21,6 +21,7 @@ export default defineConfig({
   // },
 
   test: {
+    reporters: ['default'],
     setupFiles: ['./src/__tests__/setup.ts'],
     globals: true,
     cache: {

@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite';
 
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
@@ -13,6 +13,7 @@ export default defineConfig({
   // },
 
   test: {
+    reporters: ['default'],
     globals: true,
     cache: {
       dir: '../../node_modules/.vitest',

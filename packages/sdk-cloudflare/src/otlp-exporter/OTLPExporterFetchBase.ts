@@ -82,7 +82,9 @@ export abstract class OTLPExporterFetchBase<
     this._sendingPromises.push(promise);
     const popPromise = () => {
       const index = this._sendingPromises.indexOf(promise);
-      this._sendingPromises.splice(index, 1);
+      Promise.allSettled(this._sendingPromises.splice(index, 1)).catch(
+        () => {}
+      );
     };
     promise.then(popPromise, popPromise);
   }

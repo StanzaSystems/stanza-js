@@ -251,6 +251,7 @@ describe('StanzaInstrumentation', () => {
       'should capture request metrics',
       async ({ given, expected }) => {
         vi.useFakeTimers();
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         void eventBus.emit(given.event, given.data as any);
 
         await vi.advanceTimersByTimeAsync(10);
@@ -839,6 +840,7 @@ describe('StanzaInstrumentation', () => {
       'should capture request metrics',
       async ({ given, expected }) => {
         vi.useFakeTimers();
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         void eventBus.emit(given.event, given.data as any);
 
         await vi.advanceTimersByTimeAsync(10);

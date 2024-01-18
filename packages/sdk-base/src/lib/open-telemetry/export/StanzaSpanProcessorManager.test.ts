@@ -36,12 +36,16 @@ vi.mock(
   }
 );
 
-const createSpanExporterMock = vi.fn((config) => {
+const createSpanExporterMock = vi.fn((config: { collectorUrl: string }) => {
   return new CustomSpanExporter(config);
 });
 
 class CustomSpanExporter extends InMemorySpanExporter {
-  constructor(public readonly config: ServiceConfig['config']['traceConfig']) {
+  constructor(
+    public readonly config: {
+      collectorUrl: string;
+    } & Record<string, unknown>
+  ) {
     super();
   }
 }

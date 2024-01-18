@@ -1,8 +1,7 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig, searchForWorkspaceRoot } from 'vite';
 
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { resolve } from 'path';
-import { searchForWorkspaceRoot } from 'vite';
 
 export default defineConfig({
   root: __dirname,
