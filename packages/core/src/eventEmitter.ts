@@ -28,7 +28,7 @@ export class StanzaChangeTarget<StanzaEvent>
       if (!(event instanceof StanzaChangeEvent)) {
         return;
       }
-      callback(event.detail);
+      callback(event.detail as StanzaEvent);
     };
 
     const unsubscribe = (): void => {

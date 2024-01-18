@@ -7,6 +7,6 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@getstanza/node": "0.0.8-beta",
-    "next": "13.5.3"
+    "next": "^13.5.6"
   }
 }

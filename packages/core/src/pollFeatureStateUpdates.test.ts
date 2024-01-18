@@ -4,6 +4,9 @@ import { type FeatureState } from './models/featureState';
 import { startPollingFeatureStateUpdates } from './startPollingFeatureStateUpdates';
 import { createInMemoryLocalStateProvider } from './utils/inMemoryLocalStateProvider';
 import { type LocalStateProvider } from './models/localStateProvider';
+import type * as getFeatureStatesHotModule from './getFeatureStatesHot';
+
+type GetFeatureStatesHotModule = typeof getFeatureStatesHotModule;
 
 const mockGetFeaturesStatesHot = vi.fn();
 const mockGetConfig = vi.fn();
@@ -11,8 +14,8 @@ const mockGetStateProvider = vi.fn();
 
 vi.mock('./getFeatureStatesHot', () => {
   return {
-    getFeatureStatesHot: (...args: any[]) => mockGetFeaturesStatesHot(...args),
-  };
+    getFeatureStatesHot: (...args) => mockGetFeaturesStatesHot(...args),
+  } satisfies GetFeatureStatesHotModule;
 });
 
 vi.mock('./globals', () => {

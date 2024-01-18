@@ -1,5 +1,6 @@
 import {
   type FeatureState,
+  isTruthy,
   type LocalStateProvider,
   StanzaChangeTarget,
 } from '@getstanza/core';
@@ -75,7 +76,8 @@ export const createLocalStorageStateProvider = (): LocalStateProvider => {
   function getAllFeatureStates(): FeatureState[] {
     assertInitialized();
     return getAllStateKeys()
-      .map((key) => localStorage.getItem(key) as string)
+      .map((key) => localStorage.getItem(key))
+      .filter(isTruthy)
       .map(parseFeature);
   }
 
