@@ -32,6 +32,9 @@ const fetchMock = vi.fn();
 const createHubService = () => mockHubService;
 
 beforeEach(async () => {
+  vi.spyOn(logger, 'info');
+  vi.spyOn(logger, 'warn');
+  vi.spyOn(logger, 'error');
   const { getEnvInitOptions } = await vi.importActual<{
     getEnvInitOptions: typeof getEnvInitOptionsType;
   }>('./getEnvInitOptions');
@@ -39,6 +42,13 @@ beforeEach(async () => {
 });
 
 afterEach(() => {
+  expect(logger.warn).not.toHaveBeenCalled();
+  expect(logger.error).not.toHaveBeenCalled();
+
+  vi.mocked(logger.info).mockReset();
+  vi.mocked(logger.warn).mockReset();
+  vi.mocked(logger.error).mockReset();
+
   getEnvInitOptionsMock.mockReset();
   fetchMock.mockReset();
 });
@@ -47,13 +57,14 @@ describe('Stanza init', function () {
   describe('invalid options', () => {
     it('should not throw when not options provided', async () => {
       await expect(init({ createHubService })).resolves.toBeUndefined();
+
+      vi.mocked(logger.warn).mockClear();
     });
 
     it('should warn if empty config is provided', async () => {
-      const warnSpy = vi.spyOn(logger, 'warn');
-
       await init({ createHubService });
 
+      const warnSpy = vi.mocked(logger.warn);
       expect(warnSpy).toHaveBeenCalledOnce();
       expect(warnSpy)
         .toHaveBeenCalledWith(`Provided options are invalid. Please provide an object with the following properties:
@@ -64,6 +75,7 @@ describe('Stanza init', function () {
 - sdkName: string (Name of the SDK)
 - sdkVersion: string (A version of the SDK)
 - environment: string (An environment to use)`);
+      warnSpy.mockClear();
     });
   });
 
@@ -89,7 +101,6 @@ describe('Stanza init', function () {
     );
 
     it('should not warn if valid config is provided', async () => {
-      const warnSpy = vi.spyOn(logger, 'warn');
       fetchMock.mockImplementation(async () => ({
         json: async () => ({}),
       }));
@@ -102,13 +113,13 @@ describe('Stanza init', function () {
         environment: 'testEnvironment',
       });
 
+      const warnSpy = vi.mocked(logger.warn);
       expect(warnSpy).not.toHaveBeenCalledWith('Provided options are invalid');
 
       vi.unstubAllGlobals();
     });
 
     it('should not warn for empty config if env variables are set', async () => {
-      const warnSpy = vi.spyOn(logger, 'warn');
       fetchMock.mockImplementation(async () => ({
         json: async () => ({}),
       }));
@@ -124,6 +135,7 @@ describe('Stanza init', function () {
 
       await init({ createHubService });
 
+      const warnSpy = vi.mocked(logger.warn);
       expect(warnSpy).not.toHaveBeenCalledWith('Provided options are invalid');
     });
   });
