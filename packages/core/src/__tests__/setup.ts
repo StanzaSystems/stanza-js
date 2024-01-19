@@ -1,7 +1,7 @@
 import './polyfillFetch';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { afterAll, afterEach, beforeAll } from 'vitest';
+import { type SpyInstance } from 'vitest';
 import { type ApiFeatureState } from '../api/featureState';
 import { type ApiFeaturesResponse } from '../api/featureStateResponse';
 
@@ -40,17 +40,14 @@ const featuresStatic: ApiFeatureState[] = [
 ];
 
 const server = setupServer(
-  rest.post(
-    'https://hub.dev.getstanza.dev/v1/context/browser',
-    async (req, res, ctx) => {
-      const reqJson = await req.json();
-      const features = reqJson.feature.names;
-      const configs: ApiFeaturesResponse = {
-        featureConfigs: featuresStatic.filter((f) => features.includes(f.name)),
-      };
-      return res(ctx.status(200), ctx.set('ETag', 'eTag1'), ctx.json(configs));
-    }
-  )
+  rest.post('https://url.to.hub/v1/context/browser', async (req, res, ctx) => {
+    const reqJson = await req.json();
+    const features = reqJson.feature.names;
+    const configs: ApiFeaturesResponse = {
+      featureConfigs: featuresStatic.filter((f) => features.includes(f.name)),
+    };
+    return res(ctx.status(200), ctx.set('ETag', 'eTag1'), ctx.json(configs));
+  })
 );
 
 beforeAll(() => {
@@ -61,4 +58,26 @@ afterAll(() => {
 });
 afterEach(() => {
   server.resetHandlers();
+});
+
+let errorSpy: SpyInstance | undefined;
+let warnSpy: SpyInstance | undefined;
+
+beforeEach(() => {
+  errorSpy?.mockReset();
+  warnSpy?.mockReset();
+  errorSpy = vi.spyOn(console, 'error');
+  warnSpy = vi.spyOn(console, 'warn');
+});
+
+afterEach(() => {
+  expect(errorSpy).not.toHaveBeenCalled();
+  if (warnSpy?.mock.calls.length !== 0) {
+    expect(warnSpy).toHaveBeenCalledOnce();
+    expect(warnSpy).toHaveBeenCalledWith(
+      'FakeTimers: clearTimeout was invoked to clear a native timer instead of one created by this library.\nTo automatically clean-up native timers, use `shouldClearNativeTimers`.'
+    );
+  } else {
+    expect(warnSpy).not.toHaveBeenCalled();
+  }
 });

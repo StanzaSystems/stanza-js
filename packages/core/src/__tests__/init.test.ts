@@ -33,7 +33,7 @@ describe('init stanza', () => {
 
   it('configures a stanza instance', () => {
     const config: StanzaCoreConfig = {
-      url: 'https://hub.dev.getstanza.dev',
+      url: 'https://url.to.hub',
       environment: 'local',
       stanzaApiKey: '12345667',
       contextConfigs: [
@@ -55,7 +55,7 @@ describe('init stanza', () => {
 
   it('configures only one stanza', () => {
     const config: StanzaCoreConfig = {
-      url: 'https://hub.dev.getstanza.dev',
+      url: 'https://url.to.hub',
       environment: 'local',
       stanzaApiKey: '12345667',
       contextConfigs: [

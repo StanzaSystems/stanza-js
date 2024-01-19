@@ -1,15 +1,11 @@
-import { init } from './init';
-import { assert } from 'vitest';
-import type * as globalsModule from './globals';
+import { type init as Init } from './init';
+import { assert, beforeEach } from 'vitest';
 
-type GlobalsModule = typeof globalsModule;
+let init: typeof Init;
 
-vi.mock('./globals', async (importOriginal) => {
-  const original = await importOriginal<GlobalsModule>();
-  return {
-    ...original,
-    init: () => {},
-  } satisfies GlobalsModule;
+beforeEach(async () => {
+  vi.resetModules();
+  init = await import('./init').then(({ init }) => init);
 });
 
 describe('init', () => {
@@ -48,6 +44,14 @@ describe('init', () => {
 
     assert.ok('should init without errors');
 
+    const warnSpy = vi.mocked(console.warn);
+    expect(warnSpy).toHaveBeenCalledOnce();
+    expect(warnSpy).toHaveBeenCalledWith(
+      'Error while polling feature state updates',
+      new Error('kaboom')
+    );
+    warnSpy.mockClear();
+
     vi.useRealTimers();
   });
 
@@ -67,6 +71,14 @@ describe('init', () => {
     await vi.advanceTimersByTimeAsync(0);
 
     assert.ok('should init without errors');
+
+    const warnSpy = vi.mocked(console.warn);
+    expect(warnSpy).toHaveBeenCalledOnce();
+    expect(warnSpy).toHaveBeenCalledWith(
+      'Error while polling feature state updates',
+      new Error('kaboom')
+    );
+    warnSpy.mockClear();
 
     vi.useRealTimers();
   });
