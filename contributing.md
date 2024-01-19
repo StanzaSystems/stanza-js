@@ -60,3 +60,5 @@ Right now the process of publishing packages is manual. To release the packages 
 cd dist/packages/core
 npm publish --access public --tag latest
 ```
+
+**! You don't need to release `dist/packages/mocks/*` !**
