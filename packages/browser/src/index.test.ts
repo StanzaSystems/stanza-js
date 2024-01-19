@@ -1,5 +1,4 @@
 import { type StanzaCoreConfig } from '@getstanza/core';
-import { describe, expect, it } from 'vitest';
 import StanzaBrowser from './index';
 
 describe('refresh contexts', () => {

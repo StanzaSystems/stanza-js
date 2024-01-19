@@ -1,4 +1,4 @@
-import { afterAll, afterEach, beforeAll } from 'vitest';
+import { type SpyInstance } from 'vitest';
 import { fetch } from 'cross-fetch';
 import 'vitest-localstorage-mock';
 import { server } from '@getstanza/mocks-server';
@@ -14,4 +14,19 @@ afterAll(() => {
 });
 afterEach(() => {
   server.resetHandlers();
+});
+
+let errorSpy: SpyInstance | undefined;
+let warnSpy: SpyInstance | undefined;
+
+beforeEach(() => {
+  errorSpy?.mockReset();
+  warnSpy?.mockReset();
+  errorSpy = vi.spyOn(console, 'error');
+  warnSpy = vi.spyOn(console, 'warn');
+});
+
+afterEach(() => {
+  expect(errorSpy).not.toHaveBeenCalled();
+  expect(warnSpy).not.toHaveBeenCalled();
 });
