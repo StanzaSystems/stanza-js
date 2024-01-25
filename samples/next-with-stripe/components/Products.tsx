@@ -1,3 +1,4 @@
+'use client'
 import { useShoppingCart } from 'use-shopping-cart';
 import { type Product as ProductData } from '../data/product';
 import Product from './Product';

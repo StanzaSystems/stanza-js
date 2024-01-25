@@ -2,7 +2,7 @@ import { getFeatureStates } from './getFeatureStates';
 import { getFeatureStatesHot } from './getFeatureStatesHot';
 import { getFeatureStatesStale } from './getFeatureStatesStale';
 import * as globals from './globals';
-import { init } from './init';
+import { init, initState } from './init';
 export * from './eventEmitter';
 export * from './withStanzaHeaders';
 export * from './utils/isTruthy';
@@ -17,6 +17,7 @@ export const utils = {
 
 export const Stanza = {
   init,
+  initState,
   getFeatureStatesHot,
   getFeatureStatesStale,
   getFeatureStates,

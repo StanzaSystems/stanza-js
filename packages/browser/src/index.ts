@@ -78,6 +78,7 @@ function getContextFeatures(name: string): string[] {
 }
 export const StanzaBrowser = {
   init,
+  initState: Stanza.initState,
   getContextHot,
   getContextStale,
   getContext,

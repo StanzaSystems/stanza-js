@@ -1,4 +1,3 @@
-'use client';
 import React, { type ReactNode } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -57,7 +56,7 @@ const Layout = ({ children, title = 'Stanza Fruit Stand' }: Props) => (
           <h1>
             <span className='light'>{title}</span>
           </h1>
-          <CartButton />
+          {/* <CartButton /> */}
         </div>
       </header>
 

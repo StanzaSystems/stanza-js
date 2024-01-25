@@ -8,6 +8,7 @@ export const createStanzaInstance = (config: StanzaConfig): StanzaInstance => {
   StanzaBrowser.init(config);
 
   return {
+    initState: StanzaBrowser.initState,
     contextChanges: StanzaBrowser.contextChanges,
     featureChanges: StanzaBrowser.featureChanges,
   };
