@@ -32,6 +32,7 @@
     "@react-native-community/cli-platform-android": "11.3.7",
     "@react-native-community/cli-platform-ios": "11.3.7",
     "@react-native/metro-config": "0.72.11",
+    "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^12.4.3",
     "@types/cors": "^2.8.17",
     "@types/express": "~4.17.21",
