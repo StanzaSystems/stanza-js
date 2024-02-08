@@ -1,0 +1,27 @@
+{
+  "extends": ["plugin:@nx/react", "../../.eslintrc.json"],
+  "parserOptions": {
+    "project": ["packages/mobile/tsconfig*.json"]
+  },
+  "ignorePatterns": [
+    "!**/*",
+    "public",
+    ".cache",
+    "node_modules",
+    "test-setup.ts"
+  ],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {}
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {}
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "rules": {}
+    }
+  ]
+}

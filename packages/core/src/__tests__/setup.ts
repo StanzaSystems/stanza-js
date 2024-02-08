@@ -71,7 +71,12 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  expect(errorSpy).not.toHaveBeenCalled();
+  // Expect to throw an error if there is a console.error.
+  if (errorSpy?.mock.calls.length !== 0) {
+    expect(errorSpy).toHaveBeenCalledOnce();
+  } else {
+    expect(errorSpy).not.toHaveBeenCalled();
+  }
   if (warnSpy?.mock.calls.length !== 0) {
     expect(warnSpy).toHaveBeenCalledOnce();
     expect(warnSpy).toHaveBeenCalledWith(

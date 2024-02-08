@@ -9,7 +9,7 @@ describe('init stanza', () => {
     Stanza = (await import('../index')).Stanza;
   });
 
-  it('validates URL', () => {
+  it('validates URL', async () => {
     const config: StanzaCoreConfig = {
       url: 'asdfasdf',
       environment: 'local',
@@ -26,12 +26,10 @@ describe('init stanza', () => {
       ],
     };
 
-    expect(() => {
-      Stanza.init(config);
-    }).toThrow('is not a valid url');
+    await expect(Stanza.init(config)).rejects.toThrow('is not a valid url');
   });
 
-  it('configures a stanza instance', () => {
+  it('configures a stanza instance', async () => {
     const config: StanzaCoreConfig = {
       url: 'https://url.to.hub',
       environment: 'local',
@@ -48,12 +46,10 @@ describe('init stanza', () => {
       ],
     };
 
-    expect(() => {
-      Stanza.init(config);
-    }).not.toThrow();
+    await expect(Stanza.init(config)).resolves.not.toThrow();
   });
 
-  it('configures only one stanza', () => {
+  it('configures only one stanza', async () => {
     const config: StanzaCoreConfig = {
       url: 'https://url.to.hub',
       environment: 'local',
@@ -69,11 +65,7 @@ describe('init stanza', () => {
         },
       ],
     };
-    expect(() => {
-      Stanza.init(config);
-    }).not.toThrow();
-    expect(() => {
-      Stanza.init(config);
-    }).toThrow();
+    await expect(Stanza.init(config)).resolves.not.toThrow();
+    await expect(Stanza.init(config)).rejects.toThrow();
   });
 });

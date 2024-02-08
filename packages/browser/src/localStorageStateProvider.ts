@@ -45,7 +45,7 @@ const featureStateChangeEmitter = new StanzaChangeTarget<{
 
 export const createLocalStorageStateProvider = (): LocalStateProvider => {
   let initialized = false;
-  function setFeatureState(featureState: FeatureState): void {
+  async function setFeatureState(featureState: FeatureState): Promise<void> {
     assertInitialized();
     const name = featureState.featureName ?? '';
     const key = createStanzaFeatureKey(name);
@@ -54,7 +54,7 @@ export const createLocalStorageStateProvider = (): LocalStateProvider => {
     if (newFeatureStringValue === oldFeatureStringValue) {
       return;
     }
-    const oldValue = getFeatureState(name);
+    const oldValue = await getFeatureState(name);
     localStorage.setItem(key, newFeatureStringValue);
     featureStateChangeEmitter.dispatchChange({
       oldValue,
@@ -62,7 +62,9 @@ export const createLocalStorageStateProvider = (): LocalStateProvider => {
     });
   }
 
-  function getFeatureState(name: string): FeatureState | undefined {
+  async function getFeatureState(
+    name: string
+  ): Promise<FeatureState | undefined> {
     assertInitialized();
     const featureSerialized = localStorage.getItem(
       createStanzaFeatureKey(name)
@@ -73,7 +75,7 @@ export const createLocalStorageStateProvider = (): LocalStateProvider => {
     return parseFeature(featureSerialized);
   }
 
-  function getAllFeatureStates(): FeatureState[] {
+  async function getAllFeatureStates(): Promise<FeatureState[]> {
     assertInitialized();
     return getAllStateKeys()
       .map((key) => localStorage.getItem(key))
@@ -90,7 +92,7 @@ export const createLocalStorageStateProvider = (): LocalStateProvider => {
   }
 
   return {
-    init: (config) => {
+    init: async (config) => {
       const configString = JSON.stringify(config);
       const existingConfig = localStorage.getItem(STANZA_CONFIG_KEY);
 

@@ -6,7 +6,7 @@ export const createInMemoryLocalStateProvider = (): LocalStateProvider => {
   const localState = new Map<string, FeatureState>();
   let initialized = false;
 
-  function setFeatureState(featureState: FeatureState): void {
+  async function setFeatureState(featureState: FeatureState): Promise<void> {
     assertInitialized();
     const { featureName } = featureState;
     const oldValue = localState.get(featureName);
@@ -22,12 +22,14 @@ export const createInMemoryLocalStateProvider = (): LocalStateProvider => {
     });
   }
 
-  function getFeatureState(name?: string): FeatureState | undefined {
+  async function getFeatureState(
+    name?: string
+  ): Promise<FeatureState | undefined> {
     assertInitialized();
     return localState.get(name ?? '');
   }
 
-  function getAllFeatureStates(): FeatureState[] {
+  async function getAllFeatureStates(): Promise<FeatureState[]> {
     assertInitialized();
     return Array.from(localState.values());
   }
@@ -46,7 +48,7 @@ export const createInMemoryLocalStateProvider = (): LocalStateProvider => {
   }>();
 
   return {
-    init: () => {
+    init: async () => {
       initialized = true;
     },
     getFeatureState,

@@ -26,21 +26,23 @@ describe('features', () => {
     Stanza = indexModule.Stanza;
     utils = indexModule.utils;
 
-    Stanza.init(config);
+    await Stanza.init(config);
   });
 
   it('gets a hot features', async () => {
     const features = ['featured', 'search', 'checkout'].sort((a, b) =>
       a.localeCompare(b)
     );
+
     const hotFeatureStates = (await Stanza.getFeatureStatesHot(features)).sort(
       (a, b) => a.featureName.localeCompare(b.featureName)
     );
-    const cachedFeatures = features
-      .map((feature) =>
+
+    const cachedFeatures = await Promise.all(
+      features.map(async (feature) =>
         utils.globals.getStateProvider().getFeatureState(feature)
       )
-      .filter(Boolean);
+    );
 
     assert.deepEqual(
       cachedFeatures,
@@ -49,8 +51,8 @@ describe('features', () => {
     );
   });
 
-  it('returns an enabled feature when features not found', () => {
-    const featureStatesStale = Stanza.getFeatureStatesStale(['fake']);
+  it('returns an enabled feature when features not found', async () => {
+    const featureStatesStale = await Stanza.getFeatureStatesStale(['fake']);
     expect(featureStatesStale).toEqual([
       {
         featureName: 'fake',

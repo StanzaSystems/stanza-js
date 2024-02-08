@@ -1,5 +1,5 @@
 import { getContextStale, type StanzaContext } from '@getstanza/browser';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { StanzaReactContext } from '../context/StanzaContext';
 import { StanzaContextName } from '../context/StanzaContextName';
 
@@ -24,13 +24,16 @@ export const useStanzaContext = (
     );
   }
 
-  useEffect(() => {
-    state?.name !== resultContextName &&
-      setState(getContextStale(resultContextName));
-  }, [state, resultContextName]);
+  const updateContext = useCallback(async () => {
+    setState(await getContextStale(resultContextName));
+  }, [resultContextName]);
 
   useEffect(() => {
-    return contextChanges.addChangeListener(async (context) => {
+    void (state?.name !== resultContextName && updateContext());
+  }, [state, resultContextName, updateContext]);
+
+  useEffect(() => {
+    return contextChanges.addChangeListener((context) => {
       if (context.name === resultContextName) {
         setState(context);
       }

@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["Buildable", "Emittery", "opentelemetry", "otel"]
+  "cSpell.words": ["Buildable", "Emittery", "opentelemetry", "otel"],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

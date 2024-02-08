@@ -14,7 +14,7 @@ export async function startPollingFeatureStateUpdates(): Promise<void> {
 }
 
 async function pollFeatureStateUpdates(): Promise<void> {
-  const featureStates = getStateProvider().getAllFeatureStates();
+  const featureStates = await getStateProvider().getAllFeatureStates();
   const features = featureStates.map(({ featureName }) => featureName);
   await getFeatureStatesHot(features);
 }

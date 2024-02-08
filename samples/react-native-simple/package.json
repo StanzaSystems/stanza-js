@@ -1,0 +1,24 @@
+{
+  "name": "react-native-simple",
+  "version": "0.0.8-beta",
+  "private": true,
+  "dependencies": {
+    "@react-native/metro-config": "*",
+    "metro-config": "*",
+    "react-native-svg-transformer": "*",
+    "react": "*",
+    "@testing-library/react-native": "*",
+    "emittery": "*",
+    "msw": "*",
+    "vitest": "*",
+    "vite-tsconfig-paths": "*",
+    "cross-fetch": "*",
+    "react-native": "*",
+    "jest-circus": "*",
+    "jest-react-native": "*",
+    "@testing-library/jest-native": "*",
+    "@react-native-async-storage/async-storage": "*",
+    "lodash": "*",
+    "vite": "*"
+  }
+}

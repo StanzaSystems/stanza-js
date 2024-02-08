@@ -4,16 +4,17 @@ import { type StanzaCoreConfig } from './models/stanzaCoreConfig';
 import { startPollingFeatureStateUpdates } from './startPollingFeatureStateUpdates';
 import { createInMemoryLocalStateProvider } from './utils/inMemoryLocalStateProvider';
 
-export const init = (
+export const init = async (
   config: StanzaCoreConfig,
   provider?: LocalStateProvider
-): void => {
+): Promise<void> => {
   try {
     void new URL(config.url);
   } catch {
     throw new Error(`${config.url} is not a valid url`);
   }
-  globalsInit(config, provider ?? createInMemoryLocalStateProvider());
+
+  await globalsInit(config, provider ?? createInMemoryLocalStateProvider());
 
   const pollDelay = config.pollDelay ?? Promise.resolve();
   pollDelay.then(startPollingFeatureStateUpdates).catch((e) => {

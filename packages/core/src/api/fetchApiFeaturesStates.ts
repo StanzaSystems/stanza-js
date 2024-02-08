@@ -37,7 +37,7 @@ export async function fetchApiFeaturesStates(
     body,
     method: 'POST',
   }).catch((e) => {
-    console.log(e);
+    console.log('Failed to fetch feature states', e);
   });
   if (response == null) {
     // we logged the error already in the catch

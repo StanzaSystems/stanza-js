@@ -9,7 +9,7 @@ if (process.env.NODE_ENV === 'development') {
   const mswMock = import('../msw/mock');
   loadPromise = mswMock.then(async (module) => module.initMocks());
 }
-if (!process.browser) {
+if (typeof window === 'undefined') {
   loadPromise = new Promise(() => {});
 }
 

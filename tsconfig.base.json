@@ -24,6 +24,7 @@
     "baseUrl": ".",
     "paths": {
       "@getstanza/browser": ["packages/browser/index.ts"],
+      "@getstanza/mobile": ["packages/mobile/index.ts"],
       "@getstanza/core": ["packages/core/index.ts"],
       "@getstanza/hub-client-api": ["packages/hub/client-api/src/index.ts"],
       "@getstanza/hub-client-grpc": ["packages/hub/client-grpc/src/index.ts"],
@@ -35,6 +36,7 @@
       "@getstanza/next-node": ["packages/next-node/index.ts"],
       "@getstanza/node": ["packages/sdk-node/src/index.ts"],
       "@getstanza/react": ["packages/stanza-react/index.ts"],
+      "@getstanza/react-native": ["packages/stanza-rn/src/index.ts"],
       "@getstanza/sdk-base": ["packages/sdk-base/src/index.ts"],
       "@getstanza/sdk-cloudflare": ["packages/sdk-cloudflare/src/index.ts"],
       "@getstanza/sdk-utils": ["packages/sdk-utils/src/index.ts"]

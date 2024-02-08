@@ -6,7 +6,7 @@ import { isFeatureStateFresh } from './models/isFeatureStateFresh';
 export async function getFeatureStates(
   features: string[]
 ): Promise<FeatureState[]> {
-  const featureStates = getFeatureStatesStale(features);
+  const featureStates = await getFeatureStatesStale(features);
   if (
     featureStates.every(isFeatureStateFresh) &&
     features.every(
