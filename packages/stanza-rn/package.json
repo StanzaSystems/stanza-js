@@ -1,12 +1,12 @@
 {
   "name": "@getstanza/react-native",
-  "version": "0.0.7-beta",
+  "version": "0.0.8-beta",
   "type": "commonjs",
   "description": "Stanza React Native SDK",
   "author": "Stanza",
   "license": "Apache-2.0",
   "dependencies": {
-    "@getstanza/core": "0.0.7-beta",
+    "@getstanza/core": "0.0.8-beta",
     "react-native": "0.72.6",
     "react": "18.2.0"
   },

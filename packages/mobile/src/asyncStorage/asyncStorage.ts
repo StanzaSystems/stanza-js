@@ -62,7 +62,7 @@ class AsyncStorage implements IAsyncStorage {
       const keys = await RNAsyncStorage.getAllKeys();
       const result = await RNAsyncStorage.multiGet(keys);
 
-      const savedKeys = result.map((req) => req[0]);
+      const savedKeys = result.map((req: any[]) => req[0]);
 
       return savedKeys;
     } catch (e) {

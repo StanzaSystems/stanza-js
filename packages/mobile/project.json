@@ -10,7 +10,7 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/mobile",
-        "main": "packages/mobile/src/index.ts",
+        "main": "packages/mobile/index.ts",
         "tsConfig": "packages/mobile/tsconfig.json",
         "assets": ["packages/mobile/README.md"],
         "project": "packages/mobile/package.json",

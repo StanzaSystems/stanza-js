@@ -28,10 +28,12 @@ export const init = async (initialConfig: StanzaCoreConfig): Promise<void> => {
     return result;
   }, {});
 
-  Stanza.featureChanges.addChangeListener((featureState) => {
-    featureToContextMap[featureState.featureName].map(async (contextName) => {
-      contextChanges.dispatchChange(await getContextStale(contextName));
-    });
+  Stanza.featureChanges.addChangeListener(async (featureState) => {
+    await Promise.allSettled(
+      featureToContextMap[featureState.featureName].map(async (contextName) => {
+        contextChanges.dispatchChange(await getContextStale(contextName));
+      })
+    );
   });
 
   Stanza.enablementNumberChanges.addChangeListener(async () => {

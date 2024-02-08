@@ -1,14 +1,13 @@
 {
   "name": "@getstanza/mobile",
-  "version": "0.0.7-beta",
+  "version": "0.0.8-beta",
   "type": "commonjs",
   "description": "Stanza mobile integration features",
   "author": "Stanza",
   "license": "Apache-2.0",
   "dependencies": {
-    "@getstanza/core": "0.0.7-beta",
-    "@react-native-async-storage/async-storage": "^1.19.5",
-    "emittery": "^0.13.1"
+    "@getstanza/core": "0.0.8-beta",
+    "@react-native-async-storage/async-storage": "1.19.5"
   },
   "devDependencies": {
     "jest-circus": "^29.4.1",
