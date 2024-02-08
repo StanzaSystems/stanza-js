@@ -167,17 +167,15 @@ describe('asyncStorageStateProvider', () => {
 
     it("should return undefined if feature doesn't exist in store", async () => {
       await stateProvider.setFeatureState(testFeatures.first);
-      const secondFeature = await stateProvider.getFeatureState(
-        'secondFeature'
-      );
+      const secondFeature =
+        await stateProvider.getFeatureState('secondFeature');
       expect(secondFeature).toBeUndefined();
     });
 
     it("should return undefined if feature doesn't exist in store", async () => {
       await stateProvider.setFeatureState(testFeatures.first);
-      const secondFeature = await stateProvider.getFeatureState(
-        'secondFeature'
-      );
+      const secondFeature =
+        await stateProvider.getFeatureState('secondFeature');
       expect(secondFeature).toBeUndefined();
     });
 
