@@ -24,6 +24,7 @@ The following samples are used primarily during Stanza development, and are work
 
 - `packages/core` - Stanza JS core library, used by browser, node, and other packages
 - `packages/browser` - Stanza browser SDK
+- `packages/mobile` - Stanza mobile SDK
 - `packages/sdk-node` - Stanza Node SDK
 - `packages/sdk-cloudflare` - Stanza Cloudflare SDK
 
@@ -32,6 +33,7 @@ The following samples are used primarily during Stanza development, and are work
 - `packages/next` - Stanza components for Next.js
 - `packages/next-node` - Stanza Node SDK adapter for Next.js
 - `packages/stanza-react` - Stanza React components
+- `packages/stanza-rn` - Stanza React Native components
 - `packages/mocks` - Stanza mocks for use in development and testing
 
 ## Toolchain
