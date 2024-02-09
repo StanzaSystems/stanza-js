@@ -1,0 +1,205 @@
+
+ >  NX   Running target serve for project cloudflare-proxy and 5 tasks it depends on:
+
+ 
+
+> nx run cloudflare-proxy:serve
+
+ ⛅️ wrangler 3.22.5 (update available 3.28.1)
+-------------------------------------------------------
+Using vars defined in .dev.vars
+Your worker has access to the following bindings:
+- Vars:
+  - STANZA_API_KEY: "(hidden)"
+  - STANZA_HUB_ADDRESS: "(hidden)"
+  - STANZA_ENVIRONMENT: "(hidden)"
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+▲ [WARNING] kj/filesystem-disk-unix.c++:1709: warning: PWD environment variable doesn't match current directory; pwd = /Users/johnamorim/Projects/stanza-js
+[wrangler:inf] Ready on http://localhost:8787
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+⎔ Starting local server...
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+▲ [WARNING] Miniflare 3 does not support CRON triggers yet, ignoring...
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+▲ [WARNING] kj/filesystem-disk-unix.c++:1709: warning: PWD environment variable doesn't match current directory; pwd = /Users/johnamorim/Projects/stanza-js
+outgoing headers Headers(5) {
+  'accept' => '*/*',
+  'host' => 'localhost:8787',
+  'traceparent' => '00-ed7ad0bfa32c9d0c87f1a4ea16598de4-ae70ed6ebbe4a45a-00',
+  'user-agent' => 'curl/8.1.2',
+  'x-stanza-token' => '2b58cec5-be54-44de-9bea-684a06ed512a',
+  [immutable]: false
+}
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+[wrangler:inf] GET /api/random 200 OK (474ms)
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+outgoing headers Headers(5) {
+  'accept' => '*/*',
+  'host' => 'localhost:8787',
+  'traceparent' => '00-8b4137b3f4d4bde5a9621ead09deb7a0-cd837d404a2728fb-00',
+  'user-agent' => 'curl/8.1.2',
+  'x-stanza-token' => 'e28a8431-1d30-48d6-8f09-088c4ea6d298',
+  [immutable]: false
+}
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+[wrangler:inf] GET /api/random 200 OK (161ms)
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+outgoing headers Headers(5) {
+  'accept' => '*/*',
+  'host' => 'localhost:8787',
+  'traceparent' => '00-15e045feef5658b0f710523207a83814-cd2b32193a367847-00',
+  'user-agent' => 'curl/8.1.2',
+  'x-stanza-token' => '5272af96-a502-49de-acf5-1e542e8d7ddb',
+  [immutable]: false
+}
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+[wrangler:inf] GET /api/random 200 OK (428ms)
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+outgoing headers Headers(5) {
+  'accept' => '*/*',
+  'host' => 'localhost:8787',
+  'traceparent' => '00-2c2bb70009c5f06952ad7f3939055fad-149b637db4e065d1-00',
+  'user-agent' => 'curl/8.1.2',
+  'x-stanza-token' => 'be0d0dbf-1d2e-4fad-9c0c-dd4a147dc57d',
+  [immutable]: false
+}
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+[wrangler:inf] GET /api/random 200 OK (175ms)
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+outgoing headers Headers(5) {
+  'accept' => '*/*',
+  'host' => 'localhost:8787',
+  'traceparent' => '00-620ee6655be1bf4f116e07516dc9d341-ad3208d3a33f47b9-00',
+  'user-agent' => 'curl/8.1.2',
+  'x-stanza-token' => '221922fa-ef14-45ce-ad58-143973497636',
+  [immutable]: false
+}
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+[wrangler:inf] GET /api/random 200 OK (175ms)
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+outgoing headers Headers(5) {
+  'accept' => '*/*',
+  'host' => 'localhost:8787',
+  'traceparent' => '00-c6092f828a2b1c878d30167520802f3f-b2457167a59a1a65-00',
+  'user-agent' => 'curl/8.1.2',
+  'x-stanza-token' => 'c79f17a2-2404-43d3-b330-eb9d6a8eab5d',
+  [immutable]: false
+}
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+[wrangler:inf] GET /api/random 200 OK (190ms)
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+outgoing headers Headers(5) {
+  'accept' => '*/*',
+  'host' => 'localhost:8787',
+  'traceparent' => '00-e66c540eadb7b03d39db119785906c4a-4113ae4a957e8c18-00',
+  'user-agent' => 'curl/8.1.2',
+  'x-stanza-token' => '73079370-b9ff-4fe0-af0c-7c70c1ba832c',
+  [immutable]: false
+}
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+[wrangler:inf] GET /api/random 200 OK (135ms)
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+outgoing headers Headers(5) {
+  'accept' => '*/*',
+  'host' => 'localhost:8787',
+  'traceparent' => '00-764860c59d7133e85f8c3736b5fac548-548260fd5d5c4379-00',
+  'user-agent' => 'curl/8.1.2',
+  'x-stanza-token' => '24d8461a-ba35-4296-864d-314357769fe5',
+  [immutable]: false
+}
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+[wrangler:inf] GET /api/random 200 OK (140ms)
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+outgoing headers Headers(5) {
+  'accept' => '*/*',
+  'host' => 'localhost:8787',
+  'traceparent' => '00-ba057a5ff1032a46d38cddf1d74b78a2-caa991d20f814fe6-00',
+  'user-agent' => 'curl/8.1.2',
+  'x-stanza-token' => 'ab962a8b-98c5-498f-b773-19a4fcb6eada',
+  [immutable]: false
+}
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+[wrangler:inf] GET /api/random 200 OK (138ms)
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ [b open a       [d open        [l turn off local   [c] clear       [x to     │
+│   browser,        Devtools,      mode,                console,       exit    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+⎔ Shutting down local server...
+
+ 
+
+ >  NX   Successfully ran target serve for project cloudflare-proxy and 5 tasks it depends on
+
+   Nx read the output from the cache instead of running the command for 5 out of 6 tasks.
+
