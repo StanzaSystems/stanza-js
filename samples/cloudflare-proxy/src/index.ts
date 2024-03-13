@@ -15,19 +15,26 @@ import {
 
 const handler: ExportedHandler = stanzaCloudflareHandler(
   {
-    serviceName: 'CloudflareProxy',
+    serviceName: 'ServiceB',
     serviceRelease: '1',
     requestTimeout: 2000,
     scheduler: {
       tickSize: 60 * 1000,
     },
   },
-  { guard: 'ZenQuoteProxy' },
+  // Implement the plan for the guard
+  {
+    guard: 'EdgeProxyDemoGuard',
+    feature: 'HighPriorityFeat',
+    priorityBoost: 0,
+  },
   {
     // The fetch handler is invoked when this worker receives a HTTP(S) request
     // and should return a Response (optionally wrapped in a Promise)
     async fetch(request, _env, _ctx) {
-      const proxyUrl = new URL('https://zenquotes.io');
+      const proxyUrl = new URL(
+        'https://demo-serviceb.dev.getstanza.dev/dothething'
+      );
       const requestUrl = new URL(request.url);
 
       // carry through request path and query string
@@ -37,7 +44,10 @@ const handler: ExportedHandler = stanzaCloudflareHandler(
       // carry through original request headers and append any Stanza specific headers
       const proxyHeaders = withStanzaHeaders(request.headers);
 
-      console.log('outgoing headers', proxyHeaders);
+      console.log(
+        'outgoing headers',
+        JSON.stringify(Object.fromEntries(proxyHeaders.entries()))
+      );
       const proxyRequest = new Request(request, { headers: proxyHeaders });
 
       // make subrequests with the global `fetch()` function

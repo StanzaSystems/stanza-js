@@ -1,9 +1,12 @@
 name = "cloudflare-proxy"
 compatibility_date = "2023-07-31"
 main = "src/index.ts"
+account_id = "ec9828a70aa8221ffe875eb92e4b5c74"
 
 #node_compat = true
 compatibility_flags = [ "nodejs_compat" ]
 
 [triggers]
 crons = [ "* * * * *" ]
+
+
